@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "027F6F81B695FCE174AA542E6E2F3D62B95105EB",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "71AF2508C8470C0709193003FA6AD4FC24BB2B68" : 9223372036854775807,
+    "027F6F81B695FCE174AA542E6E2F3D62B95105EB" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "B2E70413-80C2-4734-8700-FF246562902E",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "71AF2508C8470C0709193003FA6AD4FC24BB2B68" : "MBLibrary\/",
+    "027F6F81B695FCE174AA542E6E2F3D62B95105EB" : "Gym%20Tracker\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Gym Tracker",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Gym Tracker.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/piscoTech\/Gym-Tracker.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "027F6F81B695FCE174AA542E6E2F3D62B95105EB"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/piscoTech\/MBLibrary.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "71AF2508C8470C0709193003FA6AD4FC24BB2B68"
+    }
+  ]
+}

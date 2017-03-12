@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0810"
+   LastUpgradeVersion = "0820"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "7AF65E231DD9E20200E06E16"
+               BlueprintIdentifier = "7A4539C21E75CFC200AD0215"
                BuildableName = "Gym Tracker.app"
                BlueprintName = "Gym Tracker"
                ReferencedContainer = "container:Gym Tracker.xcodeproj">
@@ -32,7 +32,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "7AF65E231DD9E20200E06E16"
+            BlueprintIdentifier = "7A4539C21E75CFC200AD0215"
             BuildableName = "Gym Tracker.app"
             BlueprintName = "Gym Tracker"
             ReferencedContainer = "container:Gym Tracker.xcodeproj">
@@ -55,7 +55,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "7AF65E231DD9E20200E06E16"
+            BlueprintIdentifier = "7A4539C21E75CFC200AD0215"
             BuildableName = "Gym Tracker.app"
             BlueprintName = "Gym Tracker"
             ReferencedContainer = "container:Gym Tracker.xcodeproj">
@@ -74,7 +74,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "7AF65E231DD9E20200E06E16"
+            BlueprintIdentifier = "7A4539C21E75CFC200AD0215"
             BuildableName = "Gym Tracker.app"
             BlueprintName = "Gym Tracker"
             ReferencedContainer = "container:Gym Tracker.xcodeproj">
