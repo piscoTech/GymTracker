@@ -165,6 +165,21 @@ class DataManager: NSObject {
 		return newW
 	}
 	
+	func newExercize(for workout: Workout) -> Exercize {
+		let context = localData.managedObjectContext
+		var newE: Exercize!
+		context.performAndWait {
+			let e = NSEntityDescription.entity(forEntityName: Exercize.objectType, in: context)!
+			newE = Exercize(entity: e, insertInto: context)
+		}
+		
+		newE.id = newE.objectID.uriRepresentation().path
+		newE.order = Int32(workout.exercizes.count)
+		newE.workout = workout
+		
+		return newE
+	}
+	
 //	
 //	func newTask() -> Task {
 //		let context = localData.managedObjectContext
@@ -246,6 +261,10 @@ class DataManager: NSObject {
 //			return nil
 //		}
 //	}
+	
+	func discardAllChanges() {
+		localData.managedObjectContext.rollback()
+	}
 	
 	func persistChangesForObjects(_ obj: DataObject...) -> Bool { return persistChangesForObjects(obj) }
 	func persistChangesForObjects(_ obj: [DataObject]...) -> Bool {

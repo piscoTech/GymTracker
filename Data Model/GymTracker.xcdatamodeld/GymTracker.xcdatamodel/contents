@@ -8,7 +8,7 @@
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="order" optional="YES" attributeType="Integer 32" minValueString="0" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="rest" optional="YES" attributeType="Double" minValueString="0" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
-        <relationship name="exercizes" toMany="YES" deletionRule="Nullify" destinationEntity="RepsSet" inverseName="exercize" inverseEntity="RepsSet" syncable="YES"/>
+        <relationship name="sets" toMany="YES" deletionRule="Nullify" destinationEntity="RepsSet" inverseName="exercize" inverseEntity="RepsSet" syncable="YES"/>
         <relationship name="workout" maxCount="1" deletionRule="Nullify" destinationEntity="Workout" inverseName="exercizes" inverseEntity="Workout" syncable="YES"/>
     </entity>
     <entity name="RepsSet" representedClassName="RepsSet" syncable="YES">
@@ -19,7 +19,7 @@
         <attribute name="reps" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="rest" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="weight" attributeType="Double" minValueString="0" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
-        <relationship name="exercize" maxCount="1" deletionRule="Nullify" destinationEntity="Exercize" inverseName="exercizes" inverseEntity="Exercize" syncable="YES"/>
+        <relationship name="exercize" maxCount="1" deletionRule="Nullify" destinationEntity="Exercize" inverseName="sets" inverseEntity="Exercize" syncable="YES"/>
     </entity>
     <entity name="Workout" representedClassName="Workout" syncable="YES">
         <attribute name="archived" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
@@ -30,7 +30,7 @@
         <relationship name="exercizes" toMany="YES" deletionRule="Cascade" destinationEntity="Exercize" inverseName="workout" inverseEntity="Exercize" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Exercize" positionX="-108" positionY="-0" width="128" height="30"/>
+        <element name="Exercize" positionX="-108" positionY="-0" width="128" height="180"/>
         <element name="RepsSet" positionX="81" positionY="-0" width="128" height="30"/>
         <element name="Workout" positionX="-308" positionY="-0" width="128" height="30"/>
     </elements>

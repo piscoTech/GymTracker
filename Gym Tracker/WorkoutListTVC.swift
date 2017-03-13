@@ -105,9 +105,8 @@ class WorkoutListTableViewController: UITableViewController {
 		
 		switch segueID {
 		case "newWorkout":
-			break
-//			let dest = (segue.destination as! UINavigationController).viewControllers.first as! WorkoutTableViewController
-			// TODO: Set destination in create-new mode
+			let dest = (segue.destination as! UINavigationController).viewControllers.first as! WorkoutTableViewController
+			dest.editMode = true
 		default:
 			break
 		}

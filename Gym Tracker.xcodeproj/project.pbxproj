@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7A231D861E76FDBA0088D7DC /* WorkoutTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A231D851E76FDBA0088D7DC /* WorkoutTVC.swift */; };
+		7A231D8B1E76FFED0088D7DC /* TableView Cells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A231D8A1E76FFED0088D7DC /* TableView Cells.swift */; };
+		7A231D8C1E770CF20088D7DC /* ExercizeTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4539DA1E75D01600AD0215 /* ExercizeTVC.swift */; };
 		7A4539C71E75CFC200AD0215 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4539C61E75CFC200AD0215 /* AppDelegate.swift */; };
 		7A4539CC1E75CFC200AD0215 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7A4539CA1E75CFC200AD0215 /* Main.storyboard */; };
 		7A4539CE1E75CFC200AD0215 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7A4539CD1E75CFC200AD0215 /* Assets.xcassets */; };
@@ -76,6 +79,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		7A231D851E76FDBA0088D7DC /* WorkoutTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkoutTVC.swift; sourceTree = "<group>"; };
+		7A231D8A1E76FFED0088D7DC /* TableView Cells.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TableView Cells.swift"; sourceTree = "<group>"; };
 		7A4539C31E75CFC200AD0215 /* Gym Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gym Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A4539C61E75CFC200AD0215 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7A4539CB1E75CFC200AD0215 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -151,6 +156,7 @@
 			isa = PBXGroup;
 			children = (
 				7ACE8B741E76D16A0011F839 /* WorkoutListTVC.swift */,
+				7A231D851E76FDBA0088D7DC /* WorkoutTVC.swift */,
 				7A4539DA1E75D01600AD0215 /* ExercizeTVC.swift */,
 			);
 			name = Controller;
@@ -160,6 +166,7 @@
 			isa = PBXGroup;
 			children = (
 				7A4539CA1E75CFC200AD0215 /* Main.storyboard */,
+				7A231D8A1E76FFED0088D7DC /* TableView Cells.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -310,11 +317,14 @@
 			files = (
 				7AC086ED1E76D3C200E35F06 /* DataManager.swift in Sources */,
 				7A86CCF61E75DE9B001E86DA /* Main.swift in Sources */,
+				7A231D861E76FDBA0088D7DC /* WorkoutTVC.swift in Sources */,
 				7A4539C71E75CFC200AD0215 /* AppDelegate.swift in Sources */,
 				7AC086EF1E76D3C200E35F06 /* GymTracker.xcdatamodeld in Sources */,
 				7AC086F11E76D3C200E35F06 /* Workout.swift in Sources */,
+				7A231D8B1E76FFED0088D7DC /* TableView Cells.swift in Sources */,
 				7AC086EE1E76D3C200E35F06 /* Exercize.swift in Sources */,
 				7AC086F01E76D3C200E35F06 /* RepsSet.swift in Sources */,
+				7A231D8C1E770CF20088D7DC /* ExercizeTVC.swift in Sources */,
 				7ACE8B751E76D16A0011F839 /* WorkoutListTVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

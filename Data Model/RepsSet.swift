@@ -27,6 +27,10 @@ class RepsSet: DataObject {
 	@NSManaged var weight: Double
 	@NSManaged var rest: TimeInterval
 	
+	override var description: String {
+		return "I'm lazy now"
+	}
+	
 	override class func loadWithID(_ id: String) -> RepsSet? {
 		let req = NSFetchRequest<RepsSet>(entityName: self.objectType)
 		let pred = NSPredicate(format: "id == %@", id)
