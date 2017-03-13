@@ -59,8 +59,15 @@ class DataObject: NSManagedObject {
 		}
 	}
 	
-	@NSManaged var id: String
-	@NSManaged var modified: Date
+	@NSManaged fileprivate var id: String
+	@NSManaged fileprivate var modified: Date?
+	@NSManaged fileprivate var created: Date?
+	
+	fileprivate var isNew: Bool {
+		precondition(modified != nil && created != nil, "\(objectType) not saved")
+		
+		return created! == modified!
+	}
 	
 	var recordID: CDRecordID {
 		get {
@@ -154,7 +161,6 @@ class DataManager: NSObject {
 		}
 
 		newW.id = newW.objectID.uriRepresentation().path
-		newW.modified = Date()
 		
 		return newW
 	}
@@ -247,6 +253,8 @@ class DataManager: NSObject {
 		if data.count == 0 {
 			return true
 		}
+		
+		// TODO: set modified date to now and created date (if nil)
 		
 		do {
 			try localData.managedObjectContext.save()

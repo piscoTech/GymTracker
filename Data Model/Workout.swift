@@ -18,7 +18,13 @@ class Workout: DataObject {
 		}
 	}
 	
-	//ID and last modified date are properties of DataObject
+	class func getList() -> [Workout] {
+		let workoutQuery = NSFetchRequest<Workout>(entityName: self.objectType)
+		var list = dataManager.executeFetchRequest(workoutQuery) ?? []
+		list.sort { $0.name < $1.name }
+		
+		return list
+	}
 	
 	@NSManaged var name: String
 	@NSManaged var exercizes: Set<Exercize>

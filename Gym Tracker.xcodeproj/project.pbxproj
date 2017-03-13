@@ -11,14 +11,69 @@
 		7A4539CC1E75CFC200AD0215 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7A4539CA1E75CFC200AD0215 /* Main.storyboard */; };
 		7A4539CE1E75CFC200AD0215 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7A4539CD1E75CFC200AD0215 /* Assets.xcassets */; };
 		7A4539D11E75CFC200AD0215 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7A4539CF1E75CFC200AD0215 /* LaunchScreen.storyboard */; };
-		7A4539DF1E75D01600AD0215 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4539D81E75D01600AD0215 /* DataManager.swift */; };
-		7A4539E01E75D01600AD0215 /* Exercize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4539D91E75D01600AD0215 /* Exercize.swift */; };
-		7A4539E11E75D01600AD0215 /* ExercizeTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4539DA1E75D01600AD0215 /* ExercizeTVC.swift */; };
-		7A4539E21E75D01600AD0215 /* GymTracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7A4539DB1E75D01600AD0215 /* GymTracker.xcdatamodeld */; };
-		7A4539E31E75D01600AD0215 /* RepsSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4539DD1E75D01600AD0215 /* RepsSet.swift */; };
-		7A4539E41E75D01600AD0215 /* Workout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4539DE1E75D01600AD0215 /* Workout.swift */; };
 		7A86CCF61E75DE9B001E86DA /* Main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A86CCF51E75DE9B001E86DA /* Main.swift */; };
+		7AC086ED1E76D3C200E35F06 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AC086E71E76D3C200E35F06 /* DataManager.swift */; };
+		7AC086EE1E76D3C200E35F06 /* Exercize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AC086E81E76D3C200E35F06 /* Exercize.swift */; };
+		7AC086EF1E76D3C200E35F06 /* GymTracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7AC086E91E76D3C200E35F06 /* GymTracker.xcdatamodeld */; };
+		7AC086F01E76D3C200E35F06 /* RepsSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AC086EB1E76D3C200E35F06 /* RepsSet.swift */; };
+		7AC086F11E76D3C200E35F06 /* Workout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AC086EC1E76D3C200E35F06 /* Workout.swift */; };
+		7AC086F41E76D5F400E35F06 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7AC086F31E76D5F400E35F06 /* Localizable.strings */; };
+		7ACE8B6F1E76D0D00011F839 /* MBLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7ACE8B681E76CF720011F839 /* MBLibrary.framework */; };
+		7ACE8B701E76D0D00011F839 /* MBLibrary.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7ACE8B681E76CF720011F839 /* MBLibrary.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		7ACE8B751E76D16A0011F839 /* WorkoutListTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ACE8B741E76D16A0011F839 /* WorkoutListTVC.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		7ACE8B671E76CF720011F839 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7ACE8B601E76CF710011F839 /* MBLibrary.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7A584FA51D3E241C000C739B;
+			remoteInfo = "MBLibrary iOS";
+		};
+		7ACE8B691E76CF720011F839 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7ACE8B601E76CF710011F839 /* MBLibrary.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7A0064CA1D3E9AF00089297D;
+			remoteInfo = "MBLibrary macOS";
+		};
+		7ACE8B6B1E76CF720011F839 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7ACE8B601E76CF710011F839 /* MBLibrary.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7A0064FE1D3EB02B0089297D;
+			remoteInfo = "MBLibrary watchOS";
+		};
+		7ACE8B6D1E76CF720011F839 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7ACE8B601E76CF710011F839 /* MBLibrary.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7A0064DF1D3E9BFA0089297D;
+			remoteInfo = MBLibraryTests;
+		};
+		7ACE8B711E76D0D00011F839 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7ACE8B601E76CF710011F839 /* MBLibrary.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 7A584FA41D3E241C000C739B;
+			remoteInfo = "MBLibrary iOS";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		7ACE8B731E76D0D00011F839 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				7ACE8B701E76D0D00011F839 /* MBLibrary.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		7A4539C31E75CFC200AD0215 /* Gym Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gym Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -27,13 +82,16 @@
 		7A4539CD1E75CFC200AD0215 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7A4539D01E75CFC200AD0215 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7A4539D21E75CFC200AD0215 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		7A4539D81E75D01600AD0215 /* DataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
-		7A4539D91E75D01600AD0215 /* Exercize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Exercize.swift; sourceTree = "<group>"; };
 		7A4539DA1E75D01600AD0215 /* ExercizeTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExercizeTVC.swift; sourceTree = "<group>"; };
-		7A4539DC1E75D01600AD0215 /* GymTracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = GymTracker.xcdatamodel; sourceTree = "<group>"; };
-		7A4539DD1E75D01600AD0215 /* RepsSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepsSet.swift; sourceTree = "<group>"; };
-		7A4539DE1E75D01600AD0215 /* Workout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Workout.swift; sourceTree = "<group>"; };
 		7A86CCF51E75DE9B001E86DA /* Main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Main.swift; sourceTree = "<group>"; };
+		7AC086E71E76D3C200E35F06 /* DataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		7AC086E81E76D3C200E35F06 /* Exercize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Exercize.swift; sourceTree = "<group>"; };
+		7AC086EA1E76D3C200E35F06 /* GymTracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = GymTracker.xcdatamodel; sourceTree = "<group>"; };
+		7AC086EB1E76D3C200E35F06 /* RepsSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepsSet.swift; sourceTree = "<group>"; };
+		7AC086EC1E76D3C200E35F06 /* Workout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Workout.swift; sourceTree = "<group>"; };
+		7AC086F31E76D5F400E35F06 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		7ACE8B601E76CF710011F839 /* MBLibrary.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MBLibrary.xcodeproj; path = ../MBLibrary/MBLibrary.xcodeproj; sourceTree = "<group>"; };
+		7ACE8B741E76D16A0011F839 /* WorkoutListTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkoutListTVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +99,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7ACE8B6F1E76D0D00011F839 /* MBLibrary.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -50,6 +109,8 @@
 		7A4539BA1E75CFC200AD0215 = {
 			isa = PBXGroup;
 			children = (
+				7ACE8B601E76CF710011F839 /* MBLibrary.xcodeproj */,
+				7AC086E61E76D3C200E35F06 /* Data Model */,
 				7A4539C51E75CFC200AD0215 /* Gym Tracker */,
 				7A4539C41E75CFC200AD0215 /* Products */,
 			);
@@ -73,7 +134,8 @@
 				7A86CCF51E75DE9B001E86DA /* Main.swift */,
 				7A4539CD1E75CFC200AD0215 /* Assets.xcassets */,
 				7A4539CF1E75CFC200AD0215 /* LaunchScreen.storyboard */,
-				7A4539D21E75CFC200AD0215 /* Info.plist */,
+				7AC086F31E76D5F400E35F06 /* Localizable.strings */,
+				7AC086F21E76D5BE00E35F06 /* Supporting Files */,
 			);
 			path = "Gym Tracker";
 			sourceTree = "<group>";
@@ -81,11 +143,6 @@
 		7A86CCE81E75DB3A001E86DA /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				7A4539D81E75D01600AD0215 /* DataManager.swift */,
-				7A4539DE1E75D01600AD0215 /* Workout.swift */,
-				7A4539D91E75D01600AD0215 /* Exercize.swift */,
-				7A4539DD1E75D01600AD0215 /* RepsSet.swift */,
-				7A4539DB1E75D01600AD0215 /* GymTracker.xcdatamodeld */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -93,6 +150,7 @@
 		7A86CCE91E75DB40001E86DA /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				7ACE8B741E76D16A0011F839 /* WorkoutListTVC.swift */,
 				7A4539DA1E75D01600AD0215 /* ExercizeTVC.swift */,
 			);
 			name = Controller;
@@ -106,6 +164,37 @@
 			name = View;
 			sourceTree = "<group>";
 		};
+		7AC086E61E76D3C200E35F06 /* Data Model */ = {
+			isa = PBXGroup;
+			children = (
+				7AC086E71E76D3C200E35F06 /* DataManager.swift */,
+				7AC086EC1E76D3C200E35F06 /* Workout.swift */,
+				7AC086E81E76D3C200E35F06 /* Exercize.swift */,
+				7AC086EB1E76D3C200E35F06 /* RepsSet.swift */,
+				7AC086E91E76D3C200E35F06 /* GymTracker.xcdatamodeld */,
+			);
+			path = "Data Model";
+			sourceTree = "<group>";
+		};
+		7AC086F21E76D5BE00E35F06 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				7A4539D21E75CFC200AD0215 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		7ACE8B611E76CF710011F839 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7ACE8B681E76CF720011F839 /* MBLibrary.framework */,
+				7ACE8B6A1E76CF720011F839 /* MBLibrary.framework */,
+				7ACE8B6C1E76CF720011F839 /* MBLibrary.framework */,
+				7ACE8B6E1E76CF720011F839 /* MBLibraryTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -116,10 +205,12 @@
 				7A4539BF1E75CFC200AD0215 /* Sources */,
 				7A4539C01E75CFC200AD0215 /* Frameworks */,
 				7A4539C11E75CFC200AD0215 /* Resources */,
+				7ACE8B731E76D0D00011F839 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				7ACE8B721E76D0D00011F839 /* PBXTargetDependency */,
 			);
 			name = "Gym Tracker";
 			productName = "Gym Tracker";
@@ -154,6 +245,12 @@
 			mainGroup = 7A4539BA1E75CFC200AD0215;
 			productRefGroup = 7A4539C41E75CFC200AD0215 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 7ACE8B611E76CF710011F839 /* Products */;
+					ProjectRef = 7ACE8B601E76CF710011F839 /* MBLibrary.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				7A4539C21E75CFC200AD0215 /* Gym Tracker */,
@@ -161,12 +258,44 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXReferenceProxy section */
+		7ACE8B681E76CF720011F839 /* MBLibrary.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = MBLibrary.framework;
+			remoteRef = 7ACE8B671E76CF720011F839 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7ACE8B6A1E76CF720011F839 /* MBLibrary.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = MBLibrary.framework;
+			remoteRef = 7ACE8B691E76CF720011F839 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7ACE8B6C1E76CF720011F839 /* MBLibrary.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = MBLibrary.framework;
+			remoteRef = 7ACE8B6B1E76CF720011F839 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7ACE8B6E1E76CF720011F839 /* MBLibraryTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = MBLibraryTests.xctest;
+			remoteRef = 7ACE8B6D1E76CF720011F839 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
 /* Begin PBXResourcesBuildPhase section */
 		7A4539C11E75CFC200AD0215 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				7A4539D11E75CFC200AD0215 /* LaunchScreen.storyboard in Resources */,
+				7AC086F41E76D5F400E35F06 /* Localizable.strings in Resources */,
 				7A4539CE1E75CFC200AD0215 /* Assets.xcassets in Resources */,
 				7A4539CC1E75CFC200AD0215 /* Main.storyboard in Resources */,
 			);
@@ -179,18 +308,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7A4539E01E75D01600AD0215 /* Exercize.swift in Sources */,
-				7A4539E11E75D01600AD0215 /* ExercizeTVC.swift in Sources */,
+				7AC086ED1E76D3C200E35F06 /* DataManager.swift in Sources */,
 				7A86CCF61E75DE9B001E86DA /* Main.swift in Sources */,
-				7A4539E21E75D01600AD0215 /* GymTracker.xcdatamodeld in Sources */,
-				7A4539E41E75D01600AD0215 /* Workout.swift in Sources */,
-				7A4539DF1E75D01600AD0215 /* DataManager.swift in Sources */,
 				7A4539C71E75CFC200AD0215 /* AppDelegate.swift in Sources */,
-				7A4539E31E75D01600AD0215 /* RepsSet.swift in Sources */,
+				7AC086EF1E76D3C200E35F06 /* GymTracker.xcdatamodeld in Sources */,
+				7AC086F11E76D3C200E35F06 /* Workout.swift in Sources */,
+				7AC086EE1E76D3C200E35F06 /* Exercize.swift in Sources */,
+				7AC086F01E76D3C200E35F06 /* RepsSet.swift in Sources */,
+				7ACE8B751E76D16A0011F839 /* WorkoutListTVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		7ACE8B721E76D0D00011F839 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "MBLibrary iOS";
+			targetProxy = 7ACE8B711E76D0D00011F839 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		7A4539CA1E75CFC200AD0215 /* Main.storyboard */ = {
@@ -306,6 +443,7 @@
 		7A4539D61E75CFC200AD0215 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = C8D57YLUAC;
 				INFOPLIST_FILE = "Gym Tracker/Info.plist";
@@ -319,6 +457,7 @@
 		7A4539D71E75CFC200AD0215 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = C8D57YLUAC;
 				INFOPLIST_FILE = "Gym Tracker/Info.plist";
@@ -353,12 +492,12 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		7A4539DB1E75D01600AD0215 /* GymTracker.xcdatamodeld */ = {
+		7AC086E91E76D3C200E35F06 /* GymTracker.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				7A4539DC1E75D01600AD0215 /* GymTracker.xcdatamodel */,
+				7AC086EA1E76D3C200E35F06 /* GymTracker.xcdatamodel */,
 			);
-			currentVersion = 7A4539DC1E75D01600AD0215 /* GymTracker.xcdatamodel */;
+			currentVersion = 7AC086EA1E76D3C200E35F06 /* GymTracker.xcdatamodel */;
 			path = GymTracker.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
