@@ -1,5 +1,5 @@
 //
-//  Main.swift
+//  Main iOS & watchOS.swift
 //  Gym Tracker
 //
 //  Created by Marco Boschi on 12/03/2017.
@@ -12,4 +12,5 @@ let applicationDocumentsDirectory: URL = {
 	return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last!
 }()
 
-var dataManager = DataManager.getManager(withDelegate: nil)
+let dataManager = DataManager.getManager(withDelegate: nil)
+let timesSign = "×"

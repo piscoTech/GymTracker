@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MBLibrary
 
 class SingleFieldCell: UITableViewCell {
 
@@ -22,4 +23,49 @@ class SingleFieldCell: UITableViewCell {
 		}
 	}
 
+}
+
+class RepsSetCell: UITableViewCell, UITextFieldDelegate {
+	
+	@IBOutlet weak var repsCount: UITextField!
+	@IBOutlet weak var weight: UITextField!
+	
+	var set: RepsSet! {
+		didSet {
+			updateView()
+		}
+	}
+	
+	private func updateView() {
+		self.repsCount.text = set.reps > 0 ? "\(set.reps)" : ""
+		self.weight.text = set.weight > 0 ? set.weight.toString() : ""
+	}
+	
+	func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+		let check = "[^0-9\(textField == weight ? "\\\(decimalPoint)" : "")]"
+		
+		return string.range(of: check, options: .regularExpression) == nil
+	}
+	
+	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+		textField.resignFirstResponder()
+		
+		return true
+	}
+	
+	@IBAction func valueChanged(_ sender: UITextField) {
+		switch sender {
+		case repsCount:
+			set.set(reps: Int32(sender.text ?? "") ?? 0)
+		case weight:
+			set.set(weight: sender.text?.toDouble() ?? 0)
+		default:
+			fatalError("Unknown field")
+		}
+	}
+	
+	func textFieldDidEndEditing(_ textField: UITextField) {
+		updateView()
+	}
+	
 }

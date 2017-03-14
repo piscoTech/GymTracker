@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import MBLibrary
 
 @objc(RepsSet)
 class RepsSet: DataObject {
@@ -20,15 +21,15 @@ class RepsSet: DataObject {
 	
 	//ID and last modified date are properties of DataObject
 	
-	@NSManaged var exerize: Exercize
+	@NSManaged var exercize: Exercize
 	@NSManaged var order: Int32
 	
-	@NSManaged var reps: Int32
-	@NSManaged var weight: Double
+	@NSManaged private(set) var reps: Int32
+	@NSManaged private(set) var weight: Double
 	@NSManaged var rest: TimeInterval
 	
 	override var description: String {
-		return "I'm lazy now"
+		return "\(reps)\(timesSign)\(weight.toString())kg"
 	}
 	
 	override class func loadWithID(_ id: String) -> RepsSet? {
@@ -37,6 +38,18 @@ class RepsSet: DataObject {
 		req.predicate = pred
 		
 		return (dataManager.executeFetchRequest(req) ?? []).first
+	}
+	
+	var isValid: Bool {
+		return reps > 0
+	}
+	
+	func set(reps n: Int32) {
+		reps = max(n, 0)
+	}
+	
+	func set(weight w: Double) {
+		weight = max(w, 0).rounded(to: 0.5)
 	}
 	
 }

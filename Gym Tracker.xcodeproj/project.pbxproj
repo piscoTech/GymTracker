@@ -14,16 +14,16 @@
 		7A4539CC1E75CFC200AD0215 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7A4539CA1E75CFC200AD0215 /* Main.storyboard */; };
 		7A4539CE1E75CFC200AD0215 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7A4539CD1E75CFC200AD0215 /* Assets.xcassets */; };
 		7A4539D11E75CFC200AD0215 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7A4539CF1E75CFC200AD0215 /* LaunchScreen.storyboard */; };
-		7A86CCF61E75DE9B001E86DA /* Main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A86CCF51E75DE9B001E86DA /* Main.swift */; };
-		7AC086ED1E76D3C200E35F06 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AC086E71E76D3C200E35F06 /* DataManager.swift */; };
-		7AC086EE1E76D3C200E35F06 /* Exercize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AC086E81E76D3C200E35F06 /* Exercize.swift */; };
-		7AC086EF1E76D3C200E35F06 /* GymTracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7AC086E91E76D3C200E35F06 /* GymTracker.xcdatamodeld */; };
-		7AC086F01E76D3C200E35F06 /* RepsSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AC086EB1E76D3C200E35F06 /* RepsSet.swift */; };
-		7AC086F11E76D3C200E35F06 /* Workout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AC086EC1E76D3C200E35F06 /* Workout.swift */; };
 		7AC086F41E76D5F400E35F06 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7AC086F31E76D5F400E35F06 /* Localizable.strings */; };
 		7ACE8B6F1E76D0D00011F839 /* MBLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7ACE8B681E76CF720011F839 /* MBLibrary.framework */; };
 		7ACE8B701E76D0D00011F839 /* MBLibrary.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7ACE8B681E76CF720011F839 /* MBLibrary.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7ACE8B751E76D16A0011F839 /* WorkoutListTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ACE8B741E76D16A0011F839 /* WorkoutListTVC.swift */; };
+		7ADC03C01E78A187005BDC25 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADC03B91E78A187005BDC25 /* DataManager.swift */; };
+		7ADC03C11E78A187005BDC25 /* Exercize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADC03BA1E78A187005BDC25 /* Exercize.swift */; };
+		7ADC03C21E78A187005BDC25 /* GymTracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7ADC03BB1E78A187005BDC25 /* GymTracker.xcdatamodeld */; };
+		7ADC03C31E78A187005BDC25 /* Main iOS & watchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADC03BD1E78A187005BDC25 /* Main iOS & watchOS.swift */; };
+		7ADC03C41E78A187005BDC25 /* RepsSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADC03BE1E78A187005BDC25 /* RepsSet.swift */; };
+		7ADC03C51E78A187005BDC25 /* Workout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADC03BF1E78A187005BDC25 /* Workout.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -88,15 +88,15 @@
 		7A4539D01E75CFC200AD0215 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7A4539D21E75CFC200AD0215 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7A4539DA1E75D01600AD0215 /* ExercizeTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExercizeTVC.swift; sourceTree = "<group>"; };
-		7A86CCF51E75DE9B001E86DA /* Main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Main.swift; sourceTree = "<group>"; };
-		7AC086E71E76D3C200E35F06 /* DataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
-		7AC086E81E76D3C200E35F06 /* Exercize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Exercize.swift; sourceTree = "<group>"; };
-		7AC086EA1E76D3C200E35F06 /* GymTracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = GymTracker.xcdatamodel; sourceTree = "<group>"; };
-		7AC086EB1E76D3C200E35F06 /* RepsSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepsSet.swift; sourceTree = "<group>"; };
-		7AC086EC1E76D3C200E35F06 /* Workout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Workout.swift; sourceTree = "<group>"; };
 		7AC086F31E76D5F400E35F06 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		7ACE8B601E76CF710011F839 /* MBLibrary.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MBLibrary.xcodeproj; path = ../MBLibrary/MBLibrary.xcodeproj; sourceTree = "<group>"; };
 		7ACE8B741E76D16A0011F839 /* WorkoutListTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkoutListTVC.swift; sourceTree = "<group>"; };
+		7ADC03B91E78A187005BDC25 /* DataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		7ADC03BA1E78A187005BDC25 /* Exercize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Exercize.swift; sourceTree = "<group>"; };
+		7ADC03BC1E78A187005BDC25 /* GymTracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = GymTracker.xcdatamodel; sourceTree = "<group>"; };
+		7ADC03BD1E78A187005BDC25 /* Main iOS & watchOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Main iOS & watchOS.swift"; sourceTree = "<group>"; };
+		7ADC03BE1E78A187005BDC25 /* RepsSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepsSet.swift; sourceTree = "<group>"; };
+		7ADC03BF1E78A187005BDC25 /* Workout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Workout.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,7 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				7ACE8B601E76CF710011F839 /* MBLibrary.xcodeproj */,
-				7AC086E61E76D3C200E35F06 /* Data Model */,
+				7ADC03B81E78A187005BDC25 /* Shared */,
 				7A4539C51E75CFC200AD0215 /* Gym Tracker */,
 				7A4539C41E75CFC200AD0215 /* Products */,
 			);
@@ -136,7 +136,6 @@
 				7A86CCE91E75DB40001E86DA /* Controller */,
 				7A86CCEA1E75DB94001E86DA /* View */,
 				7A4539C61E75CFC200AD0215 /* AppDelegate.swift */,
-				7A86CCF51E75DE9B001E86DA /* Main.swift */,
 				7A4539CD1E75CFC200AD0215 /* Assets.xcassets */,
 				7A4539CF1E75CFC200AD0215 /* LaunchScreen.storyboard */,
 				7AC086F31E76D5F400E35F06 /* Localizable.strings */,
@@ -171,18 +170,6 @@
 			name = View;
 			sourceTree = "<group>";
 		};
-		7AC086E61E76D3C200E35F06 /* Data Model */ = {
-			isa = PBXGroup;
-			children = (
-				7AC086E71E76D3C200E35F06 /* DataManager.swift */,
-				7AC086EC1E76D3C200E35F06 /* Workout.swift */,
-				7AC086E81E76D3C200E35F06 /* Exercize.swift */,
-				7AC086EB1E76D3C200E35F06 /* RepsSet.swift */,
-				7AC086E91E76D3C200E35F06 /* GymTracker.xcdatamodeld */,
-			);
-			path = "Data Model";
-			sourceTree = "<group>";
-		};
 		7AC086F21E76D5BE00E35F06 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -200,6 +187,27 @@
 				7ACE8B6E1E76CF720011F839 /* MBLibraryTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		7ADC03B81E78A187005BDC25 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				7ADC03C61E78A193005BDC25 /* Model */,
+				7ADC03BD1E78A187005BDC25 /* Main iOS & watchOS.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		7ADC03C61E78A193005BDC25 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				7ADC03B91E78A187005BDC25 /* DataManager.swift */,
+				7ADC03BF1E78A187005BDC25 /* Workout.swift */,
+				7ADC03BA1E78A187005BDC25 /* Exercize.swift */,
+				7ADC03BE1E78A187005BDC25 /* RepsSet.swift */,
+				7ADC03BB1E78A187005BDC25 /* GymTracker.xcdatamodeld */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -315,16 +323,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7AC086ED1E76D3C200E35F06 /* DataManager.swift in Sources */,
-				7A86CCF61E75DE9B001E86DA /* Main.swift in Sources */,
+				7ADC03C31E78A187005BDC25 /* Main iOS & watchOS.swift in Sources */,
+				7ADC03C21E78A187005BDC25 /* GymTracker.xcdatamodeld in Sources */,
 				7A231D861E76FDBA0088D7DC /* WorkoutTVC.swift in Sources */,
+				7ADC03C01E78A187005BDC25 /* DataManager.swift in Sources */,
+				7ADC03C41E78A187005BDC25 /* RepsSet.swift in Sources */,
 				7A4539C71E75CFC200AD0215 /* AppDelegate.swift in Sources */,
-				7AC086EF1E76D3C200E35F06 /* GymTracker.xcdatamodeld in Sources */,
-				7AC086F11E76D3C200E35F06 /* Workout.swift in Sources */,
+				7ADC03C51E78A187005BDC25 /* Workout.swift in Sources */,
 				7A231D8B1E76FFED0088D7DC /* TableView Cells.swift in Sources */,
-				7AC086EE1E76D3C200E35F06 /* Exercize.swift in Sources */,
-				7AC086F01E76D3C200E35F06 /* RepsSet.swift in Sources */,
 				7A231D8C1E770CF20088D7DC /* ExercizeTVC.swift in Sources */,
+				7ADC03C11E78A187005BDC25 /* Exercize.swift in Sources */,
 				7ACE8B751E76D16A0011F839 /* WorkoutListTVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -502,12 +510,12 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		7AC086E91E76D3C200E35F06 /* GymTracker.xcdatamodeld */ = {
+		7ADC03BB1E78A187005BDC25 /* GymTracker.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				7AC086EA1E76D3C200E35F06 /* GymTracker.xcdatamodel */,
+				7ADC03BC1E78A187005BDC25 /* GymTracker.xcdatamodel */,
 			);
-			currentVersion = 7AC086EA1E76D3C200E35F06 /* GymTracker.xcdatamodel */;
+			currentVersion = 7ADC03BC1E78A187005BDC25 /* GymTracker.xcdatamodel */;
 			path = GymTracker.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

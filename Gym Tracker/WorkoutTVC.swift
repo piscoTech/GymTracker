@@ -100,7 +100,8 @@ class WorkoutTableViewController: UITableViewController {
 				fatalError("I'm lazy now")
 			} else {
 				let cell = tableView.dequeueReusableCell(withIdentifier: "exercize", for: indexPath)
-				updateExercizeCell(cell, for: e)
+				cell.textLabel?.text = e.name
+				cell.detailTextLabel?.text = e.setsSummary
 				
 				return cell
 			}
@@ -112,11 +113,6 @@ class WorkoutTableViewController: UITableViewController {
 		}
     }
 	
-	private func updateExercizeCell(_ cell: UITableViewCell, for e: Exercize) {
-		cell.textLabel?.text = e.name
-		cell.detailTextLabel?.text = e.setsSummary
-	}
-	
 	// MARK: Editing
 	
 	func edit(_ sender: AnyObject) {
@@ -126,6 +122,14 @@ class WorkoutTableViewController: UITableViewController {
 	
 	func saveEdit(_ sender: AnyObject) {
 		// TODO: follow the whole workout relation tree and mark all entities as changed
+	}
+	
+	func markAsDeleted(_ obj: [DataObject]) {
+		guard editMode else {
+			return
+		}
+		
+		deletedEntities += obj
 	}
 	
 	@IBAction func newExercize(_ sender: AnyObject) {
@@ -139,6 +143,7 @@ class WorkoutTableViewController: UITableViewController {
 		}
 		
 		let e = dataManager.newExercize(for: workout)
+		e.name = "WIP"
 		e.isRest = false
 		
 		tableView.insertRows(at: [IndexPath(row: Int(e.order), section: 1)], with: .automatic)
@@ -156,8 +161,8 @@ class WorkoutTableViewController: UITableViewController {
 		
 		if !keep {
 			removeExercize(e)
-		} else if let cell = tableView.cellForRow(at: IndexPath(row: Int(e.order), section: 1)) {
-			updateExercizeCell(cell, for: e)
+		} else {
+			tableView.reloadRows(at: [IndexPath(row: Int(e.order), section: 1)], with: .none)
 		}
 		
 		print(workout.exercizeList)

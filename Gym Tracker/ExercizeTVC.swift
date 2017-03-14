@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MBLibrary
 
 class ExercizeTableViewController: UITableViewController { //, UIPickerViewDelegate, UIPickerViewDataSource {
 	
@@ -16,15 +17,109 @@ class ExercizeTableViewController: UITableViewController { //, UIPickerViewDeleg
 
     override func viewDidLoad() {
         super.viewDidLoad()
+		
+		if exercize.sets.count == 0 {
+			//This can only appen if it's a new exercize
+			newSet(self)
+		}
     }
+	
+	override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+		
+		if self.isMovingFromParentViewController {
+			delegate.updateExercize(exercize)
+		}
+	}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
 	
-	deinit {
-		delegate.updateExercize(exercize)
+	// MARK: - Table view data source
+	
+	override func numberOfSections(in tableView: UITableView) -> Int {
+		return 3
+	}
+	
+	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		switch section {
+		case 0:
+			return 1
+		case 1:
+			return exercize.sets.count * 2 - 1
+		case 2:
+			return 1
+		default:
+			return 0
+		}
+	}
+	
+	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+		switch indexPath.section {
+		case 0:
+			let cell = tableView.dequeueReusableCell(withIdentifier: "title", for: indexPath) as! SingleFieldCell
+			cell.isEnabled = !editMode
+			cell.textField.text = exercize.name
+			return cell
+		case 1:
+			let s = exercize.set(n: Int32(indexPath.row / 2))!
+			let isRest = indexPath.row % 2 == 1
+			if isRest {
+				return tableView.dequeueReusableCell(withIdentifier: "rest", for: indexPath)
+			} else {
+				let cell = tableView.dequeueReusableCell(withIdentifier: "set", for: indexPath) as! RepsSetCell
+				cell.set = s
+				
+				return cell
+			}
+		case 2:
+			return tableView.dequeueReusableCell(withIdentifier: "add", for: indexPath)
+		default:
+			fatalError("Unknown section")
+		}
+	}
+	
+	// MARK: Editing
+	
+	@IBAction func newSet(_ sender: AnyObject) {
+		guard editMode else {
+			return
+		}
+		
+		let s = dataManager.newSet(for: exercize)
+	
+		if let tmp = sender as? ExercizeTableViewController, tmp == self {
+			return
+		}
+		
+		insertSet(s)
+	}
+	
+	@IBAction func cloneSet(_ sender: AnyObject) {
+		guard editMode else {
+			return
+		}
+		
+		guard let last = exercize.setList.last else {
+			return
+		}
+		
+		let s = dataManager.newSet(for: exercize)
+		s.set(reps: last.reps)
+		s.set(weight: last.weight)
+		insertSet(s)
+	}
+	
+	private func insertSet(_ s: RepsSet) {
+		let count = tableView(tableView, numberOfRowsInSection: 1)
+		var rows = [IndexPath(row: count - 1, section: 1)]
+		if count > 1 {
+			rows.append(IndexPath(row: count - 2, section: 1))
+		}
+		
+		tableView.insertRows(at: rows, with: .automatic)
 	}
 	
 //	func numberOfComponents(in pickerView: UIPickerView) -> Int {

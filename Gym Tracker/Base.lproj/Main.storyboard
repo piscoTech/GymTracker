@@ -262,7 +262,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="title" id="lDJ-vv-ucJ">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="title" id="lDJ-vv-ucJ" customClass="SingleFieldCell" customModule="Gym_Tracker" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="56" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="lDJ-vv-ucJ" id="ZiN-UW-NDc">
@@ -283,8 +283,11 @@
                                         <constraint firstItem="T4J-jc-n9S" firstAttribute="top" secondItem="ZiN-UW-NDc" secondAttribute="top" id="ZBQ-gQ-gmW"/>
                                     </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="textField" destination="T4J-jc-n9S" id="h5I-eV-pff"/>
+                                </connections>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="set" id="TDU-AH-bgc">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="set" id="TDU-AH-bgc" customClass="RepsSetCell" customModule="Gym_Tracker" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="100" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="TDU-AH-bgc" id="MNJ-Ir-CsN">
@@ -302,6 +305,10 @@
                                             <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                             <textInputTraits key="textInputTraits"/>
+                                            <connections>
+                                                <action selector="valueChanged:" destination="TDU-AH-bgc" eventType="editingChanged" id="M1D-gM-wtc"/>
+                                                <outlet property="delegate" destination="TDU-AH-bgc" id="0EP-M1-iQ7"/>
+                                            </connections>
                                         </textField>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Weight" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0xY-0f-Fpg">
                                             <rect key="frame" x="171.5" y="0.0" width="54" height="43.5"/>
@@ -314,6 +321,10 @@
                                             <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                             <textInputTraits key="textInputTraits"/>
+                                            <connections>
+                                                <action selector="valueChanged:" destination="TDU-AH-bgc" eventType="editingChanged" id="oKE-CM-uVe"/>
+                                                <outlet property="delegate" destination="TDU-AH-bgc" id="tsW-m3-dqM"/>
+                                            </connections>
                                         </textField>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="kg" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iaf-7k-BF1">
                                             <rect key="frame" x="350.5" y="0.0" width="16.5" height="43.5"/>
@@ -342,6 +353,10 @@
                                         <constraint firstItem="KbO-Gi-L99" firstAttribute="leading" secondItem="MNJ-Ir-CsN" secondAttribute="leadingMargin" id="ynO-tU-zJb"/>
                                     </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="repsCount" destination="A9Z-PZ-PJL" id="7VH-iB-5Tp"/>
+                                    <outlet property="weight" destination="2Wp-4J-Vst" id="DcI-Hi-hGb"/>
+                                </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="rest" id="3V5-QJ-OFp">
                                 <rect key="frame" x="0.0" y="144" width="375" height="44"/>
@@ -409,11 +424,17 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="179.5" height="43.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <state key="normal" title="Add Set"/>
+                                                    <connections>
+                                                        <action selector="newSet:" destination="wnE-xT-JRS" eventType="touchUpInside" id="KWV-jl-kdd"/>
+                                                    </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UKq-3R-SrY">
                                                     <rect key="frame" x="179.5" y="0.0" width="179.5" height="43.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <state key="normal" title="Clone Last"/>
+                                                    <connections>
+                                                        <action selector="cloneSet:" destination="wnE-xT-JRS" eventType="touchUpInside" id="Z2u-V0-dvE"/>
+                                                    </connections>
                                                 </button>
                                             </subviews>
                                         </stackView>

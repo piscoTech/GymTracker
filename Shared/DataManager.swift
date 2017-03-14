@@ -180,6 +180,21 @@ class DataManager: NSObject {
 		return newE
 	}
 	
+	func newSet(for exercize: Exercize) -> RepsSet {
+		let context = localData.managedObjectContext
+		var newS: RepsSet!
+		context.performAndWait {
+			let e = NSEntityDescription.entity(forEntityName: RepsSet.objectType, in: context)!
+			newS = RepsSet(entity: e, insertInto: context)
+		}
+		
+		newS.id = newS.objectID.uriRepresentation().path
+		newS.order = Int32(exercize.sets.count)
+		newS.exercize = exercize
+		
+		return newS
+	}
+	
 //	
 //	func newTask() -> Task {
 //		let context = localData.managedObjectContext

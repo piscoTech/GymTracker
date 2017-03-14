@@ -56,14 +56,30 @@ class Exercize: DataObject {
 	}
 	
 	var setsSummary: String {
-		return "I'm lazy now"
+		return setList.map { $0.description }.joined(separator: ", ")
 	}
 	
 	///Checks all sets and remove invalid ones.
 	///- returns: A collection of removed sets.
 	func compactSets() -> [RepsSet] {
-		// TODO: Implement me
-		return []
+		return recalculateSetOrder(filterInvalid: true)
+	}
+	
+	@discardableResult private func recalculateSetOrder(filterInvalid filter: Bool = false) -> [RepsSet] {
+		var res = [RepsSet]()
+		var i: Int32 = 0
+		
+		for s in setList {
+			if s.isValid || !filter {
+				s.order = i
+				i += 1
+			} else {
+				res.append(s)
+				sets.remove(s)
+			}
+		}
+		
+		return res
 	}
 	
 }
