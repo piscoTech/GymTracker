@@ -59,6 +59,10 @@ class Exercize: DataObject {
 		return setList.map { $0.description }.joined(separator: ", ")
 	}
 	
+	func set(name: String) {
+		self.name = name.trimmingCharacters(in: .whitespacesAndNewlines)
+	}
+	
 	///Checks all sets and remove invalid ones.
 	///- returns: A collection of removed sets.
 	func compactSets() -> [RepsSet] {

@@ -9,7 +9,7 @@
 import UIKit
 import MBLibrary
 
-class ExercizeTableViewController: UITableViewController { //, UIPickerViewDelegate, UIPickerViewDataSource {
+class ExercizeTableViewController: UITableViewController, UITextFieldDelegate { //, UIPickerViewDelegate, UIPickerViewDataSource {
 	
 	var editMode = false
 	var exercize: Exercize!
@@ -60,7 +60,7 @@ class ExercizeTableViewController: UITableViewController { //, UIPickerViewDeleg
 		switch indexPath.section {
 		case 0:
 			let cell = tableView.dequeueReusableCell(withIdentifier: "title", for: indexPath) as! SingleFieldCell
-			cell.isEnabled = !editMode
+			cell.isEnabled = editMode
 			cell.textField.text = exercize.name
 			return cell
 		case 1:
@@ -120,6 +120,22 @@ class ExercizeTableViewController: UITableViewController { //, UIPickerViewDeleg
 		}
 		
 		tableView.insertRows(at: rows, with: .automatic)
+	}
+	
+	// MARK: - Edit name
+	
+	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+		textField.resignFirstResponder()
+		
+		return true
+	}
+	
+	@IBAction func nameChanged(_ sender: UITextField) {
+		exercize.set(name: sender.text ?? "")
+	}
+	
+	func textFieldDidEndEditing(_ textField: UITextField) {
+		textField.text = exercize.name ?? ""
 	}
 	
 //	func numberOfComponents(in pickerView: UIPickerView) -> Int {

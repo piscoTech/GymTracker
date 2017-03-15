@@ -66,6 +66,10 @@ class Workout: DataObject {
 		recalculateExercizeOrder()
 	}
 	
+	func set(name: String) {
+		self.name = name.trimmingCharacters(in: .whitespacesAndNewlines)
+	}
+	
 	private func recalculateExercizeOrder() {
 		var i: Int32 = 0
 		for e in exercizeList {

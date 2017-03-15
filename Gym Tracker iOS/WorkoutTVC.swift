@@ -8,7 +8,7 @@
 
 import UIKit
 
-class WorkoutTableViewController: UITableViewController {
+class WorkoutTableViewController: UITableViewController, UITextFieldDelegate {
 	
 	var workout: Workout!
 	var editMode = false
@@ -87,7 +87,7 @@ class WorkoutTableViewController: UITableViewController {
 		switch indexPath.section {
 		case 0:
 			let cell = tableView.dequeueReusableCell(withIdentifier: "title", for: indexPath) as! SingleFieldCell
-			cell.isEnabled = !editMode
+			cell.isEnabled = editMode
 			cell.textField.text = workout.name
 			return cell
 		case 1:
@@ -120,7 +120,9 @@ class WorkoutTableViewController: UITableViewController {
 		updateView()
 	}
 	
-	func saveEdit(_ sender: AnyObject) {
+	@IBAction func saveEdit(_ sender: AnyObject) {
+		print("Should save...")
+		
 		// TODO: follow the whole workout relation tree and mark all entities as changed
 	}
 	
@@ -143,14 +145,11 @@ class WorkoutTableViewController: UITableViewController {
 		}
 		
 		let e = dataManager.newExercize(for: workout)
-		e.name = "WIP"
 		e.isRest = false
 		
 		tableView.insertRows(at: [IndexPath(row: Int(e.order), section: 1)], with: .automatic)
 		tableView.endUpdates()
 		performSegue(withIdentifier: "exercizeDetail", sender: e)
-		
-		print(workout.exercizeList)
 	}
 	
 	func updateExercize(_ e: Exercize) {
@@ -165,7 +164,7 @@ class WorkoutTableViewController: UITableViewController {
 			tableView.reloadRows(at: [IndexPath(row: Int(e.order), section: 1)], with: .none)
 		}
 		
-		print(workout.exercizeList)
+		updateBtn()
 	}
 	
 	private func removeExercize(_ e: Exercize) {
@@ -183,6 +182,24 @@ class WorkoutTableViewController: UITableViewController {
 		}
 		
 		tableView.endUpdates()
+	}
+	
+	// MARK: - Edit name
+	
+	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+		textField.resignFirstResponder()
+		
+		return true
+	}
+	
+	@IBAction func nameChanged(_ sender: UITextField) {
+		workout.set(name: sender.text ?? "")
+		updateBtn()
+	}
+	
+	func textFieldDidEndEditing(_ textField: UITextField) {
+		textField.text = workout.name
+		updateBtn()
 	}
 
     /*
