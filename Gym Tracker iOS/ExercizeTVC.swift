@@ -9,7 +9,7 @@
 import UIKit
 import MBLibrary
 
-class ExercizeTableViewController: UITableViewController, UITextFieldDelegate { //, UIPickerViewDelegate, UIPickerViewDataSource {
+class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
 	
 	var editMode = false
 	var exercize: Exercize!
@@ -39,8 +39,20 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate { 
 	
 	// MARK: - Table view data source
 	
+	private enum SetCellType {
+		case reps, rest, picker
+	}
+	
 	override func numberOfSections(in tableView: UITableView) -> Int {
 		return 3
+	}
+	
+	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+		if indexPath.section == 1 && setCell(for: indexPath) == .picker {
+			return 150
+		}
+		
+		return UITableViewAutomaticDimension
 	}
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -48,7 +60,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate { 
 		case 0:
 			return 1
 		case 1:
-			return exercize.sets.count * 2 - 1
+			return exercize.sets.count * 2 - 1 + (editRest != nil ? 1 : 0)
 		case 2:
 			return 1
 		default:
@@ -64,13 +76,18 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate { 
 			cell.textField.text = exercize.name
 			return cell
 		case 1:
-			let s = exercize.set(n: Int32(indexPath.row / 2))!
-			let isRest = indexPath.row % 2 == 1
-			if isRest {
+			let s = exercize.set(n: setNumber(for: indexPath))!
+			switch setCell(for: indexPath) {
+			case .rest:
 				return tableView.dequeueReusableCell(withIdentifier: "rest", for: indexPath)
-			} else {
+			case .reps:
 				let cell = tableView.dequeueReusableCell(withIdentifier: "set", for: indexPath) as! RepsSetCell
 				cell.set = s
+				
+				return cell
+			case .picker:
+				let cell = tableView.dequeueReusableCell(withIdentifier: "restPicker", for: indexPath) as! RestPickerCell
+				cell.set(rest: s.rest)
 				
 				return cell
 			}
@@ -89,6 +106,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate { 
 		}
 		
 		let s = dataManager.newSet(for: exercize)
+		s.set(rest: 60)
 	
 		if let tmp = sender as? ExercizeTableViewController, tmp == self {
 			return
@@ -109,6 +127,8 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate { 
 		let s = dataManager.newSet(for: exercize)
 		s.set(reps: last.reps)
 		s.set(weight: last.weight)
+		// TODO: Improve rest time loading by using the one before last (if available)
+		s.set(rest: last.rest)
 		insertSet(s)
 	}
 	
@@ -138,94 +158,74 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate { 
 		textField.text = exercize.name ?? ""
 	}
 	
-//	func numberOfComponents(in pickerView: UIPickerView) -> Int {
-//		switch pickerView {
-//		case typePicker:
-//			return 1
-//		case restPicker:
-//			return 3
-//		case repPicker:
-//			return 3
-//		default:
-//			preconditionFailure("Unknown picker")
-//		}
-//	}
-//	
-//	func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-//		switch pickerView {
-//		case typePicker:
-//			return 2
-//		case restPicker:
-//			switch component {
-//			case 0:
-//				return 11
-//			case 1:
-//				return 1
-//			case 2:
-//				return 2
-//			default:
-//				preconditionFailure("Unknown picker component")
-//			}
-//		case repPicker:
-//			switch component {
-//			case 0:
-//				return 10
-//			case 1:
-//				return 1
-//			case 2:
-//				return 20
-//			default:
-//				preconditionFailure("Unknown picker component")
-//			}
-//		default:
-//			preconditionFailure("Unknown picker")
-//		}
-//	}
+	// MARK: - Edit rest
 	
-//	func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
-//		switch pickerView {
-//		case typePicker:
-//			return 1
-//		case restPicker:
-//			return 3
-//		case repPicker:
-//			return 3
-//		case weightPicker:
-//			return 2
-//		default:
-//			preconditionFailure("Unknown picker")
-//		}
-//	}
+	private var editRest: Int?
 	
-//	func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-//		switch pickerView {
-//		case typePicker:
-//			return ExercizeType(rawValue: row)?.description
-//		case restPicker:
-//			switch component {
-//			case 0:
-//				return "\(row)"
-//			case 1:
-//				return ":"
-//			case 2:
-//				return "\(row * 30)"
-//			default:
-//				preconditionFailure("Unknown picker component")
-//			}
-//		case repPicker:
-//			switch component {
-//			case 0:
-//				return "\(row + 1)"
-//			case 1:
-//				return "×"
-//			case 2:
-//				return "\(row + 1)"
-//			default:
-//				preconditionFailure("Unknown picker component")
-//			}
-//		default:
-//			preconditionFailure("Unknown picker")
-//		}
-//	}
+	private func setNumber(for i: IndexPath) -> Int32 {
+		var row = i.row
+		
+		if let r = editRest {
+			if (r + 1) * 2 == row {
+				return Int32(r)
+			} else if (r + 1) * 2 < row {
+				row -= 1
+			}
+		}
+		
+		return Int32(row / 2)
+	}
+	
+	private func setCell(for i: IndexPath) -> SetCellType {
+		var row = i.row
+		
+		if let r = editRest {
+			if (r + 1) * 2 == row {
+				return .picker
+			} else if (r + 1) * 2 < row {
+				row -= 1
+			}
+		}
+		
+		return row % 2 == 0 ? .reps : .rest
+	}
+	
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		tableView.deselectRow(at: indexPath, animated: true)
+		
+		guard indexPath.section == 1 && setCell(for: indexPath) == .rest else {
+			return
+		}
+		let setNum = setNumber(for: indexPath)
+		
+		tableView.beginUpdates()
+		
+		var onlyClose = false
+		if let r = editRest {
+			onlyClose = Int32(r) == setNum
+			tableView.deleteRows(at: [IndexPath(row: (r + 1) * 2, section: 1)], with: .automatic)
+		}
+		
+		if onlyClose {
+			editRest = nil
+		} else {
+			tableView.insertRows(at: [IndexPath(row: (Int(setNum) + 1) * 2, section: 1)], with: .automatic)
+			editRest = Int(setNum)
+		}
+		
+		tableView.endUpdates()
+	}
+	
+	func numberOfComponents(in pickerView: UIPickerView) -> Int {
+		return 1
+	}
+
+	func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+		return Int(ceil(maxRest / 30)) + 1
+	}
+	
+	func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+		return (TimeInterval(row) * 30).getDuration(hideHours: true)
+	}
 
 }

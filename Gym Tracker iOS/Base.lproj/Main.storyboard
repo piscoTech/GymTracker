@@ -212,7 +212,7 @@
                                     </constraints>
                                 </tableViewCellContentView>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="timer" rowHeight="150" id="Sps-m3-nIa">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="restPicker" rowHeight="150" id="Sps-m3-nIa" customClass="RestPickerCell" customModule="Gym_Tracker" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="320" width="375" height="150"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Sps-m3-nIa" id="QTu-95-YVR">
@@ -230,6 +230,9 @@
                                         <constraint firstItem="aQs-Jt-fMx" firstAttribute="top" secondItem="QTu-95-YVR" secondAttribute="top" id="zUM-BR-3bT"/>
                                     </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="picker" destination="aQs-Jt-fMx" id="eT8-ly-GGH"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <sections/>
@@ -403,7 +406,7 @@
                                     </constraints>
                                 </tableViewCellContentView>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="timer" rowHeight="150" id="t6M-3Y-CbA">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="restPicker" rowHeight="150" id="t6M-3Y-CbA" customClass="RestPickerCell" customModule="Gym_Tracker" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="188" width="375" height="150"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="t6M-3Y-CbA" id="Tec-VZ-cPD">
@@ -412,6 +415,10 @@
                                     <subviews>
                                         <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AdA-FG-QFB">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="149.5"/>
+                                            <connections>
+                                                <outlet property="dataSource" destination="wnE-xT-JRS" id="dDe-QL-6S3"/>
+                                                <outlet property="delegate" destination="wnE-xT-JRS" id="JGS-oR-UH2"/>
+                                            </connections>
                                         </pickerView>
                                     </subviews>
                                     <constraints>
@@ -421,6 +428,9 @@
                                         <constraint firstAttribute="trailing" secondItem="AdA-FG-QFB" secondAttribute="trailing" id="uMw-gT-Y8n"/>
                                     </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="picker" destination="AdA-FG-QFB" id="u1K-ML-06e"/>
+                                </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="add" id="TT0-RW-5jS">
                                 <rect key="frame" x="0.0" y="338" width="375" height="44"/>

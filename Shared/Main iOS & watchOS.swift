@@ -14,3 +14,4 @@ let applicationDocumentsDirectory: URL = {
 
 let dataManager = DataManager.getManager(withDelegate: nil)
 let timesSign = "×"
+let maxRest: TimeInterval = 5 * 60

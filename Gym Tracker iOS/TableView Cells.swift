@@ -69,3 +69,14 @@ class RepsSetCell: UITableViewCell, UITextFieldDelegate {
 	}
 	
 }
+
+class RestPickerCell: UITableViewCell {
+	
+	@IBOutlet weak var picker: UIPickerView!
+	var startsAtZero = true
+	
+	func set(rest: TimeInterval) {
+		picker.selectRow(Int(ceil(rest / 30) - (startsAtZero ? 0 : 1)), inComponent: 0, animated: false)
+	}
+	
+}

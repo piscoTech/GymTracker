@@ -26,7 +26,7 @@ class RepsSet: DataObject {
 	
 	@NSManaged private(set) var reps: Int32
 	@NSManaged private(set) var weight: Double
-	@NSManaged var rest: TimeInterval
+	@NSManaged private(set) var rest: TimeInterval
 	
 	override var description: String {
 		return "\(reps)\(timesSign)\(weight.toString())kg"
@@ -50,6 +50,10 @@ class RepsSet: DataObject {
 	
 	func set(weight w: Double) {
 		weight = max(w, 0).rounded(to: 0.5)
+	}
+	
+	func set(rest r: TimeInterval) {
+		rest = max(r, 0).rounded(to: 30)
 	}
 	
 }
