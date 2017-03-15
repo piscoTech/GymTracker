@@ -73,10 +73,15 @@ class RepsSetCell: UITableViewCell, UITextFieldDelegate {
 class RestPickerCell: UITableViewCell {
 	
 	@IBOutlet weak var picker: UIPickerView!
-	var startsAtZero = true
+	
+}
+
+class RestCell: UITableViewCell {
+	
+	@IBOutlet weak var rest: UILabel!
 	
 	func set(rest: TimeInterval) {
-		picker.selectRow(Int(ceil(rest / 30) - (startsAtZero ? 0 : 1)), inComponent: 0, animated: false)
+		self.rest.text = rest.getDuration(hideHours: true)
 	}
 	
 }

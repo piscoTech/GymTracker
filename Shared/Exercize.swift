@@ -24,10 +24,10 @@ class Exercize: DataObject {
 	@NSManaged var order: Int32
 	@NSManaged var isRest: Bool
 	
-	@NSManaged var name: String?
-	@NSManaged var rest: TimeInterval
+	@NSManaged private(set) var name: String?
+	@NSManaged private(set) var rest: TimeInterval
 	
-	@NSManaged var sets: Set<RepsSet>
+	@NSManaged private(set) var sets: Set<RepsSet>
 	
 	override var description: String {
 		return "N \(order): \(name) - \(sets.count) set(s) - \(setsSummary)"
@@ -39,12 +39,6 @@ class Exercize: DataObject {
 		req.predicate = pred
 		
 		return (dataManager.executeFetchRequest(req) ?? []).first
-	}
-	
-	var hasInvalidSets: Bool {
-		// TODO: check if all sets have reps count
-		
-		return false
 	}
 	
 	var setList: [RepsSet] {
@@ -67,6 +61,11 @@ class Exercize: DataObject {
 	///- returns: A collection of removed sets.
 	func compactSets() -> [RepsSet] {
 		return recalculateSetOrder(filterInvalid: true)
+	}
+	
+	func removeSet(_ s: RepsSet) {
+		sets.remove(s)
+		recalculateSetOrder()
 	}
 	
 	@discardableResult private func recalculateSetOrder(filterInvalid filter: Bool = false) -> [RepsSet] {

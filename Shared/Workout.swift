@@ -26,8 +26,8 @@ class Workout: DataObject {
 		return list
 	}
 	
-	@NSManaged var name: String
-	@NSManaged var exercizes: Set<Exercize>
+	@NSManaged private(set) var name: String
+	@NSManaged private(set) var exercizes: Set<Exercize>
 	
 	@NSManaged var archived: Bool
 	

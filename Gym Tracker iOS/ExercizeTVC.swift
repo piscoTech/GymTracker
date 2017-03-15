@@ -79,7 +79,10 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 			let s = exercize.set(n: setNumber(for: indexPath))!
 			switch setCell(for: indexPath) {
 			case .rest:
-				return tableView.dequeueReusableCell(withIdentifier: "rest", for: indexPath)
+				let cell = tableView.dequeueReusableCell(withIdentifier: "rest", for: indexPath) as! RestCell
+				cell.set(rest: s.rest)
+				
+				return cell
 			case .reps:
 				let cell = tableView.dequeueReusableCell(withIdentifier: "set", for: indexPath) as! RepsSetCell
 				cell.set = s
@@ -87,7 +90,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 				return cell
 			case .picker:
 				let cell = tableView.dequeueReusableCell(withIdentifier: "restPicker", for: indexPath) as! RestPickerCell
-				cell.set(rest: s.rest)
+				cell.picker.selectRow(Int(ceil(s.rest / 30)), inComponent: 0, animated: false)
 				
 				return cell
 			}
@@ -98,7 +101,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		}
 	}
 	
-	// MARK: Editing
+	// MARK: - Editing
 	
 	@IBAction func newSet(_ sender: AnyObject) {
 		guard editMode else {
@@ -120,14 +123,15 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 			return
 		}
 		
-		guard let last = exercize.setList.last else {
+		var setList = exercize.setList
+		guard let last = setList.popLast() else {
 			return
 		}
 		
 		let s = dataManager.newSet(for: exercize)
 		s.set(reps: last.reps)
 		s.set(weight: last.weight)
-		// TODO: Improve rest time loading by using the one before last (if available)
+		last.set(rest: setList.last?.rest ?? last.rest)
 		s.set(rest: last.rest)
 		insertSet(s)
 	}
@@ -140,6 +144,41 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		}
 		
 		tableView.insertRows(at: rows, with: .automatic)
+	}
+	
+	override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+		return indexPath.section == 1 && setCell(for: indexPath) == .reps
+	}
+	
+	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+		guard editingStyle == .delete else {
+			return
+		}
+		
+		let setN = setNumber(for: indexPath)
+		guard let set = exercize.set(n: setN) else {
+			return
+		}
+		
+		var remove = [indexPath]
+		var removeFade = [IndexPath]()
+		
+		if Int(setN) != exercize.sets.count - 1 {
+			remove.append(IndexPath(row: indexPath.row + 1, section: 1))
+		}
+		
+		if let rest = editRest, rest == Int(setN) {
+			editRest = nil
+			removeFade.append(IndexPath(row: indexPath.row + 2, section: 1))
+		}
+		
+		exercize.removeSet(set)
+		delegate.markAsDeleted([set])
+		
+		tableView.beginUpdates()
+		tableView.deleteRows(at: remove, with: .automatic)
+		tableView.deleteRows(at: removeFade, with: .fade)
+		tableView.endUpdates()
 	}
 	
 	// MARK: - Edit name
@@ -203,7 +242,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		var onlyClose = false
 		if let r = editRest {
 			onlyClose = Int32(r) == setNum
-			tableView.deleteRows(at: [IndexPath(row: (r + 1) * 2, section: 1)], with: .automatic)
+			tableView.deleteRows(at: [IndexPath(row: (r + 1) * 2, section: 1)], with: .fade)
 		}
 		
 		if onlyClose {
@@ -226,6 +265,15 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	
 	func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
 		return (TimeInterval(row) * 30).getDuration(hideHours: true)
+	}
+	
+	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+		guard let setN = editRest, let set = exercize.set(n: Int32(setN)) else {
+			return
+		}
+		
+		set.set(rest: TimeInterval(row) * 30)
+		tableView.reloadRows(at: [IndexPath(row: setN * 2 + 1, section: 1)], with: .none)
 	}
 
 }
