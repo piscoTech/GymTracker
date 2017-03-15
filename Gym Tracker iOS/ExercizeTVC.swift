@@ -14,6 +14,15 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	var editMode = false
 	var exercize: Exercize!
 	weak var delegate: WorkoutTableViewController!
+	
+	private var oldName: String? {
+		didSet {
+			if let val = oldName, val == "" {
+				oldName = nil
+			}
+		}
+	}
+	private let defaultName = NSLocalizedString("EXERCIZE", comment: "Exercize")
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,12 +31,17 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 			//This can only appen if it's a new exercize
 			newSet(self)
 		}
+		oldName = exercize.name
     }
 	
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 		
 		if self.isMovingFromParentViewController {
+			if exercize.name ?? "" == "" {
+				exercize.set(name: oldName ?? defaultName)
+			}
+			
 			delegate.updateExercize(exercize)
 		}
 	}
@@ -45,6 +59,14 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	
 	override func numberOfSections(in tableView: UITableView) -> Int {
 		return 3
+	}
+	
+	override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+		if editMode && section == 1 {
+			return NSLocalizedString("REMOVE_SET_TIP", comment: "Remove set")
+		}
+		
+		return nil
 	}
 	
 	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -155,19 +177,29 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 			return
 		}
 		
-		let setN = setNumber(for: indexPath)
-		guard let set = exercize.set(n: setN) else {
+		let setN = Int(setNumber(for: indexPath))
+		guard let set = exercize.set(n: Int32(setN)) else {
 			return
 		}
 		
 		var remove = [indexPath]
 		var removeFade = [IndexPath]()
 		
-		if Int(setN) != exercize.sets.count - 1 {
+		if setN != exercize.sets.count - 1 {
+			// Remove set rest row
 			remove.append(IndexPath(row: indexPath.row + 1, section: 1))
+		} else if setN != 0 {
+			// Remove previous (now last) set rest row
+			var offset = 1
+			if let rest = editRest, rest == setN - 1 {
+				editRest = nil
+				removeFade.append(IndexPath(row: indexPath.row - 1, section: 1))
+				offset += 1
+			}
+			remove.append(IndexPath(row: indexPath.row - offset, section: 1))
 		}
 		
-		if let rest = editRest, rest == Int(setN) {
+		if let rest = editRest, rest == setN {
 			editRest = nil
 			removeFade.append(IndexPath(row: indexPath.row + 2, section: 1))
 		}

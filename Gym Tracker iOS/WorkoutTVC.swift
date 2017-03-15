@@ -61,6 +61,22 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate {
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 3
     }
+	
+	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+		if section == 1 {
+			return NSLocalizedString("EXERCIZES", comment: "Exercizes")
+		}
+		
+		return nil
+	}
+	
+	override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+		if editMode && section == 1 {
+			return NSLocalizedString("REMOVE_EXERCIZE_TIP", comment: "Remove exercize")
+		}
+		
+		return nil
+	}
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		switch section {
@@ -74,14 +90,6 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate {
 			return 0
 		}
     }
-	
-	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-		if section == 1 {
-			return NSLocalizedString("EXERCIZES", comment: "Exercizes")
-		}
-		
-		return nil
-	}
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		switch indexPath.section {

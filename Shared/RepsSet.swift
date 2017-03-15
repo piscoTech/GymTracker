@@ -29,7 +29,7 @@ class RepsSet: DataObject {
 	@NSManaged private(set) var rest: TimeInterval
 	
 	override var description: String {
-		return "\(reps)\(timesSign)\(weight.toString())kg"
+		return "\(reps)" + (weight > 0 ? "\(timesSign)\(weight.toString())kg" : "")
 	}
 	
 	override class func loadWithID(_ id: String) -> RepsSet? {

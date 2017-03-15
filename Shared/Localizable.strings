@@ -9,3 +9,7 @@
 "WORKOUTS" = "Workouts";
 "ARCH_WORKOUTS" = "Archived Workouts";
 "EXERCIZES" = "Exercizes";
+"EXERCIZE" = "Exercize";
+
+"REMOVE_SET_TIP" = "Swipe left on a set to remove it.";
+"REMOVE_EXERCIZE_TIP" = "Swipe left on an exercize or a rest period to remove it.";
