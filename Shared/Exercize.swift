@@ -22,7 +22,7 @@ class Exercize: DataObject {
 	
 	@NSManaged var workout: Workout
 	@NSManaged var order: Int32
-	@NSManaged var isRest: Bool
+	@NSManaged private(set) var isRest: Bool
 	
 	@NSManaged private(set) var name: String?
 	@NSManaged private(set) var rest: TimeInterval
@@ -53,8 +53,16 @@ class Exercize: DataObject {
 		return setList.map { $0.description }.joined(separator: ", ")
 	}
 	
-	func set(name: String) {
-		self.name = name.trimmingCharacters(in: .whitespacesAndNewlines)
+	///Set the name of the exercize and configure it as an exercize.
+	func set(name: String?) {
+		self.isRest = false
+		self.name = name?.trimmingCharacters(in: .whitespacesAndNewlines)
+	}
+	
+	///Set the rest time of the exercize and configure it as rest period.
+	func set(rest r: TimeInterval) {
+		self.isRest = true
+		self.rest = max(r, 0).rounded(to: 30)
 	}
 	
 	///Checks all sets and remove invalid ones.

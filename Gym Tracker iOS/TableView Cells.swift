@@ -85,3 +85,9 @@ class RestCell: UITableViewCell {
 	}
 	
 }
+
+class WorkoutManageExercizeCell: UITableViewCell {
+	
+	@IBOutlet weak var reorderBtn: UIButton!
+	
+}

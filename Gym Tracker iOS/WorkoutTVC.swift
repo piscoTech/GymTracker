@@ -8,7 +8,7 @@
 
 import UIKit
 
-class WorkoutTableViewController: UITableViewController, UITextFieldDelegate {
+class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
 	
 	var workout: Workout!
 	var editMode = false
@@ -19,6 +19,8 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate {
 	private var editBtn: UIBarButtonItem!
 	
 	private var deletedEntities = [DataObject]()
+	private var reorderLbl = NSLocalizedString("REORDER_EXERCIZE", comment: "Reorder")
+	private var doneReorderLbl = NSLocalizedString("DONE_REORDER_EXERCIZE", comment: "Done Reorder")
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,6 +59,10 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate {
 	}
 
     // MARK: - Table view data source
+	
+	private enum ExercizeCellType {
+		case exercize, rest, picker
+	}
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 3
@@ -77,13 +83,21 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate {
 		
 		return nil
 	}
+	
+	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+		if indexPath.section == 1 && workout?.exercizes.count ?? 0 > 0 && exercizeCell(for: indexPath) == .picker {
+			return 150
+		}
+		
+		return UITableViewAutomaticDimension
+	}
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		switch section {
 		case 0:
 			return 1
 		case 1:
-			return max(workout.exercizes.count, 1)
+			return max(workout.exercizes.count, 1) + (editRest != nil ? 1 : 0)
 		case 2:
 			return editMode && !isNew ? 2 : 1
 		default:
@@ -103,25 +117,40 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate {
 				return tableView.dequeueReusableCell(withIdentifier: "noExercize", for: indexPath)
 			}
 			
-			let e = workout.exercize(n: Int32(indexPath.row))!
-			if e.isRest {
-				fatalError("I'm lazy now")
-			} else {
+			let e = workout.exercize(n: exercizeNumber(for: indexPath))!
+			switch exercizeCell(for: indexPath) {
+			case .rest:
+				let cell = tableView.dequeueReusableCell(withIdentifier: "rest", for: indexPath) as! RestCell
+				cell.set(rest: e.rest)
+				
+				return cell
+			case .exercize:
 				let cell = tableView.dequeueReusableCell(withIdentifier: "exercize", for: indexPath)
 				cell.textLabel?.text = e.name
 				cell.detailTextLabel?.text = e.setsSummary
 				
 				return cell
+			case .picker:
+				let cell = tableView.dequeueReusableCell(withIdentifier: "restPicker", for: indexPath) as! RestPickerCell
+				cell.picker.selectRow(Int(ceil(e.rest / 30) - 1), inComponent: 0, animated: false)
+				
+				return cell
 			}
 		case 2:
 			let id = editMode && indexPath.row == 0 ? "add" : "actions"
-			return tableView.dequeueReusableCell(withIdentifier: id, for: indexPath)
+			let cell = tableView.dequeueReusableCell(withIdentifier: id, for: indexPath)
+			
+			if id == "add" {
+				(cell as! WorkoutManageExercizeCell).reorderBtn.setTitle(self.isEditing ? doneReorderLbl : reorderLbl, for: [])
+			}
+			
+			return cell
 		default:
 			fatalError("Unknown section")
 		}
     }
 	
-	// MARK: Editing
+	// MARK: - Editing
 	
 	func edit(_ sender: AnyObject) {
 		editMode = true
@@ -153,7 +182,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate {
 		}
 		
 		let e = dataManager.newExercize(for: workout)
-		e.isRest = false
+		e.set(name: nil)
 		
 		tableView.insertRows(at: [IndexPath(row: Int(e.order), section: 1)], with: .automatic)
 		tableView.endUpdates()
@@ -176,7 +205,6 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate {
 	}
 	
 	private func removeExercize(_ e: Exercize) {
-		
 		let index = IndexPath(row: Int(e.order), section: 1)
 		// No need to also mark the sets as removed: if they are new there is no need to send them, else they will be deleted in cascade with the exercize.
 		deletedEntities.append(e)
@@ -187,6 +215,11 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate {
 		
 		if workout.exercizes.count == 0 {
 			tableView.insertRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
+		}
+		
+		if let rest = editRest, rest == Int(e.order) {
+			editRest = nil
+			tableView.deleteRows(at: [IndexPath(row: index.row + 1, section: 1)], with: .fade)
 		}
 		
 		tableView.endUpdates()
@@ -209,41 +242,162 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate {
 		textField.text = workout.name
 		updateBtn()
 	}
+	
+	// MARK: - Edit rest
+	
+	private var editRest: Int?
+	
+	private func exercizeNumber(for i: IndexPath) -> Int32 {
+		var row = i.row
+		
+		if let r = editRest {
+			if r + 1 == i.row {
+				return Int32(r)
+			} else if r + 1 < row {
+				row -= 1
+			}
+		}
+		
+		return Int32(i.row)
+	}
+	
+	private func exercizeCell(for i: IndexPath) -> ExercizeCellType {
+		var row = i.row
+		
+		if let r = editRest {
+			if r + 1 == row {
+				return .picker
+			} else if r + 1 < row {
+				row -= 1
+			}
+		}
+		
+		return workout.exercize(n: Int32(row))!.isRest ? .rest : .exercize
+	}
+	
+	@IBAction func newRest(_ sender: AnyObject) {
+		guard editMode else {
+			return
+		}
+		
+		tableView.beginUpdates()
+		if workout.exercizes.count == 0 {
+			tableView.deleteRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
+		}
+		
+		let r = dataManager.newExercize(for: workout)
+		r.set(rest: 4 * 60)
+		
+		tableView.insertRows(at: [IndexPath(row: Int(r.order), section: 1)], with: .automatic)
+		tableView.endUpdates()
+	}
+	
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		tableView.deselectRow(at: indexPath, animated: true)
+		
+		guard indexPath.section == 1 && exercizeCell(for: indexPath) == .rest else {
+			return
+		}
+		let exNum = exercizeNumber(for: indexPath)
+		
+		tableView.beginUpdates()
+		
+		var onlyClose = false
+		if let r = editRest {
+			onlyClose = Int32(r) == exNum
+			tableView.deleteRows(at: [IndexPath(row: r + 1, section: 1)], with: .fade)
+		}
+		
+		if onlyClose {
+			editRest = nil
+		} else {
+			tableView.insertRows(at: [IndexPath(row: Int(exNum) + 1, section: 1)], with: .automatic)
+			editRest = Int(exNum)
+		}
+		
+		tableView.endUpdates()
+	}
+	
+	func numberOfComponents(in pickerView: UIPickerView) -> Int {
+		return 1
+	}
+	
+	func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+		return Int(ceil(maxRest / 30))
+	}
+	
+	func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+		return (TimeInterval(row + 1) * 30).getDuration(hideHours: true)
+	}
+	
+	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+		guard let exN = editRest, let ex = workout.exercize(n: Int32(exN)) else {
+			return
+		}
+		
+		ex.set(rest: TimeInterval(row + 1) * 30)
+		tableView.reloadRows(at: [IndexPath(row: exN, section: 1)], with: .none)
+	}
+	
+	// MARK: - Delete rest & exercize
+	
+	override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+		return editMode && indexPath.section == 1 && workout.exercizes.count > 0 && exercizeCell(for: indexPath) != .picker
+	}
+	
+	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+		guard editingStyle == .delete else {
+			return
+		}
+		
+		let exN = Int(exercizeNumber(for: indexPath))
+		guard let e = workout.exercize(n: Int32(exN)) else {
+			return
+		}
+		
+		removeExercize(e)
+	}
+	
+	// MARK: - Reorder rest & exercize
+	
+	@IBAction func updateReorderMode(_ sender: AnyObject) {
+		guard editMode && workout.exercizes.count > 0 else {
+			return
+		}
+		
+		if let rest = editRest {
+			//Simulate tap on rest row to hide picker
+			self.tableView(tableView, didSelectRowAt: IndexPath(row: rest, section: 1))
+		}
+		
+		self.setEditing(!self.isEditing, animated: true)
+		tableView.reloadRows(at: [IndexPath(row: 0, section: 2)], with: .none)
+	}
 
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
+	override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+		return editMode && indexPath.section == 1 && workout.exercizes.count > 0 && exercizeCell(for: indexPath) != .picker
+	}
+	
+	override func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
+		if proposedDestinationIndexPath.section < 1 {
+			return IndexPath(row: 0, section: 1)
+		} else if proposedDestinationIndexPath.section > 1 {
+			return IndexPath(row: workout.exercizes.count - 1, section: 1)
+		}
+		
+		return proposedDestinationIndexPath
+	}
+	
+	override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
+		guard editMode && fromIndexPath.section == 1 && to.section == 1 && workout.exercizes.count > 0 else {
+			return
+		}
+		
+		workout.moveExercizeAt(number: fromIndexPath.row, to: to.row)
+		Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { _ in
+			self.tableView.reloadData()
+		}
+	}
 
     // MARK: - Navigation
 	

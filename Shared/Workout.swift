@@ -70,6 +70,19 @@ class Workout: DataObject {
 		self.name = name.trimmingCharacters(in: .whitespacesAndNewlines)
 	}
 	
+	func moveExercizeAt(number from: Int, to dest: Int) {
+		guard let e = exercize(n: Int32(from)), dest < exercizes.count else {
+			return
+		}
+
+		for tmp in exercizes.filter({ Int($0.order) >= dest }) {
+			tmp.order += 1
+		}
+		
+		e.order = Int32(dest)
+		recalculateExercizeOrder()
+	}
+	
 	private func recalculateExercizeOrder() {
 		var i: Int32 = 0
 		for e in exercizeList {

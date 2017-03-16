@@ -63,6 +63,10 @@ class DataObject: NSManagedObject {
 	@NSManaged fileprivate var modified: Date?
 	@NSManaged fileprivate var created: Date?
 	
+	override required init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
+		super.init(entity: entity, insertInto: context)
+	}
+	
 	fileprivate var isNew: Bool {
 		precondition(modified != nil && created != nil, "\(objectType) not saved")
 		
@@ -152,43 +156,36 @@ class DataManager: NSObject {
 		return result
 	}
 	
-	func newWorkout() -> Workout {
+	private func newObjectFor<T: DataObject>(_ obj: T.Type) -> T {
 		let context = localData.managedObjectContext
-		var newW: Workout!
+		var newObj: T!
 		context.performAndWait {
-			let e = NSEntityDescription.entity(forEntityName: Workout.objectType, in: context)!
-			newW = Workout(entity: e, insertInto: context)
+			let e = NSEntityDescription.entity(forEntityName: obj.objectType, in: context)!
+			newObj = T(entity: e, insertInto: context)
 		}
-
-		newW.id = newW.objectID.uriRepresentation().path
 		
-		return newW
+		newObj.id = newObj.objectID.uriRepresentation().path
+		newObj.created = nil
+		newObj.modified = nil
+		
+		return newObj
+	}
+	
+	func newWorkout() -> Workout {
+		return newObjectFor(Workout.self)
 	}
 	
 	func newExercize(for workout: Workout) -> Exercize {
-		let context = localData.managedObjectContext
-		var newE: Exercize!
-		context.performAndWait {
-			let e = NSEntityDescription.entity(forEntityName: Exercize.objectType, in: context)!
-			newE = Exercize(entity: e, insertInto: context)
-		}
-		
-		newE.id = newE.objectID.uriRepresentation().path
+		let newE = newObjectFor(Exercize.self)
 		newE.order = Int32(workout.exercizes.count)
 		newE.workout = workout
 		
 		return newE
 	}
 	
+	
 	func newSet(for exercize: Exercize) -> RepsSet {
-		let context = localData.managedObjectContext
-		var newS: RepsSet!
-		context.performAndWait {
-			let e = NSEntityDescription.entity(forEntityName: RepsSet.objectType, in: context)!
-			newS = RepsSet(entity: e, insertInto: context)
-		}
-		
-		newS.id = newS.objectID.uriRepresentation().path
+		let newS = newObjectFor(RepsSet.self)
 		newS.order = Int32(exercize.sets.count)
 		newS.exercize = exercize
 		
