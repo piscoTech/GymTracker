@@ -16,3 +16,5 @@
 
 "REORDER_EXERCIZE" = "Reorder";
 "DONE_REORDER_EXERCIZE" = "Done Reorder";
+
+"WORKOUT_SAVE_ERR" = "Cannot save workout";

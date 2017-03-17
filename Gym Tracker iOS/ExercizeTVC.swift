@@ -58,7 +58,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	}
 	
 	override func numberOfSections(in tableView: UITableView) -> Int {
-		return 3
+		return editMode ? 3 : 2
 	}
 	
 	override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
@@ -108,6 +108,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 			case .reps:
 				let cell = tableView.dequeueReusableCell(withIdentifier: "set", for: indexPath) as! RepsSetCell
 				cell.set = s
+				cell.isEnabled = editMode
 				
 				return cell
 			case .picker:
@@ -266,7 +267,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		tableView.deselectRow(at: indexPath, animated: true)
 		
-		guard indexPath.section == 1 && setCell(for: indexPath) == .rest else {
+		guard editMode && indexPath.section == 1 && setCell(for: indexPath) == .rest else {
 			return
 		}
 		let setNum = setNumber(for: indexPath)

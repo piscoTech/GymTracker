@@ -192,133 +192,39 @@ class DataManager: NSObject {
 		return newS
 	}
 	
-//	
-//	func newTask() -> Task {
-//		let context = localData.managedObjectContext
-//		var res: Task!
-//		
-//		context.performAndWait {
-//			let e = NSEntityDescription.entity(forEntityName: Task.objectType, in: context)!
-//			res = Task(entity: e, insertInto: context)
-//		}
-//		
-//		return res
-//	}
-//	func createTaskWithName(_ name: String, forProject p: Project) -> Task? {
-//		var name = name
-//		name = name.trimmingCharacters(in: .whitespacesAndNewlines)
-//		if name == "" {
-//			return nil
-//		}
-//		
-//		let context = localData.managedObjectContext
-//		let task = newTask()
-//		
-//		task.id = task.objectID.uriRepresentation().path
-//		task.created = Date().timeIntervalSince1970
-//		
-//		task.name = name
-//		task.project = p
-//		
-//		do {
-//			try context.save()
-//			
-//			if preferences.canUseiCloud {
-//				preferences.localObjectsToBeAdded(task)
-//				sync()
-//			}
-//			
-//			return task
-//		} catch {
-//			return nil
-//		}
-//	}
-//	
-//	func newSession() -> Session {
-//		let context = localData.managedObjectContext
-//		var res: Session!
-//		
-//		context.performAndWait {
-//			let e = NSEntityDescription.entity(forEntityName: Session.objectType, in: context)!
-//			res = Session(entity: e, insertInto: context)
-//		}
-//		
-//		return res
-//	}
-//	func createSessionStartingAt(_ start: TimeInterval, endingAt end: TimeInterval, forTask t: Task) -> Session? {
-//		if t.project.getActiveTask() != t || end <= start {
-//			return nil
-//		}
-//		
-//		let context = localData.managedObjectContext
-//		let sess = newSession()
-//		
-//		sess.id = sess.objectID.uriRepresentation().path
-//		
-//		sess.start = start
-//		sess.end = end
-//		
-//		sess.task = t
-//		
-//		do {
-//			try context.save()
-//			
-//			if preferences.canUseiCloud {
-//				preferences.localObjectsToBeAdded(sess)
-//				sync()
-//			}
-//			
-//			return sess
-//		} catch {
-//			return nil
-//		}
-//	}
-	
 	func discardAllChanges() {
 		localData.managedObjectContext.rollback()
 	}
 	
-	func persistChangesForObjects(_ obj: DataObject...) -> Bool { return persistChangesForObjects(obj) }
-	func persistChangesForObjects(_ obj: [DataObject]...) -> Bool {
-		let data = obj.reduce([DataObject]()) { $0 + $1 }
-		if data.count == 0 {
-			return true
-		}
-		
-		// TODO: set modified date to now and created date (if nil)
-		
-		do {
-			try localData.managedObjectContext.save()
-			
-			// TODO: send saved data to watch interface
-			
-			return true
-		} catch {
-			return false
-		}
-	}
-	
-	func deleteObjects(_ obj: DataObject...) -> Bool { return deleteObjects(obj) }
-	func deleteObjects(_ obj: [DataObject]...) -> Bool {
-		let data = obj.reduce([DataObject]()) { $0 + $1 }
-		if data.count == 0 {
-			return true
-		}
-		
+	func persistChangesForObjects(_ data: [DataObject], andDeleteObjects delete: [DataObject]) -> Bool {
 		let context = localData.managedObjectContext
-		let removedIDs = data.map { (r) -> CDRecordID in
+		let removedIDs = delete.map { (r) -> CDRecordID in
 			let id = r.recordID
 			context.delete(r)
 			return id
 		}
 		
+		let now = Date()
+		for obj in data {
+			if obj.created == nil {
+				obj.created = now
+			}
+			obj.modified = now
+		}
+		
 		do {
-			try localData.managedObjectContext.save()
+			try context.save()
 			
+			// TODO: send saved data to watch interface
 			// TODO: send removed data to watch interface
 			
 			return true
-		} catch {
+		} catch let error {
+			print(error.localizedDescription)
+			for e in (error as NSError).userInfo[NSDetailedErrorsKey] as? [NSError] ?? [] {
+				print(e.localizedDescription)
+			}
+			
 			return false
 		}
 	}

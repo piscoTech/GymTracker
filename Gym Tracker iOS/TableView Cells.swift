@@ -36,6 +36,18 @@ class RepsSetCell: UITableViewCell, UITextFieldDelegate {
 		}
 	}
 	
+	var isEnabled: Bool {
+		get {
+			return repsCount.isEnabled
+		}
+		set {
+			repsCount.isEnabled = newValue
+			repsCount.isUserInteractionEnabled = newValue
+			weight.isEnabled = newValue
+			weight.isUserInteractionEnabled = newValue
+		}
+	}
+	
 	private func updateView() {
 		self.repsCount.text = set.reps > 0 ? "\(set.reps)" : ""
 		self.weight.text = set.weight > 0 ? set.weight.toString() : ""

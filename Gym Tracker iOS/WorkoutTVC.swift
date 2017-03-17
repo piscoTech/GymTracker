@@ -7,9 +7,11 @@
 //
 
 import UIKit
+import MBLibrary
 
 class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
 	
+	weak var delegate: WorkoutListTableViewController!
 	var workout: Workout!
 	var editMode = false
 	private var isNew = false
@@ -35,9 +37,9 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		
 		// The view is already in edit mode
 		if !editMode {
-			updateView()
+			updateButtons()
 		} else {
-			updateBtn()
+			updateDoneBtn()
 		}
     }
 
@@ -46,15 +48,12 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
         // Dispose of any resources that can be recreated.
     }
 	
-	private func updateView() {
-		fatalError("Add complete support")
-		
-		updateBtn()
-		// TODO: Set bar items
-		tableView.reloadData()
+	private func updateButtons() {
+		navigationItem.leftBarButtonItem = editMode ? cancelBtn : nil
+		navigationItem.rightBarButtonItem = editMode ? doneBtn : editBtn
 	}
 	
-	private func updateBtn() {
+	private func updateDoneBtn() {
 		doneBtn.isEnabled = workout.name.length > 0 && workout.hasExercizes
 	}
 
@@ -85,7 +84,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	}
 	
 	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		if indexPath.section == 1 && workout?.exercizes.count ?? 0 > 0 && exercizeCell(for: indexPath) == .picker {
+		if indexPath.section == 1 && workout.exercizes.count > 0 && exercizeCell(for: indexPath) == .picker {
 			return 150
 		}
 		
@@ -99,7 +98,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		case 1:
 			return max(workout.exercizes.count, 1) + (editRest != nil ? 1 : 0)
 		case 2:
-			return editMode && !isNew ? 2 : 1
+			return 1
 		default:
 			return 0
 		}
@@ -137,7 +136,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 				return cell
 			}
 		case 2:
-			let id = editMode && indexPath.row == 0 ? "add" : "actions"
+			let id = editMode ? "add" : "actions"
 			let cell = tableView.dequeueReusableCell(withIdentifier: id, for: indexPath)
 			
 			if id == "add" {
@@ -154,13 +153,72 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	
 	func edit(_ sender: AnyObject) {
 		editMode = true
-		updateView()
+		navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+		updateButtons()
+		
+		tableView.reloadSections([0, 1, 2], with: .automatic)
+	}
+	
+	private func exitEdit() {
+		editMode = false
+		deletedEntities.removeAll()
+		navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+		updateButtons()
+		
+		tableView.reloadSections([0, 1, 2], with: .automatic)
 	}
 	
 	@IBAction func saveEdit(_ sender: AnyObject) {
-		print("Should save...")
+		guard editMode else {
+			return
+		}
 		
-		// TODO: follow the whole workout relation tree and mark all entities as changed
+		// TODO: (If coming from other controllers) If is editing an existing workout restore title if missing, if no exercize cancel edit instead
+		
+		if let rest = editRest {
+			//Simulate tap on rest row to hide picker
+			self.tableView(tableView, didSelectRowAt: IndexPath(row: rest, section: 1))
+		}
+		
+		if workout.exercizes.count > 0 {
+			tableView.beginUpdates()
+			
+			let totExercizeRows = tableView.numberOfRows(inSection: 1)
+			let (s, e) = workout.compactExercizes()
+			deletedEntities += (s + e) as [DataObject]
+			var removeRows = [IndexPath]()
+			
+			for i in 0 ..< s.count {
+				removeRows.append(IndexPath(row: i, section: 1))
+			}
+			for i in totExercizeRows - e.count ..< totExercizeRows {
+				removeRows.append(IndexPath(row: i, section: 1))
+			}
+			
+			tableView.deleteRows(at: removeRows, with: .automatic)
+			tableView.endUpdates()
+			updateDoneBtn()
+		}
+		
+		guard doneBtn.isEnabled else {
+			return
+		}
+		
+		let changes = [workout as DataObject]
+			+ workout.exercizes.map { [$0 as DataObject] + Array($0.sets) as [DataObject] }.reduce([]) { $0 + $1 }
+		if dataManager.persistChangesForObjects(changes, andDeleteObjects: deletedEntities) {
+			if isNew {
+				delegate.updateWorkout(workout, how: .new)
+				self.dismiss(animated: true)
+			} else {
+				delegate.updateWorkout(workout, how: .edit)
+				exitEdit()
+			}
+		} else {
+			// TODO: If coming from other controllers cancel edit/new
+			
+			self.present(UIAlertController(simpleAlert: NSLocalizedString("WORKOUT_SAVE_ERR", comment: "Cannot save"), message: nil), animated: true)
+		}
 	}
 	
 	func markAsDeleted(_ obj: [DataObject]) {
@@ -201,7 +259,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 			tableView.reloadRows(at: [IndexPath(row: Int(e.order), section: 1)], with: .none)
 		}
 		
-		updateBtn()
+		updateDoneBtn()
 	}
 	
 	private func removeExercize(_ e: Exercize) {
@@ -235,12 +293,12 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	
 	@IBAction func nameChanged(_ sender: UITextField) {
 		workout.set(name: sender.text ?? "")
-		updateBtn()
+		updateDoneBtn()
 	}
 	
 	func textFieldDidEndEditing(_ textField: UITextField) {
 		textField.text = workout.name
-		updateBtn()
+		updateDoneBtn()
 	}
 	
 	// MARK: - Edit rest
@@ -407,9 +465,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		if isNew {
 			self.dismiss(animated: true)
 		} else {
-			editMode = false
-			deletedEntities.removeAll()
-			updateView()
+			exitEdit()
 		}
 	}
 

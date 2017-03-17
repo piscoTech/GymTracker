@@ -12,6 +12,11 @@ class WorkoutListTableViewController: UITableViewController {
 	
 	private var workouts = [Workout]()
 	private var archivedWorkouts = [Workout]()
+	private weak var workoutController: WorkoutTableViewController? {
+		didSet {
+			workoutController?.delegate = self
+		}
+	}
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,7 +31,7 @@ class WorkoutListTableViewController: UITableViewController {
         // Dispose of any resources that can be recreated.
     }
 	
-	private func updateView() {
+	private func updateView(autoReload: Bool = true) {
 		self.workouts.removeAll(keepingCapacity: true)
 		self.archivedWorkouts.removeAll(keepingCapacity: true)
 		
@@ -38,7 +43,9 @@ class WorkoutListTableViewController: UITableViewController {
 			}
 		}
 		
-		tableView.reloadData()
+		if autoReload {
+			tableView.reloadData()
+		}
 	}
 
     // MARK: - Table view data source
@@ -76,6 +83,8 @@ class WorkoutListTableViewController: UITableViewController {
 
 		let cell = tableView.dequeueReusableCell(withIdentifier: "workout", for: indexPath)
 		cell.textLabel?.text = (indexPath.section == 0 ? workouts : archivedWorkouts)[indexPath.row].name
+		let n = (indexPath.section == 0 ? workouts : archivedWorkouts)[indexPath.row].exercizes.filter { !$0.isRest }.count
+		cell.detailTextLabel?.text = "\(n) " + NSLocalizedString("EXERCIZE" + (n > 1 ? "S" : ""), comment: "exercize(s)").lowercased()
 
         return cell
     }
@@ -95,6 +104,47 @@ class WorkoutListTableViewController: UITableViewController {
         }    
     }
     */
+	
+	// MARK: - Update list
+	
+	enum WorkoutUpdateType {
+		case new, edit, delete, archive, unarchive
+	}
+	
+	func updateWorkout(_ w: Workout, how: WorkoutUpdateType, isManualUpdate: Bool = true) {
+		switch how {
+		case .new:
+			tableView.beginUpdates()
+			
+			if workouts.count == 0 {
+				tableView.deleteRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+			}
+			updateView(autoReload: false)
+			tableView.insertRows(at: [IndexPath(row: workouts.index(of: w)!, section: 0)], with: .automatic)
+			
+			tableView.endUpdates()
+			
+			if isManualUpdate {
+				// TODO: Auto-segue to workout
+			}
+		case .edit:
+			tableView.beginUpdates()
+			
+			var index = IndexPath(row: (w.archived ? archivedWorkouts : workouts).index(of: w)!, section: w.archived ? 1 : 0)
+			tableView.deleteRows(at: [index], with: .automatic)
+			updateView(autoReload: false)
+			index.row = (w.archived ? archivedWorkouts : workouts).index(of: w)!
+			tableView.insertRows(at: [index], with: .automatic)
+			
+			tableView.endUpdates()
+		case .delete:
+			fatalError()
+		case .archive:
+			fatalError()
+		case .unarchive:
+			fatalError()
+		}
+	}
 
     // MARK: - Navigation
 
@@ -106,7 +156,26 @@ class WorkoutListTableViewController: UITableViewController {
 		switch segueID {
 		case "newWorkout":
 			let dest = (segue.destination as! UINavigationController).viewControllers.first as! WorkoutTableViewController
+			workoutController = dest
 			dest.editMode = true
+		case "showWorkout":
+			let w: Workout
+			switch sender {
+			case let send as Workout:
+				w = send
+			case _ as UITableViewCell:
+				guard let index = tableView.indexPathForSelectedRow else {
+					fallthrough
+				}
+				
+				w = (index.section == 0 ? workouts : archivedWorkouts)[index.row]
+			default:
+				fatalError("Unable to determine workout")
+			}
+			
+			let dest = segue.destination as! WorkoutTableViewController
+			workoutController = dest
+			dest.workout = w
 		default:
 			break
 		}
