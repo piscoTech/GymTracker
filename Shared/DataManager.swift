@@ -8,9 +8,14 @@
 
 import CoreData
 import MBLibrary
+import WatchConnectivity
 
 func == (l: CDRecordID, r: CDRecordID) -> Bool {
 	return l.hashValue == r.hashValue
+}
+
+func == (l: WCObject, r: WCObject) -> Bool {
+	return l.id == r.id
 }
 
 struct CDRecordID: Hashable {
@@ -27,21 +32,51 @@ struct CDRecordID: Hashable {
 		id = obj.id
 	}
 	
-//	private init?(type: String, id: String) {
-//		self.type = type
-//		self.id = id
-//		
-//		if type == "" || id == "" {
-//			return nil
-//		}
-//	}
-	
-	func getObject() -> DataObject? {
-		if let objType = NSClassFromString(type) as? DataObject.Type {
-			return objType.loadWithID(id)
+	init?(wcRepresentation d: [String]) {
+		guard d.count == 2 else {
+			return nil
 		}
 		
-		return nil
+		self.init(type: d[0], id: d[1])
+	}
+	
+	private init?(type: String, id: String) {
+		self.type = type
+		self.id = id
+		
+		if type == "" || id == "" {
+			return nil
+		}
+	}
+	
+	var wcRepresentation: [String] {
+		return [ type, id]
+	}
+	
+	fileprivate func getType() -> DataObject.Type? {
+		return NSClassFromString(type) as? DataObject.Type
+	}
+	
+	func getObject() -> DataObject? {
+		return getType()?.loadWithID(id)
+	}
+	
+	static func encodeArray(_ ar: [CDRecordID]) -> [[String]] {
+		return ar.map { [$0.type, $0.id] }
+	}
+	
+	static func decodeArray(_ ar: [[String]]) -> [CDRecordID] {
+		var res = [CDRecordID]()
+		
+		for el in ar {
+			if el.count == 2 {
+				if let id = CDRecordID(type: el[0], id: el[1]) {
+					res.append(id)
+				}
+			}
+		}
+		
+		return res
 	}
 	
 }
@@ -60,8 +95,11 @@ class DataObject: NSManagedObject {
 	}
 	
 	@NSManaged fileprivate var id: String
-	@NSManaged fileprivate var modified: Date?
 	@NSManaged fileprivate var created: Date?
+	@NSManaged fileprivate var modified: Date?
+	
+	fileprivate static let createdKey = "created"
+	fileprivate static let modifiedKey = "modified"
 	
 	override required init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
 		super.init(entity: entity, insertInto: context)
@@ -80,7 +118,103 @@ class DataObject: NSManagedObject {
 	}
 	
 	class func loadWithID(_ id: String) -> DataObject? {
-		return nil
+		fatalError("Abstarct method not implemented")
+	}
+	
+	var wcObject: WCObject? {
+		let obj = WCObject(id: self.recordID)
+		
+		guard let c = created, let m = modified else {
+			return nil
+		}
+		
+		obj[DataObject.createdKey] = c
+		obj[DataObject.modifiedKey] = m
+		
+		return obj
+	}
+	
+	func mergeUpdatesFrom(_ src: WCObject) -> Bool {
+		guard src.id == self.recordID, let modified = src[DataObject.modifiedKey] as? Date else {
+			return false
+		}
+		
+		if self.modified != nil && self.modified! > modified {
+			// If local changes are more recent ignore the updates
+			return false
+		}
+		
+		self.modified = modified
+		
+		return true
+	}
+	
+}
+
+class WCObject: Equatable {
+	
+	private static let idKey = "WCObjectIdKey"
+	
+	private(set) var id: CDRecordID
+	private var data: [String: Any] = [:]
+	
+	fileprivate init(id: CDRecordID) {
+		self.id = id
+	}
+	
+	fileprivate convenience init?(wcRepresentation data: [String: Any]) {
+		guard let idData = data[WCObject.idKey] as? [String], let id = CDRecordID(wcRepresentation: idData) else {
+			return nil
+		}
+		
+		self.init(id: id)
+		
+		self.data = data
+		self.data.removeValue(forKey: WCObject.idKey)
+	}
+	
+	fileprivate var wcRepresentation: [String: Any] {
+		var res = self.data
+		res[WCObject.idKey] = id.wcRepresentation
+		
+		return res
+	}
+	
+	subscript(index: String) -> Any? {
+		get {
+			return data[index]
+		}
+		set {
+			data[index] = newValue
+		}
+	}
+	
+	var created: Date? {
+		return data[DataObject.createdKey] as? Date
+	}
+	
+	fileprivate var isNew: Bool? {
+		guard let created = self.created, let modified = data[DataObject.modifiedKey] as? Date else {
+			return nil
+		}
+		
+		return created == modified
+	}
+	
+	static func encodeArray(_ ar: [WCObject]) -> [[String: Any]] {
+		return ar.map { $0.wcRepresentation }
+	}
+	
+	static func decodeArray(_ ar: [[String: Any]]) -> [WCObject] {
+		var res = [WCObject]()
+		
+		for el in ar {
+			if let obj = WCObject(wcRepresentation: el) {
+				res.append(obj)
+			}
+		}
+		
+		return res
 	}
 	
 }
@@ -100,7 +234,7 @@ class DataManager: NSObject {
 	weak var delegate: DataManagerDelegate?
 	
 	fileprivate private(set) var localData: CoreDataStack
-//	fileprivate private(set) var watchInterface: WatchInterface
+	fileprivate private(set) var wcInterface: WatchConnectivityInterface
 	
 	// MARK: - Initialization
 	
@@ -126,13 +260,13 @@ class DataManager: NSObject {
 	
 	private init(delegate: DataManagerDelegate?) {
 		localData = CoreDataStack.getStack()
-//		ckInterface = CloudKitInterface.getInterface()
+		wcInterface = WatchConnectivityInterface.getInterface()
 		
 		super.init()
 		
 		self.delegate = delegate
 		localData.dataManager = self
-//		ckInterface.dataManager = self
+		wcInterface.dataManager = self
 		
 		// Use for cleanup during development
 //		preferences.addFromLocal = []
@@ -140,10 +274,32 @@ class DataManager: NSObject {
 //		preferences.deleteFromLocal = []
 
 		print("Data Manager initialized")
+		
+		if !preferences.initialSyncDone && wcInterface.hasCounterPart {
+			// TODO: Invoke initialization process (include cleaning pending local transfer and not persisted changes), only from iPhone
+		}
+		
+		// TODO: Check if no running workout and persist any pending changes
 	}
 	
 
 	// MARK: - Interaction
+	
+	var runningWorkout: CDRecordID? {
+		didSet {
+			// TODO: Save this in preferences alongside which device it is on
+			
+			if runningWorkout != nil && runningWorkout!.type != Workout.objectType {
+				runningWorkout = nil
+				
+				return
+			}
+			
+			if runningWorkout == nil {
+				wcInterface.persistPendingChanges()
+			}
+		}
+	}
 
 	func executeFetchRequest<T: NSFetchRequestResult>(_ request: NSFetchRequest<T>) -> [T]? {
 		var result: [T]? = nil
@@ -169,6 +325,22 @@ class DataManager: NSObject {
 		newObj.modified = nil
 		
 		return newObj
+	}
+	
+	private func newObjectFor(_ src: WCObject) -> DataObject? {
+		guard let created = src.created, let type = src.id.getType() else {
+			return nil
+		}
+		
+		let obj = newObjectFor(type)
+		obj.id = src.id.id
+		obj.created = created
+		
+		if obj.mergeUpdatesFrom(src) {
+			return obj
+		} else {
+			return nil
+		}
 	}
 	
 	func newWorkout() -> Workout {
@@ -215,8 +387,7 @@ class DataManager: NSObject {
 		do {
 			try context.save()
 			
-			// TODO: send saved data to watch interface
-			// TODO: send removed data to watch interface
+			wcInterface.sendUpdateForChangedObjects(data, andDeleted: removedIDs)
 			
 			return true
 		} catch let error {
@@ -231,7 +402,29 @@ class DataManager: NSObject {
 
 	// MARK: - Synchronization methods
 
-	fileprivate func persistCounterPartChanges(_ changes: Any) -> Bool {
+	fileprivate func saveCounterPartUpdatesForChangedObjects(_ changes: [WCObject], andDeleted deletion: [CDRecordID]) -> Bool {
+		// TODO: Make delegate terminate any editing action to remove/save any uncommitted changes
+		let context = localData.managedObjectContext
+		
+		// Delete objects
+		for d in deletion {
+			// If the object is missing it's been already deleted so no problem
+			if let obj = d.getObject() {
+				context.delete(obj)
+			}
+		}
+		
+		// Save changes
+		let order: [DataObject.Type] = [Workout.self, Exercize.self, RepsSet.self]
+		var pendingSave = changes
+		for type in order {
+			for obj in pendingSave {
+				// TODO: Merge changes
+				
+				pendingSave.removeElement(obj)
+			}
+		}
+		
 		return false
 	}
 
@@ -310,98 +503,158 @@ private class CoreDataStack {
 
 }
 
-//// MARK: - CloudKit Interface
-//
-//private class CloudKitInterface {
-//	
-//	weak var dataManager: DataManager!
-//	
-//	let container: CKContainer
-//	let database: CKDatabase
-//	
-//	// MARK: - Initialization
-//	
-//	private static var interface: CloudKitInterface?
-//	
-//	class func getInterface() -> CloudKitInterface {
-//		return CloudKitInterface.interface ?? {
-//			let i = CloudKitInterface()
-//			CloudKitInterface.interface = i
-//			return i
-//		}()
-//	}
-//	
-//	private init() {
-//		container = CKContainer(identifier: iCloudContainer)
-//		database = container.privateCloudDatabase
-//		
-//		print("CloudKit interface initialized")
-//	}
-//	
-//	enum CKInterfaceError: Error {
-//		case localObjectRemoved
-//		case remoteObjectRemoved
-//		case genericError
-//	}
-//	
-//	// MARK: - Interaction
-//	
-//	func retrieveRecordForObject(_ obj: DataObject, callback: @escaping (CKRecord?, CKInterfaceError?) -> Void) {
-//		database.fetch(withRecordID: obj.remoteRecordID!) { (r, err) in
-//			if let err = err as NSError? {
-//				if err.code == CKError.Code.unknownItem.rawValue && err.localizedDescription.range(of: "not found") != nil {
-//					callback(nil, .remoteObjectRemoved)
-//				}
-//			} else {
-//				callback(r, nil)
-//			}
-//		}
-//	}
-//	func retrieveRecordForObject(_ obj: CDRecordID, callback: @escaping (CKRecord?, CKInterfaceError?) -> Void) {
-//		let idFilter = NSPredicate(format: "id == %@", obj.id)
-//		let query = CKQuery(recordType: obj.type, predicate: idFilter)
-//		
-//		database.perform(query, inZoneWith: nil) { (records, err) in
-//			if let _ = err {
-//				callback(nil, .genericError)
-//			} else if let res = records?.first {
-//				callback(res, nil)
-//			} else {
-//				callback(nil, .remoteObjectRemoved)
-//			}
-//		}
-//	}
-//	
-//	///- returns: A `CKRecord` for the passed Core Data object with up-to-date information; if `create` is set to false `nil` will be returned if no record exists remotly.
-//	func recordForObject(_ obj: DataObject, createNew create: Bool, callback: @escaping (CKRecord?, CKInterfaceError?) -> Void) {
-//		let fillRecord = { (r: CKRecord) in
-//			if let filledRecord = obj.setDataForCloud(r) {
-//				callback(filledRecord, nil)
-//			} else {
-//				callback(nil, .genericError)
-//			}
-//		}
-//		
-//		if create {
-//			let r = CKRecord(recordType: obj.objectType)
-//			fillRecord(r)
-//		} else {
-//			retrieveRecordForObject(obj) { (r, err) in
-//				if let r = r {
-//					fillRecord(r)
-//				} else {
-//					callback(nil, err)
-//				}
-//			}
-//		}
-//	}
-//	///- returns: A `CKRecord` for the passed Core Data Record ID with up-to-date information; if `create` is set to false `nil` will be returned if no record exists remotly.
-//	func recordForObject(_ obj: CDRecordID, createNew create: Bool, callback: @escaping (CKRecord?, CKInterfaceError?) -> Void) {
-//		if let obj = obj.getObject() {
-//			recordForObject(obj, createNew: create, callback: callback)
-//		} else {
-//			callback(nil, .localObjectRemoved)
-//		}
-//	}
-//	
-//}
+// MARK: - Watch/iOS Interface
+
+private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
+	
+	weak var dataManager: DataManager!
+	
+	private var session: WCSession?
+	fileprivate var hasCounterPart: Bool {
+		return session != nil && session!.isPaired && session!.isWatchAppInstalled
+	}
+	private var canComunicate: Bool {
+		return session != nil && session!.activationState == .activated
+	}
+
+	// MARK: - Initialization
+	
+	private static var interface: WatchConnectivityInterface?
+	
+	class func getInterface() -> WatchConnectivityInterface {
+		return WatchConnectivityInterface.interface ?? {
+			let i = WatchConnectivityInterface()
+			WatchConnectivityInterface.interface = i
+			return i
+		}()
+	}
+
+	private override init() {
+		super.init()
+		
+		if WCSession.isSupported() {
+			let session = WCSession.default()
+			session.delegate = self
+			session.activate()
+		}
+		
+		print("Watch/iOS interface initialized")
+	}
+	
+	func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
+		// Use this method to manage watch switching
+		
+		// Send pending transfers
+		sendUpdateForChangedObjects([], andDeleted: [])
+	}
+	
+	func sessionDidBecomeInactive(_ session: WCSession) {
+		// Use this method to manage watch switching
+	}
+	
+	func sessionDidDeactivate(_ session: WCSession) {
+		session.activate()
+	}
+	
+	func sessionWatchStateDidChange(_ session: WCSession) {
+		if hasCounterPart {
+			// TODO: Invoke initialization process
+		}
+	}
+	
+	// MARK: - Interaction
+	
+	private let changesKey = "changes"
+	private let deletionKey = "deletion"
+	private let currentWorkoutKey = "curWorkout"
+	
+	fileprivate func sendUpdateForChangedObjects(_ data: [DataObject], andDeleted delete: [CDRecordID]) {
+		guard let sess = session, hasCounterPart else {
+			return
+		}
+		
+		//Prepend pending transfer to new ones
+		let changedObjects = preferences.transferLocal.map { $0.getObject() }.filter { $0 != nil }.map { $0! } + data
+		let deletedIDs = preferences.deleteLocal + delete
+		
+		guard changedObjects.count != 0 || deletedIDs.count != 0 else {
+			return
+		}
+		
+		guard canComunicate else {
+			preferences.transferLocal = changedObjects.map { $0.recordID }
+			preferences.deleteLocal = deletedIDs
+			
+			return
+		}
+		
+		let changedData = changedObjects.map { $0.wcObject }.filter { $0 != nil }.map { $0!.wcRepresentation }
+		let deletedData = deletedIDs.map { $0.wcRepresentation }
+		
+		let data = [ changesKey: changedData, deletionKey: deletedData ] as [String : Any]
+		
+		sess.transferUserInfo(data)
+		preferences.transferLocal = []
+		preferences.deleteLocal = []
+	}
+	
+	fileprivate func session(_ session: WCSession, didFinish userInfoTransfer: WCSessionUserInfoTransfer, error: Error?) {
+		guard error != nil else {
+			return
+		}
+		
+		Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
+			guard let sess = self.session, self.hasCounterPart, self.canComunicate else {
+				return
+			}
+			
+			sess.transferUserInfo(userInfoTransfer.userInfo)
+		}
+	}
+
+	fileprivate func session(_ session: WCSession, didReceiveUserInfo userInfo: [String : Any] = [:]) {
+		if let curWorkout = userInfo[currentWorkoutKey] {
+			// Pass something that's not an ID to signal that workout has ended
+			dataManager.runningWorkout = curWorkout as? CDRecordID
+			
+			// TODO: Proper support
+		}
+		
+		let changes = preferences.saveRemote + WCObject.decodeArray(userInfo[changesKey] as? [[String : Any]] ?? [])
+		let deletion = preferences.deleteRemote + CDRecordID.decodeArray(userInfo[deletionKey] as? [[String]] ?? [])
+		if dataManager.runningWorkout != nil {
+			preferences.saveRemote = changes
+			preferences.deleteRemote = deletion
+			
+			return
+		}
+		
+		if !dataManager.saveCounterPartUpdatesForChangedObjects(changes, andDeleted: deletion) {
+			preferences.saveRemote = changes
+			preferences.deleteRemote = deletion
+			
+			Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
+				self.persistPendingChanges()
+			}
+		} else {
+			preferences.saveRemote = []
+			preferences.deleteRemote = []
+		}
+	}
+	
+	fileprivate func persistPendingChanges() {
+		guard dataManager.runningWorkout == nil else {
+			return
+		}
+		
+		if !dataManager.saveCounterPartUpdatesForChangedObjects(preferences.saveRemote, andDeleted: preferences.deleteRemote) {
+			Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
+				self.persistPendingChanges()
+			}
+		} else {
+			preferences.saveRemote = []
+			preferences.deleteRemote = []
+		}
+	}
+	
+}

@@ -31,6 +31,9 @@ class Workout: DataObject {
 	
 	@NSManaged var archived: Bool
 	
+	private let nameKey = "name"
+	private let archivedKey = "archived"
+	
 	override var description: String {
 		return "\(name) - \(exercizes.count) exercize(s) - \(exercizes)"
 	}
@@ -110,6 +113,36 @@ class Workout: DataObject {
 			e.order = i
 			i += 1
 		}
+	}
+	
+	// MARK: - iOS/watchOS interface
+	
+	override var wcObject: WCObject? {
+		guard let obj = super.wcObject else {
+			return nil
+		}
+	
+		obj[nameKey] = name
+		obj[archivedKey] = archived
+		
+		// Exercizes themselves contain a reference to the workout
+		
+		return obj
+	}
+	
+	override func mergeUpdatesFrom(_ src: WCObject) -> Bool {
+		guard super.mergeUpdatesFrom(src) else {
+			return false
+		}
+		
+		guard let name = src[nameKey] as? String, name.length > 0, let archived = src[archivedKey] as? Bool else {
+			return false
+		}
+		
+		self.name = name
+		self.archived = archived
+		
+		return true
 	}
 
 }

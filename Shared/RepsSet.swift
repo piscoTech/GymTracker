@@ -28,6 +28,12 @@ class RepsSet: DataObject {
 	@NSManaged private(set) var weight: Double
 	@NSManaged private(set) var rest: TimeInterval
 	
+	private let exercizeKey = "exercize"
+	private let orderKey = "order"
+	private let repsKey = "reps"
+	private let weightKey = "weight"
+	private let restKey = "rest"
+	
 	override var description: String {
 		return "\(reps)" + (weight > 0 ? "\(timesSign)\(weight.toString())kg" : "")
 	}
@@ -54,6 +60,47 @@ class RepsSet: DataObject {
 	
 	func set(rest r: TimeInterval) {
 		rest = max(r, 0).rounded(to: 30)
+	}
+	
+	// MARK: - iOS/watchOS interface
+	
+	override var wcObject: WCObject? {
+		guard let obj = super.wcObject else {
+			return nil
+		}
+		
+		obj[exercizeKey] = exercize.recordID.wcRepresentation
+		obj[orderKey] = order
+		obj[repsKey] = reps
+		obj[weightKey] = weight
+		obj[restKey] = rest
+		
+		return obj
+	}
+	
+	override func mergeUpdatesFrom(_ src: WCObject) -> Bool {
+		guard super.mergeUpdatesFrom(src) else {
+			return false
+		}
+		
+		guard let eData = src[exercizeKey] as? [String], let exercize = CDRecordID(wcRepresentation: eData)?.getObject() as? Exercize else {
+			return false
+		}
+		
+		guard let order = src[orderKey] as? Int32,
+			let reps = src[repsKey] as? Int32,
+			let weight = src[weightKey] as? Double,
+			let rest = src[restKey] as? TimeInterval else {
+				return false
+		}
+		
+		self.exercize = exercize
+		self.order = order
+		self.reps = reps
+		self.weight = weight
+		self.rest = rest
+		
+		return true
 	}
 	
 }

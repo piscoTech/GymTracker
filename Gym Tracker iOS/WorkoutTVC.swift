@@ -165,6 +165,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		navigationController?.interactivePopGestureRecognizer?.isEnabled = true
 		updateButtons()
 		
+		self.setEditing(false, animated: true)
 		tableView.reloadSections([0, 1, 2], with: .automatic)
 	}
 	

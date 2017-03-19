@@ -29,6 +29,12 @@ class Exercize: DataObject {
 	
 	@NSManaged private(set) var sets: Set<RepsSet>
 	
+	private let workoutKey = "workout"
+	private let orderKey = "order"
+	private let isRestKey = "isRest"
+	private let nameKey = "name"
+	private let restKey = "rest"
+	
 	override var description: String {
 		return "N \(order): \(name) - \(sets.count) set(s) - \(setsSummary)"
 	}
@@ -91,6 +97,49 @@ class Exercize: DataObject {
 		}
 		
 		return res
+	}
+	
+	// MARK: - iOS/watchOS interface
+	
+	override var wcObject: WCObject? {
+		guard let obj = super.wcObject else {
+			return nil
+		}
+		
+		obj[workoutKey] = workout.recordID.wcRepresentation
+		obj[orderKey] = order
+		obj[isRestKey] = isRest
+		obj[nameKey] = name ?? ""
+		obj[restKey] = rest
+		
+		// Sets themselves contain a reference to the exercize
+		
+		return obj
+	}
+	
+	override func mergeUpdatesFrom(_ src: WCObject) -> Bool {
+		guard super.mergeUpdatesFrom(src) else {
+			return false
+		}
+		
+		guard let wData = src[workoutKey] as? [String], let workout = CDRecordID(wcRepresentation: wData)?.getObject() as? Workout else {
+			return false
+		}
+		
+		guard let order = src[orderKey] as? Int32,
+			let isRest = src[isRestKey] as? Bool,
+			let name = src[nameKey] as? String, (isRest || name.length > 0),
+			let rest = src[restKey] as? TimeInterval else {
+			return false
+		}
+		
+		self.workout = workout
+		self.order = order
+		self.isRest = isRest
+		self.name = name
+		self.rest = rest
+		
+		return true
 	}
 	
 }
