@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="f3a-Tn-603">
     <device id="watch42" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -10,31 +10,35 @@
     </dependencies>
     <scenes>
         <!--Workouts-->
-        <scene sceneID="aou-V4-d1y">
+        <scene sceneID="hO8-ot-HdR">
             <objects>
-                <controller identifier="workoutList" title="Workouts" id="AgC-eL-Hgc" customClass="InterfaceController" customModule="Gym_Tracker" customModuleProvider="target">
+                <controller identifier="workoutList" title="Workouts" id="f3a-Tn-603" customClass="WorkoutListController" customModule="Gym_Tracker_watchOS_Extension">
                     <items>
-                        <table alignment="left" id="oUO-PE-4DF">
+                        <table alignment="left" id="Bs2-Pu-6ym">
                             <items>
-                                <tableRow identifier="workout" id="4SK-8v-6Gz">
-                                    <group key="rootItem" width="1" height="0.0" alignment="left" layout="vertical" id="Pru-fP-2M5">
+                                <tableRow identifier="workout" id="EjV-nl-LHf" customClass="BasicDetailCell" customModule="Gym_Tracker_watchOS_Extension">
+                                    <group key="rootItem" width="1" height="0.0" alignment="left" layout="vertical" id="5zA-bJ-Yok">
                                         <items>
-                                            <label alignment="left" text="Label" numberOfLines="0" id="EYv-vG-A4t">
+                                            <label alignment="left" text="Label" numberOfLines="0" id="fkO-le-IEs">
                                                 <fontDescription key="font" style="UICTFontTextStyleBody"/>
                                             </label>
-                                            <label alignment="left" text="Label" id="y4p-bl-7R8">
+                                            <label alignment="left" text="Label" id="OUG-jG-MMG">
                                                 <fontDescription key="font" style="UICTFontTextStyleCaption2"/>
                                             </label>
                                         </items>
                                         <connections>
-                                            <segue destination="Vf8-6c-cLe" kind="push" id="HEr-0v-SIF"/>
+                                            <segue destination="Vf8-6c-cLe" kind="push" id="uOw-BL-k3Y"/>
                                         </connections>
                                     </group>
+                                    <connections>
+                                        <outlet property="detailLabel" destination="OUG-jG-MMG" id="fdz-Pb-5Xi"/>
+                                        <outlet property="titleLabel" destination="fkO-le-IEs" id="hpE-5F-7Jv"/>
+                                    </connections>
                                 </tableRow>
-                                <tableRow identifier="noWorkout" id="d6n-C8-uVC">
-                                    <group key="rootItem" width="1" alignment="left" id="ben-d9-Tal">
+                                <tableRow identifier="noWorkout" id="Dra-B0-KnY">
+                                    <group key="rootItem" width="1" alignment="left" id="cOX-TM-woz">
                                         <items>
-                                            <label alignment="center" verticalAlignment="center" text="No Workout" id="0Ru-q8-I6W">
+                                            <label alignment="center" verticalAlignment="center" text="No Workout" id="FwB-nf-4FQ">
                                                 <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                                             </label>
                                         </items>
@@ -42,12 +46,17 @@
                                 </tableRow>
                             </items>
                         </table>
-                        <label width="1" height="1" alignment="left" hidden="YES" text="Unlock and keep your phone in range to sync workouts" textAlignment="center" numberOfLines="0" id="QTW-y3-s9n">
+                        <label width="1" height="1" alignment="left" hidden="YES" text="Unlock and keep your phone in range to sync workouts" textAlignment="center" numberOfLines="0" id="YIE-QR-aWG">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
                     </items>
+                    <connections>
+                        <outlet property="table" destination="Bs2-Pu-6ym" id="pM1-6q-gZy"/>
+                        <outlet property="unlockMsg" destination="YIE-QR-aWG" id="3wo-f8-4d3"/>
+                    </connections>
                 </controller>
             </objects>
+            <point key="canvasLocation" x="117" y="134"/>
         </scene>
         <!--Workout-->
         <scene sceneID="Zdc-Zm-5g9">
@@ -59,7 +68,7 @@
                         </button>
                         <table alignment="left" id="itK-2w-s1f">
                             <items>
-                                <tableRow identifier="exercize" id="TqS-vF-PJI">
+                                <tableRow identifier="exercize" id="TqS-vF-PJI" customClass="BasicDetailCell" customModule="Gym_Tracker_watchOS_Extension">
                                     <group key="rootItem" width="1" height="0.0" alignment="left" layout="vertical" id="P8d-ix-mag">
                                         <items>
                                             <label alignment="left" text="Label" numberOfLines="0" id="c9m-oy-Yey">
@@ -70,6 +79,10 @@
                                             </label>
                                         </items>
                                     </group>
+                                    <connections>
+                                        <outlet property="detailLabel" destination="VXn-ev-WQp" id="HTD-D5-uMf"/>
+                                        <outlet property="titleLabel" destination="c9m-oy-Yey" id="8jK-D6-Nsc"/>
+                                    </connections>
                                 </tableRow>
                                 <tableRow identifier="rest" id="7MH-wF-y5l">
                                     <group key="rootItem" width="1" alignment="left" id="9op-lA-Tup">

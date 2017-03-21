@@ -453,9 +453,6 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		}
 		
 		workout.moveExercizeAt(number: fromIndexPath.row, to: to.row)
-		Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { _ in
-			self.tableView.reloadData()
-		}
 	}
 
     // MARK: - Navigation

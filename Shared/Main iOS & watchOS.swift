@@ -12,7 +12,13 @@ let applicationDocumentsDirectory: URL = {
 	return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last!
 }()
 
-let dataManager = DataManager.getManager(withDelegate: nil)
+let dataManager = DataManager.getManager()
 let preferences = Preferences.getPreferences()
 let timesSign = "×"
 let maxRest: TimeInterval = 5 * 60
+
+extension DispatchQueue {
+	
+	static let gymDatabase = DispatchQueue(label: "Marco-Boschi.ios.Gym-Tracker.database")
+	
+}

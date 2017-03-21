@@ -35,7 +35,8 @@ class Workout: DataObject {
 	private let archivedKey = "archived"
 	
 	override var description: String {
-		return "\(name) - \(exercizes.count) exercize(s) - \(exercizes)"
+		let n = exercizes.filter { !$0.isRest }.count
+		return "\(n) " + NSLocalizedString("EXERCIZE" + (n > 1 ? "S" : ""), comment: "exercize(s)").lowercased()
 	}
 	
 	override class func loadWithID(_ id: String) -> Workout? {

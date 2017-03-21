@@ -82,9 +82,9 @@ class WorkoutListTableViewController: UITableViewController {
 		}
 
 		let cell = tableView.dequeueReusableCell(withIdentifier: "workout", for: indexPath)
-		cell.textLabel?.text = (indexPath.section == 0 ? workouts : archivedWorkouts)[indexPath.row].name
-		let n = (indexPath.section == 0 ? workouts : archivedWorkouts)[indexPath.row].exercizes.filter { !$0.isRest }.count
-		cell.detailTextLabel?.text = "\(n) " + NSLocalizedString("EXERCIZE" + (n > 1 ? "S" : ""), comment: "exercize(s)").lowercased()
+		let w = (indexPath.section == 0 ? workouts : archivedWorkouts)[indexPath.row]
+		cell.textLabel?.text = w.name
+		cell.detailTextLabel?.text = w.description
 
         return cell
     }

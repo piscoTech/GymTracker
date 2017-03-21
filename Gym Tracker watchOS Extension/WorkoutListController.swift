@@ -43,8 +43,8 @@ class WorkoutListController: WKInterfaceController {
 			table.setHidden(true)
 			unlockMsg.setHidden(false)
 		} else {
-			table.setHidden(true)
-			unlockMsg.setHidden(false)
+			table.setHidden(false)
+			unlockMsg.setHidden(true)
 		}
 		
 		self.workouts.removeAll(keepingCapacity: true)
@@ -55,7 +55,20 @@ class WorkoutListController: WKInterfaceController {
 			}
 		}
 		
-//		tableView.reloadData()
+		if workouts.count > 0 {
+			table.setNumberOfRows(workouts.count, withRowType: "workout")
+			
+			for i in 0 ..< workouts.count {
+				guard let row = table.rowController(at: i) as? BasicDetailCell else {
+					continue
+				}
+				
+				row.titleLabel.setText(workouts[i].name)
+				row.detailLabel.setText(workouts[i].description)
+			}
+		} else {
+			table.setNumberOfRows(1, withRowType: "noWorkout")
+		}
 		
 		// TODO: if workout is deleted pop the controller
 		// workoutDetail?.refresh()

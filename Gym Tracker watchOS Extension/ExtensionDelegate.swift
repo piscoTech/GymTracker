@@ -15,7 +15,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
     func applicationDidFinishLaunching() {
         // Perform any final initialization of your application.
 		
-		DataManager.activate(withDelegate: self)
+		dataManager.delegate = self
     }
 
     func applicationDidBecomeActive() {
@@ -52,7 +52,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
     }
 	
 	func refreshData() {
-		workoutList.reloadData()
+		workoutList?.reloadData()
 	}
 
 }

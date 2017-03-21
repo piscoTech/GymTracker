@@ -154,6 +154,7 @@ class DataObject: NSManagedObject {
 class WCObject: Equatable {
 	
 	private static let idKey = "WCObjectIdKey"
+	private let initialDataKey = "isInitialData"
 	
 	private(set) var id: CDRecordID
 	private var data: [String: Any] = [:]
@@ -189,6 +190,10 @@ class WCObject: Equatable {
 		}
 	}
 	
+	fileprivate func setAsInitialData(_ val: Bool = true) {
+		data[initialDataKey] = val
+	}
+	
 	var created: Date? {
 		return data[DataObject.createdKey] as? Date
 	}
@@ -199,6 +204,10 @@ class WCObject: Equatable {
 		}
 		
 		return created == modified
+	}
+	
+	fileprivate var isInitialData: Bool {
+		return data[initialDataKey] as? Bool ?? false
 	}
 	
 	static func encodeArray(_ ar: [WCObject]) -> [[String: Any]] {
@@ -240,33 +249,19 @@ class DataManager: NSObject {
 	
 	private static var manager: DataManager?
 	
-	class func getManager(withDelegate delegate: DataManagerDelegate?) -> DataManager {
-		DataManager.manager?.delegate = delegate
-		
+	class func getManager() -> DataManager {
 		return DataManager.manager ?? {
-			let m = DataManager(delegate: delegate)
+			let m = DataManager()
 			DataManager.manager = m
 			return m
 		}()
 	}
 	
-	class func activate(withDelegate delegate: DataManagerDelegate?) {
-		let _ = getManager(withDelegate: delegate)
-	}
-	
-	override private convenience init() {
-		self.init(delegate: nil)
-	}
-	
-	private init(delegate: DataManagerDelegate?) {
+	override private init() {
 		localData = CoreDataStack.getStack()
 		wcInterface = WatchConnectivityInterface.getInterface()
 		
 		super.init()
-		
-		self.delegate = delegate
-		localData.dataManager = self
-		wcInterface.dataManager = self
 		
 		// Use for cleanup during development
 //		preferences.addFromLocal = []
@@ -336,11 +331,7 @@ class DataManager: NSObject {
 		obj.id = src.id.id
 		obj.created = created
 		
-		if obj.mergeUpdatesFrom(src) {
-			return obj
-		} else {
-			return nil
-		}
+		return obj
 	}
 	
 	func newWorkout() -> Workout {
@@ -372,7 +363,9 @@ class DataManager: NSObject {
 		let context = localData.managedObjectContext
 		let removedIDs = delete.map { (r) -> CDRecordID in
 			let id = r.recordID
-			context.delete(r)
+			context.performAndWait {
+				context.delete(r)
+			}
 			return id
 		}
 		
@@ -384,26 +377,28 @@ class DataManager: NSObject {
 			obj.modified = now
 		}
 		
-		do {
-			try context.save()
-			
-			wcInterface.sendUpdateForChangedObjects(data, andDeleted: removedIDs)
-			
-			return true
-		} catch let error {
-			print(error.localizedDescription)
-			for e in (error as NSError).userInfo[NSDetailedErrorsKey] as? [NSError] ?? [] {
-				print(e.localizedDescription)
+		var res = false
+		context.performAndWait {
+			do {
+				try context.save()
+				
+				self.wcInterface.sendUpdateForChangedObjects(data, andDeleted: removedIDs)
+				
+				res = true
+			} catch {
+				res = false
 			}
-			
-			return false
 		}
+		
+		return res
 	}
 
 	// MARK: - Synchronization methods
 	
+	private var isSaving = false
+	
 	fileprivate func initializeWatchDatabase() {
-		guard iOS else {
+		guard isiOS else {
 			return
 		}
 		
@@ -422,6 +417,10 @@ class DataManager: NSObject {
 	}
 
 	fileprivate func saveCounterPartUpdatesForChangedObjects(_ changes: [WCObject], andDeleted deletion: [CDRecordID]) -> Bool {
+		guard changes.count > 0 || deletion.count > 0 else {
+			return true
+		}
+		
 		// TODO: Make delegate terminate any editing action to remove/save any uncommitted changes
 		let context = localData.managedObjectContext
 		
@@ -434,6 +433,7 @@ class DataManager: NSObject {
 		}
 		
 		// Save changes
+		var res = true
 		let order: [DataObject.Type] = [Workout.self, Exercize.self, RepsSet.self]
 		var pendingSave = changes
 		for type in order {
@@ -442,34 +442,66 @@ class DataManager: NSObject {
 					continue
 				}
 				
-				guard let cdObj = obj.id.getObject() ?? ((obj.isNew ?? false) ? newObjectFor(obj) : nil) else {
+				let cdObj: DataObject
+				if let tmp = obj.id.getObject() {
+					cdObj = tmp
+				} else if obj.isNew ?? false || obj.isInitialData {
+					if let tmp = newObjectFor(obj) {
+						cdObj = tmp
+					} else {
+						res = false
+						break
+					}
+				} else {
 					continue
 				}
 				
-				if cdObj.mergeUpdatesFrom(obj) {
-					return false
+				if !cdObj.mergeUpdatesFrom(obj) {
+					res = false
+					break
 				}
 				pendingSave.removeElement(obj)
 			}
 		}
 		
-		delegate?.refreshData()
-		return false
+		if res {
+			context.performAndWait {
+				do {
+					try context.save()
+					
+					self.delegate?.refreshData()
+					res = true
+				} catch {
+					res = false
+				}
+			}
+		} else {
+			context.rollback()
+		}
+	
+		return res
 	}
 	
 	fileprivate func clearDatabase() -> Bool {
 		let context = localData.managedObjectContext
 		for w in Workout.getList() {
-			context.delete(w)
+			context.performAndWait {
+				context.delete(w)
+			}
 		}
 		
-		do {
-			try context.save()
+		var res = false
+		context.performAndWait {
+			do {
+				try context.save()
 			
-			return true
-		} catch {
-			return false
+				res = true
+			} catch {
+				res = false
+			}
 		}
+		
+		return res
 	}
 	
 	func askPhoneForData() -> Bool {
@@ -483,8 +515,6 @@ class DataManager: NSObject {
 private class CoreDataStack {
 	
 	let storeName = "GymTracker"
-	
-	weak var dataManager: DataManager!
 	
 	// MARK: - Initialization
 	
@@ -555,8 +585,6 @@ private class CoreDataStack {
 
 private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 	
-	weak var dataManager: DataManager!
-	
 	private var session: WCSession!
 	fileprivate var hasCounterPart: Bool {
 		var res = session != nil
@@ -586,7 +614,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 		super.init()
 		
 		if WCSession.isSupported() {
-			let session = WCSession.default()
+			session = WCSession.default()
 			session.delegate = self
 			session.activate()
 		}
@@ -594,8 +622,17 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 		print("Watch/iOS interface initialized")
 	}
 	
+	private var pendingBlock: [() -> Void] = []
+	
 	func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
+		print("Watch Connectivity Session activated")
+		
 		// Use this method to manage watch switching
+		
+		for b in pendingBlock {
+			b()
+		}
+		pendingBlock.removeAll()
 		
 		// Send pending transfers
 		sendUpdateForChangedObjects([], andDeleted: [])
@@ -645,7 +682,14 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 			return
 		}
 		
-		let changedData = changedObjects.map { $0.wcObject }.filter { $0 != nil }.map { $0!.wcRepresentation }
+		let changedData = changedObjects.map { (cdObj) -> WCObject? in
+			let wcObj = cdObj.wcObject
+			if markAsInitial {
+				wcObj?.setAsInitialData()
+			}
+			
+			return wcObj
+		}.filter { $0 != nil }.map { $0!.wcRepresentation }
 		let deletedData = deletedIDs.map { $0.wcRepresentation }
 		
 		var data = [ changesKey: changedData, deletionKey: deletedData ] as [String : Any]
@@ -663,12 +707,15 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 			return
 		}
 		
-		Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
-			guard let sess = self.session, self.hasCounterPart, self.canComunicate else {
-				return
+		DispatchQueue.main.async {
+			let timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
+				guard let sess = self.session, self.hasCounterPart, self.canComunicate else {
+					return
+				}
+				
+				sess.transferUserInfo(userInfoTransfer.userInfo)
 			}
-			
-			sess.transferUserInfo(userInfoTransfer.userInfo)
+			RunLoop.main.add(timer, forMode: .commonModes)
 		}
 	}
 
@@ -684,41 +731,50 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 			_ = dataManager.clearDatabase()
 		}
 		
-		let changes = preferences.saveRemote + WCObject.decodeArray(userInfo[changesKey] as? [[String : Any]] ?? [])
-		let deletion = preferences.deleteRemote + CDRecordID.decodeArray(userInfo[deletionKey] as? [[String]] ?? [])
-		if dataManager.runningWorkout != nil {
-			preferences.saveRemote = changes
-			preferences.deleteRemote = deletion
-			
-			return
-		}
-		
-		if !dataManager.saveCounterPartUpdatesForChangedObjects(changes, andDeleted: deletion) {
-			preferences.saveRemote = changes
-			preferences.deleteRemote = deletion
-			
-			Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
-				self.persistPendingChanges()
+		DispatchQueue.gymDatabase.async {
+			let changes = preferences.saveRemote + WCObject.decodeArray(userInfo[self.changesKey] as? [[String : Any]] ?? [])
+			let deletion = preferences.deleteRemote + CDRecordID.decodeArray(userInfo[self.deletionKey] as? [[String]] ?? [])
+			if dataManager.runningWorkout != nil {
+				preferences.saveRemote = changes
+				preferences.deleteRemote = deletion
+				
+				return
 			}
-		} else {
-			dataManager.delegate?.refreshData()
-			preferences.saveRemote = []
-			preferences.deleteRemote = []
+			
+			if !dataManager.saveCounterPartUpdatesForChangedObjects(changes, andDeleted: deletion) {
+				preferences.saveRemote = changes
+				preferences.deleteRemote = deletion
+				
+				DispatchQueue.main.async {
+					let timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
+						self.persistPendingChanges()
+					}
+					RunLoop.main.add(timer, forMode: .commonModes)
+				}
+			} else {
+				preferences.saveRemote = []
+				preferences.deleteRemote = []
+			}
 		}
 	}
 	
 	fileprivate func persistPendingChanges() {
-		guard dataManager.runningWorkout == nil else {
-			return
-		}
-		
-		if !dataManager.saveCounterPartUpdatesForChangedObjects(preferences.saveRemote, andDeleted: preferences.deleteRemote) {
-			Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
-				self.persistPendingChanges()
+		DispatchQueue.gymDatabase.async {
+			guard dataManager.runningWorkout == nil else {
+				return
 			}
-		} else {
-			preferences.saveRemote = []
-			preferences.deleteRemote = []
+			
+			if !dataManager.saveCounterPartUpdatesForChangedObjects(preferences.saveRemote, andDeleted: preferences.deleteRemote) {
+				DispatchQueue.main.async {
+					let timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
+						self.persistPendingChanges()
+					}
+					RunLoop.main.add(timer, forMode: .commonModes)
+				}
+			} else {
+				preferences.saveRemote = []
+				preferences.deleteRemote = []
+			}
 		}
 	}
 	
@@ -726,33 +782,59 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 	
 	private let askDataKey = "watchNeedsData"
 	private let isInitialDataKey = "isInitialData"
+	private let dataIncomingKey = "dataIncoming"
 	
-	///- returns: Whether or not the phone needs unlocking before initialization
+	///- returns: Whether or not the phone needs unlocking or be in range before initialization
 	@available(watchOS 3, *)
 	fileprivate func askPhoneForData() -> Bool {
+		guard canComunicate else {
+			pendingBlock.append({ _ = self.askPhoneForData() })
+			
+			return true
+		}
+		
 		if session.isReachable {
-			session.sendMessage([askDataKey: true], replyHandler: { _ in
-				preferences.initialSyncDone = true
-				self.dataManager.delegate?.refreshData()
-			}) { _ in
-				Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
+			let reschedule = {
+				let timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
 					_ = self.askPhoneForData()
+				}
+				RunLoop.main.add(timer, forMode: .commonModes)
+			}
+			
+			session.sendMessage([askDataKey: true], replyHandler: { reply in
+				guard let isOK = reply[self.dataIncomingKey] as? Bool, isOK else {
+					DispatchQueue.main.async {
+						reschedule()
+					}
+					
+					return
+				}
+				
+				preferences.initialSyncDone = true
+				dataManager.delegate?.refreshData()
+			}) { _ in
+				DispatchQueue.main.async {
+					reschedule()
 				}
 			}
 		}
 		
-		return session.isReachable || session.iOSDeviceNeedsUnlockAfterRebootForReachability
+		return !session.isReachable
 	}
 	
 	fileprivate func sessionReachabilityDidChange(_ session: WCSession) {
-		guard watchOS else {
+		guard iswatchOS else {
 			return
 		}
+		
+		_ = askPhoneForData()
 	}
 	
-	fileprivate func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
-		if let sendData = message[askDataKey] as? Bool, iOS, sendData {
+	fileprivate func session(_ session: WCSession, didReceiveMessage message: [String : Any], replyHandler: @escaping ([String : Any]) -> Void) {
+		if let sendData = message[askDataKey] as? Bool, isiOS, sendData {
 			dataManager.initializeWatchDatabase()
+			
+			replyHandler([dataIncomingKey: true])
 		}
 	}
 	
