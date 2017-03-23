@@ -136,14 +136,18 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 				return cell
 			}
 		case 2:
-			let id = editMode ? "add" : "actions"
-			let cell = tableView.dequeueReusableCell(withIdentifier: id, for: indexPath)
-			
-			if id == "add" {
-				(cell as! WorkoutManageExercizeCell).reorderBtn.setTitle(self.isEditing ? doneReorderLbl : reorderLbl, for: [])
+			if editMode {
+				let cell = tableView.dequeueReusableCell(withIdentifier: "add", for: indexPath) as! WorkoutManageExercizeCell
+				cell.reorderBtn.setTitle(self.isEditing ? doneReorderLbl : reorderLbl, for: [])
+				
+				return cell
+			} else {
+				let cell = tableView.dequeueReusableCell(withIdentifier: "actions", for: indexPath) as! WorkoutDeleteArchiveCell
+				let title = (workout.archived ? "UN" : "") + "ARCHIVE_WORKOUT"
+				cell.archiveBtn.setTitle(NSLocalizedString(title, comment: "(Un)archive"), for: [])
+				
+				return cell
 			}
-			
-			return cell
 		default:
 			fatalError("Unknown section")
 		}
@@ -211,10 +215,10 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 			+ workout.exercizes.map { [$0 as DataObject] + Array($0.sets) as [DataObject] }.reduce([]) { $0 + $1 }
 		if dataManager.persistChangesForObjects(changes, andDeleteObjects: deletedEntities) {
 			if isNew {
-				delegate.updateWorkout(workout, how: .new)
+				delegate.updateWorkout(workout, how: .new, wasArchived: false)
 				self.dismiss(animated: true)
 			} else {
-				delegate.updateWorkout(workout, how: .edit)
+				delegate.updateWorkout(workout, how: .edit, wasArchived: workout.archived)
 				exitEdit()
 			}
 		} else {
@@ -293,12 +297,14 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		
 		// TODO: Do only if no running workout
 		
-		let confirm = UIAlertController(title: NSLocalizedString("DELETE_WORKOUT", comment: "Del") + workout.name, message: NSLocalizedString("DELETE_WORKOUT_CONFIRM", comment: "Del confirm"), preferredStyle: .actionSheet)
+		let confirm = UIAlertController(title: NSLocalizedString("DELETE_WORKOUT", comment: "Del"), message: NSLocalizedString("DELETE_WORKOUT_CONFIRM", comment: "Del confirm") + workout.name + "?", preferredStyle: .actionSheet)
 		confirm.addAction(UIAlertAction(title: NSLocalizedString("DELETE", comment: "Del"), style: .destructive) { _ in
+			let archived = self.workout.archived
 			if dataManager.persistChangesForObjects([], andDeleteObjects: [self.workout]) {
-				self.delegate.updateWorkout(self.workout, how: .delete)
+				self.delegate.updateWorkout(self.workout, how: .delete, wasArchived: archived)
 				_ = self.navigationController?.popViewController(animated: true)
 			} else {
+				dataManager.discardAllChanges()
 				let alert = UIAlertController(simpleAlert: NSLocalizedString("DELETE_WORKOUT_FAIL", comment: "Err"), message: nil)
 				self.present(alert, animated: true)
 			}
@@ -306,6 +312,26 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		confirm.addAction(UIAlertAction(title: NSLocalizedString("CANCEL", comment: "Cancel"), style: .cancel))
 		
 		self.present(confirm, animated: true)
+	}
+	
+	@IBAction func archiveWorkout(_ sender: AnyObject) {
+		guard !editMode else {
+			return
+		}
+		
+		// TODO: Do only if no running workout
+		
+		let errTitle = NSLocalizedString((workout.archived ? "UN" : "") + "ARCHIVE_WORKOUT_FAIL", comment: "(Un)archive fail")
+		let archived = workout.archived
+		workout.archived = !archived
+		if dataManager.persistChangesForObjects([self.workout], andDeleteObjects: []) {
+			self.delegate.updateWorkout(self.workout, how: .archiveChange, wasArchived: archived)
+			tableView.reloadSections(IndexSet(integer: 2), with: .fade)
+		} else {
+			dataManager.discardAllChanges()
+			let alert = UIAlertController(simpleAlert: errTitle, message: nil)
+			self.present(alert, animated: true)
+		}
 	}
 	
 	// MARK: - Edit name

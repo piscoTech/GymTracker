@@ -88,30 +88,63 @@ class WorkoutListTableViewController: UITableViewController {
 
         return cell
     }
+	
+	// MARK: - Delete & (Un)archive
 
-	/*
-	// TODO: Support editing: remove and (un)archive)
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+		// TODO: check if no running workout
+		return true
+    }
+	
+	override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
 		
-    }
-
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
+		let del = UITableViewRowAction(style: .destructive, title: NSLocalizedString("DELETE", comment: "Del")) { _, row in
+			self.tableView.setEditing(false, animated: true)
+			// TODO: check if no running workout
+			
+			let workout = (row.section == 0 ? self.workouts : self.archivedWorkouts)[row.row]
+			let confirm = UIAlertController(title: NSLocalizedString("DELETE_WORKOUT", comment: "Del"), message: NSLocalizedString("DELETE_WORKOUT_CONFIRM", comment: "Del confirm") + workout.name + "?", preferredStyle: .actionSheet)
+			confirm.addAction(UIAlertAction(title: NSLocalizedString("DELETE", comment: "Del"), style: .destructive) { _ in
+				let archived = workout.archived
+				if dataManager.persistChangesForObjects([], andDeleteObjects: [workout]) {
+					self.updateWorkout(workout, how: .delete, wasArchived: archived)
+				} else {
+					dataManager.discardAllChanges()
+					let alert = UIAlertController(simpleAlert: NSLocalizedString("DELETE_WORKOUT_FAIL", comment: "Err"), message: nil)
+					self.present(alert, animated: true)
+				}
+			})
+			confirm.addAction(UIAlertAction(title: NSLocalizedString("CANCEL", comment: "Cancel"), style: .cancel))
+			
+			self.present(confirm, animated: true)
+		}
+		let archive = UITableViewRowAction(style: .normal, title: NSLocalizedString((indexPath.section == 1 ? "UN" : "") + "ARCHIVE_WORKOUT", comment: "(un)archive")) { _, row in
+			self.tableView.setEditing(false, animated: true)
+			// TODO: check if no running workout
+			
+			let workout = (row.section == 0 ? self.workouts : self.archivedWorkouts)[row.row]
+			let errTitle = NSLocalizedString((workout.archived ? "UN" : "") + "ARCHIVE_WORKOUT_FAIL", comment: "(Un)archive fail")
+			let archived = workout.archived
+			workout.archived = !archived
+			if dataManager.persistChangesForObjects([workout], andDeleteObjects: []) {
+				self.updateWorkout(workout, how: .archiveChange, wasArchived: archived)
+			} else {
+				dataManager.discardAllChanges()
+				let alert = UIAlertController(simpleAlert: errTitle, message: nil)
+				self.present(alert, animated: true)
+			}
+		}
+		
+		return [del, archive]
+	}
 	
 	// MARK: - Update list
 	
 	enum WorkoutUpdateType {
-		case new, edit, delete, archive, unarchive
+		case new, edit, delete, archiveChange
 	}
 	
-	func updateWorkout(_ w: Workout, how: WorkoutUpdateType, isManualUpdate: Bool = true) {
+	func updateWorkout(_ w: Workout, how: WorkoutUpdateType, wasArchived: Bool) {
 		switch how {
 		case .new:
 			tableView.beginUpdates()
@@ -124,23 +157,21 @@ class WorkoutListTableViewController: UITableViewController {
 			
 			tableView.endUpdates()
 			
-			if isManualUpdate {
-				// TODO: Auto-segue to workout
-			}
+			// TODO: Auto-segue to workout
 		case .edit:
 			tableView.beginUpdates()
 			
-			var index = IndexPath(row: (w.archived ? archivedWorkouts : workouts).index(of: w)!, section: w.archived ? 1 : 0)
+			var index = IndexPath(row: (wasArchived ? archivedWorkouts : workouts).index(of: w)!, section: wasArchived ? 1 : 0)
 			tableView.deleteRows(at: [index], with: .automatic)
 			updateView(autoReload: false)
-			index.row = (w.archived ? archivedWorkouts : workouts).index(of: w)!
+			index.row = (wasArchived ? archivedWorkouts : workouts).index(of: w)!
 			tableView.insertRows(at: [index], with: .automatic)
 			
 			tableView.endUpdates()
 		case .delete:
 			tableView.beginUpdates()
 			
-			let index = IndexPath(row: (w.archived ? archivedWorkouts : workouts).index(of: w)!, section: w.archived ? 1 : 0)
+			let index = IndexPath(row: (wasArchived ? archivedWorkouts : workouts).index(of: w)!, section: wasArchived ? 1 : 0)
 			tableView.deleteRows(at: [index], with: .automatic)
 			updateView(autoReload: false)
 			if index.section == 1 && archivedWorkouts.count == 0 {
@@ -151,10 +182,45 @@ class WorkoutListTableViewController: UITableViewController {
 			}
 			
 			tableView.endUpdates()
-		case .archive:
-			fatalError()
-		case .unarchive:
-			fatalError()
+		case .archiveChange:
+			let countOld = workouts.count
+			let countArchOld = archivedWorkouts.count
+			let index = IndexPath(row: (wasArchived ? archivedWorkouts : workouts).index(of: w)!, section: wasArchived ? 1 : 0)
+			updateView(autoReload: false)
+			let newIndex = IndexPath(row: (!wasArchived ? archivedWorkouts : workouts).index(of: w)!, section: !wasArchived ? 1 : 0)
+			
+			tableView.beginUpdates()
+			var doInsert = true
+			var doRemove = true
+			
+			// Archiving
+			if index.section == 0 && countArchOld == 0 {
+				tableView.insertSections(IndexSet(integer: 1), with: .automatic)
+				doInsert = false
+			}
+			// Unarchiving
+			if index.section == 1 && archivedWorkouts.count == 0 {
+				tableView.deleteSections(IndexSet(integer: 1), with: .automatic)
+				doRemove = false
+			}
+			
+			if doRemove {
+				tableView.deleteRows(at: [index], with: .automatic)
+			}
+			if doInsert {
+				tableView.insertRows(at: [newIndex], with: .automatic)
+			}
+			
+			// Unarchiving
+			if index.section == 1 && countOld == 0 {
+				tableView.deleteRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+			}
+			// Archiving
+			if index.section == 0 && workouts.count == 0 {
+				tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+			}
+			
+			tableView.endUpdates()
 		}
 	}
 

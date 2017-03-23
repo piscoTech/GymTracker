@@ -12,12 +12,14 @@
 "EXERCIZE" = "Exercize";
 "REST" = "Rest";
 
-"ARCH_BTN" = "Archive Workout";
-"UNARCH_BTN" = "Unarchive Workout";
 "DELETE_WORKOUT" = "Delete Workout";
 "DELETE_WORKOUT_CONFIRM" = "Are you sure you want to delete ";
 "DELETE" = "Delete";
 "DELETE_WORKOUT_FAIL" = "Unable to delete workout";
+"ARCHIVE_WORKOUT" = "Archive";
+"UNARCHIVE_WORKOUT" = "Unarchive";
+"ARCHIVE_WORKOUT_FAIL" = "Unable to archive workout";
+"UNARCHIVE_WORKOUT_FAIL" = "Unable to unarchive workout";
 "CANCEL" = "Cancel";
 
 "REMOVE_SET_TIP" = "Swipe left on a set to remove it.";
