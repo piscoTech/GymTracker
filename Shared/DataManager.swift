@@ -121,6 +121,15 @@ class DataObject: NSManagedObject {
 		fatalError("Abstarct method not implemented")
 	}
 	
+	///- returns: Whether or not the object represented by this instance is still present in the database, `false` is returned even if it was impossible to determine.
+	func stillExists() -> Bool {
+		if let _ = recordID.getType()?.loadWithID(self.id) {
+			return true
+		} else {
+			return false
+		}
+	}
+	
 	var wcObject: WCObject? {
 		let obj = WCObject(id: self.recordID)
 		

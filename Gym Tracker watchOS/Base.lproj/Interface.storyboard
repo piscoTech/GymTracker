@@ -27,7 +27,7 @@
                                             </label>
                                         </items>
                                         <connections>
-                                            <segue destination="Vf8-6c-cLe" kind="push" id="uOw-BL-k3Y"/>
+                                            <segue destination="Vf8-6c-cLe" kind="push" identifier="workoutDetail" id="uOw-BL-k3Y"/>
                                         </connections>
                                     </group>
                                     <connections>
@@ -35,7 +35,7 @@
                                         <outlet property="titleLabel" destination="fkO-le-IEs" id="hpE-5F-7Jv"/>
                                     </connections>
                                 </tableRow>
-                                <tableRow identifier="noWorkout" id="Dra-B0-KnY">
+                                <tableRow identifier="noWorkout" selectable="NO" id="Dra-B0-KnY">
                                     <group key="rootItem" width="1" alignment="left" id="cOX-TM-woz">
                                         <items>
                                             <label alignment="center" verticalAlignment="center" text="No Workout" id="FwB-nf-4FQ">
@@ -61,14 +61,17 @@
         <!--Workout-->
         <scene sceneID="Zdc-Zm-5g9">
             <objects>
-                <controller title="Workout" spacing="15" id="Vf8-6c-cLe">
+                <controller title="Workout" spacing="10" id="Vf8-6c-cLe" customClass="WorkoutDetailInterfaceController" customModule="Gym_Tracker_watchOS_Extension">
                     <items>
+                        <label alignment="left" text="Label" numberOfLines="0" id="tMk-Q8-GRJ">
+                            <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
+                        </label>
                         <button width="1" alignment="left" title="Start workout" id="ALI-91-Wte">
                             <color key="backgroundColor" red="0.0" green="0.75294117647058822" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         </button>
                         <table alignment="left" id="itK-2w-s1f">
                             <items>
-                                <tableRow identifier="exercize" id="TqS-vF-PJI" customClass="BasicDetailCell" customModule="Gym_Tracker_watchOS_Extension">
+                                <tableRow identifier="exercize" selectable="NO" id="TqS-vF-PJI" customClass="BasicDetailCell" customModule="Gym_Tracker_watchOS_Extension">
                                     <group key="rootItem" width="1" height="0.0" alignment="left" layout="vertical" id="P8d-ix-mag">
                                         <items>
                                             <label alignment="left" text="Label" numberOfLines="0" id="c9m-oy-Yey">
@@ -84,16 +87,23 @@
                                         <outlet property="titleLabel" destination="c9m-oy-Yey" id="8jK-D6-Nsc"/>
                                     </connections>
                                 </tableRow>
-                                <tableRow identifier="rest" id="7MH-wF-y5l">
+                                <tableRow identifier="rest" selectable="NO" id="7MH-wF-y5l" customClass="RestCell" customModule="Gym_Tracker" customModuleProvider="target">
                                     <group key="rootItem" width="1" alignment="left" id="9op-lA-Tup">
                                         <items>
                                             <label alignment="center" verticalAlignment="center" text="Label" id="qEE-st-N8c"/>
                                         </items>
                                     </group>
+                                    <connections>
+                                        <outlet property="restLabel" destination="qEE-st-N8c" id="Wx8-qU-YgC"/>
+                                    </connections>
                                 </tableRow>
                             </items>
                         </table>
                     </items>
+                    <connections>
+                        <outlet property="table" destination="itK-2w-s1f" id="ed8-7q-OMM"/>
+                        <outlet property="workoutName" destination="tMk-Q8-GRJ" id="by3-IF-4ib"/>
+                    </connections>
                 </controller>
             </objects>
             <point key="canvasLocation" x="382" y="134"/>

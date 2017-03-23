@@ -152,6 +152,8 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	// MARK: - Editing
 	
 	func edit(_ sender: AnyObject) {
+		// TODO: Do only if no running workout
+		
 		editMode = true
 		navigationController?.interactivePopGestureRecognizer?.isEnabled = false
 		updateButtons()
@@ -282,6 +284,28 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		}
 		
 		tableView.endUpdates()
+	}
+	
+	@IBAction func deleteWorkout(_ sender: AnyObject) {
+		guard !editMode else {
+			return
+		}
+		
+		// TODO: Do only if no running workout
+		
+		let confirm = UIAlertController(title: NSLocalizedString("DELETE_WORKOUT", comment: "Del") + workout.name, message: NSLocalizedString("DELETE_WORKOUT_CONFIRM", comment: "Del confirm"), preferredStyle: .actionSheet)
+		confirm.addAction(UIAlertAction(title: NSLocalizedString("DELETE", comment: "Del"), style: .destructive) { _ in
+			if dataManager.persistChangesForObjects([], andDeleteObjects: [self.workout]) {
+				self.delegate.updateWorkout(self.workout, how: .delete)
+				_ = self.navigationController?.popViewController(animated: true)
+			} else {
+				let alert = UIAlertController(simpleAlert: NSLocalizedString("DELETE_WORKOUT_FAIL", comment: "Err"), message: nil)
+				self.present(alert, animated: true)
+			}
+		})
+		confirm.addAction(UIAlertAction(title: NSLocalizedString("CANCEL", comment: "Cancel"), style: .cancel))
+		
+		self.present(confirm, animated: true)
 	}
 	
 	// MARK: - Edit name

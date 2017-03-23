@@ -9,10 +9,9 @@
 import WatchKit
 import Foundation
 
-
 class WorkoutListController: WKInterfaceController {
 	
-	// private weak var workoutDetail: Any?
+	weak var workoutDetail: WorkoutDetailInterfaceController?
 	
 	private var workouts: [Workout] = []
 	
@@ -70,8 +69,15 @@ class WorkoutListController: WKInterfaceController {
 			table.setNumberOfRows(1, withRowType: "noWorkout")
 		}
 		
-		// TODO: if workout is deleted pop the controller
-		// workoutDetail?.refresh()
+		 workoutDetail?.reloadData()
+	}
+	
+	override func contextForSegue(withIdentifier segueIdentifier: String, in table: WKInterfaceTable, rowIndex: Int) -> Any? {
+		guard workouts.count > 0 && segueIdentifier == "workoutDetail" else {
+			return nil
+		}
+		
+		return WorkoutDetailData(listController: self, workout: workouts[rowIndex])
 	}
 
 }

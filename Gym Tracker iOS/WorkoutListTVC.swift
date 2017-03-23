@@ -138,7 +138,19 @@ class WorkoutListTableViewController: UITableViewController {
 			
 			tableView.endUpdates()
 		case .delete:
-			fatalError()
+			tableView.beginUpdates()
+			
+			let index = IndexPath(row: (w.archived ? archivedWorkouts : workouts).index(of: w)!, section: w.archived ? 1 : 0)
+			tableView.deleteRows(at: [index], with: .automatic)
+			updateView(autoReload: false)
+			if index.section == 1 && archivedWorkouts.count == 0 {
+				tableView.deleteSections(IndexSet(integer: 1), with: .automatic)
+			}
+			if index.section == 0 && workouts.count == 0 {
+				tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+			}
+			
+			tableView.endUpdates()
 		case .archive:
 			fatalError()
 		case .unarchive:

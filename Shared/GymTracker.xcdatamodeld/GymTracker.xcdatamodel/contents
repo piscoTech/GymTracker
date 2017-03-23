@@ -8,7 +8,7 @@
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="order" optional="YES" attributeType="Integer 32" minValueString="0" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="rest" optional="YES" attributeType="Double" minValueString="0" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
-        <relationship name="sets" toMany="YES" deletionRule="Nullify" destinationEntity="RepsSet" inverseName="exercize" inverseEntity="RepsSet" syncable="YES"/>
+        <relationship name="sets" toMany="YES" deletionRule="Cascade" destinationEntity="RepsSet" inverseName="exercize" inverseEntity="RepsSet" syncable="YES"/>
         <relationship name="workout" maxCount="1" deletionRule="Nullify" destinationEntity="Workout" inverseName="exercizes" inverseEntity="Workout" syncable="YES"/>
     </entity>
     <entity name="RepsSet" representedClassName="RepsSet" syncable="YES">
