@@ -107,5 +107,6 @@ class WorkoutManageExercizeCell: UITableViewCell {
 class WorkoutDeleteArchiveCell: UITableViewCell {
 	
 	@IBOutlet weak var archiveBtn: UIButton!
+	@IBOutlet weak var deleteBtn: UIButton!
 	
 }

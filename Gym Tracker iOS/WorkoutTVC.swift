@@ -12,6 +12,7 @@ import MBLibrary
 class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
 	
 	weak var delegate: WorkoutListTableViewController!
+	weak var exercizeController: ExercizeTableViewController?
 	var workout: Workout!
 	var editMode = false
 	private var isNew = false
@@ -48,9 +49,14 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
         // Dispose of any resources that can be recreated.
     }
 	
-	private func updateButtons() {
+	func updateButtons(includeDeleteArchive: Bool = false) {
 		navigationItem.leftBarButtonItem = editMode ? cancelBtn : nil
 		navigationItem.rightBarButtonItem = editMode ? doneBtn : editBtn
+		
+		editBtn.isEnabled = delegate.canEdit
+		if includeDeleteArchive {
+			tableView.reloadSections(IndexSet(integer: 2), with: .none)
+		}
 	}
 	
 	private func updateDoneBtn() {
@@ -145,6 +151,8 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 				let cell = tableView.dequeueReusableCell(withIdentifier: "actions", for: indexPath) as! WorkoutDeleteArchiveCell
 				let title = (workout.archived ? "UN" : "") + "ARCHIVE_WORKOUT"
 				cell.archiveBtn.setTitle(NSLocalizedString(title, comment: "(Un)archive"), for: [])
+				cell.archiveBtn.isEnabled = delegate.canEdit
+				cell.deleteBtn.isEnabled = delegate.canEdit
 				
 				return cell
 			}
@@ -156,7 +164,9 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	// MARK: - Editing
 	
 	func edit(_ sender: AnyObject) {
-		// TODO: Do only if no running workout
+		guard delegate.canEdit else {
+			return
+		}
 		
 		editMode = true
 		navigationController?.interactivePopGestureRecognizer?.isEnabled = false
@@ -169,6 +179,9 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		editMode = false
 		deletedEntities.removeAll()
 		navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+		if exercizeController != nil {
+			_ = navigationController?.popToViewController(self, animated: true)
+		}
 		updateButtons()
 		
 		self.setEditing(false, animated: true)
@@ -179,8 +192,6 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		guard editMode else {
 			return
 		}
-		
-		// TODO: (If coming from other controllers) If is editing an existing workout restore title if missing, if no exercize cancel edit instead
 		
 		if let rest = editRest {
 			//Simulate tap on rest row to hide picker
@@ -222,8 +233,6 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 				exitEdit()
 			}
 		} else {
-			// TODO: If coming from other controllers cancel edit/new
-			
 			self.present(UIAlertController(simpleAlert: NSLocalizedString("WORKOUT_SAVE_ERR", comment: "Cannot save"), message: nil), animated: true)
 		}
 	}
@@ -291,11 +300,9 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	}
 	
 	@IBAction func deleteWorkout(_ sender: AnyObject) {
-		guard !editMode else {
+		guard !editMode, delegate.canEdit else {
 			return
 		}
-		
-		// TODO: Do only if no running workout
 		
 		let confirm = UIAlertController(title: NSLocalizedString("DELETE_WORKOUT", comment: "Del"), message: NSLocalizedString("DELETE_WORKOUT_CONFIRM", comment: "Del confirm") + workout.name + "?", preferredStyle: .actionSheet)
 		confirm.addAction(UIAlertAction(title: NSLocalizedString("DELETE", comment: "Del"), style: .destructive) { _ in
@@ -315,11 +322,9 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	}
 	
 	@IBAction func archiveWorkout(_ sender: AnyObject) {
-		guard !editMode else {
+		guard !editMode, delegate.canEdit else {
 			return
 		}
-		
-		// TODO: Do only if no running workout
 		
 		let errTitle = NSLocalizedString((workout.archived ? "UN" : "") + "ARCHIVE_WORKOUT_FAIL", comment: "(Un)archive fail")
 		let archived = workout.archived
@@ -546,6 +551,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 			dest.exercize = e
 			dest.editMode = self.editMode
 			dest.delegate = self
+			self.exercizeController = dest
 		default:
 			break
 		}

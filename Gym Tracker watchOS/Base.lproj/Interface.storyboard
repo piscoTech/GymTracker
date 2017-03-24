@@ -12,7 +12,7 @@
         <!--Workouts-->
         <scene sceneID="hO8-ot-HdR">
             <objects>
-                <controller identifier="workoutList" title="Workouts" id="f3a-Tn-603" customClass="WorkoutListController" customModule="Gym_Tracker_watchOS_Extension">
+                <controller identifier="workoutList" title="Workouts" id="f3a-Tn-603" customClass="WorkoutListInterfaceController" customModule="Gym_Tracker_watchOS_Extension">
                     <items>
                         <table alignment="left" id="Bs2-Pu-6ym">
                             <items>
@@ -58,6 +58,29 @@
             </objects>
             <point key="canvasLocation" x="117" y="134"/>
         </scene>
+        <!--executeWorkout-->
+        <scene sceneID="qoi-zA-dIP">
+            <objects>
+                <controller identifier="executeWorkout" id="Ye5-rJ-hLV" customClass="ExecuteWorkoutInterfaceController" customModule="Gym_Tracker_watchOS_Extension">
+                    <items>
+                        <timer alignment="left" id="mDf-hu-RLR"/>
+                    </items>
+                    <menu key="menu" id="wg0-02-Ta4">
+                        <items>
+                            <menuItem title="Cancel" icon="decline" id="rbf-7x-ISj">
+                                <connections>
+                                    <action selector="cancelWorkout" destination="Ye5-rJ-hLV" id="E4v-uH-Teq"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                    <connections>
+                        <outlet property="timer" destination="mDf-hu-RLR" id="h7i-a7-kIL"/>
+                    </connections>
+                </controller>
+            </objects>
+            <point key="canvasLocation" x="117" y="456"/>
+        </scene>
         <!--Workout-->
         <scene sceneID="Zdc-Zm-5g9">
             <objects>
@@ -68,6 +91,9 @@
                         </label>
                         <button width="1" alignment="left" title="Start workout" id="ALI-91-Wte">
                             <color key="backgroundColor" red="0.0" green="0.75294117647058822" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <connections>
+                                <action selector="startWorkout" destination="Vf8-6c-cLe" id="iHJ-aK-ngo"/>
+                            </connections>
                         </button>
                         <table alignment="left" id="itK-2w-s1f">
                             <items>
@@ -101,6 +127,7 @@
                         </table>
                     </items>
                     <connections>
+                        <outlet property="startBtn" destination="ALI-91-Wte" id="CyG-ya-ON2"/>
                         <outlet property="table" destination="itK-2w-s1f" id="ed8-7q-OMM"/>
                         <outlet property="workoutName" destination="tMk-Q8-GRJ" id="by3-IF-4ib"/>
                     </connections>

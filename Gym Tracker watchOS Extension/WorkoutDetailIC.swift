@@ -11,7 +11,7 @@ import Foundation
 
 struct WorkoutDetailData {
 	
-	let listController: WorkoutListController
+	let listController: WorkoutListInterfaceController
 	let workout: Workout
 	
 }
@@ -21,8 +21,10 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 	@IBOutlet weak var workoutName: WKInterfaceLabel!
 	@IBOutlet weak var table: WKInterfaceTable!
 	
+	@IBOutlet weak var startBtn: WKInterfaceButton!
+	
 	private var workout: Workout!
-	private var delegate: WorkoutListController!
+	private var delegate: WorkoutListInterfaceController!
 
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
@@ -76,5 +78,17 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
         // This method is called when watch view controller is no longer visible
         super.didDeactivate()
     }
+	
+	func updateButton() {
+		startBtn.setEnabled(delegate.canEdit)
+	}
+	
+	@IBAction func startWorkout() {
+		guard delegate.canEdit, preferences.runningWorkout == nil else {
+			return
+		}
+		
+		WKInterfaceController.reloadRootControllers(withNames: ["executeWorkout"], contexts: [workout])
+	}
 
 }

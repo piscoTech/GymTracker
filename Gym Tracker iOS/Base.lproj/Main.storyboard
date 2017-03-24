@@ -241,9 +241,8 @@
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uS1-Pa-pw1">
                                                     <rect key="frame" x="179.5" y="0.0" width="179.5" height="43.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <state key="normal" title="Delete">
-                                                        <color key="titleColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                    </state>
+                                                    <color key="tintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <state key="normal" title="Delete"/>
                                                     <connections>
                                                         <action selector="deleteWorkout:" destination="BRB-Zp-8pa" eventType="touchUpInside" id="P7m-G6-pJJ"/>
                                                     </connections>
@@ -260,6 +259,7 @@
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="archiveBtn" destination="Bq2-nE-hQU" id="Bkp-B2-mLO"/>
+                                    <outlet property="deleteBtn" destination="uS1-Pa-pw1" id="gxg-Nn-Psd"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -661,6 +661,9 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="addButton" destination="qz4-aL-Zwe" id="Khh-Bw-4rI"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GUN-ng-eAW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

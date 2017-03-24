@@ -10,12 +10,16 @@ import WatchKit
 
 class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
 	
-	weak var workoutList: WorkoutListController!
+	weak var workoutList: WorkoutListInterfaceController?
+	weak var executeWorkout: ExecuteWorkoutInterfaceController?
 
     func applicationDidFinishLaunching() {
         // Perform any final initialization of your application.
 		
 		dataManager.delegate = self
+		if let src = preferences.runningWorkoutSource, src == .watch, preferences.runningWorkout != nil {
+			dataManager.setRunningWorkout(nil, fromSource: .watch)
+		}
     }
 
     func applicationDidBecomeActive() {
@@ -51,8 +55,28 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
         }
     }
 	
+	func restoredefaultState() {
+		WKInterfaceController.reloadRootControllers(withNames: ["workoutList"], contexts: nil)
+	}
+	
+	// MARK: - Data Manager Delegate
+	
 	func refreshData() {
-		workoutList?.reloadData()
+		DispatchQueue.main.async {
+			self.workoutList?.reloadData()
+		}
+	}
+	
+	func enableEdit() {
+		DispatchQueue.main.async {
+			self.workoutList?.setEnable(true)
+		}
+	}
+	
+	func cancelAndDisableEdit() {
+		DispatchQueue.main.async {
+			self.workoutList?.setEnable(false)
+		}
 	}
 
 }

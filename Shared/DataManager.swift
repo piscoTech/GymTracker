@@ -242,6 +242,8 @@ class WCObject: Equatable {
 protocol DataManagerDelegate: class {
 	
 	func refreshData()
+	func cancelAndDisableEdit()
+	func enableEdit()
 	
 }
 
@@ -288,22 +290,6 @@ class DataManager: NSObject {
 	
 
 	// MARK: - Interaction
-	
-	var runningWorkout: CDRecordID? {
-		didSet {
-			// TODO: Save this in preferences alongside which device it is on
-			
-			if runningWorkout != nil && runningWorkout!.type != Workout.objectType {
-				runningWorkout = nil
-				
-				return
-			}
-			
-			if runningWorkout == nil {
-				wcInterface.persistPendingChanges()
-			}
-		}
-	}
 
 	func executeFetchRequest<T: NSFetchRequestResult>(_ request: NSFetchRequest<T>) -> [T]? {
 		var result: [T]? = nil
@@ -401,6 +387,25 @@ class DataManager: NSObject {
 		
 		return res
 	}
+	
+	func setRunningWorkout(_ w: Workout?, fromSource s: RunningWorkoutSource) {
+		guard s.isCurrentPlatform() else {
+			return
+		}
+		
+		preferences.runningWorkout = w?.recordID
+		preferences.runningWorkoutSource = s
+		
+		if w == nil {
+			delegate?.enableEdit()
+			wcInterface.persistPendingChanges()
+		} else {
+			delegate?.cancelAndDisableEdit()
+		}
+		
+		preferences.runningWorkoutNeedsTransfer = true
+		wcInterface.setRunningWorkout()
+	}
 
 	// MARK: - Synchronization methods
 	
@@ -430,7 +435,7 @@ class DataManager: NSObject {
 			return true
 		}
 		
-		// TODO: Make delegate terminate any editing action to remove/save any uncommitted changes
+		delegate?.cancelAndDisableEdit()
 		let context = localData.managedObjectContext
 		
 		// Delete objects
@@ -488,6 +493,7 @@ class DataManager: NSObject {
 			context.rollback()
 		}
 	
+		delegate?.enableEdit()
 		return res
 	}
 	
@@ -645,6 +651,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 		
 		// Send pending transfers
 		sendUpdateForChangedObjects([], andDeleted: [])
+		setRunningWorkout()
 	}
 	
 	#if os(iOS)
@@ -711,6 +718,23 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 		preferences.deleteLocal = []
 	}
 	
+	fileprivate func setRunningWorkout() {
+		guard let sess = session, hasCounterPart, preferences.runningWorkoutNeedsTransfer else {
+			return
+		}
+		
+		guard canComunicate else {
+			preferences.runningWorkoutNeedsTransfer = true
+			return
+		}
+		
+		sess.transferUserInfo([currentWorkoutKey: [
+			preferences.runningWorkout?.wcRepresentation ?? ["nil"],
+			preferences.runningWorkoutSource?.rawValue ?? "nil"
+		]])
+		preferences.runningWorkoutNeedsTransfer = false
+	}
+	
 	fileprivate func session(_ session: WCSession, didFinish userInfoTransfer: WCSessionUserInfoTransfer, error: Error?) {
 		guard error != nil else {
 			return
@@ -729,21 +753,27 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 	}
 
 	fileprivate func session(_ session: WCSession, didReceiveUserInfo userInfo: [String : Any] = [:]) {
-		if let curWorkout = userInfo[currentWorkoutKey] {
+		if let curWorkout = userInfo[currentWorkoutKey] as? [Any], curWorkout.count == 2 {
 			// Pass something that's not an ID to signal that workout has ended
-			dataManager.runningWorkout = curWorkout as? CDRecordID
+			let w = CDRecordID(wcRepresentation: curWorkout[0] as? [String] ?? [])
+			preferences.runningWorkout = w
+			preferences.runningWorkoutSource = RunningWorkoutSource(rawValue: curWorkout[1] as? String ?? "")
 			
-			// TODO: Proper support
+			if w == nil {
+				dataManager.delegate?.enableEdit()
+			} else {
+				dataManager.delegate?.cancelAndDisableEdit()
+			}
 		}
 		
-		if userInfo[isInitialDataKey] as? Bool ?? false {
+		if userInfo[isInitialDataKey] as? Bool ?? false, iswatchOS {
 			_ = dataManager.clearDatabase()
 		}
 		
 		DispatchQueue.gymDatabase.async {
 			let changes = preferences.saveRemote + WCObject.decodeArray(userInfo[self.changesKey] as? [[String : Any]] ?? [])
 			let deletion = preferences.deleteRemote + CDRecordID.decodeArray(userInfo[self.deletionKey] as? [[String]] ?? [])
-			if dataManager.runningWorkout != nil {
+			if preferences.runningWorkout != nil {
 				preferences.saveRemote = changes
 				preferences.deleteRemote = deletion
 				
@@ -769,7 +799,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 	
 	fileprivate func persistPendingChanges() {
 		DispatchQueue.gymDatabase.async {
-			guard dataManager.runningWorkout == nil else {
+			guard preferences.runningWorkout == nil else {
 				return
 			}
 			

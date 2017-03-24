@@ -9,14 +9,13 @@
 import UIKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, DataManagerDelegate {
 
 	var window: UIWindow?
-
+	var workoutList: WorkoutListTableViewController!
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-		// TODO: Add proper delegate
-//		DataManager.activate(withDelegate: nil)
+		dataManager.delegate = self
 		
 		return true
 	}
@@ -41,6 +40,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func applicationWillTerminate(_ application: UIApplication) {
 		// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+	}
+	
+	// MARK: - Data Manager Delegate
+	
+	func refreshData() {
+		DispatchQueue.main.async {
+			self.workoutList.refreshData()
+		}
+	}
+	
+	func enableEdit() {
+		DispatchQueue.main.async {
+			self.workoutList.enableEdit(true)
+		}
+	}
+	
+	func cancelAndDisableEdit() {
+		DispatchQueue.main.async {
+			self.workoutList.enableEdit(false)
+		}
 	}
 
 }

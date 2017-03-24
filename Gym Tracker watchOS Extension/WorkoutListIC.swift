@@ -1,5 +1,5 @@
 //
-//  WorkoutListController.swift
+//  WorkoutListInterfaceController.swift
 //  Gym Tracker watchOS Extension
 //
 //  Created by Marco Boschi on 20/03/2017.
@@ -9,7 +9,7 @@
 import WatchKit
 import Foundation
 
-class WorkoutListController: WKInterfaceController {
+class WorkoutListInterfaceController: WKInterfaceController {
 	
 	weak var workoutDetail: WorkoutDetailInterfaceController?
 	
@@ -17,6 +17,8 @@ class WorkoutListController: WKInterfaceController {
 	
 	@IBOutlet weak var table: WKInterfaceTable!
 	@IBOutlet weak var unlockMsg: WKInterfaceLabel!
+	
+	var canEdit = preferences.runningWorkout == nil
 
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
@@ -78,6 +80,11 @@ class WorkoutListController: WKInterfaceController {
 		}
 		
 		return WorkoutDetailData(listController: self, workout: workouts[rowIndex])
+	}
+	
+	func setEnable(_ flag: Bool) {
+		canEdit = flag
+		workoutDetail?.updateButton()
 	}
 
 }

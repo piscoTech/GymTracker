@@ -10,6 +10,8 @@ import UIKit
 
 class WorkoutListTableViewController: UITableViewController {
 	
+	@IBOutlet weak var addButton: UIBarButtonItem!
+	
 	private var workouts = [Workout]()
 	private var archivedWorkouts = [Workout]()
 	private weak var workoutController: WorkoutTableViewController? {
@@ -17,13 +19,14 @@ class WorkoutListTableViewController: UITableViewController {
 			workoutController?.delegate = self
 		}
 	}
+	var canEdit = preferences.runningWorkout == nil
 
     override func viewDidLoad() {
         super.viewDidLoad()
 		
-		// TODO: Support editing: remove and archive
-//        self.navigationItem.rightBarButtonItems?.append(self.editButtonItem)
+		appDelegate.workoutList = self
 		updateView()
+		enableEdit(canEdit)
     }
 
     override func didReceiveMemoryWarning() {
@@ -46,6 +49,13 @@ class WorkoutListTableViewController: UITableViewController {
 		if autoReload {
 			tableView.reloadData()
 		}
+	}
+	
+	func refreshData() {
+		let old = canEdit
+		self.enableEdit(false)
+		updateView()
+		self.enableEdit(old)
 	}
 
     // MARK: - Table view data source
@@ -89,18 +99,30 @@ class WorkoutListTableViewController: UITableViewController {
         return cell
     }
 	
+	func enableEdit(_ flag: Bool) {
+		canEdit = flag
+		addButton.isEnabled = canEdit
+		
+		if !canEdit {
+			workoutController?.cancel(self)
+		} else {
+			workoutController?.updateButtons(includeDeleteArchive: true)
+		}
+	}
+	
 	// MARK: - Delete & (Un)archive
 
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-		// TODO: check if no running workout
-		return true
+		return canEdit
     }
 	
 	override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
 		
 		let del = UITableViewRowAction(style: .destructive, title: NSLocalizedString("DELETE", comment: "Del")) { _, row in
 			self.tableView.setEditing(false, animated: true)
-			// TODO: check if no running workout
+			guard self.canEdit else {
+				return
+			}
 			
 			let workout = (row.section == 0 ? self.workouts : self.archivedWorkouts)[row.row]
 			let confirm = UIAlertController(title: NSLocalizedString("DELETE_WORKOUT", comment: "Del"), message: NSLocalizedString("DELETE_WORKOUT_CONFIRM", comment: "Del confirm") + workout.name + "?", preferredStyle: .actionSheet)
@@ -120,7 +142,9 @@ class WorkoutListTableViewController: UITableViewController {
 		}
 		let archive = UITableViewRowAction(style: .normal, title: NSLocalizedString((indexPath.section == 1 ? "UN" : "") + "ARCHIVE_WORKOUT", comment: "(un)archive")) { _, row in
 			self.tableView.setEditing(false, animated: true)
-			// TODO: check if no running workout
+			guard self.canEdit else {
+				return
+			}
 			
 			let workout = (row.section == 0 ? self.workouts : self.archivedWorkouts)[row.row]
 			let errTitle = NSLocalizedString((workout.archived ? "UN" : "") + "ARCHIVE_WORKOUT_FAIL", comment: "(Un)archive fail")
@@ -225,6 +249,14 @@ class WorkoutListTableViewController: UITableViewController {
 	}
 
     // MARK: - Navigation
+	
+	override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+		if identifier == "newWorkout" {
+			return canEdit
+		}
+		
+		return true
+	}
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		guard let segueID = segue.identifier else {

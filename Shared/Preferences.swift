@@ -21,6 +21,26 @@ enum PreferenceKeys: String, KeyValueStoreKey {
 	case saveRemote = "saveRemote"
 	case deleteRemote = "deleteRemote"
 	
+	case runningWorkout = "runningWorkout"
+	case runningWorkoutSource = "runningWorkoutSource"
+	case runningWorkoutNeedsTransfer = "runningWorkoutNeedsTransfer"
+	
+}
+
+enum RunningWorkoutSource: String {
+	
+	case watch = "watch"
+	case phone = "phone"
+	
+	func isCurrentPlatform() -> Bool {
+		switch self {
+		case .watch:
+			return iswatchOS
+		case .phone:
+			return isiOS
+		}
+	}
+	
 }
 
 class Preferences {
@@ -121,6 +141,48 @@ class Preferences {
 			} else {
 				local.removeObject(forKey: key)
 			}
+			local.synchronize()
+		}
+	}
+	
+	// MARK: - Running Workout data
+	
+	var runningWorkout: CDRecordID? {
+		get {
+			return CDRecordID(wcRepresentation: local.array(forKey: PreferenceKeys.runningWorkout) as? [String] ?? [])
+		}
+		set {
+			let key = PreferenceKeys.runningWorkout
+			if let data = newValue?.wcRepresentation {
+				local.set(data, forKey: key)
+			} else {
+				local.removeObject(forKey: key)
+			}
+			local.synchronize()
+		}
+	}
+	
+	var runningWorkoutSource: RunningWorkoutSource? {
+		get {
+			return RunningWorkoutSource(rawValue: local.string(forKey: PreferenceKeys.runningWorkoutSource) ?? "")
+		}
+		set {
+			let key = PreferenceKeys.runningWorkoutSource
+			if let data = newValue?.rawValue {
+				local.set(data, forKey: key)
+			} else {
+				local.removeObject(forKey: key)
+			}
+			local.synchronize()
+		}
+	}
+	
+	var runningWorkoutNeedsTransfer: Bool {
+		get {
+			return local.bool(forKey: PreferenceKeys.runningWorkoutNeedsTransfer)
+		}
+		set {
+			local.set(newValue, forKey: PreferenceKeys.runningWorkoutNeedsTransfer)
 			local.synchronize()
 		}
 	}
