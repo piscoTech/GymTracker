@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="f3a-Tn-603">
-    <device id="watch42" orientation="portrait">
+    <device id="watch38" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -63,7 +63,85 @@
             <objects>
                 <controller identifier="executeWorkout" id="Ye5-rJ-hLV" customClass="ExecuteWorkoutInterfaceController" customModule="Gym_Tracker_watchOS_Extension">
                     <items>
-                        <timer alignment="left" id="mDf-hu-RLR"/>
+                        <group width="1" alignment="left" id="GbA-LS-twa" userLabel="Heart &amp; Time">
+                            <items>
+                                <group alignment="left" id="x8p-Jy-vRC">
+                                    <items>
+                                        <label alignment="left" verticalAlignment="bottom" text="80" id="8WJ-4H-ILz">
+                                            <color key="textColor" red="1" green="0.18840348639455781" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <fontDescription key="font" type="system" pointSize="19"/>
+                                        </label>
+                                        <label alignment="left" verticalAlignment="bottom" text="BPM" id="jp2-oR-PiF">
+                                            <color key="textColor" red="1" green="0.18840348639455781" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
+                                        </label>
+                                    </items>
+                                </group>
+                                <timer alignment="right" textAlignment="right" id="mDf-hu-RLR">
+                                    <fontDescription key="font" type="system" pointSize="19"/>
+                                </timer>
+                            </items>
+                        </group>
+                        <group width="1" alignment="left" verticalAlignment="center" layout="vertical" spacing="7" id="g8Q-Xz-KGs" userLabel="Current Set">
+                            <items>
+                                <group width="1" alignment="left" layout="vertical" id="mZ1-1e-nBL">
+                                    <items>
+                                        <label alignment="left" text="[Exercize Name]" numberOfLines="0" id="es3-lO-YvL">
+                                            <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
+                                        </label>
+                                        <group width="1" alignment="left" layout="vertical" spacing="0.0" id="wNH-rK-hqr">
+                                            <items>
+                                                <label alignment="left" text="[10x20kg]" id="ZkP-lM-XZO">
+                                                    <fontDescription key="font" style="UICTFontTextStyleCaption2"/>
+                                                </label>
+                                                <label alignment="left" text="[N other sets]" id="V1b-Db-h3Z">
+                                                    <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
+                                                </label>
+                                            </items>
+                                        </group>
+                                    </items>
+                                </group>
+                                <button width="0.80000000000000004" height="25" alignment="center" title="Done" id="UF6-FT-XB6">
+                                    <color key="backgroundColor" red="0.0" green="0.75294117650000003" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <fontDescription key="font" type="system" pointSize="13"/>
+                                    <connections>
+                                        <action selector="endSet" destination="Ye5-rJ-hLV" id="94V-5j-fmM"/>
+                                    </connections>
+                                </button>
+                            </items>
+                        </group>
+                        <group width="1" alignment="left" verticalAlignment="center" layout="vertical" spacing="0.0" id="VRN-Uk-ci7" userLabel="Rest">
+                            <items>
+                                <label alignment="center" text="[Exercize Name]" textAlignment="center" numberOfLines="0" id="Wyd-gV-nXV">
+                                    <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
+                                </label>
+                                <group width="1" alignment="left" layout="vertical" spacing="7" id="fjF-eM-JQM">
+                                    <items>
+                                        <group width="1" alignment="left" id="hqT-X8-kMg">
+                                            <items>
+                                                <timer alignment="center" id="8iX-21-eFp">
+                                                    <fontDescription key="font" type="system" pointSize="25"/>
+                                                    <calendarUnit key="units" minute="YES" second="YES"/>
+                                                </timer>
+                                                <label alignment="center" text="rest" id="bsb-Ii-UXf">
+                                                    <fontDescription key="font" type="system" pointSize="25"/>
+                                                </label>
+                                            </items>
+                                        </group>
+                                        <button width="0.80000000000000004" height="25" alignment="center" title="End" id="9Br-5f-NyE">
+                                            <color key="backgroundColor" red="0.75294117647058822" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <fontDescription key="font" type="system" pointSize="13"/>
+                                            <connections>
+                                                <action selector="endRest" destination="Ye5-rJ-hLV" id="4dq-2w-lqO"/>
+                                            </connections>
+                                        </button>
+                                    </items>
+                                </group>
+                            </items>
+                        </group>
+                        <label width="1" alignment="center" verticalAlignment="bottom" text="NEXT: [Next Exercize]" textAlignment="center" id="COt-rO-686">
+                            <fontDescription key="font" type="system" pointSize="8"/>
+                        </label>
                     </items>
                     <menu key="menu" id="wg0-02-Ta4">
                         <items>
@@ -75,7 +153,16 @@
                         </items>
                     </menu>
                     <connections>
-                        <outlet property="timer" destination="mDf-hu-RLR" id="h7i-a7-kIL"/>
+                        <outlet property="bpmLbl" destination="8WJ-4H-ILz" id="x2P-Om-UxZ"/>
+                        <outlet property="currentSetGrp" destination="g8Q-Xz-KGs" id="FR2-tg-gva"/>
+                        <outlet property="exercizeNameLbl" destination="es3-lO-YvL" id="ptR-dY-eLL"/>
+                        <outlet property="nextUpLbl" destination="COt-rO-686" id="Ynb-fZ-H52"/>
+                        <outlet property="otherSetsLbl" destination="V1b-Db-h3Z" id="JNd-RV-VBJ"/>
+                        <outlet property="restExercizeNameLbl" destination="Wyd-gV-nXV" id="mGb-Oc-yqn"/>
+                        <outlet property="restGrp" destination="VRN-Uk-ci7" id="H1H-SA-9Ze"/>
+                        <outlet property="restLbl" destination="8iX-21-eFp" id="2aC-38-PrW"/>
+                        <outlet property="setRepWeightLbl" destination="ZkP-lM-XZO" id="aWp-OF-XPf"/>
+                        <outlet property="timerLbl" destination="mDf-hu-RLR" id="cAe-6N-FdA"/>
                     </connections>
                 </controller>
             </objects>

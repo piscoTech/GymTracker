@@ -29,3 +29,9 @@
 "DONE_REORDER_EXERCIZE" = "Done Reorder";
 
 "WORKOUT_SAVE_ERR" = "Cannot save workout";
+
+"NEXT_EXERCIZE_FLAG" = "NEXT: ";
+"NEXT_EXERCIZE_END" = "Workout End";
+"NEXT_EXERCIZE_REST" = " rest";
+"OTHER_N_SET" = " other set";
+"OTHER_N_SETS" = " other sets";

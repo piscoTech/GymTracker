@@ -89,9 +89,10 @@ class Workout: DataObject {
 	
 	///Removes rest period from start and end.
 	///- returns: A collection of removed exercizes from the start and end.
-	func compactExercizes() -> (start: [Exercize], end: [Exercize]) {
+	func compactExercizes() -> (start: [Exercize], end: [Exercize], middle: [(e: Exercize, oldOrder: Int32)]) {
 		var s = [Exercize]()
 		var e = [Exercize]()
+		var middle = [(Exercize, Int32)]()
 		var exercises = self.exercizeList
 		
 		while let f = exercises.first, f.isRest {
@@ -104,8 +105,25 @@ class Workout: DataObject {
 			e.append(exercises.popLast()!)
 		}
 		
+		var hasRest = false
+		while let ex = exercises.first {
+			exercises.remove(at: 0)
+			
+			guard ex.isRest else {
+				hasRest = false
+				continue
+			}
+			
+			if hasRest {
+				self.removeExercize(ex)
+				middle.append((ex, ex.order))
+			} else {
+				hasRest = true
+			}
+		}
+		
 		self.recalculateExercizeOrder()
-		return (s, e)
+		return (s, e, middle)
 	}
 	
 	private func recalculateExercizeOrder() {

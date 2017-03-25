@@ -184,7 +184,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		}
 		updateButtons()
 		
-		self.setEditing(false, animated: true)
+		self.setEditing(false, animated: false)
 		tableView.reloadSections([0, 1, 2], with: .automatic)
 	}
 	
@@ -202,8 +202,8 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 			tableView.beginUpdates()
 			
 			let totExercizeRows = tableView.numberOfRows(inSection: 1)
-			let (s, e) = workout.compactExercizes()
-			deletedEntities += (s + e) as [DataObject]
+			let (s, e, m) = workout.compactExercizes()
+			deletedEntities += (s + e + m.map { $0.e } ) as [DataObject]
 			var removeRows = [IndexPath]()
 			
 			for i in 0 ..< s.count {
@@ -211,6 +211,9 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 			}
 			for i in totExercizeRows - e.count ..< totExercizeRows {
 				removeRows.append(IndexPath(row: i, section: 1))
+			}
+			for (_, r) in m {
+				removeRows.append(IndexPath(row: Int(r), section: 1))
 			}
 			
 			tableView.deleteRows(at: removeRows, with: .automatic)

@@ -285,6 +285,8 @@ class DataManager: NSObject {
 			initializeWatchDatabase()
 		}
 		
+		// TODO: Remove running workout (with watch as source) if on ios and watch is no more paired
+		
 		wcInterface.persistPendingChanges()
 	}
 	
