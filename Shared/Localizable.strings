@@ -35,5 +35,8 @@
 "NEXT_EXERCIZE_REST" = " rest";
 "OTHER_N_SET" = " other set";
 "OTHER_N_SETS" = " other sets";
+"WORKOUT_START_ERR" = "Unable to start workout";
+"WORKOUT_STOP_ERR" = "Workout terminated due to an error";
+"WORKOUT_SAVING" = "Saving Workout...";
 "WORKOUT_SAVED" = "Workout saved";
 "WORKOUT_SAVE_ERROR" = "Error saving workout";

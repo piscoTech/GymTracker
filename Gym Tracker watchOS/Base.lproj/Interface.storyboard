@@ -77,7 +77,7 @@
                                         </label>
                                     </items>
                                 </group>
-                                <timer alignment="right" textAlignment="right" id="mDf-hu-RLR">
+                                <timer alignment="right" textAlignment="right" previewedSeconds="0" id="mDf-hu-RLR">
                                     <fontDescription key="font" type="system" pointSize="19"/>
                                 </timer>
                             </items>
@@ -148,7 +148,7 @@
                         </group>
                         <group width="1" alignment="left" verticalAlignment="center" layout="vertical" id="M38-jO-4Re">
                             <items>
-                                <label alignment="center" text="[Saved/Error]" textAlignment="center" id="iYS-LM-B57"/>
+                                <label alignment="center" text="[Saved/Error]" textAlignment="center" numberOfLines="0" id="iYS-LM-B57"/>
                                 <button width="1" alignment="left" title="Done" id="bd2-gx-3dq">
                                     <connections>
                                         <action selector="exitWorkout" destination="Ye5-rJ-hLV" id="yi2-xD-nhO"/>
@@ -167,6 +167,11 @@
                                     <action selector="cancelWorkout" destination="Ye5-rJ-hLV" id="E4v-uH-Teq"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="End Now" icon="accept" id="Pyl-Gw-NhM">
+                                <connections>
+                                    <action selector="endWorkout" destination="Ye5-rJ-hLV" id="vGn-1s-j73"/>
+                                </connections>
+                            </menuItem>
                         </items>
                     </menu>
                     <connections>
@@ -180,6 +185,7 @@
                         <outlet property="restLbl" destination="8iX-21-eFp" id="2aC-38-PrW"/>
                         <outlet property="setRepWeightLbl" destination="ZkP-lM-XZO" id="aWp-OF-XPf"/>
                         <outlet property="timerLbl" destination="mDf-hu-RLR" id="cAe-6N-FdA"/>
+                        <outlet property="workoutDoneBtn" destination="bd2-gx-3dq" id="GWf-Eh-Wig"/>
                         <outlet property="workoutDoneGrp" destination="M38-jO-4Re" id="Eh5-Na-rKP"/>
                         <outlet property="workoutDoneLbl" destination="iYS-LM-B57" id="HXK-oH-XUy"/>
                     </connections>
