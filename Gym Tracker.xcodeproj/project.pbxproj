@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		7A11B9831E8691AB004CE1F7 /* UpdateWeightInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A11B9821E8691AB004CE1F7 /* UpdateWeightInterfaceController.swift */; };
 		7A3B8EEF1E856E8400F139F0 /* ExecuteWorkoutIC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A3B8EEE1E856E8400F139F0 /* ExecuteWorkoutIC.swift */; };
+		7A5346B51E86B16400AC5638 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A5346B41E86B16400AC5638 /* HealthKit.framework */; };
+		7A5346BB1E86BA7000AC5638 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A5346BA1E86BA7000AC5638 /* HealthKit.framework */; };
 		7A5A47F11E78A3CF00ABCF46 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7A5A47F01E78A3CF00ABCF46 /* Localizable.strings */; };
 		7A5D2B711E8422DB008EED4C /* WorkoutDetailIC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A5D2B701E8422DB008EED4C /* WorkoutDetailIC.swift */; };
 		7A5EFA491E81408000A4CF41 /* Main iOS & watchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADC03BD1E78A187005BDC25 /* Main iOS & watchOS.swift */; };
@@ -160,6 +162,10 @@
 		7A11B9821E8691AB004CE1F7 /* UpdateWeightInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateWeightInterfaceController.swift; sourceTree = "<group>"; };
 		7A3B8EEE1E856E8400F139F0 /* ExecuteWorkoutIC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExecuteWorkoutIC.swift; sourceTree = "<group>"; };
 		7A4539C31E75CFC200AD0215 /* Gym Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gym Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7A5346B21E86B16400AC5638 /* Gym Tracker watchOS Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Gym Tracker watchOS Extension.entitlements"; sourceTree = "<group>"; };
+		7A5346B41E86B16400AC5638 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS3.1.sdk/System/Library/Frameworks/HealthKit.framework; sourceTree = DEVELOPER_DIR; };
+		7A5346B91E86BA6F00AC5638 /* Gym Tracker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Gym Tracker.entitlements"; sourceTree = "<group>"; };
+		7A5346BA1E86BA7000AC5638 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		7A5A47F01E78A3CF00ABCF46 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		7A5D2B701E8422DB008EED4C /* WorkoutDetailIC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkoutDetailIC.swift; sourceTree = "<group>"; };
 		7ACE8B601E76CF710011F839 /* MBLibrary.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MBLibrary.xcodeproj; path = ../MBLibrary/MBLibrary.xcodeproj; sourceTree = "<group>"; };
@@ -199,6 +205,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7ACE8B6F1E76D0D00011F839 /* MBLibrary.framework in Frameworks */,
+				7A5346BB1E86BA7000AC5638 /* HealthKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -207,6 +214,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7ACF6DB91E803B0300579B67 /* MBLibrary.framework in Frameworks */,
+				7A5346B51E86B16400AC5638 /* HealthKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -222,6 +230,7 @@
 				7ACF6D821E802FD200579B67 /* Gym Tracker watchOS */,
 				7ACF6D911E802FD200579B67 /* Gym Tracker watchOS Extension */,
 				7A4539C41E75CFC200AD0215 /* Products */,
+				7A5346B31E86B16400AC5638 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -235,9 +244,19 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		7A5346B31E86B16400AC5638 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7A5346BA1E86BA7000AC5638 /* HealthKit.framework */,
+				7A5346B41E86B16400AC5638 /* HealthKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		7A5A47F51E78A3EA00ABCF46 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				7A5346B91E86BA6F00AC5638 /* Gym Tracker.entitlements */,
 				7ADC03D01E78A328005BDC25 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -287,6 +306,7 @@
 		7ACF6DA91E80317A00579B67 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				7A5346B21E86B16400AC5638 /* Gym Tracker watchOS Extension.entitlements */,
 				7ACF6D981E802FD200579B67 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -434,6 +454,11 @@
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = C8D57YLUAC;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.HealthKit = {
+								enabled = 1;
+							};
+						};
 					};
 					7ACF6D801E802FD200579B67 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -444,6 +469,14 @@
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = C8D57YLUAC;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.BackgroundModes.watchos.extension = {
+								enabled = 1;
+							};
+							com.apple.HealthKit.watchos = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -673,6 +706,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEALTH_READ_DATA = "Monitor heart rate during workout and read data for creating a workout.";
+				HEALTH_WRITE_DATA = "Save completed gym workout.";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -718,6 +753,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEALTH_READ_DATA = "Monitor heart rate during workout and read data for creating a workout.";
+				HEALTH_WRITE_DATA = "Save completed gym workout.";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
@@ -731,6 +768,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Gym Tracker iOS/Gym Tracker.entitlements";
 				DEVELOPMENT_TEAM = C8D57YLUAC;
 				INFOPLIST_FILE = "$(SRCROOT)/Gym Tracker iOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -745,6 +783,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Gym Tracker iOS/Gym Tracker.entitlements";
 				DEVELOPMENT_TEAM = C8D57YLUAC;
 				INFOPLIST_FILE = "$(SRCROOT)/Gym Tracker iOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -794,6 +833,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
+				CODE_SIGN_ENTITLEMENTS = "Gym Tracker watchOS Extension/Gym Tracker watchOS Extension.entitlements";
 				DEVELOPMENT_TEAM = C8D57YLUAC;
 				INFOPLIST_FILE = "Gym Tracker watchOS Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
@@ -811,6 +851,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
+				CODE_SIGN_ENTITLEMENTS = "Gym Tracker watchOS Extension/Gym Tracker watchOS Extension.entitlements";
 				DEVELOPMENT_TEAM = C8D57YLUAC;
 				INFOPLIST_FILE = "Gym Tracker watchOS Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";

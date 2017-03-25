@@ -32,6 +32,10 @@ class WorkoutListInterfaceController: WKInterfaceController {
     override func willActivate() {
         // This method is called when watch view controller is about to be visible to user
         super.willActivate()
+		
+		if !preferences.authorized || preferences.authVersion < authRequired {
+			authorize()
+		}
     }
     
     override func didDeactivate() {
@@ -72,6 +76,15 @@ class WorkoutListInterfaceController: WKInterfaceController {
 		}
 		
 		 workoutDetail?.reloadData()
+	}
+	
+	func authorize() {
+		healthStore.requestAuthorization(toShare: healthWriteData, read: healthReadData) { (success, _) in
+			if success {
+				preferences.authorized = true
+				preferences.authVersion = authRequired
+			}
+		}
 	}
 	
 	override func contextForSegue(withIdentifier segueIdentifier: String, in table: WKInterfaceTable, rowIndex: Int) -> Any? {

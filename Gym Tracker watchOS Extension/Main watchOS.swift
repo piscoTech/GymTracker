@@ -7,6 +7,7 @@
 //
 
 import WatchKit
+import HealthKit
 
 var appDelegate: ExtensionDelegate = {
 	return WKExtension.shared().delegate as! ExtensionDelegate

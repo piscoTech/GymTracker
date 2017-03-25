@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import HealthKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, DataManagerDelegate {
@@ -40,6 +41,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, DataManagerDelegate {
 
 	func applicationWillTerminate(_ application: UIApplication) {
 		// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+	}
+	
+	func applicationShouldRequestHealthAuthorization(_ application: UIApplication) {
+		healthStore.handleAuthorizationForExtension { _, _ in	}
 	}
 	
 	// MARK: - Data Manager Delegate

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import HealthKit
 
 let applicationDocumentsDirectory: URL = {
 	return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last!
@@ -16,6 +17,20 @@ let dataManager = DataManager.getManager()
 let preferences = Preferences.getPreferences()
 let timesSign = "×"
 let maxRest: TimeInterval = 5 * 60
+
+///Keep track of the version of health authorization required, increase this number to automatically display an authorization request.
+let authRequired = 1
+///List of health data to require access to.
+let healthReadData = Set([
+	HKObjectType.quantityType(forIdentifier: .heartRate)!,
+	HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!
+])
+///List of health data to require write access to.
+let healthWriteData = Set([
+	HKObjectType.workoutType(),
+	HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!
+])
+let healthStore = HKHealthStore()
 
 extension DispatchQueue {
 	

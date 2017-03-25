@@ -25,6 +25,9 @@ enum PreferenceKeys: String, KeyValueStoreKey {
 	case runningWorkoutSource = "runningWorkoutSource"
 	case runningWorkoutNeedsTransfer = "runningWorkoutNeedsTransfer"
 	
+	case authorized = "authorized"
+	case authVersion = "authVersion"
+	
 }
 
 enum RunningWorkoutSource: String {
@@ -183,6 +186,28 @@ class Preferences {
 		}
 		set {
 			local.set(newValue, forKey: PreferenceKeys.runningWorkoutNeedsTransfer)
+			local.synchronize()
+		}
+	}
+	
+	// MARK: - Health Access
+	
+	var authorized: Bool {
+		get {
+			return local.bool(forKey: PreferenceKeys.authorized)
+		}
+		set {
+			local.set(newValue, forKey: PreferenceKeys.authorized)
+			local.synchronize()
+		}
+	}
+	
+	var authVersion: Int {
+		get {
+			return local.integer(forKey: PreferenceKeys.authVersion)
+		}
+		set {
+			local.set(newValue, forKey: PreferenceKeys.authVersion)
 			local.synchronize()
 		}
 	}
