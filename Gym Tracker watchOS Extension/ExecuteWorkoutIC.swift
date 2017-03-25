@@ -28,6 +28,9 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController {
 	@IBOutlet var restExercizeNameLbl: WKInterfaceLabel!
 	@IBOutlet var nextUpLbl: WKInterfaceLabel!
 	
+	@IBOutlet var workoutDoneGrp: WKInterfaceGroup!
+	@IBOutlet var workoutDoneLbl: WKInterfaceLabel!
+	
 	private let noHeart = "– –"
 	private let nextTxt = NSLocalizedString("NEXT_EXERCIZE_FLAG", comment: "Next:")
 	private let nextEndTxt = NSLocalizedString("NEXT_EXERCIZE_END", comment: "End")
@@ -39,6 +42,7 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController {
 	private var curPart = 0
 	private var isRestMode = false
 	private var restTimer: Timer?
+	var addWeight = 0.0
 	
 	override func awake(withContext context: Any?) {
         super.awake(withContext: context)
@@ -60,6 +64,7 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController {
 		timerLbl.setDate(start)
 		timerLbl.start()
 		
+		workoutDoneGrp.setHidden(true)
 		nextStep(true)
     }
 
@@ -76,8 +81,7 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController {
 	private func nextStep(_ isInitialSetup: Bool = false) {
 		if !isInitialSetup {
 			guard let curEx = exercizes.first else {
-				// TODO: Save workout
-				cancelWorkout()
+				saveWorkout()
 				return
 			}
 			
@@ -95,8 +99,7 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController {
 		}
 		
 		guard let curEx = exercizes.first else {
-			// TODO: Save workout
-			cancelWorkout()
+			saveWorkout()
 			return
 		}
 		
@@ -112,14 +115,19 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController {
 				return
 			}
 			
+			if curPart == 0 {
+				// Reset add weight for new exercize
+				addWeight = 0
+			}
+			
 			if curPart % 2 == 0 {
 				setRest = nil
 				exercizeNameLbl.setText(curEx.name)
 				setRepWeightLbl.setText(set.description)
 				
-				let otherSetCount = curEx.sets.count - setN - 1
-				if otherSetCount > 0 {
-					otherSetsLbl.setText("\(otherSetCount)\(otherSetCount > 1 ? otherSetsTxt : otherSetTxt)")
+				let otherSet = Array(curEx.setList.suffix(from: setN + 1))
+				if otherSet.count > 0 {
+					otherSetsLbl.setText("\(otherSet.count)\(otherSet.count > 1 ? otherSetsTxt : otherSetTxt): " + otherSet.map { "\($0.weight.toString())kg" }.joined(separator: ", "))
 					otherSetsLbl.setHidden(false)
 				} else {
 					otherSetsLbl.setHidden(true)
@@ -196,13 +204,34 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController {
 			return
 		}
 		
+		if let curEx = exercizes.first, !curEx.isRest, let set = curEx.set(n: Int32(curPart / 2)) {
+			presentController(withName: "updateWeight", context: UpdateWeightData(workoutController: self, set: set, sum: addWeight))
+		}
 		nextStep()
 	}
 	
-	@IBAction func cancelWorkout() {
+	private func saveWorkout() {
 		timerLbl.stop()
-		
 		dataManager.setRunningWorkout(nil, fromSource: .watch)
+		
+		currentSetGrp.setHidden(true)
+		currentSetGrp.setHidden(true)
+		nextUpLbl.setHidden(true)
+		workoutDoneGrp.setHidden(false)
+		
+		if true {
+			workoutDoneLbl.setText(NSLocalizedString("WORKOUT_SAVED", comment: "Saved"))
+		} else {
+			workoutDoneLbl.setText(NSLocalizedString("WORKOUT_SAVE_ERROR", comment: "Error"))
+		}
+	}
+	
+	@IBAction func cancelWorkout() {
+		dataManager.setRunningWorkout(nil, fromSource: .watch)
+		exitWorkout()
+	}
+	
+	@IBAction func exitWorkout() {
 		appDelegate.restoredefaultState()
 	}
 

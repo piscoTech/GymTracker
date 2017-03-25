@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="f3a-Tn-603">
-    <device id="watch38" orientation="portrait">
+    <device id="watch42" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -91,10 +91,17 @@
                                         </label>
                                         <group width="1" alignment="left" layout="vertical" spacing="0.0" id="wNH-rK-hqr">
                                             <items>
-                                                <label alignment="left" text="[10x20kg]" id="ZkP-lM-XZO">
-                                                    <fontDescription key="font" style="UICTFontTextStyleCaption2"/>
-                                                </label>
-                                                <label alignment="left" text="[N other sets]" id="V1b-Db-h3Z">
+                                                <group width="1" alignment="left" id="NeG-zb-b9q">
+                                                    <items>
+                                                        <label alignment="left" text="[10x20kg]" id="ZkP-lM-XZO">
+                                                            <fontDescription key="font" style="UICTFontTextStyleCaption2"/>
+                                                        </label>
+                                                        <label alignment="left" text="reps" id="I7m-Aq-eFC">
+                                                            <fontDescription key="font" style="UICTFontTextStyleCaption2"/>
+                                                        </label>
+                                                    </items>
+                                                </group>
+                                                <label alignment="left" text="[N other sets]" numberOfLines="0" id="V1b-Db-h3Z">
                                                     <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
                                                 </label>
                                             </items>
@@ -139,6 +146,16 @@
                                 </group>
                             </items>
                         </group>
+                        <group width="1" alignment="left" verticalAlignment="center" layout="vertical" id="M38-jO-4Re">
+                            <items>
+                                <label alignment="center" text="[Saved/Error]" textAlignment="center" id="iYS-LM-B57"/>
+                                <button width="1" alignment="left" title="Done" id="bd2-gx-3dq">
+                                    <connections>
+                                        <action selector="exitWorkout" destination="Ye5-rJ-hLV" id="yi2-xD-nhO"/>
+                                    </connections>
+                                </button>
+                            </items>
+                        </group>
                         <label width="1" alignment="center" verticalAlignment="bottom" text="NEXT: [Next Exercize]" textAlignment="center" id="COt-rO-686">
                             <fontDescription key="font" type="system" pointSize="8"/>
                         </label>
@@ -163,10 +180,94 @@
                         <outlet property="restLbl" destination="8iX-21-eFp" id="2aC-38-PrW"/>
                         <outlet property="setRepWeightLbl" destination="ZkP-lM-XZO" id="aWp-OF-XPf"/>
                         <outlet property="timerLbl" destination="mDf-hu-RLR" id="cAe-6N-FdA"/>
+                        <outlet property="workoutDoneGrp" destination="M38-jO-4Re" id="Eh5-Na-rKP"/>
+                        <outlet property="workoutDoneLbl" destination="iYS-LM-B57" id="HXK-oH-XUy"/>
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="117" y="456"/>
+            <point key="canvasLocation" x="117" y="483"/>
+        </scene>
+        <!--updateWeight-->
+        <scene sceneID="u0t-wj-7YZ">
+            <objects>
+                <controller identifier="updateWeight" id="gZe-MZ-R7h" customClass="UpdateWeightInterfaceController" customModule="Gym_Tracker_watchOS_Extension">
+                    <items>
+                        <label alignment="left" text="Update Weight" id="hYo-pw-K45">
+                            <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
+                        </label>
+                        <group width="1" height="0.40000000000000002" alignment="left" layout="vertical" id="t46-yV-JjH">
+                            <items>
+                                <group width="1" alignment="center" verticalAlignment="bottom" id="eD1-vK-cZY">
+                                    <items>
+                                        <label alignment="center" verticalAlignment="center" text="[30]" id="eeb-UW-bK4"/>
+                                        <label alignment="center" verticalAlignment="center" text="+" id="30y-lu-pfZ"/>
+                                        <label alignment="center" verticalAlignment="center" text="−" id="BL9-HX-LBU"/>
+                                        <label alignment="center" verticalAlignment="center" text="[0]" id="mLf-O2-5LE"/>
+                                        <label alignment="center" verticalAlignment="center" text="kg" id="Lxl-OG-qIu"/>
+                                    </items>
+                                </group>
+                                <button width="0.5" height="27" alignment="center" verticalAlignment="bottom" title="Done" id="Nbb-Hy-b2b">
+                                    <fontDescription key="font" style="UICTFontTextStyleBody"/>
+                                    <connections>
+                                        <action selector="done" destination="gZe-MZ-R7h" id="6Bs-Aw-BFP"/>
+                                    </connections>
+                                </button>
+                            </items>
+                        </group>
+                        <group width="1" alignment="left" verticalAlignment="bottom" id="jfz-bX-bex">
+                            <items>
+                                <button width="0.32000000000000001" height="25" alignment="left" verticalAlignment="bottom" title="+½" id="r1t-fI-ZOF">
+                                    <color key="backgroundColor" red="0.0" green="0.75294117647058822" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <connections>
+                                        <action selector="addHalf" destination="gZe-MZ-R7h" id="Dae-Bn-Lp1"/>
+                                    </connections>
+                                </button>
+                                <button width="0.32000000000000001" height="25" alignment="center" verticalAlignment="bottom" title="+1" id="q4i-Xa-0Pc">
+                                    <color key="backgroundColor" red="0.0" green="0.75294117647058822" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <connections>
+                                        <action selector="addOne" destination="gZe-MZ-R7h" id="YpK-bD-eyo"/>
+                                    </connections>
+                                </button>
+                                <button width="0.32000000000000001" height="25" alignment="right" verticalAlignment="bottom" title="+5" id="6dG-dj-X0a">
+                                    <color key="backgroundColor" red="0.0" green="0.75294117647058822" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <connections>
+                                        <action selector="addFive" destination="gZe-MZ-R7h" id="qMs-or-3aM"/>
+                                    </connections>
+                                </button>
+                            </items>
+                        </group>
+                        <group width="1" alignment="left" verticalAlignment="bottom" id="Y3f-g6-21x">
+                            <items>
+                                <button width="0.32000000000000001" height="25" alignment="left" title="−½" id="WgL-E2-hyn">
+                                    <color key="backgroundColor" red="0.75294117647058822" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <connections>
+                                        <action selector="minusHalf" destination="gZe-MZ-R7h" id="ajT-nQ-F9Q"/>
+                                    </connections>
+                                </button>
+                                <button width="0.32000000000000001" height="25" alignment="center" title="−1" id="nWn-JI-wwF">
+                                    <color key="backgroundColor" red="0.75294117647058822" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <connections>
+                                        <action selector="minusOne" destination="gZe-MZ-R7h" id="ob0-Lg-qNt"/>
+                                    </connections>
+                                </button>
+                                <button width="0.32000000000000001" height="25" alignment="right" title="−5" id="VRO-zf-2gN">
+                                    <color key="backgroundColor" red="0.75294117647058822" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <connections>
+                                        <action selector="minusFive" destination="gZe-MZ-R7h" id="7Ac-VO-gQK"/>
+                                    </connections>
+                                </button>
+                            </items>
+                        </group>
+                    </items>
+                    <connections>
+                        <outlet property="add" destination="mLf-O2-5LE" id="NzG-Nn-nJA"/>
+                        <outlet property="base" destination="eeb-UW-bK4" id="SzQ-t1-sac"/>
+                        <outlet property="minus" destination="BL9-HX-LBU" id="qLz-61-QBz"/>
+                        <outlet property="plus" destination="30y-lu-pfZ" id="q8q-AZ-scd"/>
+                    </connections>
+                </controller>
+            </objects>
+            <point key="canvasLocation" x="382" y="438"/>
         </scene>
         <!--Workout-->
         <scene sceneID="Zdc-Zm-5g9">

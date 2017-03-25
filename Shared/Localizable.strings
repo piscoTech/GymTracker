@@ -35,3 +35,5 @@
 "NEXT_EXERCIZE_REST" = " rest";
 "OTHER_N_SET" = " other set";
 "OTHER_N_SETS" = " other sets";
+"WORKOUT_SAVED" = "Workout saved";
+"WORKOUT_SAVE_ERROR" = "Error saving workout";

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7A11B9831E8691AB004CE1F7 /* UpdateWeightInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A11B9821E8691AB004CE1F7 /* UpdateWeightInterfaceController.swift */; };
 		7A3B8EEF1E856E8400F139F0 /* ExecuteWorkoutIC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A3B8EEE1E856E8400F139F0 /* ExecuteWorkoutIC.swift */; };
 		7A5A47F11E78A3CF00ABCF46 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7A5A47F01E78A3CF00ABCF46 /* Localizable.strings */; };
 		7A5D2B711E8422DB008EED4C /* WorkoutDetailIC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A5D2B701E8422DB008EED4C /* WorkoutDetailIC.swift */; };
@@ -156,6 +157,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		7A11B9821E8691AB004CE1F7 /* UpdateWeightInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateWeightInterfaceController.swift; sourceTree = "<group>"; };
 		7A3B8EEE1E856E8400F139F0 /* ExecuteWorkoutIC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExecuteWorkoutIC.swift; sourceTree = "<group>"; };
 		7A4539C31E75CFC200AD0215 /* Gym Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gym Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A5A47F01E78A3CF00ABCF46 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
@@ -296,6 +298,7 @@
 				7ACF6D921E802FD200579B67 /* WorkoutListIC.swift */,
 				7A5D2B701E8422DB008EED4C /* WorkoutDetailIC.swift */,
 				7A3B8EEE1E856E8400F139F0 /* ExecuteWorkoutIC.swift */,
+				7A11B9821E8691AB004CE1F7 /* UpdateWeightInterfaceController.swift */,
 				7ADCF6901E81135700ECF011 /* TableView CellControllers.swift */,
 			);
 			name = Controller;
@@ -568,6 +571,7 @@
 				7ACF6D931E802FD200579B67 /* WorkoutListIC.swift in Sources */,
 				7ACF6DAF1E8038FB00579B67 /* Exercize.swift in Sources */,
 				7ACF6DB01E8038FB00579B67 /* RepsSet.swift in Sources */,
+				7A11B9831E8691AB004CE1F7 /* UpdateWeightInterfaceController.swift in Sources */,
 				7ACF6DAE1E8038FB00579B67 /* Workout.swift in Sources */,
 				7ACF6DB11E80390100579B67 /* GymTracker.xcdatamodeld in Sources */,
 				7A3B8EEF1E856E8400F139F0 /* ExecuteWorkoutIC.swift in Sources */,
