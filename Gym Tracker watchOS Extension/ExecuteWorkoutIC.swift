@@ -51,6 +51,7 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, HKWorkoutSession
 	private var invalidateBPM: Timer!
 	private var workoutEvents = [HKWorkoutEvent]()
 	private var hasTerminationError = false
+	private var terminateAndSave = true
 	
 	override func awake(withContext context: Any?) {
         super.awake(withContext: context)
@@ -139,8 +140,10 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, HKWorkoutSession
 			}
 			invalidateBPM?.invalidate()
 			
-			DispatchQueue.main.async {
-				self.saveWorkout()
+			if terminateAndSave && (fromState == .running || fromState == .paused) {
+				DispatchQueue.main.async {
+					self.saveWorkout()
+				}
 			}
 		}
 	}
@@ -215,8 +218,6 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, HKWorkoutSession
 		}
 		
 		if let restTime = setRest {
-			WKInterfaceDevice.current().play(.click)
-			
 			guard restTime > 0 else {
 				// A rest time of 0:00 is allowed between sets, jump to next set
 				nextStep()
@@ -245,6 +246,10 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, HKWorkoutSession
 			restLbl.stop()
 			restGrp.setHidden(true)
 			currentSetGrp.setHidden(false)
+		}
+		
+		if !isInitialSetup {
+			WKInterfaceDevice.current().play(.click)
 		}
 		isRestMode = setRest != nil
 		
@@ -356,6 +361,8 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, HKWorkoutSession
 	}
 	
 	@IBAction func cancelWorkout() {
+		self.terminateAndSave = false
+		healthStore.end(self.session)
 		dataManager.setRunningWorkout(nil, fromSource: .watch)
 		exitWorkout()
 	}
