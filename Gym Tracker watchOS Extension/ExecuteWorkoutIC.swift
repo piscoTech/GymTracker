@@ -15,20 +15,21 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, HKWorkoutSession
 	@IBOutlet weak var timerLbl: WKInterfaceTimer!
 	@IBOutlet weak var bpmLbl: WKInterfaceLabel!
 	
-	@IBOutlet var currentSetGrp: WKInterfaceGroup!
-	@IBOutlet var exercizeNameLbl: WKInterfaceLabel!
-	@IBOutlet var setRepWeightLbl: WKInterfaceLabel!
-	@IBOutlet var otherSetsLbl: WKInterfaceLabel!
+	@IBOutlet weak var currentSetGrp: WKInterfaceGroup!
+	@IBOutlet weak var exercizeNameLbl: WKInterfaceLabel!
+	@IBOutlet weak var currentSetInfoGrp: WKInterfaceGroup!
+	@IBOutlet weak var setRepWeightLbl: WKInterfaceLabel!
+	@IBOutlet weak var otherSetsLbl: WKInterfaceLabel!
+	@IBOutlet weak var doneSetBtn: WKInterfaceButton!
 	
-	@IBOutlet var restGrp: WKInterfaceGroup!
+	@IBOutlet weak var restGrp: WKInterfaceGroup!
 	
-	@IBOutlet var restLbl: WKInterfaceTimer!
-	@IBOutlet var restExercizeNameLbl: WKInterfaceLabel!
-	@IBOutlet var nextUpLbl: WKInterfaceLabel!
+	@IBOutlet weak var restLbl: WKInterfaceTimer!
+	@IBOutlet weak var nextUpLbl: WKInterfaceLabel!
 	
-	@IBOutlet var workoutDoneGrp: WKInterfaceGroup!
-	@IBOutlet var workoutDoneLbl: WKInterfaceLabel!
-	@IBOutlet var workoutDoneBtn: WKInterfaceButton!
+	@IBOutlet weak var workoutDoneGrp: WKInterfaceGroup!
+	@IBOutlet weak var workoutDoneLbl: WKInterfaceLabel!
+	@IBOutlet weak var workoutDoneBtn: WKInterfaceButton!
 	
 	private let noHeart = "– –"
 	private let nextTxt = NSLocalizedString("NEXT_EXERCIZE_FLAG", comment: "Next:")
@@ -185,8 +186,10 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, HKWorkoutSession
 		
 		if curEx.isRest {
 			setRest = curEx.rest
-			restExercizeNameLbl.setHidden(true)
+			currentSetGrp.setHidden(true)
 		} else {
+			currentSetGrp.setHidden(false)
+			
 			let setN = curPart / 2
 			guard let set = curEx.set(n: Int32(setN)) else {
 				nextStep()
@@ -210,10 +213,13 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, HKWorkoutSession
 				} else {
 					otherSetsLbl.setHidden(true)
 				}
+				
+				currentSetInfoGrp.setHidden(false)
+				doneSetBtn.setHidden(false)
 			} else {
 				setRest = set.rest
-				restExercizeNameLbl.setText(curEx.name)
-				restExercizeNameLbl.setHidden(false)
+				currentSetInfoGrp.setHidden(true)
+				doneSetBtn.setHidden(true)
 			}
 		}
 		
@@ -227,7 +233,6 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, HKWorkoutSession
 			restLbl.setDate(Date().addingTimeInterval(restTime))
 			restLbl.start()
 			restGrp.setHidden(false)
-			currentSetGrp.setHidden(true)
 			
 			restTimer = Timer.scheduledTimer(withTimeInterval: restTime, repeats: false) { _ in
 				self.restLbl.stop()
@@ -245,7 +250,6 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, HKWorkoutSession
 		} else {
 			restLbl.stop()
 			restGrp.setHidden(true)
-			currentSetGrp.setHidden(false)
 		}
 		
 		if !isInitialSetup {
@@ -285,7 +289,8 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, HKWorkoutSession
 		}
 		
 		if let curEx = exercizes.first, !curEx.isRest, let set = curEx.set(n: Int32(curPart / 2)) {
-			presentController(withName: "updateWeight", context: UpdateWeightData(workoutController: self, set: set, sum: addWeight))
+			let maxPart = 2 * curEx.sets.count - 1
+			presentController(withName: "updateWeight", context: UpdateWeightData(workoutController: self, set: set, sum: addWeight, saveAddWeight: curPart < maxPart - 1))
 		}
 		nextStep()
 	}

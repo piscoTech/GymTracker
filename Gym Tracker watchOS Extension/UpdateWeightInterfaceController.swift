@@ -14,6 +14,7 @@ struct UpdateWeightData {
 	let workoutController: ExecuteWorkoutInterfaceController
 	let set: RepsSet
 	let sum: Double
+	let saveAddWeight: Bool
 	
 }
 
@@ -23,6 +24,7 @@ class UpdateWeightInterfaceController: WKInterfaceController {
 	private var set: RepsSet!
 	
 	private var sum = 0.0
+	private var doSave = true
 	
 	@IBOutlet weak var base: WKInterfaceLabel!
 	@IBOutlet weak var plus: WKInterfaceLabel!
@@ -42,6 +44,7 @@ class UpdateWeightInterfaceController: WKInterfaceController {
 		self.delegate = data.workoutController
 		self.set = data.set
 		self.sum = data.sum
+		self.doSave = data.saveAddWeight
 		
 		base.setText(set.weight.toString())
 		updateView()
@@ -78,7 +81,7 @@ class UpdateWeightInterfaceController: WKInterfaceController {
 		if sum != 0 {
 			// Avoid unnecessary saves
 			set.set(weight: sum + set.weight)
-			if dataManager.persistChangesForObjects([set], andDeleteObjects: []) {
+			if dataManager.persistChangesForObjects([set], andDeleteObjects: []) && doSave {
 				delegate.addWeight = sum
 			}
 		}

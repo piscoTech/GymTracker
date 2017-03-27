@@ -117,33 +117,26 @@
                                 </button>
                             </items>
                         </group>
-                        <group width="1" alignment="left" verticalAlignment="center" layout="vertical" spacing="0.0" id="VRN-Uk-ci7" userLabel="Rest">
+                        <group width="1" alignment="left" verticalAlignment="center" layout="vertical" spacing="7" id="VRN-Uk-ci7" userLabel="Rest">
                             <items>
-                                <label alignment="center" text="[Exercize Name]" textAlignment="center" numberOfLines="0" id="Wyd-gV-nXV">
-                                    <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
-                                </label>
-                                <group width="1" alignment="left" layout="vertical" spacing="7" id="fjF-eM-JQM">
+                                <group width="1" alignment="left" id="hqT-X8-kMg">
                                     <items>
-                                        <group width="1" alignment="left" id="hqT-X8-kMg">
-                                            <items>
-                                                <timer alignment="center" id="8iX-21-eFp">
-                                                    <fontDescription key="font" type="system" pointSize="25"/>
-                                                    <calendarUnit key="units" minute="YES" second="YES"/>
-                                                </timer>
-                                                <label alignment="center" text="rest" id="bsb-Ii-UXf">
-                                                    <fontDescription key="font" type="system" pointSize="25"/>
-                                                </label>
-                                            </items>
-                                        </group>
-                                        <button width="0.80000000000000004" height="25" alignment="center" title="End" id="9Br-5f-NyE">
-                                            <color key="backgroundColor" red="0.75294117647058822" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                            <fontDescription key="font" type="system" pointSize="13"/>
-                                            <connections>
-                                                <action selector="endRest" destination="Ye5-rJ-hLV" id="4dq-2w-lqO"/>
-                                            </connections>
-                                        </button>
+                                        <timer alignment="center" id="8iX-21-eFp">
+                                            <fontDescription key="font" type="system" pointSize="25"/>
+                                            <calendarUnit key="units" minute="YES" second="YES"/>
+                                        </timer>
+                                        <label alignment="center" text="rest" id="bsb-Ii-UXf">
+                                            <fontDescription key="font" type="system" pointSize="25"/>
+                                        </label>
                                     </items>
                                 </group>
+                                <button width="0.80000000000000004" height="25" alignment="center" title="End" id="9Br-5f-NyE">
+                                    <color key="backgroundColor" red="0.75294117647058822" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <fontDescription key="font" type="system" pointSize="13"/>
+                                    <connections>
+                                        <action selector="endRest" destination="Ye5-rJ-hLV" id="4dq-2w-lqO"/>
+                                    </connections>
+                                </button>
                             </items>
                         </group>
                         <group width="1" alignment="left" verticalAlignment="center" layout="vertical" id="M38-jO-4Re">
@@ -177,10 +170,11 @@
                     <connections>
                         <outlet property="bpmLbl" destination="8WJ-4H-ILz" id="x2P-Om-UxZ"/>
                         <outlet property="currentSetGrp" destination="g8Q-Xz-KGs" id="FR2-tg-gva"/>
+                        <outlet property="currentSetInfoGrp" destination="NeG-zb-b9q" id="oIu-rJ-58d"/>
+                        <outlet property="doneSetBtn" destination="UF6-FT-XB6" id="Q8d-2L-RLx"/>
                         <outlet property="exercizeNameLbl" destination="es3-lO-YvL" id="ptR-dY-eLL"/>
                         <outlet property="nextUpLbl" destination="COt-rO-686" id="Ynb-fZ-H52"/>
                         <outlet property="otherSetsLbl" destination="V1b-Db-h3Z" id="JNd-RV-VBJ"/>
-                        <outlet property="restExercizeNameLbl" destination="Wyd-gV-nXV" id="mGb-Oc-yqn"/>
                         <outlet property="restGrp" destination="VRN-Uk-ci7" id="H1H-SA-9Ze"/>
                         <outlet property="restLbl" destination="8iX-21-eFp" id="2aC-38-PrW"/>
                         <outlet property="setRepWeightLbl" destination="ZkP-lM-XZO" id="aWp-OF-XPf"/>
