@@ -136,10 +136,12 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, HKWorkoutSession
 		}
 		if toState == .ended {
 			end = date
+			timerLbl.stop()
 			if let heart = heartQuery {
 				healthStore.stop(heart)
 			}
 			invalidateBPM?.invalidate()
+			restTimer?.invalidate()
 			
 			if terminateAndSave && (fromState == .running || fromState == .paused) {
 				DispatchQueue.main.async {
@@ -297,7 +299,7 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, HKWorkoutSession
 	
 	@IBAction func endWorkout() {
 		currentSetGrp.setHidden(true)
-		currentSetGrp.setHidden(true)
+		restGrp.setHidden(true)
 		nextUpLbl.setHidden(true)
 		
 		workoutDoneBtn.setEnabled(false)
@@ -309,7 +311,6 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, HKWorkoutSession
 	
 	private func saveWorkout() {
 		let endTxt = hasTerminationError ? NSLocalizedString("WORKOUT_STOP_ERR", comment: "Err") + "\n" : ""
-		timerLbl.stop()
 		dataManager.setRunningWorkout(nil, fromSource: .watch)
 		
 		let activeEnergyType = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!
