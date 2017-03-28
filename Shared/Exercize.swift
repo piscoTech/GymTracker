@@ -36,7 +36,7 @@ class Exercize: DataObject {
 	private let restKey = "rest"
 	
 	override var description: String {
-		return "N \(order): \(name) - \(sets.count) set(s) - \(setsSummary)"
+		return "N \(order): \(String(describing: name)) - \(sets.count) set(s) - \(setsSummary)"
 	}
 	
 	override class func loadWithID(_ id: String) -> Exercize? {
