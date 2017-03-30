@@ -83,6 +83,8 @@ class UpdateWeightInterfaceController: WKInterfaceController {
 			set.set(weight: sum + set.weight)
 			if dataManager.persistChangesForObjects([set], andDeleteObjects: []) && doSave {
 				delegate.addWeight = sum
+			} else {
+				dataManager.discardAllChanges()
 			}
 		}
 		
