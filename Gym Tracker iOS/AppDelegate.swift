@@ -13,12 +13,37 @@ import HealthKit
 class AppDelegate: UIResponder, UIApplicationDelegate, DataManagerDelegate {
 
 	var window: UIWindow?
-	var workoutList: WorkoutListTableViewController!
+	weak var workoutList: WorkoutListTableViewController!
+	// executeWorkout...
+	weak var settings: SettingsViewController!
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 		dataManager.delegate = self
 		
+		let tabBarController = self.window!.rootViewController as! UITabBarController
+//		tabBarController.tabBar.items![0].selectedImage =
+//		tabBarController.tabBar.items![1].selectedImage =
+		tabBarController.tabBar.items![2].selectedImage = #imageLiteral(resourceName: "Settings Active")
+		
 		return true
+	}
+	
+	func authorizeHealthAccess() {
+		healthStore.requestAuthorization(toShare: healthWriteData, read: healthReadData) { success, _ in
+			if success {
+				preferences.authorized = true
+				preferences.authVersion = authRequired
+			}
+		}
+	}
+	
+	func applicationShouldRequestHealthAuthorization(_ application: UIApplication) {
+		healthStore.handleAuthorizationForExtension { success, _ in
+			if success {
+				preferences.authorized = true
+				preferences.authVersion = authRequired
+			}
+		}
 	}
 
 	func applicationWillResignActive(_ application: UIApplication) {
@@ -41,10 +66,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, DataManagerDelegate {
 
 	func applicationWillTerminate(_ application: UIApplication) {
 		// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-	}
-	
-	func applicationShouldRequestHealthAuthorization(_ application: UIApplication) {
-		healthStore.handleAuthorizationForExtension { _, _ in	}
 	}
 	
 	// MARK: - Data Manager Delegate

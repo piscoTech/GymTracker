@@ -45,3 +45,5 @@
 "WORKOUT_RESUME_TEXT" = "The app was closed while a workout was in progress, do you want to resume it?";
 "WORKOUT_DO_RESUME" = "Yes";
 "WORKOUT_DONT_RESUME" = "No";
+
+"REPORT_TEXT" = "Report any problem on Twitter @piscoTech or at GitHub tapping Source Code.";
