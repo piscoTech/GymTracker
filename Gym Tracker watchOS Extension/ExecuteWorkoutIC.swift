@@ -10,6 +10,13 @@ import WatchKit
 import HealthKit
 import Foundation
 
+struct ExecuteWorkoutData {
+	
+	let workout: Workout
+	let resumeData: (start: Date, curExercize: Int, curPart: Int)?
+	
+}
+
 class ExecuteWorkoutInterfaceController: WKInterfaceController, HKWorkoutSessionDelegate {
 	
 	@IBOutlet weak var timerLbl: WKInterfaceTimer!
@@ -38,6 +45,7 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, HKWorkoutSession
 	private let otherSetTxt = NSLocalizedString("OTHER_N_SET", comment: "other set")
 	private let otherSetsTxt = NSLocalizedString("OTHER_N_SETS", comment: "other sets")
 	
+	private var restoring = false
 	private var workout: Workout!
 	private var start: Date!
 	private var end: Date!
@@ -57,16 +65,36 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, HKWorkoutSession
 	override func awake(withContext context: Any?) {
         super.awake(withContext: context)
 		
-		guard let workout = context as? Workout else {
+		guard let data = context as? ExecuteWorkoutData else {
 			appDelegate.restoredefaultState()
 			return
 		}
 		
 		appDelegate.executeWorkout = self
-		self.workout = workout
+		self.workout = data.workout
         dataManager.setRunningWorkout(workout, fromSource: .watch)
 		
 		exercizes = workout.exercizeList
+		
+		if let (date, exercize, part) = data.resumeData {
+			restoring = true
+			start = date
+			curPart = part
+			
+			for _ in 0 ..< exercize {
+				guard exercizes.count > 0 else {
+					break
+				}
+				
+				exercizes.remove(at: 0)
+			}
+			
+			preferences.currentExercize = exercize
+			preferences.currentPart = part
+		} else {
+			preferences.currentExercize = 0
+			preferences.currentPart = 0
+		}
 		
 		bpmLbl.setText(noHeart)
 		currentSetGrp.setHidden(true)
@@ -101,7 +129,8 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, HKWorkoutSession
 	
 	func workoutSession(_ workoutSession: HKWorkoutSession, didChangeTo toState: HKWorkoutSessionState, from fromState: HKWorkoutSessionState, date: Date) {
 		if fromState == .notStarted && toState == .running {
-			start = date
+			start = self.start ?? date
+			preferences.currentStart = start
 			
 			let heartUnit = HKUnit.count().unitDivided(by: .minute())
 			let heartRate = HKObjectType.quantityType(forIdentifier: .heartRate)!
@@ -127,7 +156,7 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, HKWorkoutSession
 			healthStore.execute(heartQuery)
 			
 			DispatchQueue.main.async {
-				self.timerLbl.setDate(date)
+				self.timerLbl.setDate(self.start)
 				self.timerLbl.start()
 				self.nextUpLbl.setHidden(false)
 				
@@ -169,13 +198,20 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, HKWorkoutSession
 			if curEx.isRest {
 				exercizes.remove(at: 0)
 				curPart = 0
+				
+				preferences.currentExercize += 1
+				preferences.currentPart = curPart
 			} else {
 				let maxPart = 2 * curEx.sets.count - 1
 				curPart += 1
 				if curPart >= maxPart {
 					exercizes.remove(at: 0)
 					curPart = 0
+					
+					preferences.currentExercize += 1
 				}
+				
+				preferences.currentPart = curPart
 			}
 		}
 		
@@ -203,23 +239,34 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, HKWorkoutSession
 				addWeight = 0
 			}
 			
-			if curPart % 2 == 0 {
-				setRest = nil
-				exercizeNameLbl.setText(curEx.name)
-				setRepWeightLbl.setText(set.description)
-				
+			let setInfoText = {
+				self.exercizeNameLbl.setText(curEx.name)
 				let otherSet = Array(curEx.setList.suffix(from: setN + 1))
 				if otherSet.count > 0 {
-					otherSetsLbl.setText("\(otherSet.count)\(otherSet.count > 1 ? otherSetsTxt : otherSetTxt): " + otherSet.map { "\($0.weight.toString())kg" }.joined(separator: ", "))
-					otherSetsLbl.setHidden(false)
+					self.otherSetsLbl.setText("\(otherSet.count)\(otherSet.count > 1 ? self.otherSetsTxt : self.otherSetTxt): " + otherSet.map { "\($0.weight.toString())kg" }.joined(separator: ", "))
+					self.otherSetsLbl.setHidden(false)
 				} else {
-					otherSetsLbl.setHidden(true)
+					self.otherSetsLbl.setHidden(true)
 				}
+			}
+			
+			if curPart % 2 == 0 {
+				setRest = nil
+				setRepWeightLbl.setText(set.description)
+				
+				setInfoText()
 				
 				currentSetInfoGrp.setHidden(false)
 				doneSetBtn.setHidden(false)
 			} else {
 				setRest = set.rest
+				
+				if restoring {
+					setInfoText()
+					
+					restoring = false
+				}
+				
 				currentSetInfoGrp.setHidden(true)
 				doneSetBtn.setHidden(true)
 			}

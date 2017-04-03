@@ -10,14 +10,30 @@ import WatchKit
 
 class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
 	
-	weak var workoutList: WorkoutListInterfaceController?
+	weak var workoutList: WorkoutListInterfaceController? {
+		didSet {
+			guard let list = workoutList, tryResumeData != nil else {
+				return
+			}
+			
+			list.resumeWorkout()
+		}
+	}
 	weak var executeWorkout: ExecuteWorkoutInterfaceController?
+	
+	var tryResumeData: (workout: Workout, start: Date, curExercize: Int, curPart: Int)?
 
     func applicationDidFinishLaunching() {
         // Perform any final initialization of your application.
 		
 		dataManager.delegate = self
-		if let src = preferences.runningWorkoutSource, src == .watch, preferences.runningWorkout != nil {
+		if let src = preferences.runningWorkoutSource, src == .watch, let workoutID = preferences.runningWorkout {
+			if let workout = workoutID.getObject() as? Workout {
+				tryResumeData = (workout, preferences.currentStart, preferences.currentExercize, preferences.currentPart)
+				
+				workoutList?.resumeWorkout()
+			}
+			
 			dataManager.setRunningWorkout(nil, fromSource: .watch)
 		}
     }

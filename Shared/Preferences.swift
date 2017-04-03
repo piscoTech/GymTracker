@@ -24,6 +24,9 @@ enum PreferenceKeys: String, KeyValueStoreKey {
 	case runningWorkout = "runningWorkout"
 	case runningWorkoutSource = "runningWorkoutSource"
 	case runningWorkoutNeedsTransfer = "runningWorkoutNeedsTransfer"
+	case currentStart = "currentStart"
+	case currentExercize = "currentExercize"
+	case currentPart = "currentPart"
 	
 	case authorized = "authorized"
 	case authVersion = "authVersion"
@@ -186,6 +189,36 @@ class Preferences {
 		}
 		set {
 			local.set(newValue, forKey: PreferenceKeys.runningWorkoutNeedsTransfer)
+			local.synchronize()
+		}
+	}
+	
+	var currentStart: Date {
+		get {
+			return local.object(forKey: PreferenceKeys.currentStart) as? Date ?? Date()
+		}
+		set {
+			local.set(newValue, forKey: PreferenceKeys.currentStart)
+			local.synchronize()
+		}
+	}
+	
+	var currentExercize: Int {
+		get {
+			return local.integer(forKey: PreferenceKeys.currentExercize)
+		}
+		set {
+			local.set(newValue, forKey: PreferenceKeys.currentExercize)
+			local.synchronize()
+		}
+	}
+	
+	var currentPart: Int {
+		get {
+			return local.integer(forKey: PreferenceKeys.currentPart)
+		}
+		set {
+			local.set(newValue, forKey: PreferenceKeys.currentPart)
 			local.synchronize()
 		}
 	}

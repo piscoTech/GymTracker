@@ -40,3 +40,8 @@
 "WORKOUT_SAVING" = "Saving Workout...";
 "WORKOUT_SAVED" = "Workout saved";
 "WORKOUT_SAVE_ERROR" = "Error saving workout";
+
+"WORKOUT_RESUME" = "Resume Workout?";
+"WORKOUT_RESUME_TEXT" = "The app was closed while a workout was in progress, do you want to resume it?";
+"WORKOUT_DO_RESUME" = "Yes";
+"WORKOUT_DONT_RESUME" = "No";
