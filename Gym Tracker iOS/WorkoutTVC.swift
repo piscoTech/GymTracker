@@ -170,6 +170,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		
 		editMode = true
 		navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+		appDelegate.tabController.isPopToWorkoutListRootEnabled = false
 		updateButtons()
 		
 		tableView.reloadSections([0, 1, 2], with: .automatic)
@@ -179,6 +180,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		editMode = false
 		deletedEntities.removeAll()
 		navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+		appDelegate.tabController.isPopToWorkoutListRootEnabled = true
 		if exercizeController != nil {
 			_ = navigationController?.popToViewController(self, animated: true)
 		}
