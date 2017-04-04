@@ -14,7 +14,7 @@
         <scene sceneID="8BS-AI-wce">
             <objects>
                 <tabBarController id="bX0-Oh-Bd3" sceneMemberID="viewController">
-                    <tabBar key="tabBar" contentMode="scaleToFill" id="bbf-fS-KPR">
+                    <tabBar key="tabBar" contentMode="scaleToFill" barStyle="black" id="bbf-fS-KPR">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -33,7 +33,7 @@
         <scene sceneID="fS6-zU-087">
             <objects>
                 <tableViewController id="BRB-Zp-8pa" customClass="WorkoutTableViewController" customModule="Gym_Tracker" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="1GT-qo-kjE">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="black" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="1GT-qo-kjE">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
@@ -239,7 +239,7 @@
                                                         <action selector="archiveWorkout:" destination="BRB-Zp-8pa" eventType="touchUpInside" id="Jcb-8b-YSE"/>
                                                     </connections>
                                                 </button>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uS1-Pa-pw1">
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uS1-Pa-pw1" customClass="DestructiveButton" customModule="Gym_Tracker" customModuleProvider="target">
                                                     <rect key="frame" x="179.5" y="0.0" width="179.5" height="43.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="tintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -297,7 +297,7 @@
         <scene sceneID="hBf-CP-6iY">
             <objects>
                 <tableViewController id="wnE-xT-JRS" customClass="ExercizeTableViewController" customModule="Gym_Tracker" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="Laj-8I-GPp">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="black" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="Laj-8I-GPp">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
@@ -517,7 +517,7 @@
         <scene sceneID="295-VX-ZV3">
             <objects>
                 <navigationController id="WeA-GV-jR9" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="GWF-cx-01D">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="GWF-cx-01D">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -534,7 +534,7 @@
             <objects>
                 <navigationController id="tEt-eo-Qvy" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="List" id="hjI-Uz-unY"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Lov-RP-mj5">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="Lov-RP-mj5">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -551,7 +551,7 @@
             <objects>
                 <navigationController id="tc5-4r-HGy" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Workout" id="UQ5-Su-Sxf"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="ZPU-wR-dTU">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="ZPU-wR-dTU">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -578,11 +578,11 @@
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Coming soon..." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GZ3-wF-lKr">
                                 <rect key="frame" x="130" y="323" width="115" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="GZ3-wF-lKr" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="7Yc-Hu-0rt" secondAttribute="leadingMargin" constant="50" id="OXQ-71-cPY"/>
                             <constraint firstItem="GZ3-wF-lKr" firstAttribute="centerX" secondItem="7Yc-Hu-0rt" secondAttribute="centerX" id="Ply-yK-34c"/>
@@ -600,7 +600,7 @@
         <scene sceneID="1Kp-pD-8rv">
             <objects>
                 <tableViewController id="dKJ-OA-jBh" customClass="WorkoutListTableViewController" customModule="Gym_Tracker" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="7Fy-I0-mr8">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="black" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="7Fy-I0-mr8">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
@@ -674,28 +674,31 @@
         <scene sceneID="b4Q-Pu-1Xo">
             <objects>
                 <tableViewController id="ksa-AT-X2p" customClass="SettingsViewController" customModule="Gym_Tracker" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="afT-BX-1jR">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="black" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="afT-BX-1jR">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <sections>
                             <tableViewSection id="Awv-6B-pqC">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="authorize" textLabel="rOF-pE-bmf" style="IBUITableViewCellStyleDefault" id="gUV-oK-7ij">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="authorize" id="gUV-oK-7ij">
                                         <rect key="frame" x="0.0" y="35" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gUV-oK-7ij" id="KRM-FV-sNi">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Authorize Health data access" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="rOF-pE-bmf">
-                                                    <rect key="frame" x="15" y="0.0" width="345" height="43.5"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NaP-Hp-vj3">
+                                                    <rect key="frame" x="15" y="0.0" width="212" height="43.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                    <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
+                                                    <state key="normal" title="Authorize Health data access"/>
+                                                </button>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstItem="NaP-Hp-vj3" firstAttribute="leading" secondItem="KRM-FV-sNi" secondAttribute="leadingMargin" constant="7" id="F8v-KT-7Mb"/>
+                                                <constraint firstAttribute="bottom" secondItem="NaP-Hp-vj3" secondAttribute="bottom" id="P0T-n5-DLz"/>
+                                                <constraint firstItem="NaP-Hp-vj3" firstAttribute="top" secondItem="KRM-FV-sNi" secondAttribute="top" id="qe4-Oj-f3R"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </cells>
@@ -739,7 +742,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="CvL-4C-vxP" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Settings" image="Settings" id="9ed-Fx-Anb"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="aFh-ly-qZp">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="aFh-ly-qZp">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -759,4 +762,5 @@
     <inferredMetricsTieBreakers>
         <segue reference="dvn-sA-uLv"/>
     </inferredMetricsTieBreakers>
+    <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

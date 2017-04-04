@@ -51,6 +51,7 @@
 		7ADCF6911E81135700ECF011 /* TableView CellControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADCF6901E81135700ECF011 /* TableView CellControllers.swift */; };
 		7AE10A431E7D6F1000A64CF7 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE10A421E7D6F1000A64CF7 /* Preferences.swift */; };
 		7AEE4D661E812A9200D843EB /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7AEE4D641E812A9200D843EB /* Interface.storyboard */; };
+		7AF561271E93A845009BF658 /* DestructiveButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AF561261E93A845009BF658 /* DestructiveButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -199,6 +200,7 @@
 		7ADCF6901E81135700ECF011 /* TableView CellControllers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TableView CellControllers.swift"; sourceTree = "<group>"; };
 		7AE10A421E7D6F1000A64CF7 /* Preferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		7AEE4D651E812A9200D843EB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
+		7AF561261E93A845009BF658 /* DestructiveButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DestructiveButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -379,6 +381,7 @@
 				7ADC03CD1E78A328005BDC25 /* Main.storyboard */,
 				7ADC03CB1E78A328005BDC25 /* LaunchScreen.storyboard */,
 				7ADC03D21E78A328005BDC25 /* TableView Cells.swift */,
+				7AF561261E93A845009BF658 /* DestructiveButton.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -581,6 +584,7 @@
 				7ADC03DC1E78A328005BDC25 /* TableView Cells.swift in Sources */,
 				7ADC03D51E78A328005BDC25 /* AppDelegate.swift in Sources */,
 				7AE10A431E7D6F1000A64CF7 /* Preferences.swift in Sources */,
+				7AF561271E93A845009BF658 /* DestructiveButton.swift in Sources */,
 				7ADC03C31E78A187005BDC25 /* Main iOS & watchOS.swift in Sources */,
 				7ACF6DB71E8039EB00579B67 /* Main iOS.swift in Sources */,
 				7ADC03DE1E78A328005BDC25 /* WorkoutTVC.swift in Sources */,

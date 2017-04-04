@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="f3a-Tn-603">
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="f3a-Tn-603">
     <device id="watch42" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="watchOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="11508"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="12029"/>
     </dependencies>
     <scenes>
         <!--Workouts-->
@@ -324,4 +324,5 @@
             <point key="canvasLocation" x="382" y="134"/>
         </scene>
     </scenes>
+    <color key="tintColor" red="0.75686274509803919" green="0.92156862745098034" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

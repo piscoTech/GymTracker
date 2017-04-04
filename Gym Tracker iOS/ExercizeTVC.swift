@@ -298,8 +298,11 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		return Int(ceil(maxRest / 30)) + 1
 	}
 	
-	func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-		return (TimeInterval(row) * 30).getDuration(hideHours: true)
+	func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
+		let color = UILabel.appearance().textColor ?? .black
+		let txt = (TimeInterval(row) * 30).getDuration(hideHours: true)
+		
+		return NSAttributedString(string: txt, attributes: [NSForegroundColorAttributeName : color])
 	}
 	
 	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
