@@ -413,7 +413,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		tableView.deselectRow(at: indexPath, animated: true)
 		
-		guard indexPath.section == 1 && exercizeCell(for: indexPath) == .rest else {
+		guard editMode, indexPath.section == 1 && exercizeCell(for: indexPath) == .rest else {
 			return
 		}
 		let exNum = exercizeNumber(for: indexPath)
