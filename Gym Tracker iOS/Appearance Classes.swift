@@ -1,5 +1,5 @@
 //
-//  DestructiveButton.swift
+//  Appearance Classes.swift
 //  Gym Tracker
 //
 //  Created by Marco Boschi on 04/04/2017.
@@ -9,3 +9,4 @@
 import UIKit
 
 class DestructiveButton: UIButton {}
+class HeartLabel: UILabel {}

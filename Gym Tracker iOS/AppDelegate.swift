@@ -15,7 +15,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, DataManagerDelegate {
 	var window: UIWindow?
 	weak var tabController: TabBarController!
 	weak var workoutList: WorkoutListTableViewController!
-	// executeWorkout...
+	weak var currentWorkout: CurrentWorkoutViewController! {
+		didSet {
+			if currentWorkout != nil {
+				DispatchQueue.main.async {
+					for b in self.mirrorUpdates {
+						b()
+					}
+					
+					self.mirrorUpdates = []
+				}
+			}
+		}
+	}
 	weak var settings: SettingsViewController!
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
@@ -37,6 +49,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, DataManagerDelegate {
 			let textColor = #colorLiteral(red: 0.9198423028, green: 0.9198423028, blue: 0.9198423028, alpha: 1)
 			UILabel.appearance().textColor = textColor
 			UILabel.appearance(whenContainedInInstancesOf: [UITableViewHeaderFooterView.self]).textColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
+			HeartLabel.appearance().textColor = #colorLiteral(red: 1, green: 0.1882352941, blue: 0, alpha: 1)
 			
 			let textField = UITextField.appearance()
 			textField.textColor = textColor
@@ -109,6 +122,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate, DataManagerDelegate {
 	func cancelAndDisableEdit() {
 		DispatchQueue.main.async {
 			self.workoutList.enableEdit(false)
+		}
+	}
+	
+	private var mirrorUpdates = [() -> Void]()
+	
+	func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date) {
+		let block: () -> Void = {
+			self.currentWorkout?.updateMirroredWorkout(withCurrentExercize: exercize, part: part, andTime: date)
+		}
+		
+		if self.currentWorkout != nil {
+			DispatchQueue.main.async(execute: block)
+		} else {
+			mirrorUpdates.append(block)
+		}
+	}
+	
+	func mirroredWorkoutHasEnded() {
+		let block: () -> Void = {
+			self.currentWorkout?.mirroredWorkoutHasEnded()
+		}
+		
+		if self.currentWorkout != nil {
+			DispatchQueue.main.async(execute: block)
+		} else {
+			mirrorUpdates.append(block)
 		}
 	}
 

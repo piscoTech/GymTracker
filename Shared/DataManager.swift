@@ -239,11 +239,16 @@ class WCObject: Equatable {
 
 // MARK: - Delegate Protocol
 
-protocol DataManagerDelegate: class {
+@objc protocol DataManagerDelegate: class {
 	
 	func refreshData()
 	func cancelAndDisableEdit()
 	func enableEdit()
+	
+	@available(watchOS, unavailable)
+	func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date)
+	@available(watchOS, unavailable)
+	func mirroredWorkoutHasEnded()
 	
 }
 
@@ -407,6 +412,10 @@ class DataManager: NSObject {
 		
 		preferences.runningWorkoutNeedsTransfer = true
 		wcInterface.setRunningWorkout()
+	}
+	
+	func sendWorkoutStatusUpdate() {
+		wcInterface.sendWorkoutStatusUpdate()
 	}
 
 	// MARK: - Synchronization methods
@@ -679,6 +688,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 	private let changesKey = "changes"
 	private let deletionKey = "deletion"
 	private let currentWorkoutKey = "curWorkout"
+	private let currentWorkoutProgress = "curWorkoutProgress"
 	
 	fileprivate func sendUpdateForChangedObjects(_ data: [DataObject], andDeleted delete: [CDRecordID], markAsInitial: Bool = false) {
 		guard let sess = session, hasCounterPart else {
@@ -755,6 +765,10 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 	}
 
 	fileprivate func session(_ session: WCSession, didReceiveUserInfo userInfo: [String : Any] = [:]) {
+		if userInfo[isInitialDataKey] as? Bool ?? false, iswatchOS {
+			_ = dataManager.clearDatabase()
+		}
+		
 		if let curWorkout = userInfo[currentWorkoutKey] as? [Any], curWorkout.count == 2 {
 			// Pass something that's not an ID to signal that workout has ended
 			let w = CDRecordID(wcRepresentation: curWorkout[0] as? [String] ?? [])
@@ -763,14 +777,23 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 			
 			if w == nil {
 				dataManager.delegate?.enableEdit()
+				#if os(iOS)
+					dataManager.delegate?.mirroredWorkoutHasEnded()
+				#endif
 			} else {
 				dataManager.delegate?.cancelAndDisableEdit()
 			}
 		}
 		
-		if userInfo[isInitialDataKey] as? Bool ?? false, iswatchOS {
-			_ = dataManager.clearDatabase()
-		}
+		#if os(iOS)
+			if let currentProgress = userInfo[currentWorkoutProgress] as? [Any], currentProgress.count == 3,
+				let curExercize = currentProgress[0] as? Int, let curPart = currentProgress[1] as? Int, let time = currentProgress[2] as? Date,
+				preferences.runningWorkout != nil {
+				
+				dataManager.delegate?.updateMirroredWorkout(withCurrentExercize: curExercize, part: curPart, andTime: time)
+				
+			}
+		#endif
 		
 		DispatchQueue.gymDatabase.async {
 			let changes = preferences.saveRemote + WCObject.decodeArray(userInfo[self.changesKey] as? [[String : Any]] ?? [])
@@ -817,6 +840,18 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 				preferences.deleteRemote = []
 			}
 		}
+	}
+	
+	fileprivate func sendWorkoutStatusUpdate() {
+		guard iswatchOS, preferences.runningWorkout != nil, canComunicate, let sess = self.session else {
+			return
+		}
+		
+		sess.transferUserInfo([currentWorkoutProgress: [
+			preferences.currentExercize,
+			preferences.currentPart,
+			Date()
+		]])
 	}
 	
 	// MARK: - Watch initail setup

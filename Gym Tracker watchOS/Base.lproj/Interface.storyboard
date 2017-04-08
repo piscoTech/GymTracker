@@ -68,7 +68,7 @@
                                 <group alignment="left" id="x8p-Jy-vRC">
                                     <items>
                                         <label alignment="left" verticalAlignment="bottom" text="80" id="8WJ-4H-ILz">
-                                            <color key="textColor" red="1" green="0.18840348639455781" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="textColor" red="1" green="0.18823529411764706" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <fontDescription key="font" type="system" pointSize="19"/>
                                         </label>
                                         <label alignment="left" verticalAlignment="bottom" text="BPM" id="jp2-oR-PiF">
@@ -175,6 +175,7 @@
                         <outlet property="exercizeNameLbl" destination="es3-lO-YvL" id="ptR-dY-eLL"/>
                         <outlet property="nextUpLbl" destination="COt-rO-686" id="Ynb-fZ-H52"/>
                         <outlet property="otherSetsLbl" destination="V1b-Db-h3Z" id="JNd-RV-VBJ"/>
+                        <outlet property="restEndBtn" destination="9Br-5f-NyE" id="eJK-V8-PA7"/>
                         <outlet property="restGrp" destination="VRN-Uk-ci7" id="H1H-SA-9Ze"/>
                         <outlet property="restLbl" destination="8iX-21-eFp" id="2aC-38-PrW"/>
                         <outlet property="setRepWeightLbl" destination="ZkP-lM-XZO" id="aWp-OF-XPf"/>

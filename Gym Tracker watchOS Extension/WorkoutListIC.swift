@@ -106,7 +106,7 @@ class WorkoutListInterfaceController: WKInterfaceController {
 		}
 		let cancelAct = WKAlertAction(title: NSLocalizedString("WORKOUT_DONT_RESUME", comment: "No"), style: .destructive, handler: {})
 		
-		DispatchQueue.main.async {
+		DispatchQueue.main.asyncAfter(delay: 1) {
 			self.presentAlert(withTitle: NSLocalizedString("WORKOUT_RESUME", comment: "Resume?"), message: NSLocalizedString("WORKOUT_RESUME_TEXT", comment: "Resume?"), preferredStyle: .sideBySideButtonsAlert, actions: [resumeAct, cancelAct])
 		}
 		

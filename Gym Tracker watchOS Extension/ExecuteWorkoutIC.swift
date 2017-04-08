@@ -23,8 +23,9 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutVi
 	@IBOutlet weak var doneSetBtn: WKInterfaceButton!
 	
 	@IBOutlet weak var restGrp: WKInterfaceGroup!
-	
 	@IBOutlet weak var restLbl: WKInterfaceTimer!
+	@IBOutlet weak var restEndBtn: WKInterfaceButton!
+	
 	@IBOutlet weak var nextUpLbl: WKInterfaceLabel!
 	
 	@IBOutlet weak var workoutDoneGrp: WKInterfaceGroup!
@@ -100,8 +101,8 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutVi
 		doneSetBtn.setHidden(hidden)
 	}
 	
-	func startRestTimer(for time: TimeInterval) {
-		restLbl.setDate(Date().addingTimeInterval(time))
+	func startRestTimer(to date: Date) {
+		restLbl.setDate(date)
 		restLbl.start()
 	}
 	
@@ -111,6 +112,10 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutVi
 	
 	func setRestViewHidden(_ hidden: Bool) {
 		restGrp.setHidden(hidden)
+	}
+	
+	func setRestEndButtonHidden(_ hidden: Bool) {
+		restEndBtn.setHidden(hidden)
 	}
 	
 	func setWorkoutDoneViewHidden(_ hidden: Bool) {
@@ -172,6 +177,8 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutVi
 	@IBAction func cancelWorkout() {
 		workoutController.cancelWorkout()
 	}
+	
+	func workoutHasStarted() {}
 	
 	@IBAction func exitWorkoutTracking() {
 		appDelegate.restoredefaultState()
