@@ -78,12 +78,14 @@ class Workout: DataObject {
 		guard let e = exercize(n: Int32(from)), dest < exercizes.count else {
 			return
 		}
+		
+		let newIndex = dest > from ? dest + 1 : dest
 
-		for tmp in exercizes.filter({ Int($0.order) >= dest }) {
+		for tmp in exercizes.filter({ Int($0.order) >= newIndex }) {
 			tmp.order += 1
 		}
 		
-		e.order = Int32(dest)
+		e.order = Int32(newIndex)
 		recalculateExercizeOrder()
 	}
 	

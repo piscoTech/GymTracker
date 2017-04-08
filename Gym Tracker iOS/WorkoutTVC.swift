@@ -115,6 +115,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		case 0:
 			let cell = tableView.dequeueReusableCell(withIdentifier: "title", for: indexPath) as! SingleFieldCell
 			cell.isEnabled = editMode
+			cell.isUserInteractionEnabled = editMode
 			cell.textField.text = workout.name
 			return cell
 		case 1:
@@ -127,6 +128,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 			case .rest:
 				let cell = tableView.dequeueReusableCell(withIdentifier: "rest", for: indexPath) as! RestCell
 				cell.set(rest: e.rest)
+				cell.isUserInteractionEnabled = editMode
 				
 				return cell
 			case .exercize:
@@ -415,7 +417,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		tableView.deselectRow(at: indexPath, animated: true)
 		
-		guard editMode, indexPath.section == 1 && exercizeCell(for: indexPath) == .rest else {
+		guard editMode, workout.exercizes.count > 0, indexPath.section == 1 && exercizeCell(for: indexPath) == .rest else {
 			return
 		}
 		let exNum = exercizeNumber(for: indexPath)

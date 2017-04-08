@@ -9,18 +9,9 @@
 import WatchKit
 import Foundation
 
-struct UpdateWeightData {
-	
-	let workoutController: ExecuteWorkoutInterfaceController
-	let set: RepsSet
-	let sum: Double
-	let saveAddWeight: Bool
-	
-}
-
 class UpdateWeightInterfaceController: WKInterfaceController {
 	
-	private weak var delegate: ExecuteWorkoutInterfaceController!
+	private weak var delegate: ExecuteWorkoutController!
 	private var set: RepsSet!
 	
 	private var sum = 0.0
@@ -82,10 +73,12 @@ class UpdateWeightInterfaceController: WKInterfaceController {
 			// Avoid unnecessary saves
 			set.set(weight: sum + set.weight)
 			if dataManager.persistChangesForObjects([set], andDeleteObjects: []) && doSave {
-				delegate.addWeight = sum
+				delegate.setAddWeight(sum)
 			} else {
 				dataManager.discardAllChanges()
 			}
+		} else {
+			delegate.setAddWeight(sum)
 		}
 		
 		self.dismiss()

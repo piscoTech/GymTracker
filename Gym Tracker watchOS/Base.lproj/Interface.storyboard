@@ -144,7 +144,7 @@
                                 <label alignment="center" text="[Saved/Error]" textAlignment="center" numberOfLines="0" id="iYS-LM-B57"/>
                                 <button width="1" alignment="left" title="Done" id="bd2-gx-3dq">
                                     <connections>
-                                        <action selector="exitWorkout" destination="Ye5-rJ-hLV" id="yi2-xD-nhO"/>
+                                        <action selector="exitWorkoutTracking" destination="Ye5-rJ-hLV" id="owj-UI-ycu"/>
                                     </connections>
                                 </button>
                             </items>
@@ -169,8 +169,8 @@
                     </menu>
                     <connections>
                         <outlet property="bpmLbl" destination="8WJ-4H-ILz" id="x2P-Om-UxZ"/>
-                        <outlet property="currentSetGrp" destination="g8Q-Xz-KGs" id="FR2-tg-gva"/>
-                        <outlet property="currentSetInfoGrp" destination="NeG-zb-b9q" id="oIu-rJ-58d"/>
+                        <outlet property="currentExercizeGrp" destination="g8Q-Xz-KGs" id="hwK-Rz-ecP"/>
+                        <outlet property="currentSetGrp" destination="NeG-zb-b9q" id="rgg-BQ-e68"/>
                         <outlet property="doneSetBtn" destination="UF6-FT-XB6" id="Q8d-2L-RLx"/>
                         <outlet property="exercizeNameLbl" destination="es3-lO-YvL" id="ptR-dY-eLL"/>
                         <outlet property="nextUpLbl" destination="COt-rO-686" id="Ynb-fZ-H52"/>

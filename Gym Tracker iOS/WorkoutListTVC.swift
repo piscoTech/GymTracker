@@ -99,6 +99,10 @@ class WorkoutListTableViewController: UITableViewController {
         return cell
     }
 	
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		tableView.deselectRow(at: indexPath, animated: true)
+	}
+	
 	func enableEdit(_ flag: Bool) {
 		canEdit = flag
 		addButton.isEnabled = canEdit
