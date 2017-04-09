@@ -602,7 +602,7 @@
                                 </constraints>
                             </view>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="viH-kh-aJE">
-                                <rect key="frame" x="16" y="76" width="343" height="396.5"/>
+                                <rect key="frame" x="16" y="76" width="343" height="432.5"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Manage your workout from Apple Watch" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OLN-5A-dmz">
                                         <rect key="frame" x="0.0" y="0.0" width="343" height="18"/>
@@ -610,44 +610,55 @@
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="ZfI-9j-M1J" userLabel="Global Info">
-                                        <rect key="frame" x="0.0" y="22" width="343" height="34"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="zQj-aW-aWl">
+                                        <rect key="frame" x="0.0" y="22" width="343" height="70"/>
                                         <subviews>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gce-c5-AXh">
-                                                <rect key="frame" x="0.0" y="0.0" width="171.5" height="34"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="[Workout Title]" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cjt-UG-ZUf">
+                                                <rect key="frame" x="0.0" y="0.0" width="343" height="36"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="ZfI-9j-M1J" userLabel="Global Info">
+                                                <rect key="frame" x="0.0" y="36" width="343" height="34"/>
                                                 <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" text="60" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q6H-cy-TyW" customClass="HeartLabel" customModule="Gym_Tracker" customModuleProvider="target">
-                                                        <rect key="frame" x="0.0" y="0.0" width="34" height="33.5"/>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gce-c5-AXh">
+                                                        <rect key="frame" x="0.0" y="0.0" width="171.5" height="34"/>
+                                                        <subviews>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" text="60" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q6H-cy-TyW" customClass="HeartLabel" customModule="Gym_Tracker" customModuleProvider="target">
+                                                                <rect key="frame" x="0.0" y="0.0" width="34" height="33.5"/>
+                                                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
+                                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1" verticalHuggingPriority="251" text="BPM" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="30f-zD-4lS" customClass="HeartLabel" customModule="Gym_Tracker" customModuleProvider="target">
+                                                                <rect key="frame" x="36" y="9.5" width="135.5" height="24"/>
+                                                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle3"/>
+                                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                        </subviews>
+                                                        <constraints>
+                                                            <constraint firstAttribute="bottom" secondItem="q6H-cy-TyW" secondAttribute="bottom" id="8Qi-Ed-ISv"/>
+                                                            <constraint firstItem="30f-zD-4lS" firstAttribute="leading" secondItem="q6H-cy-TyW" secondAttribute="trailing" constant="2" id="FWD-5Y-0XM"/>
+                                                            <constraint firstAttribute="bottom" secondItem="30f-zD-4lS" secondAttribute="bottom" id="UjE-AT-b3C"/>
+                                                            <constraint firstItem="q6H-cy-TyW" firstAttribute="top" secondItem="gce-c5-AXh" secondAttribute="top" id="c6b-Re-AVb"/>
+                                                            <constraint firstItem="q6H-cy-TyW" firstAttribute="leading" secondItem="gce-c5-AXh" secondAttribute="leading" id="vOv-D5-Dyx"/>
+                                                            <constraint firstAttribute="trailing" secondItem="30f-zD-4lS" secondAttribute="trailing" id="y0f-T9-XTC"/>
+                                                        </constraints>
+                                                    </view>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="[0:00:00]" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iTA-AO-gvH">
+                                                        <rect key="frame" x="171.5" y="0.0" width="171.5" height="34"/>
                                                         <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
                                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1" verticalHuggingPriority="251" text="BPM" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="30f-zD-4lS" customClass="HeartLabel" customModule="Gym_Tracker" customModuleProvider="target">
-                                                        <rect key="frame" x="36" y="9.5" width="135.5" height="24"/>
-                                                        <fontDescription key="fontDescription" style="UICTFontTextStyleTitle3"/>
-                                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <nil key="highlightedColor"/>
-                                                    </label>
                                                 </subviews>
-                                                <constraints>
-                                                    <constraint firstAttribute="bottom" secondItem="q6H-cy-TyW" secondAttribute="bottom" id="8Qi-Ed-ISv"/>
-                                                    <constraint firstItem="30f-zD-4lS" firstAttribute="leading" secondItem="q6H-cy-TyW" secondAttribute="trailing" constant="2" id="FWD-5Y-0XM"/>
-                                                    <constraint firstAttribute="bottom" secondItem="30f-zD-4lS" secondAttribute="bottom" id="UjE-AT-b3C"/>
-                                                    <constraint firstItem="q6H-cy-TyW" firstAttribute="top" secondItem="gce-c5-AXh" secondAttribute="top" id="c6b-Re-AVb"/>
-                                                    <constraint firstItem="q6H-cy-TyW" firstAttribute="leading" secondItem="gce-c5-AXh" secondAttribute="leading" id="vOv-D5-Dyx"/>
-                                                    <constraint firstAttribute="trailing" secondItem="30f-zD-4lS" secondAttribute="trailing" id="y0f-T9-XTC"/>
-                                                </constraints>
-                                            </view>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="[0:00:00]" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iTA-AO-gvH">
-                                                <rect key="frame" x="171.5" y="0.0" width="171.5" height="34"/>
-                                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
-                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
+                                            </stackView>
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="7" translatesAutoresizingMaskIntoConstraints="NO" id="QbR-kw-1nr">
-                                        <rect key="frame" x="0.0" y="60" width="343" height="117.5"/>
+                                        <rect key="frame" x="0.0" y="96" width="343" height="117.5"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="[Exercize Name]" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v80-86-v0q">
                                                 <rect key="frame" x="0.0" y="0.0" width="343" height="26.5"/>
@@ -701,7 +712,7 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="7" translatesAutoresizingMaskIntoConstraints="NO" id="61V-WA-Qjb">
-                                        <rect key="frame" x="0.0" y="181.5" width="343" height="76.5"/>
+                                        <rect key="frame" x="0.0" y="217.5" width="343" height="76.5"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="ki9-eQ-4vP">
                                                 <rect key="frame" x="0.0" y="0.0" width="343" height="33.5"/>
@@ -731,7 +742,7 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="7" translatesAutoresizingMaskIntoConstraints="NO" id="OmQ-Vy-ydy">
-                                        <rect key="frame" x="0.0" y="262" width="343" height="76.5"/>
+                                        <rect key="frame" x="0.0" y="298" width="343" height="76.5"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="[Saved/Error]" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nBW-xg-fTU">
                                                 <rect key="frame" x="0.0" y="0.0" width="343" height="33.5"/>
@@ -747,7 +758,7 @@
                                         </subviews>
                                     </stackView>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ykE-Wf-oyO">
-                                        <rect key="frame" x="0.0" y="342.5" width="343" height="54"/>
+                                        <rect key="frame" x="0.0" y="378.5" width="343" height="54"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="NEXT: [Next Exercize]" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jxD-Of-6E4">
                                                 <rect key="frame" x="110" y="40" width="124" height="14.5"/>
@@ -797,6 +808,7 @@
                         <outlet property="workoutDoneInfo" destination="OmQ-Vy-ydy" id="bJo-Dp-EPh"/>
                         <outlet property="workoutDoneLbl" destination="nBW-xg-fTU" id="qRc-ds-0So"/>
                         <outlet property="workoutInfo" destination="viH-kh-aJE" id="8ph-3S-1Sq"/>
+                        <outlet property="workoutTitleLbl" destination="cjt-UG-ZUf" id="e4k-C8-AeX"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0KZ-dP-BH3" userLabel="First Responder" sceneMemberID="firstResponder"/>

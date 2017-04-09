@@ -414,6 +414,10 @@ class DataManager: NSObject {
 		wcInterface.setRunningWorkout()
 	}
 	
+	func sendWorkoutStartDate() {
+		wcInterface.sendWorkoutStartDate()
+	}
+	
 	func sendWorkoutStatusUpdate() {
 		wcInterface.sendWorkoutStatusUpdate()
 	}
@@ -688,6 +692,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 	private let changesKey = "changes"
 	private let deletionKey = "deletion"
 	private let currentWorkoutKey = "curWorkout"
+	private let currentWorkoutStartDate = "curWorkoutStartDate"
 	private let currentWorkoutProgress = "curWorkoutProgress"
 	
 	fileprivate func sendUpdateForChangedObjects(_ data: [DataObject], andDeleted delete: [CDRecordID], markAsInitial: Bool = false) {
@@ -786,6 +791,10 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 		}
 		
 		#if os(iOS)
+			if let curStart = userInfo[currentWorkoutStartDate] as? Date {
+				preferences.currentStart = curStart
+			}
+			
 			if let currentProgress = userInfo[currentWorkoutProgress] as? [Any], currentProgress.count == 3,
 				let curExercize = currentProgress[0] as? Int, let curPart = currentProgress[1] as? Int, let time = currentProgress[2] as? Date,
 				preferences.runningWorkout != nil {
@@ -840,6 +849,14 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 				preferences.deleteRemote = []
 			}
 		}
+	}
+	
+	fileprivate func sendWorkoutStartDate() {
+		guard iswatchOS, preferences.runningWorkout != nil, canComunicate, let sess = self.session else {
+			return
+		}
+		
+		sess.transferUserInfo([currentWorkoutStartDate: preferences.currentStart])
 	}
 	
 	fileprivate func sendWorkoutStatusUpdate() {

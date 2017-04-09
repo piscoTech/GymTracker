@@ -15,6 +15,7 @@ class CurrentWorkoutViewController: UIViewController, ExecuteWorkoutViewControll
 	@IBOutlet weak var noWorkoutLabel: UIView!
 	@IBOutlet weak var workoutInfo: UIStackView!
 
+	@IBOutlet weak var workoutTitleLbl: UILabel!
 	@IBOutlet weak var bpmLbl: UILabel!
 	@IBOutlet weak var timerLbl: UILabel!
 	
@@ -48,8 +49,12 @@ class CurrentWorkoutViewController: UIViewController, ExecuteWorkoutViewControll
 			b.layer.cornerRadius = 5
 		}
 		
+		for l in [bpmLbl!, timerLbl!, restTimerLbl!] {
+			l.font = l.font.makeMonospacedDigit()
+		}
+		
 		if preferences.runningWorkout != nil, let src = preferences.runningWorkoutSource, src == .watch {
-			updateMirroredWorkout(withCurrentExercize: preferences.currentExercize, part: preferences.currentPart, andTime: Date(), restoring: true)
+			updateMirroredWorkout(withCurrentExercize: preferences.currentExercize, part: preferences.currentPart, andTime: Date())
 		} else {
 			exitWorkoutTracking()
 		}
@@ -60,22 +65,20 @@ class CurrentWorkoutViewController: UIViewController, ExecuteWorkoutViewControll
         // Dispose of any resources that can be recreated.
     }
 	
-	func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date, restoring: Bool = false) {
+	func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date) {
 		guard preferences.runningWorkout != nil else {
 			return
 		}
 		
-		var doRestore = restoring
 		if workoutController == nil {
 			workoutController = ExecuteWorkoutController(mirrorWorkoutForViewController: self)
-			doRestore = exercize != 0 || part != 0
 		}
 		
 		guard let controller = workoutController, controller.isMirroring else {
 			return
 		}
 		
-		controller.updateMirroredWorkout(withCurrentExercize: exercize, part: part, andTime: date, restoring: doRestore)
+		controller.updateMirroredWorkout(withCurrentExercize: exercize, part: part, andTime: date)
 	}
 	
 	func mirroredWorkoutHasEnded() {
@@ -87,6 +90,10 @@ class CurrentWorkoutViewController: UIViewController, ExecuteWorkoutViewControll
 	}
 	
 	// MARK: - ExecuteWorkoutViewController
+	
+	func setWorkoutTitle(_ text: String) {
+		workoutTitleLbl.text = text
+	}
 	
 	func setBPM(_ text: String) {
 		bpmLbl.text = text

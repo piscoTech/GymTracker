@@ -60,6 +60,10 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutVi
 	
 	// MARK: - ExecuteWorkoutViewController
 	
+	func setWorkoutTitle(_ text: String) {
+		self.setTitle(text)
+	}
+	
 	func setBPM(_ text: String) {
 		bpmLbl.setText(text)
 	}

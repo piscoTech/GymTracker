@@ -27,6 +27,8 @@ struct UpdateWeightData {
 
 protocol ExecuteWorkoutViewController: AnyObject {
 	
+	func setWorkoutTitle(_ text: String)
+	
 	func setBPM(_ text: String)
 	func startTimer(at date: Date)
 	func stopTimer()
@@ -144,6 +146,7 @@ class ExecuteWorkoutController: NSObject {
 		
 		super.init()
 		
+		view.setWorkoutTitle(workout.name)
 		view.setBPM(noHeart)
 		view.setCurrentSetViewHidden(true)
 		view.setRestViewHidden(true)
@@ -203,6 +206,7 @@ class ExecuteWorkoutController: NSObject {
 		
 		super.init()
 		
+		view.setWorkoutTitle(workout.name)
 		view.setBPM(noHeart)
 		view.setCurrentSetViewHidden(true)
 		view.setRestViewHidden(true)
@@ -217,17 +221,13 @@ class ExecuteWorkoutController: NSObject {
 	// MARK: - Workout Handling
 	
 	@available(watchOS, unavailable)
-	func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date, restoring: Bool = false) {
+	func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date) {
 		guard isMirroring else {
 			preconditionFailure("Not mirroring a workout")
 		}
 		
 		if self.start == nil {
-			if !restoring {
-				start = date
-			} else {
-				start = preferences.currentStart
-			}
+			start = preferences.currentStart
 			workoutSessionStarted()
 		}
 		
@@ -253,6 +253,7 @@ class ExecuteWorkoutController: NSObject {
 	
 	fileprivate func workoutSessionStarted(_ date: Date? = nil) {
 		preferences.currentStart = start
+		dataManager.sendWorkoutStartDate()
 		
 		let heartUnit = HKUnit.count().unitDivided(by: .minute())
 		let heartRate = HKObjectType.quantityType(forIdentifier: .heartRate)!
