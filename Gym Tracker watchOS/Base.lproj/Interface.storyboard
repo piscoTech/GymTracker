@@ -4,7 +4,6 @@
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <deployment identifier="watchOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="12029"/>
     </dependencies>
@@ -186,7 +185,7 @@
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="117" y="483"/>
+            <point key="canvasLocation" x="117" y="475"/>
         </scene>
         <!--updateWeight-->
         <scene sceneID="u0t-wj-7YZ">

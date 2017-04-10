@@ -68,6 +68,7 @@ class ExecuteWorkoutController: NSObject {
 	private let source: RunningWorkoutSource
 	private(set) var isMirroring: Bool
 	
+	static let workoutNameMetadataKey = "Workout"
 	private let noHeart = "– –"
 	private let nextTxt = NSLocalizedString("NEXT_EXERCIZE_FLAG", comment: "Next:")
 	private let nextEndTxt = NSLocalizedString("NEXT_EXERCIZE_END", comment: "End")
@@ -103,6 +104,13 @@ class ExecuteWorkoutController: NSObject {
 		self.source = source
 		self.isMirroring = false
 		self.view = viewController
+		
+		view.setWorkoutTitle("")
+		view.setBPM(noHeart)
+		view.setCurrentSetViewHidden(true)
+		view.setRestViewHidden(true)
+		view.setWorkoutDoneViewHidden(true)
+		view.setNextUpTextHidden(true)
 		
 		restoring = false
 		start = nil
@@ -147,11 +155,6 @@ class ExecuteWorkoutController: NSObject {
 		super.init()
 		
 		view.setWorkoutTitle(workout.name)
-		view.setBPM(noHeart)
-		view.setCurrentSetViewHidden(true)
-		view.setRestViewHidden(true)
-		view.setWorkoutDoneViewHidden(true)
-		view.setNextUpTextHidden(true)
 		
 		let configuration = HKWorkoutConfiguration()
 		configuration.activityType = activityType
@@ -182,6 +185,13 @@ class ExecuteWorkoutController: NSObject {
 		self.isMirroring = true
 		self.view = viewController
 		
+		view.setWorkoutTitle("")
+		view.setBPM(noHeart)
+		view.setCurrentSetViewHidden(true)
+		view.setRestViewHidden(true)
+		view.setWorkoutDoneViewHidden(true)
+		view.setNextUpTextHidden(true)
+		
 		restoring = false
 		start = nil
 		end = nil
@@ -207,11 +217,6 @@ class ExecuteWorkoutController: NSObject {
 		super.init()
 		
 		view.setWorkoutTitle(workout.name)
-		view.setBPM(noHeart)
-		view.setCurrentSetViewHidden(true)
-		view.setRestViewHidden(true)
-		view.setWorkoutDoneViewHidden(true)
-		view.setNextUpTextHidden(true)
 		
 		DispatchQueue.main.async {
 			self.view.workoutHasStarted()
@@ -558,7 +563,10 @@ class ExecuteWorkoutController: NSObject {
 			                        totalEnergyBurned: totalEnergy,
 			                        totalDistance: nil,
 			                        device: HKDevice.local(),
-			                        metadata: [HKMetadataKeyIndoorWorkout : self.isIndoor]
+			                        metadata: [
+										HKMetadataKeyIndoorWorkout: self.isIndoor,
+										ExecuteWorkoutController.workoutNameMetadataKey: self.workout.name
+									]
 			)
 			
 			healthStore.save(workout, withCompletion: { success, _ in
