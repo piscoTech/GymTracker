@@ -58,9 +58,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, DataManagerDelegate {
 		
 		tabController = self.window!.rootViewController as! TabBarController
 		tabController.delegate = tabController
-//		tabController.tabBar.items![0].selectedImage =
-//		tabController.tabBar.items![1].selectedImage =
-		tabController.tabBar.items![2].selectedImage = #imageLiteral(resourceName: "Settings Active")
+		tabController.tabBar.items![1].selectedImage = #imageLiteral(resourceName: "Workout Active")
+		tabController.tabBar.items![2].selectedImage = #imageLiteral(resourceName: "Completed List Active")
+		tabController.tabBar.items![3].selectedImage = #imageLiteral(resourceName: "Settings Active")
+		
+		if !preferences.authorized || preferences.authVersion < authRequired {
+			authorizeHealthAccess()
+		}
 		
 		return true
 	}

@@ -22,12 +22,13 @@
                     <connections>
                         <segue destination="tEt-eo-Qvy" kind="relationship" relationship="viewControllers" id="nWz-9C-vId"/>
                         <segue destination="tc5-4r-HGy" kind="relationship" relationship="viewControllers" id="G4V-Kb-Ydc"/>
+                        <segue destination="tfD-U3-Rus" kind="relationship" relationship="viewControllers" id="sfX-HM-2UT"/>
                         <segue destination="CvL-4C-vxP" kind="relationship" relationship="viewControllers" id="bSO-cl-onC"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YMa-Kv-Lnd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-836" y="47"/>
+            <point key="canvasLocation" x="-836" y="361"/>
         </scene>
         <!--Workout-->
         <scene sceneID="fS6-zU-087">
@@ -533,7 +534,7 @@
         <scene sceneID="x2c-YM-sg4">
             <objects>
                 <navigationController id="tEt-eo-Qvy" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="List" id="hjI-Uz-unY"/>
+                    <tabBarItem key="tabBarItem" title="List" image="Workout List" id="hjI-Uz-unY"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="Lov-RP-mj5">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -550,7 +551,7 @@
         <scene sceneID="xOr-4G-nUM">
             <objects>
                 <navigationController id="tc5-4r-HGy" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Workout" id="UQ5-Su-Sxf"/>
+                    <tabBarItem key="tabBarItem" title="Workout" image="Workout" id="UQ5-Su-Sxf"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="ZPU-wR-dTU">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -889,6 +890,91 @@
             </objects>
             <point key="canvasLocation" x="1054" y="-708"/>
         </scene>
+        <!--Completed Workouts-->
+        <scene sceneID="9Pk-1r-jEU">
+            <objects>
+                <tableViewController id="91X-XT-krB" customClass="CompletedWorkoutsTableViewController" customModule="Gym_Tracker" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="71j-T8-EI1">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="noWorkout" textLabel="d1k-C9-CkZ" style="IBUITableViewCellStyleDefault" id="cE5-m0-WQm">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="cE5-m0-WQm" id="vqi-Lf-NfX">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="No Completed Workouts" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="d1k-C9-CkZ">
+                                            <rect key="frame" x="15" y="0.0" width="345" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="workout" textLabel="c38-V5-Acd" detailTextLabel="WtM-Qf-amc" style="IBUITableViewCellStyleSubtitle" id="T1c-Qg-y0R">
+                                <rect key="frame" x="0.0" y="72" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="T1c-Qg-y0R" id="LKA-9o-EwS">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="[Workout Name]" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="c38-V5-Acd">
+                                            <rect key="frame" x="15" y="5" width="126" height="20.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="[Time] – [Duration]" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="WtM-Qf-amc">
+                                            <rect key="frame" x="15" y="25.5" width="107" height="14.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="91X-XT-krB" id="zgn-OI-HK9"/>
+                            <outlet property="delegate" destination="91X-XT-krB" id="zgk-uT-eSv"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Completed Workouts" id="SgT-sD-d9g">
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="ra1-tC-yD4">
+                            <connections>
+                                <action selector="refresh:" destination="91X-XT-krB" id="bUP-s5-GqG"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yKF-5L-oCh" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1054" y="824"/>
+        </scene>
+        <!--Completed-->
+        <scene sceneID="bZl-zp-7az">
+            <objects>
+                <navigationController id="tfD-U3-Rus" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Completed" image="Completed List" id="WKe-VF-ODF"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="Dax-cx-DCJ">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="91X-XT-krB" kind="relationship" relationship="rootViewController" id="CL6-20-cvj"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="XFt-ye-8fb" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="134" y="823"/>
+        </scene>
         <!--Gym Tracker-->
         <scene sceneID="b4Q-Pu-1Xo">
             <objects>
@@ -953,7 +1039,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WT2-qQ-Hlx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1054" y="814"/>
+            <point key="canvasLocation" x="134" y="1557"/>
         </scene>
         <!--Settings-->
         <scene sceneID="MnO-BP-spP">
@@ -972,11 +1058,14 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PyX-cm-vZk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="133.59999999999999" y="813.64317841079469"/>
+            <point key="canvasLocation" x="-836" y="1557"/>
         </scene>
     </scenes>
     <resources>
+        <image name="Completed List" width="25" height="25"/>
         <image name="Settings" width="25" height="25"/>
+        <image name="Workout" width="25" height="25"/>
+        <image name="Workout List" width="25" height="25"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="dvn-sA-uLv"/>

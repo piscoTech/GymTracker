@@ -19,9 +19,10 @@ let timesSign = "×"
 let maxRest: TimeInterval = 5 * 60
 
 ///Keep track of the version of health authorization required, increase this number to automatically display an authorization request.
-let authRequired = 1
+let authRequired = 2
 ///List of health data to require access to.
 let healthReadData = Set([
+	HKObjectType.workoutType(),
 	HKObjectType.quantityType(forIdentifier: .heartRate)!,
 	HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!
 ])
