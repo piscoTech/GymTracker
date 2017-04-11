@@ -24,10 +24,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, DataManagerDelegate {
 					}
 					
 					self.mirrorUpdates = []
+					
+					if let w = self.pendingWorkoutStart {
+						self.currentWorkout.startWorkout(w)
+						self.pendingWorkoutStart = nil
+					}
 				}
 			}
 		}
 	}
+	weak var completedWorkouts: CompletedWorkoutsTableViewController!
 	weak var settings: SettingsViewController!
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
@@ -54,6 +60,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, DataManagerDelegate {
 			let textField = UITextField.appearance()
 			textField.textColor = textColor
 			textField.keyboardAppearance = .dark
+			
+			UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = #colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1)
 		}
 		
 		tabController = self.window!.rootViewController as! TabBarController
@@ -84,6 +92,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate, DataManagerDelegate {
 				preferences.authorized = true
 				preferences.authVersion = authRequired
 			}
+		}
+	}
+	
+	private var pendingWorkoutStart: Workout?
+	
+	func startWorkout(_ workout: Workout) {
+		tabController.selectedIndex = 1
+		
+		if let ctrl = currentWorkout {
+			pendingWorkoutStart = nil
+			
+			ctrl.startWorkout(workout)
+		} else {
+			pendingWorkoutStart = workout
 		}
 	}
 

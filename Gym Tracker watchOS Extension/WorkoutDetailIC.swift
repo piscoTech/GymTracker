@@ -41,6 +41,7 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 		delegate.workoutDetail = self
 		
 		reloadData(checkExistence: false)
+		updateButton()
 	}
 	
 	func reloadData(checkExistence: Bool = true) {

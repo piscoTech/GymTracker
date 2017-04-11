@@ -32,9 +32,3 @@ let healthWriteData = Set([
 	HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!
 ])
 let healthStore = HKHealthStore()
-
-extension DispatchQueue {
-	
-	static let gymDatabase = DispatchQueue(label: "Marco-Boschi.ios.Gym-Tracker.database")
-	
-}

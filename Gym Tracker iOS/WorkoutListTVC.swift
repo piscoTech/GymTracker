@@ -114,13 +114,48 @@ class WorkoutListTableViewController: UITableViewController {
 		}
 	}
 	
-	// MARK: - Delete & (Un)archive
+	// MARK: - Delete, (Un)archive & Start Workout
 
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-		return canEdit
+		return canEdit && (indexPath.section == 0 ? workouts : archivedWorkouts).count > 0
     }
 	
 	override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+		var act = [UITableViewRowAction]()
+		
+		if canEdit && indexPath.section == 0 {
+			let start = UITableViewRowAction(style: .default, title: NSLocalizedString("START_WORKOUT", comment: "Start")) { _, row in
+				self.tableView.setEditing(false, animated: true)
+				guard self.canEdit && row.section == 0 else {
+					return
+				}
+				
+				let workout = self.workouts[row.row]
+				appDelegate.startWorkout(workout)
+			}
+			start.backgroundColor = #colorLiteral(red: 0, green: 0.7529411765, blue: 0, alpha: 1)
+			act.append(start)
+		}
+		
+		let archive = UITableViewRowAction(style: .normal, title: NSLocalizedString((indexPath.section == 1 ? "UN" : "") + "ARCHIVE_WORKOUT", comment: "(un)archive")) { _, row in
+			self.tableView.setEditing(false, animated: true)
+			guard self.canEdit else {
+				return
+			}
+			
+			let workout = (row.section == 0 ? self.workouts : self.archivedWorkouts)[row.row]
+			let errTitle = NSLocalizedString((workout.archived ? "UN" : "") + "ARCHIVE_WORKOUT_FAIL", comment: "(Un)archive fail")
+			let archived = workout.archived
+			workout.archived = !archived
+			if dataManager.persistChangesForObjects([workout], andDeleteObjects: []) {
+				self.updateWorkout(workout, how: .archiveChange, wasArchived: archived)
+			} else {
+				dataManager.discardAllChanges()
+				let alert = UIAlertController(simpleAlert: errTitle, message: nil)
+				self.present(alert, animated: true)
+			}
+		}
+		act.append(archive)
 		
 		let del = UITableViewRowAction(style: .destructive, title: NSLocalizedString("DELETE", comment: "Del")) { _, row in
 			self.tableView.setEditing(false, animated: true)
@@ -144,26 +179,9 @@ class WorkoutListTableViewController: UITableViewController {
 			
 			self.present(confirm, animated: true)
 		}
-		let archive = UITableViewRowAction(style: .normal, title: NSLocalizedString((indexPath.section == 1 ? "UN" : "") + "ARCHIVE_WORKOUT", comment: "(un)archive")) { _, row in
-			self.tableView.setEditing(false, animated: true)
-			guard self.canEdit else {
-				return
-			}
-			
-			let workout = (row.section == 0 ? self.workouts : self.archivedWorkouts)[row.row]
-			let errTitle = NSLocalizedString((workout.archived ? "UN" : "") + "ARCHIVE_WORKOUT_FAIL", comment: "(Un)archive fail")
-			let archived = workout.archived
-			workout.archived = !archived
-			if dataManager.persistChangesForObjects([workout], andDeleteObjects: []) {
-				self.updateWorkout(workout, how: .archiveChange, wasArchived: archived)
-			} else {
-				dataManager.discardAllChanges()
-				let alert = UIAlertController(simpleAlert: errTitle, message: nil)
-				self.present(alert, animated: true)
-			}
-		}
+		act.append(del)
 		
-		return [del, archive]
+		return act
 	}
 	
 	// MARK: - Update list
@@ -184,8 +202,6 @@ class WorkoutListTableViewController: UITableViewController {
 			tableView.insertRows(at: [IndexPath(row: workouts.index(of: w)!, section: 0)], with: .automatic)
 			
 			tableView.endUpdates()
-			
-			// TODO: Auto-segue to workout
 		case .edit:
 			tableView.beginUpdates()
 			

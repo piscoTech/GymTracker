@@ -6,6 +6,9 @@
   Copyright © 2017 Marco Boschi. All rights reserved.
 */
 
+"YES" = "Yes";
+"NO" = "No";
+
 "WORKOUTS" = "Workouts";
 "WORKOUT" = "Workout";
 "ARCH_WORKOUTS" = "Archived Workouts";
@@ -19,6 +22,7 @@
 "DELETE_WORKOUT_FAIL" = "Unable to delete workout";
 "ARCHIVE_WORKOUT" = "Archive";
 "UNARCHIVE_WORKOUT" = "Unarchive";
+"START_WORKOUT" = "Start";
 "ARCHIVE_WORKOUT_FAIL" = "Unable to archive workout";
 "UNARCHIVE_WORKOUT_FAIL" = "Unable to unarchive workout";
 "CANCEL" = "Cancel";
@@ -36,6 +40,11 @@
 "NEXT_EXERCIZE_REST" = " rest";
 "OTHER_N_SET" = " other set";
 "OTHER_N_SETS" = " other sets";
+"WORKOUT_CANCEL" = "Cancel Workout";
+"WORKOUT_CANCEL_TXT" = "Are you sure you want to cancel the current workout?";
+"WORKOUT_END_BUTTON" = "End Now";
+"WORKOUT_END" = "End Workout";
+"WORKOUT_END_TXT" = "Are you sure you want to end the workout now?";
 "WORKOUT_START_ERR" = "Unable to start workout";
 "WORKOUT_STOP_ERR" = "Workout terminated due to an error";
 "WORKOUT_SAVING" = "Saving Workout...";

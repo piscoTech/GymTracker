@@ -44,6 +44,8 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutVi
 		}
 		
 		appDelegate.executeWorkout = self
+		addMenuItem(with: .decline, title: NSLocalizedString("CANCEL", comment: "cancel"), action: #selector(cancelWorkout))
+		addMenuItem(with: .accept, title: NSLocalizedString("WORKOUT_END_BUTTON", comment: "End"), action: #selector(endWorkout))
 		
 		workoutController = ExecuteWorkoutController(data: data, viewController: self, source: .watch)
     }
@@ -134,6 +136,10 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutVi
 		workoutDoneBtn.setEnabled(enabled)
 	}
 	
+	func disableGlobalActions() {
+		clearAllMenuItems()
+	}
+	
 	func setNextUpTextHidden(_ hidden: Bool) {
 		nextUpLbl.setHidden(hidden)
 	}
@@ -174,11 +180,11 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutVi
 		workoutController.endSet()
 	}
 	
-	@IBAction func endWorkout() {
+	func endWorkout() {
 		workoutController.endWorkout()
 	}
 	
-	@IBAction func cancelWorkout() {
+	func cancelWorkout() {
 		workoutController.cancelWorkout()
 	}
 	

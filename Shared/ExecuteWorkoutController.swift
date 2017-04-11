@@ -49,6 +49,7 @@ protocol ExecuteWorkoutViewController: AnyObject {
 	func setWorkoutDoneViewHidden(_ hidden: Bool)
 	func setWorkoutDoneText(_ text: String)
 	func setWorkoutDoneButtonEnabled(_ enabled: Bool)
+	func disableGlobalActions()
 	
 	func setNextUpTextHidden(_ hidden: Bool)
 	func setNextUpText(_ text: String)
@@ -97,6 +98,7 @@ class ExecuteWorkoutController: NSObject {
 	fileprivate var workoutEvents: [HKWorkoutEvent]
 	fileprivate var hasTerminationError: Bool
 	private var terminateAndSave: Bool
+	private(set) var isCompleted = false
 	
 	private weak var view: ExecuteWorkoutViewController!
 
@@ -107,7 +109,7 @@ class ExecuteWorkoutController: NSObject {
 		
 		view.setWorkoutTitle("")
 		view.setBPM(noHeart)
-		view.setCurrentSetViewHidden(true)
+		view.setCurrentExercizeViewHidden(true)
 		view.setRestViewHidden(true)
 		view.setWorkoutDoneViewHidden(true)
 		view.setNextUpTextHidden(true)
@@ -156,22 +158,27 @@ class ExecuteWorkoutController: NSObject {
 		
 		view.setWorkoutTitle(workout.name)
 		
-		let configuration = HKWorkoutConfiguration()
-		configuration.activityType = activityType
-		configuration.locationType = isIndoor ? .indoor : .outdoor
-		
 		#if os(watchOS)
 			do {
+				let configuration = HKWorkoutConfiguration()
+				configuration.activityType = activityType
+				configuration.locationType = isIndoor ? .indoor : .outdoor
+				
 				session = try HKWorkoutSession(configuration: configuration)
 				
 				session.delegate = self
 				healthStore.start(session)
 			} catch {
+				dataManager.setRunningWorkout(nil, fromSource: source)
+				
 				view.setWorkoutDoneText(NSLocalizedString("WORKOUT_START_ERR", comment: "Err starting"))
 				view.setWorkoutDoneViewHidden(false)
+				view.disableGlobalActions()
 			}
 		#else
 			start = self.start ?? Date()
+			
+			workoutSessionStarted()
 		#endif
 		
 		DispatchQueue.main.async {
@@ -187,7 +194,7 @@ class ExecuteWorkoutController: NSObject {
 		
 		view.setWorkoutTitle("")
 		view.setBPM(noHeart)
-		view.setCurrentSetViewHidden(true)
+		view.setCurrentExercizeViewHidden(true)
 		view.setRestViewHidden(true)
 		view.setWorkoutDoneViewHidden(true)
 		view.setNextUpTextHidden(true)
@@ -307,6 +314,7 @@ class ExecuteWorkoutController: NSObject {
 	
 	fileprivate func workoutSessionEnded(doSave: Bool = true) {
 		self.view.stopTimer()
+		self.view.disableGlobalActions()
 		terminate()
 		
 		if !isMirroring && terminateAndSave && doSave {
@@ -571,6 +579,7 @@ class ExecuteWorkoutController: NSObject {
 			
 			healthStore.save(workout, withCompletion: { success, _ in
 				let complete = {
+					self.isCompleted = true
 					self.view.setWorkoutDoneButtonEnabled(true)
 					if success {
 						self.view.setWorkoutDoneText(endTxt + NSLocalizedString("WORKOUT_SAVED", comment: "Saved"))
@@ -601,6 +610,7 @@ class ExecuteWorkoutController: NSObject {
 			return
 		}
 		
+		self.isCompleted = true
 		self.terminateAndSave = false
 		endWorkoutSession()
 		terminate()

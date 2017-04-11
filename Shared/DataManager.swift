@@ -278,11 +278,6 @@ class DataManager: NSObject {
 		wcInterface = WatchConnectivityInterface.getInterface()
 		
 		super.init()
-		
-		// Use for cleanup during development
-//		preferences.addFromLocal = []
-//		preferences.updateFromLocal = []
-//		preferences.deleteFromLocal = []
 
 		print("Data Manager initialized")
 		
@@ -290,7 +285,9 @@ class DataManager: NSObject {
 			initializeWatchDatabase()
 		}
 		
-		// TODO: Remove running workout (with watch as source) if on ios and watch is no more paired
+		if preferences.runningWorkout != nil, let src = preferences.runningWorkoutSource, src == .watch, !wcInterface.hasCounterPart {
+			dataManager.setRunningWorkout(nil, fromSource: .watch)
+		}
 		
 		wcInterface.persistPendingChanges()
 	}
@@ -396,7 +393,8 @@ class DataManager: NSObject {
 	}
 	
 	func setRunningWorkout(_ w: Workout?, fromSource s: RunningWorkoutSource) {
-		guard s.isCurrentPlatform() else {
+		// Can set workout only for current platform, the phone can set also for the watch
+		guard s.isCurrentPlatform() || s == .watch else {
 			return
 		}
 		
@@ -804,7 +802,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 			}
 		#endif
 		
-		DispatchQueue.gymDatabase.async {
+		DispatchQueue.main.async {
 			let changes = preferences.saveRemote + WCObject.decodeArray(userInfo[self.changesKey] as? [[String : Any]] ?? [])
 			let deletion = preferences.deleteRemote + CDRecordID.decodeArray(userInfo[self.deletionKey] as? [[String]] ?? [])
 			if preferences.runningWorkout != nil {
@@ -832,7 +830,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 	}
 	
 	fileprivate func persistPendingChanges() {
-		DispatchQueue.gymDatabase.async {
+		DispatchQueue.main.async {
 			guard preferences.runningWorkout == nil else {
 				return
 			}

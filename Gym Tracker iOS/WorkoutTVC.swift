@@ -19,6 +19,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	
 	@IBOutlet var cancelBtn: UIBarButtonItem!
 	@IBOutlet var doneBtn: UIBarButtonItem!
+	private var startBtn: UIBarButtonItem!
 	private var editBtn: UIBarButtonItem!
 	
 	private var deletedEntities = [DataObject]()
@@ -34,6 +35,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 			isNew = true
 		}
 		
+		startBtn = UIBarButtonItem(title: NSLocalizedString("START_WORKOUT", comment: "Start"), style: .done, target: self, action: #selector(startWorkout))
 		editBtn = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(edit(_:)))
 		
 		// The view is already in edit mode
@@ -51,9 +53,15 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	
 	func updateButtons(includeDeleteArchive: Bool = false) {
 		navigationItem.leftBarButtonItem = editMode ? cancelBtn : nil
-		navigationItem.rightBarButtonItem = editMode ? doneBtn : editBtn
+		navigationItem.rightBarButtonItems = editMode
+			? [doneBtn]
+			: ( (workout?.archived ?? true)
+				? [editBtn]
+				: [startBtn, editBtn]
+			)
 		
 		editBtn.isEnabled = delegate.canEdit
+		startBtn.isEnabled = delegate.canEdit
 		if includeDeleteArchive {
 			tableView.reloadSections(IndexSet(integer: 2), with: .none)
 		}
@@ -61,6 +69,14 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	
 	private func updateDoneBtn() {
 		doneBtn.isEnabled = workout.name.length > 0 && workout.hasExercizes
+	}
+	
+	func startWorkout() {
+		guard delegate.canEdit && !isNew else {
+			return
+		}
+		
+		appDelegate.startWorkout(self.workout)
 	}
 
     // MARK: - Table view data source
@@ -339,6 +355,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		workout.archived = !archived
 		if dataManager.persistChangesForObjects([self.workout], andDeleteObjects: []) {
 			self.delegate.updateWorkout(self.workout, how: .archiveChange, wasArchived: archived)
+			self.updateButtons()
 			tableView.reloadSections(IndexSet(integer: 2), with: .fade)
 		} else {
 			dataManager.discardAllChanges()

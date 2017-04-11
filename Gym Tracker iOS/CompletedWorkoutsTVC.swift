@@ -18,19 +18,11 @@ class CompletedWorkoutsTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+		
+		appDelegate.completedWorkouts = self
 
         refresh(self)
     }
-	
-	override func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(animated)
-		
-		if !inInit {
-			refresh(self)
-		} else {
-			inInit = false
-		}
-	}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -62,21 +54,30 @@ class CompletedWorkoutsTableViewController: UITableViewController {
         return max(1, workouts.count)
     }
 
+	private var normalFont: UIFont!
+	private var italicFont: UIFont!
+	
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		guard workouts.count > 0 else {
 			return tableView.dequeueReusableCell(withIdentifier: "noWorkout", for: indexPath)
 		}
 		
 		let w = workouts[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "workout", for: indexPath)
-
-		if let n = w.metadata?[ExecuteWorkoutController.workoutNameMetadataKey] as? String {
+		let cell = tableView.dequeueReusableCell(withIdentifier: "workout", for: indexPath)
+		
+		if normalFont == nil {
+			normalFont = cell.textLabel?.font
+			if let font = normalFont?.fontDescriptor, let descr = font.withSymbolicTraits(.traitItalic) {
+				italicFont = UIFont(descriptor: descr, size: 0)
+			}
+		}
+		
+		if let n = w.metadata?[ExecuteWorkoutController.workoutNameMetadataKey] as? String, n.length > 0 {
 			cell.textLabel?.text = n
+			cell.textLabel?.font = normalFont
 		} else {
 			cell.textLabel?.text = NSLocalizedString("WORKOUT", comment: "Workout")
-			if let font = cell.textLabel?.font.fontDescriptor, let descr = font.withSymbolicTraits(.traitItalic) {
-				cell.textLabel?.font = UIFont(descriptor: descr, size: 0)
-			}
+			cell.textLabel?.font = italicFont
 		}
 		
 		cell.detailTextLabel?.text = [w.startDate.getFormattedDateTime(), w.duration.getDuration()].joined(separator: " – ")

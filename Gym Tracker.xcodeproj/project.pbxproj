@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7A3F61171E92958F000F7514 /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A3F61161E92958F000F7514 /* SettingsVC.swift */; };
-		7A4DF0171E9BCC3300E2F031 /* CompletedWorkoutsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4DF0161E9BCC3300E2F031 /* CompletedWorkoutsTableViewController.swift */; };
+		7A4DF0171E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4DF0161E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift */; };
 		7A5346B51E86B16400AC5638 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A5346B41E86B16400AC5638 /* HealthKit.framework */; };
 		7A5346BB1E86BA7000AC5638 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A5346BA1E86BA7000AC5638 /* HealthKit.framework */; };
 		7A5A47F11E78A3CF00ABCF46 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7A5A47F01E78A3CF00ABCF46 /* Localizable.strings */; };
@@ -168,7 +168,7 @@
 /* Begin PBXFileReference section */
 		7A3F61161E92958F000F7514 /* SettingsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
 		7A4539C31E75CFC200AD0215 /* Gym Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gym Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		7A4DF0161E9BCC3300E2F031 /* CompletedWorkoutsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompletedWorkoutsTableViewController.swift; sourceTree = "<group>"; };
+		7A4DF0161E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompletedWorkoutsTVC.swift; sourceTree = "<group>"; };
 		7A5346B21E86B16400AC5638 /* Gym Tracker watchOS Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Gym Tracker watchOS Extension.entitlements"; sourceTree = "<group>"; };
 		7A5346B41E86B16400AC5638 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS3.1.sdk/System/Library/Frameworks/HealthKit.framework; sourceTree = DEVELOPER_DIR; };
 		7A5346B91E86BA6F00AC5638 /* Gym Tracker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Gym Tracker.entitlements"; sourceTree = "<group>"; };
@@ -398,7 +398,7 @@
 				7A95D0BB1E94228D00998D70 /* TabBarController.swift */,
 				7A6E083B1E98E91E003BB048 /* WorkoutCreation */,
 				7A6E083C1E98E94C003BB048 /* CurrentWorkoutVC.swift */,
-				7A4DF0161E9BCC3300E2F031 /* CompletedWorkoutsTableViewController.swift */,
+				7A4DF0161E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift */,
 				7A3F61161E92958F000F7514 /* SettingsVC.swift */,
 			);
 			name = Controller;
@@ -621,7 +621,7 @@
 				7ADC07D71E98CEB20047E0C2 /* ExecuteWorkoutController.swift in Sources */,
 				7ADC03DE1E78A328005BDC25 /* WorkoutTVC.swift in Sources */,
 				7ADC03D91E78A328005BDC25 /* ExercizeTVC.swift in Sources */,
-				7A4DF0171E9BCC3300E2F031 /* CompletedWorkoutsTableViewController.swift in Sources */,
+				7A4DF0171E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift in Sources */,
 				7ADC03C21E78A187005BDC25 /* GymTracker.xcdatamodeld in Sources */,
 				7ADC03DD1E78A328005BDC25 /* WorkoutListTVC.swift in Sources */,
 				7ADC03C01E78A187005BDC25 /* DataManager.swift in Sources */,

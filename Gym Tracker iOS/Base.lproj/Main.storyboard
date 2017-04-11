@@ -709,6 +709,9 @@
                                                 <state key="normal" title="Done">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="endSet" destination="Ewr-A0-ME5" eventType="touchUpInside" id="nOe-3X-GDU"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                     </stackView>
@@ -739,6 +742,9 @@
                                                 <state key="normal" title="End">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="endRest" destination="Ewr-A0-ME5" eventType="touchUpInside" id="R2P-5m-VcB"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                     </stackView>
@@ -755,6 +761,9 @@
                                                 <rect key="frame" x="0.0" y="40.5" width="343" height="36"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                                 <state key="normal" title="Done"/>
+                                                <connections>
+                                                    <action selector="exitWorkoutTracking" destination="Ewr-A0-ME5" eventType="touchUpInside" id="Q5b-SW-0oG"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                     </stackView>
@@ -788,12 +797,25 @@
                             <constraint firstItem="viH-kh-aJE" firstAttribute="top" secondItem="ZzM-dp-F8x" secondAttribute="bottom" constant="12" id="rE2-c2-uzc"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Workout" id="CdT-2L-tEQ"/>
+                    <navigationItem key="navigationItem" title="Workout" id="CdT-2L-tEQ">
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="2e7-CD-Lo8">
+                            <connections>
+                                <action selector="cancelWorkout" destination="Ewr-A0-ME5" id="MAN-zo-jF3"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="End Now" style="done" id="Nbi-Ax-79I">
+                            <connections>
+                                <action selector="endWorkout" destination="Ewr-A0-ME5" id="QzK-8Z-bRS"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="bpmLbl" destination="q6H-cy-TyW" id="oJr-Rm-Qla"/>
+                        <outlet property="cancelBtn" destination="2e7-CD-Lo8" id="cZ6-jE-EBb"/>
                         <outlet property="currentExercizeInfo" destination="QbR-kw-1nr" id="Dqh-m6-Nvj"/>
                         <outlet property="currentSetInfo" destination="Cc8-F0-hEA" id="0TH-1F-imd"/>
                         <outlet property="currentSetInfoLbl" destination="fPR-Jp-00Q" id="GIN-Ao-Dl9"/>
+                        <outlet property="endNowBtn" destination="Nbi-Ax-79I" id="S2M-8R-Jud"/>
                         <outlet property="exercizeNameLbl" destination="v80-86-v0q" id="kzQ-TW-4di"/>
                         <outlet property="manageFromWatchLbl" destination="OLN-5A-dmz" id="jWx-Th-bs8"/>
                         <outlet property="nextUpInfo" destination="ykE-Wf-oyO" id="zOI-bK-NOw"/>

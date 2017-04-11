@@ -11,6 +11,9 @@ import MBLibrary
 
 class CurrentWorkoutViewController: UIViewController, ExecuteWorkoutViewController {
 	
+	@IBOutlet var cancelBtn: UIBarButtonItem!
+	@IBOutlet var endNowBtn: UIBarButtonItem!
+	
 	@IBOutlet weak var manageFromWatchLbl: UILabel!
 	@IBOutlet weak var noWorkoutLabel: UIView!
 	@IBOutlet weak var workoutInfo: UIStackView!
@@ -53,24 +56,46 @@ class CurrentWorkoutViewController: UIViewController, ExecuteWorkoutViewControll
 			l.font = l.font.makeMonospacedDigit()
 		}
 		
-		if preferences.runningWorkout != nil, let src = preferences.runningWorkoutSource, src == .watch {
-			updateMirroredWorkout(withCurrentExercize: preferences.currentExercize, part: preferences.currentPart, andTime: Date())
+		if preferences.runningWorkout != nil, let src = preferences.runningWorkoutSource {
+			if src == .watch {
+				updateMirroredWorkout(withCurrentExercize: preferences.currentExercize, part: preferences.currentPart, andTime: Date())
+			} else {
+				startLocalWorkout()
+			}
 		} else {
 			exitWorkoutTracking()
 		}
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
 	
-	func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date) {
+	func startWorkout(_ workout: Workout) {
+		self.startLocalWorkout(workout)
+	}
+	
+	private func startLocalWorkout(_ workout: Workout? = nil) {
+		guard workoutController == nil, workout == nil || (workout != nil && preferences.runningWorkout == nil) else {
+			return
+		}
+		
+		let data: ExecuteWorkoutData
+		if let w = workout {
+			data = ExecuteWorkoutData(workout: w, resumeData: nil)
+		} else {
+			guard let wID = preferences.runningWorkout, let w = wID.getObject() as? Workout, let src = preferences.runningWorkoutSource, src == .phone else {
+				return
+			}
+			
+			data = ExecuteWorkoutData(workout: w, resumeData: (start: preferences.currentStart, curExercize: preferences.currentExercize, curPart: preferences.currentPart))
+		}
+		
+		workoutController = ExecuteWorkoutController(data: data, viewController: self, source: .phone)
+	}
+
+    func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date) {
 		guard preferences.runningWorkout != nil else {
 			return
 		}
 		
-		if workoutController == nil {
+		if workoutController?.isCompleted ?? true {
 			workoutController = ExecuteWorkoutController(mirrorWorkoutForViewController: self)
 		}
 		
@@ -88,6 +113,11 @@ class CurrentWorkoutViewController: UIViewController, ExecuteWorkoutViewControll
 		
 		controller.mirroredWorkoutHasEnded()
 	}
+	
+	override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
 	
 	// MARK: - ExecuteWorkoutViewController
 	
@@ -230,6 +260,11 @@ class CurrentWorkoutViewController: UIViewController, ExecuteWorkoutViewControll
 		workoutDoneBtn.isEnabled = enabled
 	}
 	
+	func disableGlobalActions() {
+		cancelBtn.isEnabled = false
+		endNowBtn.isEnabled = false
+	}
+	
 	func setNextUpTextHidden(_ hidden: Bool) {
 		nextUpInfo.isHidden = hidden
 	}
@@ -254,17 +289,61 @@ class CurrentWorkoutViewController: UIViewController, ExecuteWorkoutViewControll
 		// TODO: Implement for workout on phone
 	}
 	
+	@IBAction func endRest() {
+		workoutController?.endRest()
+	}
+	
+	@IBAction func endSet() {
+		workoutController?.endSet()
+	}
+	
+	@IBAction func endWorkout() {
+		let alert = UIAlertController(title: NSLocalizedString("WORKOUT_END", comment: "End"), message: NSLocalizedString("WORKOUT_END_TXT", comment: "End?"), preferredStyle: .alert)
+		alert.addAction(UIAlertAction(title: NSLocalizedString("YES", comment: "Yes"), style: .default) { _ in
+			self.workoutController?.endWorkout()
+			})
+		alert.addAction(UIAlertAction(title: NSLocalizedString("NO", comment: "No"), style: UIAlertActionStyle.cancel, handler: nil))
+		
+		self.present(alert, animated: true)
+	}
+	
+	@IBAction func cancelWorkout() {
+		let alert = UIAlertController(title: NSLocalizedString("WORKOUT_CANCEL", comment: "Cancel"), message: NSLocalizedString("WORKOUT_CANCEL_TXT", comment: "Cancel??"), preferredStyle: .alert)
+		alert.addAction(UIAlertAction(title: NSLocalizedString("YES", comment: "Yes"), style: .destructive) { _ in
+			self.workoutController?.cancelWorkout()
+		})
+		alert.addAction(UIAlertAction(title: NSLocalizedString("NO", comment: "No"), style: UIAlertActionStyle.cancel, handler: nil))
+		
+		self.present(alert, animated: true)
+	}
+	
 	func workoutHasStarted() {
-		manageFromWatchLbl.isHidden = !(workoutController?.isMirroring ?? false)
+		let isWatch = workoutController?.isMirroring ?? false
+		
+		cancelBtn.isEnabled = true
+		endNowBtn.isEnabled = true
+		navigationItem.leftBarButtonItem = isWatch ? nil : cancelBtn
+		navigationItem.rightBarButtonItem = isWatch ? nil : endNowBtn
+		
+		manageFromWatchLbl.isHidden = !isWatch
 		noWorkoutLabel.isHidden = true
 		workoutInfo.isHidden = false
 	}
 	
-	func exitWorkoutTracking() {
+	@IBAction func exitWorkoutTracking() {
+		navigationItem.leftBarButtonItem = nil
+		navigationItem.rightBarButtonItem = nil
+		
 		workoutController = nil
 		
 		noWorkoutLabel.isHidden = false
 		workoutInfo.isHidden = true
+	}
+	
+	func exitWorkoutTrackingIfAppropriate() {
+		if workoutController?.isCompleted ?? false {
+			exitWorkoutTracking()
+		}
 	}
 	
 	

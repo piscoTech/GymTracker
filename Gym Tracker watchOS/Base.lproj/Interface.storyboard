@@ -152,20 +152,6 @@
                             <fontDescription key="font" type="system" pointSize="8"/>
                         </label>
                     </items>
-                    <menu key="menu" id="wg0-02-Ta4">
-                        <items>
-                            <menuItem title="Cancel" icon="decline" id="rbf-7x-ISj">
-                                <connections>
-                                    <action selector="cancelWorkout" destination="Ye5-rJ-hLV" id="E4v-uH-Teq"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem title="End Now" icon="accept" id="Pyl-Gw-NhM">
-                                <connections>
-                                    <action selector="endWorkout" destination="Ye5-rJ-hLV" id="vGn-1s-j73"/>
-                                </connections>
-                            </menuItem>
-                        </items>
-                    </menu>
                     <connections>
                         <outlet property="bpmLbl" destination="8WJ-4H-ILz" id="x2P-Om-UxZ"/>
                         <outlet property="currentExercizeGrp" destination="g8Q-Xz-KGs" id="hwK-Rz-ecP"/>
