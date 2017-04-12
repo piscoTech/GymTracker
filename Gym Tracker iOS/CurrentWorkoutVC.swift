@@ -9,7 +9,7 @@
 import UIKit
 import MBLibrary
 
-class CurrentWorkoutViewController: UIViewController, ExecuteWorkoutViewController {
+class CurrentWorkoutViewController: UIViewController {
 	
 	@IBOutlet var cancelBtn: UIBarButtonItem!
 	@IBOutlet var endNowBtn: UIBarButtonItem!
@@ -40,7 +40,9 @@ class CurrentWorkoutViewController: UIViewController, ExecuteWorkoutViewControll
 	@IBOutlet weak var nextUpInfo: UIView!
 	@IBOutlet weak var nextUpLbl: UILabel!
 	
-	private var workoutController: ExecuteWorkoutController?
+	private var workoutController: ExecuteWorkoutController? {
+		return appDelegate.workoutController
+	}
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,73 +55,21 @@ class CurrentWorkoutViewController: UIViewController, ExecuteWorkoutViewControll
 		}
 		
 		for l in [bpmLbl!, timerLbl!, restTimerLbl!] {
-			l.font = l.font.makeMonospacedDigit()
+			l.font = l.font?.makeMonospacedDigit()
 		}
 		
-		if preferences.runningWorkout != nil, let src = preferences.runningWorkoutSource {
-			if src == .watch {
-				updateMirroredWorkout(withCurrentExercize: preferences.currentExercize, part: preferences.currentPart, andTime: Date())
-			} else {
-				startLocalWorkout()
-			}
+		if let controller = workoutController {
+			self.workoutHasStarted()
+			controller.refreshView()
 		} else {
 			exitWorkoutTracking()
 		}
     }
 	
-	func startWorkout(_ workout: Workout) {
-		self.startLocalWorkout(workout)
-	}
-	
-	private func startLocalWorkout(_ workout: Workout? = nil) {
-		guard workoutController == nil, workout == nil || (workout != nil && preferences.runningWorkout == nil) else {
-			return
-		}
-		
-		let data: ExecuteWorkoutData
-		if let w = workout {
-			data = ExecuteWorkoutData(workout: w, resumeData: nil)
-		} else {
-			guard let wID = preferences.runningWorkout, let w = wID.getObject() as? Workout, let src = preferences.runningWorkoutSource, src == .phone else {
-				return
-			}
-			
-			data = ExecuteWorkoutData(workout: w, resumeData: (start: preferences.currentStart, curExercize: preferences.currentExercize, curPart: preferences.currentPart))
-		}
-		
-		workoutController = ExecuteWorkoutController(data: data, viewController: self, source: .phone)
-	}
-
-    func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date) {
-		guard preferences.runningWorkout != nil else {
-			return
-		}
-		
-		if workoutController?.isCompleted ?? true {
-			workoutController = ExecuteWorkoutController(mirrorWorkoutForViewController: self)
-		}
-		
-		guard let controller = workoutController, controller.isMirroring else {
-			return
-		}
-		
-		controller.updateMirroredWorkout(withCurrentExercize: exercize, part: part, andTime: date)
-	}
-	
-	func mirroredWorkoutHasEnded() {
-		guard let controller = workoutController, controller.isMirroring else {
-			return
-		}
-		
-		controller.mirroredWorkoutHasEnded()
-	}
-	
 	override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-	
-	// MARK: - ExecuteWorkoutViewController
 	
 	func setWorkoutTitle(_ text: String) {
 		workoutTitleLbl.text = text
@@ -130,7 +80,13 @@ class CurrentWorkoutViewController: UIViewController, ExecuteWorkoutViewControll
 	}
 	
 	private var timerDate: Date!
-	private var timerUpdater: Timer?
+	private var timerUpdater: Timer? {
+		didSet {
+			DispatchQueue.main.async {
+				oldValue?.invalidate()
+			}
+		}
+	}
 	
 	func startTimer(at date: Date) {
 		timerDate = date
@@ -138,10 +94,12 @@ class CurrentWorkoutViewController: UIViewController, ExecuteWorkoutViewControll
 		let update = {
 			self.timerLbl.text = Date().timeIntervalSince(self.timerDate).getDuration()
 		}
-		timerUpdater = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-			update()
+		DispatchQueue.main.async {
+			self.timerUpdater = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+				update()
+			}
+			RunLoop.main.add(self.timerUpdater!, forMode: .commonModes)
 		}
-		RunLoop.main.add(timerUpdater!, forMode: .commonModes)
 		update()
 	}
 	
@@ -191,7 +149,13 @@ class CurrentWorkoutViewController: UIViewController, ExecuteWorkoutViewControll
 	}
 	
 	private var restTimerDate: Date!
-	private var restTimerUpdater: Timer?
+	private var restTimerUpdater: Timer? {
+		didSet {
+			DispatchQueue.main.async {
+				oldValue?.invalidate()
+			}
+		}
+	}
 	
 	func startRestTimer(to date: Date) {
 		restTimerDate = date
@@ -204,10 +168,12 @@ class CurrentWorkoutViewController: UIViewController, ExecuteWorkoutViewControll
 				self.stopRestTimer()
 			}
 		}
-		restTimerUpdater = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-			update()
+		DispatchQueue.main.async {
+			self.restTimerUpdater = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+				update()
+			}
+			RunLoop.main.add(self.restTimerUpdater!, forMode: .commonModes)
 		}
-		RunLoop.main.add(restTimerUpdater!, forMode: .commonModes)
 		update()
 	}
 	
@@ -273,18 +239,6 @@ class CurrentWorkoutViewController: UIViewController, ExecuteWorkoutViewControll
 		nextUpLbl.text = text
 	}
 	
-	func notifyEndRest() {
-		// TODO: Implement for workout on phone
-	}
-	
-	func endNotifyEndRest() {
-		// TODO: Implement for workout on phone
-	}
-	
-	func notifyExercizeChange() {
-		// TODO: Implement for workout on phone
-	}
-	
 	func askUpdateWeight(with data: UpdateWeightData) {
 		// TODO: Implement for workout on phone
 	}
@@ -330,11 +284,13 @@ class CurrentWorkoutViewController: UIViewController, ExecuteWorkoutViewControll
 		workoutInfo.isHidden = false
 	}
 	
-	@IBAction func exitWorkoutTracking() {
+	@IBAction func workoutDoneButton() {
+		appDelegate.exitWorkoutTracking()
+	}
+	
+	func exitWorkoutTracking() {
 		navigationItem.leftBarButtonItem = nil
 		navigationItem.rightBarButtonItem = nil
-		
-		workoutController = nil
 		
 		noWorkoutLabel.isHidden = false
 		workoutInfo.isHidden = true
@@ -342,9 +298,8 @@ class CurrentWorkoutViewController: UIViewController, ExecuteWorkoutViewControll
 	
 	func exitWorkoutTrackingIfAppropriate() {
 		if workoutController?.isCompleted ?? false {
-			exitWorkoutTracking()
+			appDelegate.exitWorkoutTracking()
 		}
 	}
-	
 	
 }

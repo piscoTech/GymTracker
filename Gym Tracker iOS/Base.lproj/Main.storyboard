@@ -178,7 +178,7 @@
                                 <rect key="frame" x="0.0" y="382" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="vcE-fY-fCn" id="06g-BB-WIR">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="OHM-W0-isU">
@@ -226,7 +226,7 @@
                                 <rect key="frame" x="0.0" y="426" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="DIq-rd-LXf" id="l90-eG-VgF">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="7Ll-7B-3MG">
@@ -762,7 +762,7 @@
                                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                                 <state key="normal" title="Done"/>
                                                 <connections>
-                                                    <action selector="exitWorkoutTracking" destination="Ewr-A0-ME5" eventType="touchUpInside" id="Q5b-SW-0oG"/>
+                                                    <action selector="workoutDoneButton" destination="Ewr-A0-ME5" eventType="touchUpInside" id="cIC-Oi-P2J"/>
                                                 </connections>
                                             </button>
                                         </subviews>

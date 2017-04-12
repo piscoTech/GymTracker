@@ -10,7 +10,7 @@ import WatchKit
 import HealthKit
 import Foundation
 
-class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutViewController {
+class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutControllerDelegate {
 	
 	@IBOutlet weak var timerLbl: WKInterfaceTimer!
 	@IBOutlet weak var bpmLbl: WKInterfaceLabel!
@@ -47,7 +47,9 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutVi
 		addMenuItem(with: .decline, title: NSLocalizedString("CANCEL", comment: "cancel"), action: #selector(cancelWorkout))
 		addMenuItem(with: .accept, title: NSLocalizedString("WORKOUT_END_BUTTON", comment: "End"), action: #selector(endWorkout))
 		
-		workoutController = ExecuteWorkoutController(data: data, viewController: self, source: .watch)
+		DispatchQueue.main.async {
+			self.workoutController = ExecuteWorkoutController(data: data, viewController: self, source: .watch)
+		}
     }
 
     override func willActivate() {
@@ -160,8 +162,10 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutVi
 	}
 	
 	func endNotifyEndRest() {
-		restTimer?.invalidate()
-		restTimer = nil
+		DispatchQueue.main.async {
+			self.restTimer?.invalidate()
+			self.restTimer = nil
+		}
 	}
 	
 	func notifyExercizeChange() {

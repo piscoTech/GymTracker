@@ -285,10 +285,6 @@ class DataManager: NSObject {
 			initializeWatchDatabase()
 		}
 		
-		if preferences.runningWorkout != nil, let src = preferences.runningWorkoutSource, src == .watch, !wcInterface.hasCounterPart {
-			dataManager.setRunningWorkout(nil, fromSource: .watch)
-		}
-		
 		wcInterface.persistPendingChanges()
 	}
 	
@@ -655,7 +651,9 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 	func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
 		print("Watch Connectivity Session activated")
 		
-		// Use this method to manage watch switching
+		if isiOS, preferences.runningWorkout != nil, let src = preferences.runningWorkoutSource, src == .watch, !self.hasCounterPart {
+			dataManager.setRunningWorkout(nil, fromSource: .watch)
+		}
 		
 		for b in pendingBlock {
 			b()

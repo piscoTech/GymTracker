@@ -10,35 +10,18 @@ import UIKit
 import HealthKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, DataManagerDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	var window: UIWindow?
 	weak var tabController: TabBarController!
 	weak var workoutList: WorkoutListTableViewController!
-	weak var currentWorkout: CurrentWorkoutViewController! {
-		didSet {
-			if currentWorkout != nil {
-				DispatchQueue.main.async {
-					for b in self.mirrorUpdates {
-						b()
-					}
-					
-					self.mirrorUpdates = []
-					
-					if let w = self.pendingWorkoutStart {
-						self.currentWorkout.startWorkout(w)
-						self.pendingWorkoutStart = nil
-					}
-				}
-			}
-		}
-	}
+	weak var currentWorkout: CurrentWorkoutViewController!
 	weak var completedWorkouts: CompletedWorkoutsTableViewController!
 	weak var settings: SettingsViewController!
-
+	
+	fileprivate(set) var workoutController: ExecuteWorkoutController?
+	
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-		dataManager.delegate = self
-		
 		do {
 			let view = UIView.appearance()
 			view.tintColor = #colorLiteral(red: 0.7568627451, green: 0.9215686275, blue: 0.2, alpha: 1)
@@ -70,9 +53,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate, DataManagerDelegate {
 		tabController.tabBar.items![2].selectedImage = #imageLiteral(resourceName: "Completed List Active")
 		tabController.tabBar.items![3].selectedImage = #imageLiteral(resourceName: "Settings Active")
 		
+		tabController.loadNeededControllers()
+		
 		if !preferences.authorized || preferences.authVersion < authRequired {
 			authorizeHealthAccess()
 		}
+		
+		if preferences.runningWorkout != nil, let src = preferences.runningWorkoutSource {
+			if src == .watch {
+				self.updateMirroredWorkout(withCurrentExercize: preferences.currentExercize, part: preferences.currentPart, andTime: Date())
+			} else {
+				self.startLocalWorkout()
+			}
+		} else {
+			self.exitWorkoutTracking()
+		}
+		
+		dataManager.delegate = self
 		
 		return true
 	}
@@ -92,20 +89,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, DataManagerDelegate {
 				preferences.authorized = true
 				preferences.authVersion = authRequired
 			}
-		}
-	}
-	
-	private var pendingWorkoutStart: Workout?
-	
-	func startWorkout(_ workout: Workout) {
-		tabController.selectedIndex = 1
-		
-		if let ctrl = currentWorkout {
-			pendingWorkoutStart = nil
-			
-			ctrl.startWorkout(workout)
-		} else {
-			pendingWorkoutStart = workout
 		}
 	}
 
@@ -131,7 +114,147 @@ class AppDelegate: UIResponder, UIApplicationDelegate, DataManagerDelegate {
 		// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 	}
 	
-	// MARK: - Data Manager Delegate
+}
+
+extension AppDelegate: ExecuteWorkoutControllerDelegate {
+	
+	func startWorkout(_ workout: Workout) {
+		tabController.selectedIndex = 1
+		
+		startLocalWorkout(workout)
+	}
+	
+	fileprivate func startLocalWorkout(_ workout: Workout? = nil) {
+		guard workoutController == nil, workout == nil || (workout != nil && preferences.runningWorkout == nil) else {
+			return
+		}
+		
+		let data: ExecuteWorkoutData
+		if let w = workout {
+			data = ExecuteWorkoutData(workout: w, resumeData: nil)
+		} else {
+			guard let wID = preferences.runningWorkout, let w = wID.getObject() as? Workout, let src = preferences.runningWorkoutSource, src == .phone else {
+				return
+			}
+			
+			data = ExecuteWorkoutData(workout: w, resumeData: (start: preferences.currentStart, curExercize: preferences.currentExercize, curPart: preferences.currentPart))
+		}
+		
+		workoutController = ExecuteWorkoutController(data: data, viewController: self, source: .phone)
+	}
+	
+	func setWorkoutTitle(_ text: String) {
+		currentWorkout.setWorkoutTitle(text)
+	}
+	
+	func setBPM(_ text: String) {
+		currentWorkout.setBPM(text)
+	}
+	
+	func startTimer(at date: Date) {
+		currentWorkout.startTimer(at: date)
+	}
+	
+	func stopTimer() {
+		currentWorkout.stopTimer()
+	}
+	
+	func setCurrentExercizeViewHidden(_ hidden: Bool) {
+		currentWorkout.setCurrentExercizeViewHidden(hidden)
+	}
+	
+	func setExercizeName(_ name: String) {
+		currentWorkout.setExercizeName(name)
+	}
+	
+	func setCurrentSetViewHidden(_ hidden: Bool) {
+		currentWorkout.setCurrentSetViewHidden(hidden)
+	}
+	
+	func setCurrentSetText(_ text: String) {
+		currentWorkout.setCurrentSetText(text)
+	}
+	
+	func setOtherSetsViewHidden(_ hidden: Bool) {
+		currentWorkout.setOtherSetsViewHidden(hidden)
+	}
+	
+	func setOtherSetsText(_ text: String) {
+		currentWorkout.setOtherSetsText(text)
+	}
+	
+	func setSetDoneButtonHidden(_ hidden: Bool) {
+		currentWorkout.setSetDoneButtonHidden(hidden)
+	}
+	
+	func startRestTimer(to date: Date) {
+		currentWorkout.startRestTimer(to: date)
+	}
+	
+	func stopRestTimer() {
+		currentWorkout.stopRestTimer()
+	}
+	
+	func setRestViewHidden(_ hidden: Bool) {
+		currentWorkout.setRestViewHidden(hidden)
+	}
+	
+	func setRestEndButtonHidden(_ hidden: Bool) {
+		currentWorkout.setRestEndButtonHidden(hidden)
+	}
+	
+	func setWorkoutDoneViewHidden(_ hidden: Bool) {
+		currentWorkout.setWorkoutDoneViewHidden(hidden)
+	}
+	
+	func setWorkoutDoneText(_ text: String) {
+		currentWorkout.setWorkoutDoneText(text)
+	}
+	
+	func setWorkoutDoneButtonEnabled(_ enabled: Bool) {
+		currentWorkout.setWorkoutDoneButtonEnabled(enabled)
+	}
+	
+	func disableGlobalActions() {
+		currentWorkout.disableGlobalActions()
+	}
+	
+	func setNextUpTextHidden(_ hidden: Bool) {
+		currentWorkout.setNextUpTextHidden(hidden)
+	}
+	
+	func setNextUpText(_ text: String) {
+		currentWorkout.setNextUpText(text)
+	}
+	
+	func notifyEndRest() {
+		
+	}
+	
+	func endNotifyEndRest() {
+		
+	}
+	
+	func notifyExercizeChange() {
+		
+	}
+	
+	func askUpdateWeight(with data: UpdateWeightData) {
+		currentWorkout.askUpdateWeight(with: data)
+	}
+	
+	func workoutHasStarted() {
+		currentWorkout.workoutHasStarted()
+	}
+	
+	func exitWorkoutTracking() {
+		workoutController = nil
+		currentWorkout.exitWorkoutTracking()
+	}
+	
+}
+
+extension AppDelegate: DataManagerDelegate {
 	
 	func refreshData() {
 		DispatchQueue.main.async {
@@ -151,29 +274,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate, DataManagerDelegate {
 		}
 	}
 	
-	private var mirrorUpdates = [() -> Void]()
-	
 	func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date) {
-		let block: () -> Void = {
-			self.currentWorkout?.updateMirroredWorkout(withCurrentExercize: exercize, part: part, andTime: date)
+		guard preferences.runningWorkout != nil else {
+			return
 		}
 		
-		if self.currentWorkout != nil {
-			DispatchQueue.main.async(execute: block)
-		} else {
-			mirrorUpdates.append(block)
+		DispatchQueue.main.async {
+			if self.workoutController?.isCompleted ?? true {
+				self.workoutController = ExecuteWorkoutController(mirrorWorkoutForViewController: self)
+			}
+			
+			guard let controller = self.workoutController, controller.isMirroring else {
+				return
+			}
+			
+			
+			controller.updateMirroredWorkout(withCurrentExercize: exercize, part: part, andTime: date)
 		}
 	}
 	
 	func mirroredWorkoutHasEnded() {
-		let block: () -> Void = {
-			self.currentWorkout?.mirroredWorkoutHasEnded()
+		guard let controller = workoutController, controller.isMirroring else {
+			return
 		}
 		
-		if self.currentWorkout != nil {
-			DispatchQueue.main.async(execute: block)
-		} else {
-			mirrorUpdates.append(block)
+		DispatchQueue.main.async {
+			controller.mirroredWorkoutHasEnded()
 		}
 	}
 

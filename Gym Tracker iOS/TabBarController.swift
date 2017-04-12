@@ -30,5 +30,10 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
 			appDelegate.completedWorkouts?.refresh(self)
 		}
 	}
+	
+	func loadNeededControllers() {
+		viewControllers?[1].loadViewIfNeeded()
+		(viewControllers?[1] as? UINavigationController)?.viewControllers[0].loadViewIfNeeded()
+	}
 
 }

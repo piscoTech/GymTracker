@@ -25,7 +25,7 @@ struct UpdateWeightData {
 	
 }
 
-protocol ExecuteWorkoutViewController: AnyObject {
+protocol ExecuteWorkoutControllerDelegate: AnyObject {
 	
 	func setWorkoutTitle(_ text: String)
 	
@@ -87,22 +87,34 @@ class ExecuteWorkoutController: NSObject {
 	private var curExercize: Int
 	private var curPart: Int
 	private var isRestMode: Bool
-	private var restTimer: Timer?
+	private var restTimer: Timer? {
+		didSet {
+			DispatchQueue.main.async {
+				oldValue?.invalidate()
+			}
+		}
+	}
 	private var addWeight: Double
 	
 	#if os(watchOS)
 	private var session: HKWorkoutSession!
 	#endif
 	private var heartQuery: HKAnchoredObjectQuery!
-	private var invalidateBPM: Timer!
+	private var invalidateBPM: Timer! {
+		didSet {
+			DispatchQueue.main.async {
+				oldValue?.invalidate()
+			}
+		}
+	}
 	fileprivate var workoutEvents: [HKWorkoutEvent]
 	fileprivate var hasTerminationError: Bool
 	private var terminateAndSave: Bool
 	private(set) var isCompleted = false
 	
-	private weak var view: ExecuteWorkoutViewController!
+	private weak var view: ExecuteWorkoutControllerDelegate!
 
-	init(data: ExecuteWorkoutData, viewController: ExecuteWorkoutViewController, source: RunningWorkoutSource) {
+	init(data: ExecuteWorkoutData, viewController: ExecuteWorkoutControllerDelegate, source: RunningWorkoutSource) {
 		self.source = source
 		self.isMirroring = false
 		self.view = viewController
@@ -187,7 +199,11 @@ class ExecuteWorkoutController: NSObject {
 	}
 	
 	@available(watchOS, unavailable)
-	init(mirrorWorkoutForViewController viewController: ExecuteWorkoutViewController) {
+	init?(mirrorWorkoutForViewController viewController: ExecuteWorkoutControllerDelegate) {
+		guard let workout = preferences.runningWorkout?.getObject() as? Workout else {
+			return nil
+		}
+		
 		self.source = .watch
 		self.isMirroring = true
 		self.view = viewController
@@ -214,10 +230,6 @@ class ExecuteWorkoutController: NSObject {
 		hasTerminationError = false
 		terminateAndSave = true
 		
-		guard let workout = preferences.runningWorkout?.getObject() as? Workout else {
-			preconditionFailure("No running workout to mirror")
-		}
-		
 		self.workout = workout
 		exercizes = workout.exercizeList
 		
@@ -235,7 +247,7 @@ class ExecuteWorkoutController: NSObject {
 	@available(watchOS, unavailable)
 	func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date) {
 		guard isMirroring else {
-			preconditionFailure("Not mirroring a workout")
+			return
 		}
 		
 		if self.start == nil {
@@ -259,6 +271,10 @@ class ExecuteWorkoutController: NSObject {
 	
 	@available(watchOS, unavailable)
 	func mirroredWorkoutHasEnded() {
+		guard isMirroring else {
+			return
+		}
+		
 		workoutSessionEnded()
 		view.exitWorkoutTracking()
 	}
@@ -274,13 +290,13 @@ class ExecuteWorkoutController: NSObject {
 			if let last = (samples as? [HKQuantitySample])?.sorted(by: { (a, b) -> Bool in
 				return a.startDate < b.startDate
 			}).last {
-				self.invalidateBPM?.invalidate()
-				self.invalidateBPM = Timer.scheduledTimer(withTimeInterval: 3 * 60, repeats: false) { _ in
-					DispatchQueue.main.async {
-						self.view.setBPM(self.noHeart)
-					}
-				}
 				DispatchQueue.main.async {
+					self.invalidateBPM = Timer.scheduledTimer(withTimeInterval: 3 * 60, repeats: false) { _ in
+						DispatchQueue.main.async {
+							self.view.setBPM(self.noHeart)
+						}
+					}
+					
 					RunLoop.main.add(self.invalidateBPM!, forMode: .commonModes)
 					self.view.setBPM(last.quantity.doubleValue(for: heartUnit).rounded().toString())
 				}
@@ -329,9 +345,7 @@ class ExecuteWorkoutController: NSObject {
 			healthStore.stop(heart)
 			heartQuery = nil
 		}
-		invalidateBPM?.invalidate()
 		invalidateBPM = nil
-		restTimer?.invalidate()
 		restTimer = nil
 		
 		view.endNotifyEndRest()
@@ -383,6 +397,10 @@ class ExecuteWorkoutController: NSObject {
 		return set
 	}
 	
+	func refreshView() {
+		displayStep()
+	}
+	
 	private func displayStep(withTime time: Date? = nil) {
 		guard let curEx = exercizes.first else {
 			if isMirroring {
@@ -404,7 +422,10 @@ class ExecuteWorkoutController: NSObject {
 			
 			let setN = curPart / 2
 			guard let set = curEx.set(n: Int32(setN)) else {
-				nextStep()
+				if !isMirroring {
+					nextStep()
+				}
+				
 				return
 			}
 			
@@ -450,24 +471,38 @@ class ExecuteWorkoutController: NSObject {
 		if let restTime = setRest {
 			guard restTime > 0 else {
 				// A rest time of 0:00 is allowed between sets, jump to next set
-				nextStep()
+				if !isMirroring {
+					nextStep()
+				}
+				
 				return
 			}
 			
+			let now = Date()
+			var endTime = preferences.currentRestEnd ?? (time ?? now).addingTimeInterval(restTime)
+			if endTime < now {
+				endTime = now
+			}
+			let endsIn = endTime.timeIntervalSince(now)
+			preferences.currentRestEnd = endTime
 			
-			view.startRestTimer(to: (time ?? Date()).addingTimeInterval(restTime))
+			view.startRestTimer(to: endTime)
 			view.setRestViewHidden(false)
 			// Hide end rest button if mirroring
 			view.setRestEndButtonHidden(isMirroring)
 			
-			restTimer = Timer.scheduledTimer(withTimeInterval: restTime, repeats: false) { _ in
-				self.view.stopRestTimer()
-				if !self.isMirroring {
-					self.view.notifyEndRest()
+			DispatchQueue.main.async {
+				self.restTimer = Timer.scheduledTimer(withTimeInterval: endsIn, repeats: false) { _ in
+					self.view.stopRestTimer()
+					if !self.isMirroring {
+						self.view.notifyEndRest()
+					}
 				}
+				RunLoop.main.add(self.restTimer!, forMode: .commonModes)
 			}
-			RunLoop.main.add(restTimer!, forMode: .commonModes)
 		} else {
+			preferences.currentRestEnd = nil
+			
 			view.stopRestTimer()
 			view.setRestViewHidden(true)
 		}
@@ -498,7 +533,6 @@ class ExecuteWorkoutController: NSObject {
 		
 		view.stopRestTimer()
 		view.endNotifyEndRest()
-		restTimer?.invalidate()
 		restTimer = nil
 		
 		nextStep()

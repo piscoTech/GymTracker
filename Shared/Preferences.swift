@@ -27,6 +27,7 @@ enum PreferenceKeys: String, KeyValueStoreKey {
 	case currentStart = "currentStart"
 	case currentExercize = "currentExercize"
 	case currentPart = "currentPart"
+	case currentRestEnd = "currentRestEnd"
 	
 	case authorized = "authorized"
 	case authVersion = "authVersion"
@@ -219,6 +220,21 @@ class Preferences {
 		}
 		set {
 			local.set(newValue, forKey: PreferenceKeys.currentPart)
+			local.synchronize()
+		}
+	}
+	
+	var currentRestEnd: Date? {
+		get {
+			return local.object(forKey: PreferenceKeys.currentRestEnd) as? Date
+		}
+		set {
+			let key = PreferenceKeys.currentRestEnd
+			if let val = newValue {
+				local.set(val, forKey: key)
+			} else {
+				local.removeObject(forKey: key)
+			}
 			local.synchronize()
 		}
 	}
