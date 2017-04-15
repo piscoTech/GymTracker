@@ -16,6 +16,7 @@
 		7A5EFA491E81408000A4CF41 /* Main iOS & watchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADC03BD1E78A187005BDC25 /* Main iOS & watchOS.swift */; };
 		7A6E083D1E98E94C003BB048 /* CurrentWorkoutVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A6E083C1E98E94C003BB048 /* CurrentWorkoutVC.swift */; };
 		7A95D0BC1E94228D00998D70 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A95D0BB1E94228D00998D70 /* TabBarController.swift */; };
+		7AC388F51EA21B3200EB9571 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AC388F41EA21B3200EB9571 /* UserNotifications.framework */; };
 		7ACE8B6F1E76D0D00011F839 /* MBLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7ACE8B681E76CF720011F839 /* MBLibrary.framework */; };
 		7ACE8B701E76D0D00011F839 /* MBLibrary.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7ACE8B681E76CF720011F839 /* MBLibrary.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7ACF6D871E802FD200579B67 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7ACF6D861E802FD200579B67 /* Assets.xcassets */; };
@@ -177,6 +178,7 @@
 		7A5D2B701E8422DB008EED4C /* WorkoutDetailIC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkoutDetailIC.swift; sourceTree = "<group>"; };
 		7A6E083C1E98E94C003BB048 /* CurrentWorkoutVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentWorkoutVC.swift; sourceTree = "<group>"; };
 		7A95D0BB1E94228D00998D70 /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		7AC388F41EA21B3200EB9571 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		7ACE8B601E76CF710011F839 /* MBLibrary.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MBLibrary.xcodeproj; path = ../MBLibrary/MBLibrary.xcodeproj; sourceTree = "<group>"; };
 		7ACF6D811E802FD200579B67 /* Gym Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gym Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7ACF6D861E802FD200579B67 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -217,6 +219,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7AC388F51EA21B3200EB9571 /* UserNotifications.framework in Frameworks */,
 				7ACE8B6F1E76D0D00011F839 /* MBLibrary.framework in Frameworks */,
 				7A5346BB1E86BA7000AC5638 /* HealthKit.framework in Frameworks */,
 			);
@@ -268,6 +271,7 @@
 		7A5346B31E86B16400AC5638 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7AC388F41EA21B3200EB9571 /* UserNotifications.framework */,
 				7A5346BA1E86BA7000AC5638 /* HealthKit.framework */,
 				7A5346B41E86B16400AC5638 /* HealthKit.framework */,
 			);

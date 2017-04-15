@@ -8,6 +8,8 @@
 
 import UIKit
 import HealthKit
+import UserNotifications
+import MBLibrary
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -20,8 +22,59 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	weak var settings: SettingsViewController!
 	
 	fileprivate(set) var workoutController: ExecuteWorkoutController?
+	fileprivate let restTimeNotification = "restTimeNotificationID"
+	fileprivate let restEndNotification = "restEndNotificationID"
+	fileprivate let nextSetNotification = "nextSetNotificationID"
+	
+	fileprivate let endRestNotificationAction = "endRestNotificationActionID"
+	fileprivate let endSetNotificationAction = "endSetNotificationActionID"
+	
+	fileprivate let endRestNowNotificationCategory = "endRestNowNotificationCategoryID"
+	fileprivate let endRestNotificationCategory = "endRestNotificationCategoryID"
+	fileprivate let endSetNotificationCategory = "endSetNotificationCategoryID"
+	fileprivate let endWorkoutNotificationCategory = "endWorkoutNotificationCategoryID"
+	
+	fileprivate let notifyNowDelay: TimeInterval = 1
 	
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+		tabController = self.window!.rootViewController as! TabBarController
+		tabController.delegate = tabController
+		tabController.loadNeededControllers()
+		
+		if preferences.runningWorkout != nil, let src = preferences.runningWorkoutSource {
+			if src == .watch {
+				self.updateMirroredWorkout(withCurrentExercize: preferences.currentExercize, part: preferences.currentPart, andTime: Date())
+			} else {
+				self.startLocalWorkout()
+			}
+		} else {
+			self.exitWorkoutTracking()
+		}
+		
+		dataManager.delegate = self
+		
+		if !preferences.authorized || preferences.authVersion < authRequired {
+			authorizeHealthAccess()
+		}
+		
+		let center = UNUserNotificationCenter.current()
+		center.requestAuthorization(options: [.alert, .sound]) { _, _ in }
+		do {
+			let endRestNow = UNNotificationAction(identifier: endRestNotificationAction, title: NSLocalizedString("NOTIF_END_REST_NOW", comment: "End now"))
+			let endRest = UNNotificationAction(identifier: endRestNotificationAction, title: NSLocalizedString("NOTIF_END_REST", comment: "End"))
+			
+			let endSet = UNNotificationAction(identifier: endSetNotificationAction, title: NSLocalizedString("NOTIF_END_SET", comment: "Done"))
+			let endWorkout = UNNotificationAction(identifier: endSetNotificationAction, title: NSLocalizedString("NOTIF_END_WORKOUT", comment: "Done"), options: .foreground)
+			
+			let endRestNowCategory = UNNotificationCategory(identifier: endRestNowNotificationCategory, actions: [endRestNow], intentIdentifiers: [], options: [])
+			let endRestCategory = UNNotificationCategory(identifier: endRestNotificationCategory, actions: [endRest], intentIdentifiers: [], options: [])
+			let endSetCategory = UNNotificationCategory(identifier: endSetNotificationCategory, actions: [endSet], intentIdentifiers: [], options: [])
+			let endWorkoutCategory = UNNotificationCategory(identifier: endWorkoutNotificationCategory, actions: [endWorkout], intentIdentifiers: [], options: [])
+			
+			center.setNotificationCategories([endRestNowCategory, endRestCategory, endSetCategory, endWorkoutCategory])
+		}
+		center.delegate = self
+		
 		do {
 			let view = UIView.appearance()
 			view.tintColor = #colorLiteral(red: 0.7568627451, green: 0.9215686275, blue: 0.2, alpha: 1)
@@ -47,29 +100,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = #colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1)
 		}
 		
-		tabController = self.window!.rootViewController as! TabBarController
-		tabController.delegate = tabController
 		tabController.tabBar.items![1].selectedImage = #imageLiteral(resourceName: "Workout Active")
 		tabController.tabBar.items![2].selectedImage = #imageLiteral(resourceName: "Completed List Active")
 		tabController.tabBar.items![3].selectedImage = #imageLiteral(resourceName: "Settings Active")
-		
-		tabController.loadNeededControllers()
-		
-		if !preferences.authorized || preferences.authVersion < authRequired {
-			authorizeHealthAccess()
-		}
-		
-		if preferences.runningWorkout != nil, let src = preferences.runningWorkoutSource {
-			if src == .watch {
-				self.updateMirroredWorkout(withCurrentExercize: preferences.currentExercize, part: preferences.currentPart, andTime: Date())
-			} else {
-				self.startLocalWorkout()
-			}
-		} else {
-			self.exitWorkoutTracking()
-		}
-		
-		dataManager.delegate = self
 		
 		return true
 	}
@@ -95,6 +128,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func applicationWillResignActive(_ application: UIApplication) {
 		// Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
 		// Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
+		
+		if let ctrl = self.workoutController {
+			self.notifyExercizeChange(isRest: ctrl.isRestMode)
+		}
 	}
 
 	func applicationDidEnterBackground(_ application: UIApplication) {
@@ -112,6 +149,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func applicationWillTerminate(_ application: UIApplication) {
 		// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+		
+		if let ctrl = self.workoutController {
+			self.notifyExercizeChange(isRest: ctrl.isRestMode)
+		}
 	}
 	
 }
@@ -228,28 +269,112 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 	}
 	
 	func notifyEndRest() {
-		
+		// TODO: Start playing a sound
+		print("Beep Beep")
 	}
 	
 	func endNotifyEndRest() {
-		
+		// TODO: End playing a sound
+		print("Stop Beep Beep")
 	}
 	
-	func notifyExercizeChange() {
+	func notifyExercizeChange(isRest: Bool) {
+		var notifications = [UNNotificationRequest]()
+		let presentNow = UNTimeIntervalNotificationTrigger(timeInterval: notifyNowDelay, repeats: false)
+		if isRest {
+			if let (duration, end) = workoutController?.currentRestTime {
+				let endTime = end.timeIntervalSinceNow
+				if endTime > notifyNowDelay {
+					let restDurationContent = UNMutableNotificationContent()
+					restDurationContent.title = NSLocalizedString("REST_TIME_TITLE", comment: "Rest time")
+					restDurationContent.body = NSLocalizedString("REST_TIME_BODY", comment: "Rest for") + duration.getDuration(hideHours: true)
+					restDurationContent.sound = nil
+					restDurationContent.categoryIdentifier = endRestNowNotificationCategory
+					
+					notifications.append(UNNotificationRequest(identifier: restTimeNotification, content: restDurationContent, trigger: presentNow))
+				}
+				
+				let restEndTrigger = UNTimeIntervalNotificationTrigger(timeInterval: max(endTime, notifyNowDelay), repeats: false)
+				let restEndContent = UNMutableNotificationContent()
+				restEndContent.title = NSLocalizedString("REST_OVER_TITLE", comment: "Rest over")
+				restEndContent.body = NSLocalizedString("REST_\((workoutController?.currentIsRestExercize ?? true) ? "EXERCIZE" : "SET")_OVER_BODY", comment: "Next Exercize")
+				restEndContent.sound = .default()
+				restEndContent.categoryIdentifier = endRestNotificationCategory
+				
+				notifications.append(UNNotificationRequest(identifier: restEndNotification, content: restEndContent, trigger: restEndTrigger))
+			}
+		} else {
+			if let (ex, set, other) = workoutController?.currentSetInfo {
+				let nextSetContent = UNMutableNotificationContent()
+				nextSetContent.title = ex
+				nextSetContent.body = set + NSLocalizedString("CUR_REPS_INFO", comment: "reps") + (other != nil ? "\n\(other!)" : "")
+				nextSetContent.sound = nil
+				nextSetContent.categoryIdentifier = (workoutController?.isLastPart ?? false) ? endWorkoutNotificationCategory : endSetNotificationCategory
+				
+				notifications.append(UNNotificationRequest(identifier: nextSetNotification, content: nextSetContent, trigger: presentNow))
+			}
+		}
 		
+		let center = UNUserNotificationCenter.current()
+		for n in notifications {
+			center.add(n) { _ in }
+		}
 	}
-	
+
 	func askUpdateWeight(with data: UpdateWeightData) {
 		currentWorkout.askUpdateWeight(with: data)
 	}
 	
 	func workoutHasStarted() {
 		currentWorkout.workoutHasStarted()
+		
+		let center = UNUserNotificationCenter.current()
+		center.removeAllDeliveredNotifications()
+		center.removeAllPendingNotificationRequests()
 	}
 	
 	func exitWorkoutTracking() {
 		workoutController = nil
 		currentWorkout.exitWorkoutTracking()
+		
+		let center = UNUserNotificationCenter.current()
+		center.removeAllDeliveredNotifications()
+		center.removeAllPendingNotificationRequests()
+	}
+	
+}
+
+extension AppDelegate: UNUserNotificationCenterDelegate {
+	
+	func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+		completionHandler([])
+		
+		if workoutController != nil {
+			tabController.selectedIndex = 1
+		}
+		
+		center.removeAllDeliveredNotifications()
+	}
+	
+	func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+		let act = response.actionIdentifier
+		
+		completionHandler()
+		center.removeAllDeliveredNotifications()
+		center.removeAllPendingNotificationRequests()
+		
+		switch act {
+		case UNNotificationDefaultActionIdentifier:
+			if workoutController != nil {
+				tabController.selectedIndex = 1
+			}
+		case endRestNotificationAction:
+			workoutController?.endRest()
+		case endSetNotificationAction:
+			workoutController?.endSet()
+		default:
+			break
+		}
 	}
 	
 }

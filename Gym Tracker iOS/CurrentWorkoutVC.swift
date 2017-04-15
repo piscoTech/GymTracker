@@ -57,13 +57,8 @@ class CurrentWorkoutViewController: UIViewController {
 		for l in [bpmLbl!, timerLbl!, restTimerLbl!] {
 			l.font = l.font?.makeMonospacedDigit()
 		}
-		
-		if let controller = workoutController {
-			self.workoutHasStarted()
-			controller.refreshView()
-		} else {
-			exitWorkoutTracking()
-		}
+
+		// This method is always called during app launch by the app delegate and as soon as the view is loaded it also updates it as appropriate
     }
 	
 	override func didReceiveMemoryWarning() {

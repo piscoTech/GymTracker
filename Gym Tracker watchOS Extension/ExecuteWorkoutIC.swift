@@ -168,7 +168,7 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutCo
 		}
 	}
 	
-	func notifyExercizeChange() {
+	func notifyExercizeChange(isRest: Bool) {
 		WKInterfaceDevice.current().play(.click)
 	}
 	

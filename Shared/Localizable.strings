@@ -1,4 +1,4 @@
-/* 
+/*
   Localizable.strings
   Gym Tracker
 
@@ -57,3 +57,17 @@
 "WORKOUT_DONT_RESUME" = "No";
 
 "REPORT_TEXT" = "Report any problem on Twitter @piscoTech or at GitHub tapping Source Code.";
+
+// Notifications
+
+"REST_TIME_TITLE" = "It's time to rest";
+"REST_TIME_BODY" = "Rest for ";
+"REST_OVER_TITLE" = "Rest time is over";
+"REST_SET_OVER_BODY" = "Get ready for the next set";
+"REST_EXERCIZE_OVER_BODY" = "Get ready for the next exercize";
+"CUR_REPS_INFO" = " reps";
+
+"NOTIF_END_REST_NOW" = "I'm ready now!";
+"NOTIF_END_REST" = "I'm ready";
+"NOTIF_END_SET" = "I'm done";
+"NOTIF_END_WORKOUT" = "I'm done! End workout";
