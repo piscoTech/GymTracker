@@ -1,15 +1,17 @@
 //
-//  UpdateWeightInterfaceController.swift
+//  UpdateWeightViewController.swift
 //  Gym Tracker
 //
-//  Created by Marco Boschi on 25/03/2017.
+//  Created by Marco Boschi on 16/04/2017.
 //  Copyright © 2017 Marco Boschi. All rights reserved.
 //
 
-import WatchKit
-import Foundation
+import UIKit
 
-class UpdateWeightInterfaceController: WKInterfaceController {
+class UpdateWeightViewController: UIViewController {
+	
+	var weightData: UpdateWeightData!
+	let backgroundColor = #colorLiteral(red: 0.09803921569, green: 0.09803921569, blue: 0.09803921569, alpha: 1)
 	
 	private weak var delegate: ExecuteWorkoutController!
 	private var set: RepsSet!
@@ -17,19 +19,28 @@ class UpdateWeightInterfaceController: WKInterfaceController {
 	private var sum = 0.0
 	private var doSave = true
 	
-	@IBOutlet weak var base: WKInterfaceLabel!
-	@IBOutlet weak var plus: WKInterfaceLabel!
-	@IBOutlet weak var minus: WKInterfaceLabel!
-	@IBOutlet weak var add: WKInterfaceLabel!
+	@IBOutlet weak var base: UILabel!
+	@IBOutlet weak var plus: UILabel!
+	@IBOutlet weak var minus: UILabel!
+	@IBOutlet weak var add: UILabel!
+	
+	@IBOutlet var buttons: [UIButton]!
 
-    override func awake(withContext context: Any?) {
-        super.awake(withContext: context)
-        
-		// Configure interface objects here.
-		guard let data = context as? UpdateWeightData else {
-			self.dismiss()
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+		guard let data = weightData else {
+			DispatchQueue.main.async {
+				self.dismiss(animated: true)
+			}
 			
 			return
+		}
+		
+		self.view.backgroundColor = .clear
+		for b in buttons {
+			b.clipsToBounds = true
+			b.layer.cornerRadius = 5
 		}
 		
 		self.delegate = data.workoutController
@@ -37,18 +48,13 @@ class UpdateWeightInterfaceController: WKInterfaceController {
 		self.sum = data.sum
 		self.doSave = data.saveAddWeight
 		
-		base.setText(set.weight.toString())
+		base.text = set.weight.toString()
 		updateView()
     }
 
-    override func willActivate() {
-        // This method is called when watch view controller is about to be visible to user
-        super.willActivate()
-    }
-
-    override func didDeactivate() {
-        // This method is called when watch view controller is no longer visible
-        super.didDeactivate()
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
     }
 	
 	private func addWeight(_ w: Double) {
@@ -59,13 +65,13 @@ class UpdateWeightInterfaceController: WKInterfaceController {
 	
 	private func updateView() {
 		if sum >= 0 {
-			plus.setHidden(false)
-			minus.setHidden(true)
+			plus.isHidden = false
+			minus.isHidden = true
 		} else {
-			plus.setHidden(true)
-			minus.setHidden(false)
+			plus.isHidden = true
+			minus.isHidden = false
 		}
-		add.setText(abs(sum).toString())
+		add.text = abs(sum).toString()
 	}
 	
 	@IBAction func done() {
@@ -81,7 +87,7 @@ class UpdateWeightInterfaceController: WKInterfaceController {
 			delegate.setAddWeight(sum)
 		}
 		
-		self.dismiss()
+		self.dismiss(animated: true)
 	}
 	
 	@IBAction func addHalf() {
@@ -96,6 +102,10 @@ class UpdateWeightInterfaceController: WKInterfaceController {
 		addWeight(5)
 	}
 	
+	@IBAction func addTen() {
+		addWeight(10)
+	}
+	
 	@IBAction func minusHalf() {
 		addWeight(-0.5)
 	}
@@ -108,4 +118,8 @@ class UpdateWeightInterfaceController: WKInterfaceController {
 		addWeight(-5)
 	}
 	
+	@IBAction func minusTen() {
+		addWeight(-10)
+	}
+
 }

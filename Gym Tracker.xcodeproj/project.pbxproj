@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7A27276F1EA3536400E67F70 /* UpdateWeightVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A27276E1EA3536400E67F70 /* UpdateWeightVC.swift */; };
 		7A3F61171E92958F000F7514 /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A3F61161E92958F000F7514 /* SettingsVC.swift */; };
 		7A4DF0171E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4DF0161E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift */; };
 		7A5346B51E86B16400AC5638 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A5346B41E86B16400AC5638 /* HealthKit.framework */; };
@@ -167,6 +168,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		7A27276E1EA3536400E67F70 /* UpdateWeightVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateWeightVC.swift; sourceTree = "<group>"; };
 		7A3F61161E92958F000F7514 /* SettingsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
 		7A4539C31E75CFC200AD0215 /* Gym Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gym Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A4DF0161E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompletedWorkoutsTVC.swift; sourceTree = "<group>"; };
@@ -243,6 +245,15 @@
 				7ADC07D61E98CEB20047E0C2 /* ExecuteWorkoutController.swift */,
 			);
 			name = Controller;
+			sourceTree = "<group>";
+		};
+		7A27276B1EA3532900E67F70 /* ExecuteWorkout */ = {
+			isa = PBXGroup;
+			children = (
+				7A6E083C1E98E94C003BB048 /* CurrentWorkoutVC.swift */,
+				7A27276E1EA3536400E67F70 /* UpdateWeightVC.swift */,
+			);
+			name = ExecuteWorkout;
 			sourceTree = "<group>";
 		};
 		7A4539BA1E75CFC200AD0215 = {
@@ -401,7 +412,7 @@
 			children = (
 				7A95D0BB1E94228D00998D70 /* TabBarController.swift */,
 				7A6E083B1E98E91E003BB048 /* WorkoutCreation */,
-				7A6E083C1E98E94C003BB048 /* CurrentWorkoutVC.swift */,
+				7A27276B1EA3532900E67F70 /* ExecuteWorkout */,
 				7A4DF0161E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift */,
 				7A3F61161E92958F000F7514 /* SettingsVC.swift */,
 			);
@@ -615,6 +626,7 @@
 			files = (
 				7A95D0BC1E94228D00998D70 /* TabBarController.swift in Sources */,
 				7A3F61171E92958F000F7514 /* SettingsVC.swift in Sources */,
+				7A27276F1EA3536400E67F70 /* UpdateWeightVC.swift in Sources */,
 				7ADC03DC1E78A328005BDC25 /* TableView Cells.swift in Sources */,
 				7ADC03D51E78A328005BDC25 /* AppDelegate.swift in Sources */,
 				7AE10A431E7D6F1000A64CF7 /* Preferences.swift in Sources */,

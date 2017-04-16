@@ -7,6 +7,7 @@
 //
 
 import WatchKit
+import HealthKit
 
 class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
 	
@@ -46,6 +47,18 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, etc.
     }
+	
+	func handle(_ workoutConfiguration: HKWorkoutConfiguration) {
+		// Wait for workout data
+	}
+	
+	func remoteWorkoutStart(_ workout: Workout) {
+		guard executeWorkout == nil, !(workoutList?.resuming ?? false) else {
+			return
+		}
+		
+		WKInterfaceController.reloadRootControllers(withNames: ["executeWorkout"], contexts: [ExecuteWorkoutData(workout: workout, resumeData: nil)])
+	}
 
     func handle(_ backgroundTasks: Set<WKRefreshBackgroundTask>) {
         // Sent when the system needs to launch the application in the background to process tasks. Tasks arrive in a set, so loop through and process each one.

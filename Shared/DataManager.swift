@@ -250,6 +250,9 @@ class WCObject: Equatable {
 	@available(watchOS, unavailable)
 	func mirroredWorkoutHasEnded()
 	
+	@available(iOS, unavailable)
+	func remoteWorkoutStart(_ workout: Workout)
+	
 }
 
 // MARK: - Data Manager
@@ -388,6 +391,11 @@ class DataManager: NSObject {
 		return res
 	}
 	
+	@available(watchOS, unavailable)
+	var shouldStartWorkoutOnWatch: Bool {
+		return wcInterface.hasCounterPart && wcInterface.canComunicate && wcInterface.isReachable
+	}
+	
 	func setRunningWorkout(_ w: Workout?, fromSource s: RunningWorkoutSource) {
 		// Can set workout only for current platform, the phone can set also for the watch
 		guard s.isCurrentPlatform() || s == .watch else {
@@ -406,6 +414,16 @@ class DataManager: NSObject {
 		
 		preferences.runningWorkoutNeedsTransfer = true
 		wcInterface.setRunningWorkout()
+	}
+	
+	@available(watchOS, unavailable)
+	func requestStarting(_ workout: Workout) -> Bool {
+		#if os(iOS)
+			return wcInterface.requestStarting(workout)
+		#endif
+		#if os(watchOS)
+			return false
+		#endif
 	}
 	
 	func sendWorkoutStartDate() {
@@ -618,8 +636,11 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 		
 		return res
 	}
-	private var canComunicate: Bool {
+	fileprivate var canComunicate: Bool {
 		return session != nil && session!.activationState == .activated
+	}
+	fileprivate var isReachable: Bool {
+		return session?.isReachable ?? false
 	}
 
 	// MARK: - Initialization
@@ -867,11 +888,12 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 		]])
 	}
 	
-	// MARK: - Watch initail setup
+	// MARK: - Watch initail setup & Remote workou start
 	
 	private let askDataKey = "watchNeedsData"
 	private let isInitialDataKey = "isInitialData"
 	private let dataIncomingKey = "dataIncoming"
+	private let remoteWorkoutStartKey = "remoteWorkoutStart"
 	
 	///- returns: Whether or not the phone needs unlocking or be in range before initialization
 	@available(watchOS 3, *)
@@ -919,11 +941,29 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 		_ = askPhoneForData()
 	}
 	
+	@available(watchOS, unavailable)
+	func requestStarting(_ workout: Workout) -> Bool {
+		guard canComunicate && session.isReachable else {
+			return false
+		}
+		
+		session.sendMessage([remoteWorkoutStartKey: workout.recordID.wcRepresentation], replyHandler: nil, errorHandler: nil)
+		return true
+	}
+	
 	fileprivate func session(_ session: WCSession, didReceiveMessage message: [String : Any], replyHandler: @escaping ([String : Any]) -> Void) {
 		if let sendData = message[askDataKey] as? Bool, isiOS, sendData {
 			dataManager.initializeWatchDatabase()
 			
 			replyHandler([dataIncomingKey: true])
+		}
+	}
+	
+	fileprivate func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
+		if let wData = message[remoteWorkoutStartKey] as? [String], iswatchOS, let wID = CDRecordID(wcRepresentation: wData), let workout = wID.getObject() as? Workout {
+			#if os(watchOS)
+				dataManager.delegate?.remoteWorkoutStart(workout)
+			#endif
 		}
 	}
 	

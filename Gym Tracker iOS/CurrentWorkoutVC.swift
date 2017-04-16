@@ -234,8 +234,16 @@ class CurrentWorkoutViewController: UIViewController {
 		nextUpLbl.text = text
 	}
 	
+	private var updateWeightData: UpdateWeightData?
+	var skipAskUpdate = false
+	
 	func askUpdateWeight(with data: UpdateWeightData) {
-		// TODO: Implement for workout on phone
+		if !skipAskUpdate {
+			updateWeightData = data
+			self.performSegue(withIdentifier: "updateWeight", sender: self)
+		}
+		
+		skipAskUpdate = false
 	}
 	
 	@IBAction func endRest() {
@@ -267,6 +275,7 @@ class CurrentWorkoutViewController: UIViewController {
 	}
 	
 	func workoutHasStarted() {
+		skipAskUpdate = false
 		let isWatch = workoutController?.isMirroring ?? false
 		
 		cancelBtn.isEnabled = true
@@ -294,6 +303,27 @@ class CurrentWorkoutViewController: UIViewController {
 	func exitWorkoutTrackingIfAppropriate() {
 		if workoutController?.isCompleted ?? false {
 			appDelegate.exitWorkoutTracking()
+		}
+	}
+	
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		guard let segueID = segue.identifier else {
+			return
+		}
+		
+		switch segueID {
+		case "updateWeight":
+			let dest = segue.destination as! UpdateWeightViewController
+			dest.weightData = updateWeightData
+			updateWeightData = nil
+			
+			PopoverController.preparePresentation(for: dest)
+			dest.popoverPresentationController?.backgroundColor = dest.backgroundColor
+			dest.popoverPresentationController?.sourceRect = CGRect(x: view.bounds.midX, y: view.bounds.midY, width: 0, height: 0)
+			dest.popoverPresentationController?.sourceView = self.view
+			dest.popoverPresentationController?.canOverlapSourceViewRect = true
+		default:
+			break
 		}
 	}
 	

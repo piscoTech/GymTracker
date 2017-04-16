@@ -28,6 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	fileprivate let endRestNotificationAction = "endRestNotificationActionID"
 	fileprivate let endSetNotificationAction = "endSetNotificationActionID"
+	fileprivate let endSetWeightNotificationAction = "endSetWeightNotificationActionID"
 	
 	fileprivate let endRestNowNotificationCategory = "endRestNowNotificationCategoryID"
 	fileprivate let endRestNotificationCategory = "endRestNotificationCategoryID"
@@ -64,12 +65,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			let endRest = UNNotificationAction(identifier: endRestNotificationAction, title: NSLocalizedString("NOTIF_END_REST", comment: "End"))
 			
 			let endSet = UNNotificationAction(identifier: endSetNotificationAction, title: NSLocalizedString("NOTIF_END_SET", comment: "Done"))
-			let endWorkout = UNNotificationAction(identifier: endSetNotificationAction, title: NSLocalizedString("NOTIF_END_WORKOUT", comment: "Done"), options: .foreground)
+			let endWorkout = UNNotificationAction(identifier: endSetNotificationAction, title: NSLocalizedString("NOTIF_END_WORKOUT", comment: "Done Workout"), options: .foreground)
+			
+			let endSetWeight = UNNotificationAction(identifier: endSetWeightNotificationAction, title: NSLocalizedString("NOTIF_END_SET_WEIGHT", comment: "Done, weight"), options: [.foreground])
 			
 			let endRestNowCategory = UNNotificationCategory(identifier: endRestNowNotificationCategory, actions: [endRestNow], intentIdentifiers: [], options: [])
 			let endRestCategory = UNNotificationCategory(identifier: endRestNotificationCategory, actions: [endRest], intentIdentifiers: [], options: [])
-			let endSetCategory = UNNotificationCategory(identifier: endSetNotificationCategory, actions: [endSet], intentIdentifiers: [], options: [])
-			let endWorkoutCategory = UNNotificationCategory(identifier: endWorkoutNotificationCategory, actions: [endWorkout], intentIdentifiers: [], options: [])
+			let endSetCategory = UNNotificationCategory(identifier: endSetNotificationCategory, actions: [endSet, endSetWeight], intentIdentifiers: [], options: [])
+			let endWorkoutCategory = UNNotificationCategory(identifier: endWorkoutNotificationCategory, actions: [endWorkout, endSetWeight], intentIdentifiers: [], options: [])
 			
 			center.setNotificationCategories([endRestNowCategory, endRestCategory, endSetCategory, endWorkoutCategory])
 		}
@@ -160,9 +163,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 extension AppDelegate: ExecuteWorkoutControllerDelegate {
 	
 	func startWorkout(_ workout: Workout) {
+		guard workoutController == nil else {
+			return
+		}
+		
 		tabController.selectedIndex = 1
 		
-		startLocalWorkout(workout)
+		if dataManager.shouldStartWorkoutOnWatch {
+			healthStore.startWatchApp(with: HKWorkoutConfiguration()) { success, _ in
+				let displayError = {
+					DispatchQueue.main.async {
+						self.currentWorkout.present(UIAlertController(simpleAlert: NSLocalizedString("WORKOUT_START_ERR", comment: "Err"), message: NSLocalizedString("WORKOUT_START_ERR_WATCH", comment: "Err watch")), animated: true)
+					}
+				}
+				
+				if !success {
+					displayError()
+				} else {
+					if !dataManager.requestStarting(workout) {
+						displayError()
+					}
+				}
+			}
+		} else {
+			startLocalWorkout(workout)
+		}
 	}
 	
 	fileprivate func startLocalWorkout(_ workout: Workout? = nil) {
@@ -279,6 +304,10 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 	}
 	
 	func notifyExercizeChange(isRest: Bool) {
+		guard !(workoutController?.isMirroring ?? true) else {
+			return
+		}
+		
 		var notifications = [UNNotificationRequest]()
 		let presentNow = UNTimeIntervalNotificationTrigger(timeInterval: notifyNowDelay, repeats: false)
 		if isRest {
@@ -371,6 +400,10 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 		case endRestNotificationAction:
 			workoutController?.endRest()
 		case endSetNotificationAction:
+			currentWorkout.skipAskUpdate = true
+			workoutController?.endSet()
+		case endSetWeightNotificationAction:
+			currentWorkout.skipAskUpdate = false
 			workoutController?.endSet()
 		default:
 			break

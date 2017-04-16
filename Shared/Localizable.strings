@@ -46,6 +46,7 @@
 "WORKOUT_END" = "End Workout";
 "WORKOUT_END_TXT" = "Are you sure you want to end the workout now?";
 "WORKOUT_START_ERR" = "Unable to start workout";
+"WORKOUT_START_ERR_WATCH" = "Cannot start workout on Apple Watch";
 "WORKOUT_STOP_ERR" = "Workout terminated due to an error";
 "WORKOUT_SAVING" = "Saving Workout...";
 "WORKOUT_SAVED" = "Workout saved";
@@ -70,4 +71,5 @@
 "NOTIF_END_REST_NOW" = "I'm ready now!";
 "NOTIF_END_REST" = "I'm ready";
 "NOTIF_END_SET" = "I'm done";
+"NOTIF_END_SET_WEIGHT" = "I'm done, update weight";
 "NOTIF_END_WORKOUT" = "I'm done! End workout";
