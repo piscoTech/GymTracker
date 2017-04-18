@@ -17,6 +17,8 @@
 		7A5EFA491E81408000A4CF41 /* Main iOS & watchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADC03BD1E78A187005BDC25 /* Main iOS & watchOS.swift */; };
 		7A6E083D1E98E94C003BB048 /* CurrentWorkoutVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A6E083C1E98E94C003BB048 /* CurrentWorkoutVC.swift */; };
 		7A95D0BC1E94228D00998D70 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A95D0BB1E94228D00998D70 /* TabBarController.swift */; };
+		7ABC3F2C1EA6A8DF008A3FCF /* rest_end_notification.caf in Resources */ = {isa = PBXBuildFile; fileRef = 7ABC3F2A1EA6A8DF008A3FCF /* rest_end_notification.caf */; };
+		7ABC3F2D1EA6A8DF008A3FCF /* rest_end.caf in Resources */ = {isa = PBXBuildFile; fileRef = 7ABC3F2B1EA6A8DF008A3FCF /* rest_end.caf */; };
 		7AC388F51EA21B3200EB9571 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AC388F41EA21B3200EB9571 /* UserNotifications.framework */; };
 		7ACE8B6F1E76D0D00011F839 /* MBLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7ACE8B681E76CF720011F839 /* MBLibrary.framework */; };
 		7ACE8B701E76D0D00011F839 /* MBLibrary.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7ACE8B681E76CF720011F839 /* MBLibrary.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -180,6 +182,8 @@
 		7A5D2B701E8422DB008EED4C /* WorkoutDetailIC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkoutDetailIC.swift; sourceTree = "<group>"; };
 		7A6E083C1E98E94C003BB048 /* CurrentWorkoutVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentWorkoutVC.swift; sourceTree = "<group>"; };
 		7A95D0BB1E94228D00998D70 /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		7ABC3F2A1EA6A8DF008A3FCF /* rest_end_notification.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = rest_end_notification.caf; sourceTree = "<group>"; };
+		7ABC3F2B1EA6A8DF008A3FCF /* rest_end.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = rest_end.caf; sourceTree = "<group>"; };
 		7AC388F41EA21B3200EB9571 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		7ACE8B601E76CF710011F839 /* MBLibrary.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MBLibrary.xcodeproj; path = ../MBLibrary/MBLibrary.xcodeproj; sourceTree = "<group>"; };
 		7ACF6D811E802FD200579B67 /* Gym Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gym Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -308,6 +312,24 @@
 			name = WorkoutCreation;
 			sourceTree = "<group>";
 		};
+		7ABC3F271EA6A894008A3FCF /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				7ADC03CA1E78A328005BDC25 /* Assets.xcassets */,
+				7ABC3F2E1EA6A8E3008A3FCF /* Sounds */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		7ABC3F2E1EA6A8E3008A3FCF /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				7ABC3F2A1EA6A8DF008A3FCF /* rest_end_notification.caf */,
+				7ABC3F2B1EA6A8DF008A3FCF /* rest_end.caf */,
+			);
+			name = Sounds;
+			sourceTree = "<group>";
+		};
 		7ACE8B611E76CF710011F839 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -401,7 +423,7 @@
 				7ADC03E41E78A34E005BDC25 /* View */,
 				7ADC03C91E78A328005BDC25 /* AppDelegate.swift */,
 				7ACF6DB61E8039EB00579B67 /* Main iOS.swift */,
-				7ADC03CA1E78A328005BDC25 /* Assets.xcassets */,
+				7ABC3F271EA6A894008A3FCF /* Resources */,
 				7A5A47F51E78A3EA00ABCF46 /* Supporting Files */,
 			);
 			path = "Gym Tracker iOS";
@@ -596,6 +618,8 @@
 				7A5A47F11E78A3CF00ABCF46 /* Localizable.strings in Resources */,
 				7ADC03D71E78A328005BDC25 /* LaunchScreen.storyboard in Resources */,
 				7ADC03D61E78A328005BDC25 /* Assets.xcassets in Resources */,
+				7ABC3F2D1EA6A8DF008A3FCF /* rest_end.caf in Resources */,
+				7ABC3F2C1EA6A8DF008A3FCF /* rest_end_notification.caf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

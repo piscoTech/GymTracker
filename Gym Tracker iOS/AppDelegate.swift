@@ -9,6 +9,7 @@
 import UIKit
 import HealthKit
 import UserNotifications
+import AVFoundation
 import MBLibrary
 
 @UIApplicationMain
@@ -22,6 +23,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	weak var settings: SettingsViewController!
 	
 	fileprivate(set) var workoutController: ExecuteWorkoutController?
+	fileprivate var workoutAudio: AVAudioPlayer?
+	fileprivate var workoutRestTimer: Timer?
+	
 	fileprivate let restTimeNotification = "restTimeNotificationID"
 	fileprivate let restEndNotification = "restEndNotificationID"
 	fileprivate let nextSetNotification = "nextSetNotificationID"
@@ -294,13 +298,20 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 	}
 	
 	func notifyEndRest() {
-		// TODO: Start playing a sound
-		print("Beep Beep")
+		workoutAudio?.play()
+		DispatchQueue.main.async {
+			self.workoutRestTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
+				self.workoutAudio?.play()
+			}
+			RunLoop.main.add(self.workoutRestTimer!, forMode: .commonModes)
+		}
 	}
 	
 	func endNotifyEndRest() {
-		// TODO: End playing a sound
-		print("Stop Beep Beep")
+		DispatchQueue.main.async {
+			self.workoutRestTimer?.invalidate()
+			self.workoutRestTimer = nil
+		}
 	}
 	
 	func notifyExercizeChange(isRest: Bool) {
@@ -327,7 +338,7 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 				let restEndContent = UNMutableNotificationContent()
 				restEndContent.title = NSLocalizedString("REST_OVER_TITLE", comment: "Rest over")
 				restEndContent.body = NSLocalizedString("REST_\((workoutController?.currentIsRestExercize ?? true) ? "EXERCIZE" : "SET")_OVER_BODY", comment: "Next Exercize")
-				restEndContent.sound = .default()
+				restEndContent.sound = UNNotificationSound(named: "rest_end_notification.caf")
 				restEndContent.categoryIdentifier = endRestNotificationCategory
 				
 				notifications.append(UNNotificationRequest(identifier: restEndNotification, content: restEndContent, trigger: restEndTrigger))
@@ -360,6 +371,11 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 		let center = UNUserNotificationCenter.current()
 		center.removeAllDeliveredNotifications()
 		center.removeAllPendingNotificationRequests()
+		
+		if let endRestSound = Bundle.main.url(forResource: "rest_end", withExtension: "caf") {
+			workoutAudio = try? AVAudioPlayer(contentsOf: endRestSound)
+			workoutAudio?.prepareToPlay()
+		}
 	}
 	
 	func exitWorkoutTracking() {
@@ -369,6 +385,8 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 		let center = UNUserNotificationCenter.current()
 		center.removeAllDeliveredNotifications()
 		center.removeAllPendingNotificationRequests()
+		
+		workoutAudio = nil
 	}
 	
 }
