@@ -11,3 +11,5 @@ import UIKit
 var appDelegate: AppDelegate = {
 	return UIApplication.shared.delegate as! AppDelegate
 }()
+
+let importExportManager = ImportExportBackupManager.getManager()

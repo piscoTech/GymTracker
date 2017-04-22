@@ -47,4 +47,8 @@ class SettingsViewController: UITableViewController {
 		tableView.deselectRow(at: indexPath, animated: true)
 	}
 	
+	@IBAction func testExport() {
+		importExportManager.testExportImport()
+	}
+	
 }

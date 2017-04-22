@@ -257,7 +257,7 @@ class WCObject: Equatable {
 
 // MARK: - Data Manager
 
-class DataManager: NSObject {
+class DataManager {
 	
 	weak var delegate: DataManagerDelegate?
 	
@@ -276,11 +276,9 @@ class DataManager: NSObject {
 		}()
 	}
 	
-	override private init() {
+	private init() {
 		localData = CoreDataStack.getStack()
 		wcInterface = WatchConnectivityInterface.getInterface()
-		
-		super.init()
 
 		print("Data Manager initialized")
 		

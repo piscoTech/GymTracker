@@ -90,7 +90,7 @@ class Workout: DataObject {
 	}
 	
 	///Removes rest period from start and end.
-	///- returns: A collection of removed exercizes from the start and end.
+	///- returns: A collection of removed exercizes (rest periods) from the start, end and somewhere between non-rest exercizes.
 	func compactExercizes() -> (start: [Exercize], end: [Exercize], middle: [(e: Exercize, oldOrder: Int32)]) {
 		var s = [Exercize]()
 		var e = [Exercize]()
