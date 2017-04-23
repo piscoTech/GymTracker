@@ -291,9 +291,8 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		precondition(e.workout == workout, "Exercize is not from current workout")
 		
 		deletedEntities += e.compactSets() as [DataObject]
-		let keep = e.name?.length ?? 0 > 0 && e.sets.count > 0
-		
-		if !keep {
+	
+		if !e.isValid {
 			removeExercize(e)
 		} else {
 			tableView.reloadRows(at: [IndexPath(row: Int(e.order), section: 1)], with: .none)

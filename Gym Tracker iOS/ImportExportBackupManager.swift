@@ -14,6 +14,22 @@ class ImportExportBackupManager {
 	
 	let fileExtension = ".wrkt"
 	
+	let workoutsTag = "workoutlist"
+	let workoutTag = "workout"
+	let workoutNameTag = "name"
+	let archivedTag = "archived"
+	let exercizesTag = "exercizes"
+	
+	let restTag = "rest"
+	let exercizeTag = "exercize"
+	let exercizeNameTag = "name"
+	let setsTag = "sets"
+	
+	let setTag = "set"
+	let setRestTag = "rest"
+	let setWeightTag = "weight"
+	let setRepsTag = "reps"
+	
 	// MARK: - Initialization
 	
 	private static var manager: ImportExportBackupManager?
@@ -32,9 +48,9 @@ class ImportExportBackupManager {
 	
 	///- parameter isExternal: whether to save the resulting file in the temporary directory for exporting or in the backup folder.
 	private func export(isExternal: Bool = false) -> URL? {
-		var res = "<?xml version=\"1.0\"?><workoutlist>"
+		var res = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><\(workoutsTag)>"
 		res += Workout.getList().map { $0.export() }.reduce("") { $0 + $1 }
-		res += "</workoutlist>\n"
+		res += "</\(workoutsTag)>\n"
 		
 		let filePath: URL
 		if isExternal {
@@ -59,11 +75,32 @@ class ImportExportBackupManager {
 		}
 		
 		guard let xsd = Bundle.main.url(forResource: "workout", withExtension: "xsd"),
-			let root = file.loadAsXML(validatingWithXSD: xsd) else {
+			let workouts = file.loadAsXML(validatingWithXSD: xsd)?.children else {
 			return
 		}
 		
-		// TODO: Cycle over child elements (aka `workout`s), import them using `Workout.import(fromXML:)` and persist correct ones
+		var save = [Workout]()
+		var delete = [Workout]()
+		
+		for wData in workouts {
+			let (w, success) = Workout.import(fromXML: wData)
+			
+			if let w = w {
+				if success {
+					save.append(w)
+				} else {
+					delete.append(w)
+				}
+			}
+		}
+		
+		if dataManager.persistChangesForObjects(save, andDeleteObjects: delete) {
+			print("Import-Export successful")
+			appDelegate.workoutList.refreshData()
+		} else {
+			dataManager.discardAllChanges()
+			print("Import-Export failed")
+		}
 	}
 	
 }

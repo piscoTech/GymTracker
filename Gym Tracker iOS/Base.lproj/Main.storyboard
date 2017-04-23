@@ -1269,7 +1269,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EsD-fV-oyh">
-                                                    <rect key="frame" x="121.5" y="6" width="131" height="30"/>
+                                                    <rect key="frame" x="122" y="6" width="131" height="30"/>
                                                     <state key="normal" title="Export-Import Test"/>
                                                     <connections>
                                                         <action selector="testExport" destination="ksa-AT-X2p" eventType="touchUpInside" id="f7E-1n-nX3"/>

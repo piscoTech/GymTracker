@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7A13058E1EAB3E6D00D29048 /* ExercizeExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A13058D1EAB3E6D00D29048 /* ExercizeExport.swift */; };
 		7A1305921EAB418700D29048 /* RepsSetExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A1305911EAB418700D29048 /* RepsSetExport.swift */; };
 		7A1305991EAB567300D29048 /* libxml2.2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A1305971EAB567300D29048 /* libxml2.2.tbd */; };
 		7A13059A1EAB567300D29048 /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A1305981EAB567300D29048 /* libxml2.tbd */; };
@@ -66,6 +65,7 @@
 		7ADC07D81E98CEB20047E0C2 /* ExecuteWorkoutController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADC07D61E98CEB20047E0C2 /* ExecuteWorkoutController.swift */; };
 		7ADCF6911E81135700ECF011 /* TableView CellControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADCF6901E81135700ECF011 /* TableView CellControllers.swift */; };
 		7AE10A431E7D6F1000A64CF7 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE10A421E7D6F1000A64CF7 /* Preferences.swift */; };
+		7AE92D9B1EACFF750091FE74 /* ExercizeExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE92D9A1EACFF750091FE74 /* ExercizeExport.swift */; };
 		7AEE4D661E812A9200D843EB /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7AEE4D641E812A9200D843EB /* Interface.storyboard */; };
 		7AF561271E93A845009BF658 /* Appearance Classes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AF561261E93A845009BF658 /* Appearance Classes.swift */; };
 /* End PBXBuildFile section */
@@ -177,7 +177,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		7A13058D1EAB3E6D00D29048 /* ExercizeExport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ExercizeExport.swift; path = ../ExercizeExport.swift; sourceTree = "<group>"; };
 		7A1305911EAB418700D29048 /* RepsSetExport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepsSetExport.swift; sourceTree = "<group>"; };
 		7A1305971EAB567300D29048 /* libxml2.2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.2.tbd; path = usr/lib/libxml2.2.tbd; sourceTree = SDKROOT; };
 		7A1305981EAB567300D29048 /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
@@ -230,6 +229,7 @@
 		7ADC07D61E98CEB20047E0C2 /* ExecuteWorkoutController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExecuteWorkoutController.swift; sourceTree = "<group>"; };
 		7ADCF6901E81135700ECF011 /* TableView CellControllers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TableView CellControllers.swift"; sourceTree = "<group>"; };
 		7AE10A421E7D6F1000A64CF7 /* Preferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
+		7AE92D9A1EACFF750091FE74 /* ExercizeExport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExercizeExport.swift; sourceTree = "<group>"; };
 		7AEE4D651E812A9200D843EB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
 		7AF561261E93A845009BF658 /* Appearance Classes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Appearance Classes.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -324,7 +324,7 @@
 			isa = PBXGroup;
 			children = (
 				7A67883F1EAA5267009101DB /* WorkoutExport.swift */,
-				7A13058D1EAB3E6D00D29048 /* ExercizeExport.swift */,
+				7AE92D9A1EACFF750091FE74 /* ExercizeExport.swift */,
 				7A1305911EAB418700D29048 /* RepsSetExport.swift */,
 			);
 			name = Model;
@@ -690,13 +690,13 @@
 			files = (
 				7A95D0BC1E94228D00998D70 /* TabBarController.swift in Sources */,
 				7A3F61171E92958F000F7514 /* SettingsVC.swift in Sources */,
-				7A13058E1EAB3E6D00D29048 /* ExercizeExport.swift in Sources */,
 				7A67883D1EAA521A009101DB /* ImportExportBackupManager.swift in Sources */,
 				7A27276F1EA3536400E67F70 /* UpdateWeightVC.swift in Sources */,
 				7ADC03DC1E78A328005BDC25 /* TableView Cells.swift in Sources */,
 				7ADC03D51E78A328005BDC25 /* AppDelegate.swift in Sources */,
 				7AE10A431E7D6F1000A64CF7 /* Preferences.swift in Sources */,
 				7AF561271E93A845009BF658 /* Appearance Classes.swift in Sources */,
+				7AE92D9B1EACFF750091FE74 /* ExercizeExport.swift in Sources */,
 				7ADC03C31E78A187005BDC25 /* Main iOS & watchOS.swift in Sources */,
 				7ACF6DB71E8039EB00579B67 /* Main iOS.swift in Sources */,
 				7A6E083D1E98E94C003BB048 /* CurrentWorkoutVC.swift in Sources */,
