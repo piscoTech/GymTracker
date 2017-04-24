@@ -443,18 +443,20 @@ class DataManager: NSObject {
 			return
 		}
 		
-		preferences.transferLocal = []
-		preferences.deleteLocal = []
-		
-		preferences.saveRemote = []
-		preferences.deleteRemote = []
-		
-		let data = Workout.getList().flatMap { [$0 as DataObject]
-			+ $0.exercizes.map { [$0 as DataObject] + Array($0.sets) as [DataObject] }.reduce([]) { $0 + $1 } }
-		wcInterface.sendUpdateForChangedObjects(data, andDeleted: [], markAsInitial: true)
-		
-		preferences.initialSyncDone = true
-		print("Initial data sent to watch")
+		DispatchQueue.main.async {
+			preferences.transferLocal = []
+			preferences.deleteLocal = []
+			
+			preferences.saveRemote = []
+			preferences.deleteRemote = []
+			
+			let data = Workout.getList().flatMap { [$0 as DataObject]
+				+ $0.exercizes.map { [$0 as DataObject] + Array($0.sets) as [DataObject] }.reduce([]) { $0 + $1 } }
+			self.wcInterface.sendUpdateForChangedObjects(data, andDeleted: [], markAsInitial: true)
+			
+			preferences.initialSyncDone = true
+			print("Initial data sent to watch")
+		}
 	}
 
 	fileprivate func saveCounterPartUpdatesForChangedObjects(_ changes: [WCObject], andDeleted deletion: [CDRecordID]) -> Bool {
@@ -717,39 +719,42 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 			return
 		}
 		
-		//Prepend pending transfer to new ones
-		let changedObjects = preferences.transferLocal.map { $0.getObject() }.filter { $0 != nil }.map { $0! } + data
-		let deletedIDs = preferences.deleteLocal + delete
-		
-		guard changedObjects.count != 0 || deletedIDs.count != 0 else {
-			return
-		}
-		
-		guard canComunicate else {
-			preferences.transferLocal = changedObjects.map { $0.recordID }
-			preferences.deleteLocal = deletedIDs
+		DispatchQueue.main.async {
+			//Prepend pending transfer to new ones
+			let changedObjects = preferences.transferLocal.map { $0.getObject() }.filter { $0 != nil }.map { $0! } + data
+			let deletedIDs = preferences.deleteLocal + delete
 			
-			return
-		}
-		
-		let changedData = changedObjects.map { (cdObj) -> WCObject? in
-			let wcObj = cdObj.wcObject
-			if markAsInitial {
-				wcObj?.setAsInitialData()
+			guard changedObjects.count != 0 || deletedIDs.count != 0 else {
+				return
 			}
 			
-			return wcObj
-		}.filter { $0 != nil }.map { $0!.wcRepresentation }
-		let deletedData = deletedIDs.map { $0.wcRepresentation }
-		
-		var data = [ changesKey: changedData, deletionKey: deletedData ] as [String : Any]
-		if markAsInitial {
-			data[isInitialDataKey] = true
+			guard self.canComunicate else {
+				preferences.transferLocal = changedObjects.map { $0.recordID }
+				preferences.deleteLocal = deletedIDs
+				
+				return
+			}
+			
+			
+			let changedData = changedObjects.map { (cdObj) -> WCObject? in
+				let wcObj = cdObj.wcObject
+				if markAsInitial {
+					wcObj?.setAsInitialData()
+				}
+				
+				return wcObj
+			}.filter { $0 != nil }.map { $0!.wcRepresentation }
+			let deletedData = deletedIDs.map { $0.wcRepresentation }
+			
+			var data = [ self.changesKey: changedData, self.deletionKey: deletedData ] as [String : Any]
+			if markAsInitial {
+				data[self.isInitialDataKey] = true
+			}
+			
+			sess.transferUserInfo(data)
+			preferences.transferLocal = []
+			preferences.deleteLocal = []
 		}
-		
-		sess.transferUserInfo(data)
-		preferences.transferLocal = []
-		preferences.deleteLocal = []
 	}
 	
 	fileprivate func setRunningWorkout() {
@@ -788,7 +793,9 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 
 	fileprivate func session(_ session: WCSession, didReceiveUserInfo userInfo: [String : Any] = [:]) {
 		if userInfo[isInitialDataKey] as? Bool ?? false, iswatchOS {
-			_ = dataManager.clearDatabase()
+			DispatchQueue.main.async {
+				_ = dataManager.clearDatabase()
+			}
 		}
 		
 		if let curWorkout = userInfo[currentWorkoutKey] as? [Any], curWorkout.count == 2 {
