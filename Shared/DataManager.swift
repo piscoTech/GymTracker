@@ -547,6 +547,55 @@ class DataManager {
 	func askPhoneForData() -> Bool {
 		return wcInterface.askPhoneForData()
 	}
+	
+	// MARK: - iCloude Drive handling
+	
+	private func rootDirectoryForICloud(_ completion: @escaping (URL?) -> Void) {
+		DispatchQueue.background.async {
+			let file = FileManager.default
+			guard let root = file.url(forUbiquityContainerIdentifier: nil)?.appendingPathComponent("Documents") else {
+				DispatchQueue.main.async {
+					completion(nil)
+				}
+				
+				return
+			}
+			
+			if !file.fileExists(atPath: root.path, isDirectory: nil) {
+				do {
+					try file.createDirectory(at: root, withIntermediateDirectories: true, attributes: nil)
+				} catch {
+					DispatchQueue.main.async {
+						completion(nil)
+					}
+					
+					return
+				}
+			}
+			
+			DispatchQueue.main.async {
+				completion(root)
+			}
+		}
+	}
+	
+	func loadDocumentToICloud(_ localPath: URL, completion: @escaping (Bool) -> Void) {
+		rootDirectoryForICloud { path in
+			guard let root = path else {
+				completion(false)
+				
+				return
+			}
+			
+			let remotePath = root.appendingPathComponent(localPath.lastPathComponent)
+			do {
+				try FileManager.default.setUbiquitous(true, itemAt: localPath, destinationURL: remotePath)
+				completion(true)
+			} catch {
+				completion(false)
+			}
+		}
+	}
 
 }
 

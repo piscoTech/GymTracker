@@ -74,32 +74,35 @@ class ImportExportBackupManager {
 			return
 		}
 		
-		guard let xsd = Bundle.main.url(forResource: "workout", withExtension: "xsd"),
-			let workouts = file.loadAsXML(validatingWithXSD: xsd)?.children else {
-			return
-		}
-		
-		var save = [Workout]()
-		var delete = [Workout]()
-		
-		for wData in workouts {
-			let (w, success) = Workout.import(fromXML: wData)
-			
-			if let w = w {
-				if success {
-					save.append(w)
-				} else {
-					delete.append(w)
-				}
-			}
-		}
-		
-		if dataManager.persistChangesForObjects(save, andDeleteObjects: delete) {
-			print("Import-Export successful")
-			appDelegate.workoutList.refreshData()
-		} else {
-			dataManager.discardAllChanges()
-			print("Import-Export failed")
+//		guard let xsd = Bundle.main.url(forResource: "workout", withExtension: "xsd"),
+//			let workouts = file.loadAsXML(validatingWithXSD: xsd)?.children else {
+//			return
+//		}
+//		
+//		var save = [Workout]()
+//		var delete = [Workout]()
+//		
+//		for wData in workouts {
+//			let (w, success) = Workout.import(fromXML: wData)
+//			
+//			if let w = w {
+//				if success {
+//					save.append(w)
+//				} else {
+//					delete.append(w)
+//				}
+//			}
+//		}
+//		
+//		if dataManager.persistChangesForObjects(save, andDeleteObjects: delete) {
+//			print("Import-Export successful")
+//			appDelegate.workoutList.refreshData()
+//		} else {
+//			dataManager.discardAllChanges()
+//			print("Import-Export failed")
+//		}
+		dataManager.loadDocumentToICloud(file) { success in
+			print(success ? "File uploaded" : "Error uploading")
 		}
 	}
 	
