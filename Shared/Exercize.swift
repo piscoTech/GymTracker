@@ -13,9 +13,7 @@ import CoreData
 class Exercize: DataObject {
 	
 	override class var objectType: String {
-		get {
-			return "Exercize"
-		}
+		return "Exercize"
 	}
 	
 	//ID and last modified date are properties of DataObject

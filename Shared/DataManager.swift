@@ -84,14 +84,10 @@ struct CDRecordID: Hashable {
 class DataObject: NSManagedObject {
 	
 	class var objectType: String {
-		get {
-			return "DataObject"
-		}
+		return "DataObject"
 	}
 	var objectType: String {
-		get {
-			return type(of: self).objectType
-		}
+		return type(of: self).objectType
 	}
 	
 	@NSManaged fileprivate var id: String
@@ -112,9 +108,7 @@ class DataObject: NSManagedObject {
 	}
 	
 	var recordID: CDRecordID {
-		get {
-			return CDRecordID(obj: self)
-		}
+		return CDRecordID(obj: self)
 	}
 	
 	class func loadWithID(_ id: String) -> DataObject? {
@@ -297,9 +291,7 @@ class DataManager: NSObject {
 	func executeFetchRequest<T: NSFetchRequestResult>(_ request: NSFetchRequest<T>) -> [T]? {
 		var result: [T]? = nil
 		localData.managedObjectContext.performAndWait {
-			do {
-				result = try self.localData.managedObjectContext.fetch(request)
-			} catch {}
+			result = try? self.localData.managedObjectContext.fetch(request)
 		}
 		
 		return result
@@ -443,7 +435,7 @@ class DataManager: NSObject {
 			return
 		}
 		
-		DispatchQueue.main.async {
+		localData.managedObjectContext.perform {
 			preferences.transferLocal = []
 			preferences.deleteLocal = []
 			
@@ -527,18 +519,16 @@ class DataManager: NSObject {
 	}
 	
 	fileprivate func clearDatabase() -> Bool {
+		var res = false
 		let context = localData.managedObjectContext
-		for w in Workout.getList() {
-			context.performAndWait {
+		context.performAndWait {
+			for w in Workout.getList() {
 				context.delete(w)
 			}
-		}
-		
-		var res = false
-		context.performAndWait {
+			
 			do {
 				try context.save()
-			
+				
 				res = true
 			} catch {
 				res = false
@@ -719,7 +709,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 			return
 		}
 		
-		DispatchQueue.main.async {
+		CoreDataStack.getStack().managedObjectContext.perform {
 			//Prepend pending transfer to new ones
 			let changedObjects = preferences.transferLocal.map { $0.getObject() }.filter { $0 != nil }.map { $0! } + data
 			let deletedIDs = preferences.deleteLocal + delete
@@ -779,7 +769,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 			return
 		}
 		
-		DispatchQueue.main.async {
+		CoreDataStack.getStack().managedObjectContext.perform {
 			let timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
 				guard let sess = self.session, self.hasCounterPart, self.canComunicate else {
 					return
@@ -793,9 +783,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 
 	fileprivate func session(_ session: WCSession, didReceiveUserInfo userInfo: [String : Any] = [:]) {
 		if userInfo[isInitialDataKey] as? Bool ?? false, iswatchOS {
-			DispatchQueue.main.async {
-				_ = dataManager.clearDatabase()
-			}
+			_ = dataManager.clearDatabase()
 		}
 		
 		if let curWorkout = userInfo[currentWorkoutKey] as? [Any], curWorkout.count == 2 {
@@ -828,7 +816,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 			}
 		#endif
 		
-		DispatchQueue.main.async {
+		CoreDataStack.getStack().managedObjectContext.perform {
 			let changes = preferences.saveRemote + WCObject.decodeArray(userInfo[self.changesKey] as? [[String : Any]] ?? [])
 			let deletion = preferences.deleteRemote + CDRecordID.decodeArray(userInfo[self.deletionKey] as? [[String]] ?? [])
 			if preferences.runningWorkout != nil {
@@ -856,7 +844,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 	}
 	
 	fileprivate func persistPendingChanges() {
-		DispatchQueue.main.async {
+		CoreDataStack.getStack().managedObjectContext.perform {
 			guard preferences.runningWorkout == nil else {
 				return
 			}
