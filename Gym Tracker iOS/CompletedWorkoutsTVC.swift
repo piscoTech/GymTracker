@@ -12,9 +12,10 @@ import MBLibrary
 
 class CompletedWorkoutsTableViewController: UITableViewController {
 	
-	private var inInit = true
+	let displayLimit = 50
 	
-	private var workouts = [HKWorkout]()
+	private var inInit = true
+	private var workouts = [(name: String?, start: Date, duration: TimeInterval)]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,8 +36,14 @@ class CompletedWorkoutsTableViewController: UITableViewController {
 		let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
 		let filter = HKQuery.predicateForObjects(from: HKSource.default())
 		let type = HKObjectType.workoutType()
-		let workoutQuery = HKSampleQuery(sampleType: type, predicate: filter, limit: HKObjectQueryNoLimit, sortDescriptors: [sortDescriptor]) { (_, r, err) in
-			self.workouts = r as? [HKWorkout] ?? []
+		let workoutQuery = HKSampleQuery(sampleType: type, predicate: filter, limit: displayLimit, sortDescriptors: [sortDescriptor]) { (_, r, err) in
+			self.workouts = (r as? [HKWorkout] ?? []).map { w in
+				let name = w.metadata?[ExecuteWorkoutController.workoutNameMetadataKey] as? String
+				let start = w.startDate
+				let dur = w.duration
+				
+				return (name?.length ?? 0 > 0 ? name : nil, start, dur)
+			}
 			
 			DispatchQueue.main.async {
 				self.tableView.reloadData()
@@ -72,7 +79,7 @@ class CompletedWorkoutsTableViewController: UITableViewController {
 			}
 		}
 		
-		if let n = w.metadata?[ExecuteWorkoutController.workoutNameMetadataKey] as? String, n.length > 0 {
+		if let n = w.name {
 			cell.textLabel?.text = n
 			cell.textLabel?.font = normalFont
 		} else {
@@ -80,7 +87,7 @@ class CompletedWorkoutsTableViewController: UITableViewController {
 			cell.textLabel?.font = italicFont
 		}
 		
-		cell.detailTextLabel?.text = [w.startDate.getFormattedDateTime(), w.duration.getDuration()].joined(separator: " – ")
+		cell.detailTextLabel?.text = [w.start.getFormattedDateTime(), w.duration.getDuration()].joined(separator: " – ")
 
         return cell
     }

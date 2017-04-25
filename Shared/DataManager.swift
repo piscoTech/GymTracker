@@ -718,7 +718,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 		}
 		
 		//Prepend pending transfer to new ones
-		let changedObjects = preferences.transferLocal.map { $0.getObject() }.filter { $0 != nil }.map { $0! } + data
+		let changedObjects = preferences.transferLocal.flatMap { $0.getObject() } + data
 		let deletedIDs = preferences.deleteLocal + delete
 		
 		guard changedObjects.count != 0 || deletedIDs.count != 0 else {
@@ -732,14 +732,14 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 			return
 		}
 		
-		let changedData = changedObjects.map { (cdObj) -> WCObject? in
+		let changedData = changedObjects.flatMap { (cdObj) -> WCObject? in
 			let wcObj = cdObj.wcObject
 			if markAsInitial {
 				wcObj?.setAsInitialData()
 			}
 			
 			return wcObj
-		}.filter { $0 != nil }.map { $0!.wcRepresentation }
+		}
 		let deletedData = deletedIDs.map { $0.wcRepresentation }
 		
 		var data = [ changesKey: changedData, deletionKey: deletedData ] as [String : Any]
