@@ -37,7 +37,7 @@ extension Exercize {
 			
 			return (e, true)
 		} else if xml.name == importExportManager.exercizeTag {
-			guard let name = xml.children.first(where: { $0.name == importExportManager.exercizeNameTag })?.content,
+			guard let name = xml.children.first(where: { $0.name == importExportManager.exercizeNameTag })?.content?.fromXML(),
 				let sets = xml.children.first(where: { $0.name == importExportManager.setsTag })?.children else {
 				return (nil, false)
 			}
