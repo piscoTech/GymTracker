@@ -303,6 +303,15 @@ class DataManager {
 		return result
 	}
 	
+	func performCoreDataCodeAndWait<T>(_ block: @escaping () -> T) -> T {
+		var res: T!
+		localData.managedObjectContext.performAndWait {
+			res = block()
+		}
+		
+		return res
+	}
+	
 	private func newObjectFor<T: DataObject>(_ obj: T.Type) -> T {
 		let context = localData.managedObjectContext
 		var newObj: T!
@@ -579,6 +588,12 @@ class DataManager {
 		}
 	}
 	
+	func reportICloudStatus(_ completion: @escaping (Bool) -> Void) {
+		rootDirectoryForICloud { url in
+			completion(url != nil)
+		}
+	}
+	
 	func loadDocumentToICloud(_ localPath: URL, completion: @escaping (Bool) -> Void) {
 		rootDirectoryForICloud { path in
 			guard let root = path else {
@@ -587,12 +602,20 @@ class DataManager {
 				return
 			}
 			
-			let remotePath = root.appendingPathComponent(localPath.lastPathComponent)
-			do {
-				try FileManager.default.setUbiquitous(true, itemAt: localPath, destinationURL: remotePath)
-				completion(true)
-			} catch {
-				completion(false)
+			DispatchQueue.background.async {
+				let remotePath = root.appendingPathComponent(localPath.lastPathComponent)
+				do {
+					let file = FileManager.default
+					if file.fileExists(atPath: remotePath.path) {
+						try file.removeItem(at: remotePath)
+					}
+					
+					try file.setUbiquitous(true, itemAt: localPath, destinationURL: remotePath)
+					
+					completion(true)
+				} catch {
+					completion(false)
+				}
 			}
 		}
 	}

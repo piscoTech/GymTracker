@@ -14,6 +14,7 @@ enum PreferenceKeys: String, KeyValueStoreKey {
 		return rawValue
 	}
 	
+	case firstLaunchDone = "firstLaunchDone"
 	case initialSyncDone = "initialSync"
 	
 	case transferLocal = "transferLocal"
@@ -31,6 +32,9 @@ enum PreferenceKeys: String, KeyValueStoreKey {
 	
 	case authorized = "authorized"
 	case authVersion = "authVersion"
+	
+	case useBackups = "useBackups"
+	case lastBackup = "lastBackup"
 	
 }
 
@@ -77,6 +81,16 @@ class Preferences {
 	}
 	
 	// MARK: - Data
+	
+	var firstLaunchDone: Bool {
+		get {
+			return local.bool(forKey: PreferenceKeys.firstLaunchDone)
+		}
+		set {
+			local.set(newValue, forKey: PreferenceKeys.firstLaunchDone)
+			local.synchronize()
+		}
+	}
 	
 	var initialSyncDone: Bool {
 		get {
@@ -257,6 +271,33 @@ class Preferences {
 		}
 		set {
 			local.set(newValue, forKey: PreferenceKeys.authVersion)
+			local.synchronize()
+		}
+	}
+	
+	// MARK: - Backups
+	
+	var useBackups: Bool {
+		get {
+			return local.bool(forKey: PreferenceKeys.useBackups)
+		}
+		set {
+			local.set(newValue, forKey: PreferenceKeys.useBackups)
+			local.synchronize()
+		}
+	}
+	
+	var lastBackup: Date? {
+		get {
+			return local.object(forKey: PreferenceKeys.lastBackup) as? Date
+		}
+		set {
+			let key = PreferenceKeys.lastBackup
+			if let val = newValue {
+				local.set(val, forKey: key)
+			} else {
+				local.removeObject(forKey: key)
+			}
 			local.synchronize()
 		}
 	}

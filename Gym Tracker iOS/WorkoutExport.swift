@@ -45,7 +45,7 @@ extension Workout {
 			}
 		}
 		
-		guard let name = xml.children.first(where: { $0.name == importExportManager.workoutNameTag })?.content.fromXML(),
+		guard let name = xml.children.first(where: { $0.name == importExportManager.workoutNameTag })?.content?.fromXML(),
 			let archived = xml.children.first(where: { $0.name == importExportManager.archivedTag })?.content else {
 			return (nil, false)
 		}

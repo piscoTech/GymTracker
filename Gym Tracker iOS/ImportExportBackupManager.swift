@@ -47,17 +47,17 @@ class ImportExportBackupManager {
 	// MARK: - Export
 	
 	///- parameter isExternal: whether to save the resulting file in the temporary directory for exporting or in the backup folder.
-	private func export(isExternal: Bool = false) -> URL? {
-		var res = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><\(workoutsTag)>"
-		res += Workout.getList().map { $0.export() }.reduce("") { $0 + $1 }
-		res += "</\(workoutsTag)>\n"
-		
-		let filePath: URL
-		if isExternal {
-			filePath = URL(fileURLWithPath: NSString(string: NSTemporaryDirectory()).appendingPathComponent("workouts\(fileExtension)"))
-		} else {
-			return nil
+	private func export(name: String? = nil) -> URL? {
+		let res: String = dataManager.performCoreDataCodeAndWait {
+			var xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><\(self.workoutsTag)>"
+			xml += Workout.getList().map { $0.export() }.reduce("") { $0 + $1 }
+			xml += "</\(self.workoutsTag)>\n"
+			
+			return xml
 		}
+		
+		// TODO: Use current UNIX timestamp for default name
+		let filePath = URL(fileURLWithPath: NSString(string: NSTemporaryDirectory()).appendingPathComponent((name ?? "workouts") + fileExtension))
 		
 		do {
 			try res.write(to: filePath, atomically: true, encoding: .utf8)
@@ -68,15 +68,35 @@ class ImportExportBackupManager {
 		}
 	}
 	
-	func testExportImport() {
-		guard let file = export(isExternal: true) else {
-			print("Cannot export")
+	func doBackup() {
+		guard preferences.useBackups else {
 			return
 		}
 		
+		// TODO: Should check if appropriate to do a backup (time check), call this function at the end of applicationDidFinishLaunching and in viewDidLoad of the settings controller after checking iCloud status
+		
+		dataManager.reportICloudStatus { res in
+			guard res else {
+				return
+			}
+	
+			DispatchQueue.background.async {
+				guard let file = self.export() else {
+					print("Cannot export")
+					return
+				}
+				
+				dataManager.loadDocumentToICloud(file) { success in
+					print(success ? "File uploaded" : "Error uploading")
+				}
+			}
+		}
+	}
+	
+//	private func `import`(_ file: URL) {
 //		guard let xsd = Bundle.main.url(forResource: "workout", withExtension: "xsd"),
 //			let workouts = file.loadAsXML(validatingWithXSD: xsd)?.children else {
-//			return
+//				return
 //		}
 //		
 //		var save = [Workout]()
@@ -101,9 +121,6 @@ class ImportExportBackupManager {
 //			dataManager.discardAllChanges()
 //			print("Import-Export failed")
 //		}
-		dataManager.loadDocumentToICloud(file) { success in
-			print(success ? "File uploaded" : "Error uploading")
-		}
-	}
+//	}
 	
 }

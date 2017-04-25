@@ -62,6 +62,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			authorizeHealthAccess()
 		}
 		
+		if !preferences.firstLaunchDone {
+			preferences.firstLaunchDone = true
+			
+			// Just set the default choice to use backups, checks if this is possible will be done by the appropriate manager
+			preferences.useBackups = true
+		}
+		
 		let center = UNUserNotificationCenter.current()
 		center.requestAuthorization(options: [.alert, .sound]) { _, _ in }
 		do {
