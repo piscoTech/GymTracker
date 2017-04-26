@@ -51,6 +51,10 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
         // Dispose of any resources that can be recreated.
     }
 	
+	func updateView() {
+		tableView.reloadData()
+	}
+	
 	// MARK: - Table view data source
 	
 	private enum SetCellType {

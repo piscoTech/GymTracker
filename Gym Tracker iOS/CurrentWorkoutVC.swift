@@ -298,6 +298,7 @@ class CurrentWorkoutViewController: UIViewController {
 		
 		noWorkoutLabel.isHidden = false
 		workoutInfo.isHidden = true
+		appDelegate.refreshData()
 	}
 	
 	func exitWorkoutTrackingIfAppropriate() {

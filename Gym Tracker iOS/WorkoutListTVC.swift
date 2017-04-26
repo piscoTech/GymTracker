@@ -46,6 +46,8 @@ class WorkoutListTableViewController: UITableViewController {
 			}
 		}
 		
+		workoutController?.updateView()
+		
 		if autoReload {
 			tableView.reloadData()
 		}

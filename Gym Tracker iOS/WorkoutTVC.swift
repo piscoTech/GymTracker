@@ -78,6 +78,12 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		
 		appDelegate.startWorkout(self.workout)
 	}
+	
+	func updateView() {
+		tableView.reloadData()
+		
+		exercizeController?.updateView()
+	}
 
     // MARK: - Table view data source
 	
