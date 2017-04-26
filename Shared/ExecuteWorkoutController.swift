@@ -514,6 +514,9 @@ class ExecuteWorkoutController: NSObject {
 		let predicate = NSCompoundPredicate(andPredicateWithSubpredicates:[datePredicate, devicePredicate])
 		let sortByDate = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
 		
+		// Access workout's name on the main thread as callback are called in the background
+		let workoutName = self.workout.name
+		
 		let query = HKSampleQuery(sampleType: activeEnergyType, predicate: predicate, limit: Int(HKObjectQueryNoLimit), sortDescriptors: [sortByDate]) { _, res, _ in
 			var totalEnergy: HKQuantity?
 			let energySamples = res as? [HKQuantitySample]
@@ -531,7 +534,7 @@ class ExecuteWorkoutController: NSObject {
 			                        device: HKDevice.local(),
 			                        metadata: [
 										HKMetadataKeyIndoorWorkout: self.isIndoor,
-										ExecuteWorkoutController.workoutNameMetadataKey: self.workout.name
+										ExecuteWorkoutController.workoutNameMetadataKey: workoutName
 									]
 			)
 			

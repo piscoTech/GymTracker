@@ -435,7 +435,7 @@ class DataManager: NSObject {
 			return
 		}
 		
-		localData.managedObjectContext.perform {
+		DispatchQueue.main.async {
 			preferences.transferLocal = []
 			preferences.deleteLocal = []
 			
@@ -709,7 +709,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 			return
 		}
 		
-		CoreDataStack.getStack().managedObjectContext.perform {
+		DispatchQueue.main.async {
 			//Prepend pending transfer to new ones
 			let changedObjects = preferences.transferLocal.map { $0.getObject() }.filter { $0 != nil }.map { $0! } + data
 			let deletedIDs = preferences.deleteLocal + delete
@@ -769,7 +769,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 			return
 		}
 		
-		CoreDataStack.getStack().managedObjectContext.perform {
+		DispatchQueue.main.async {
 			let timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
 				guard let sess = self.session, self.hasCounterPart, self.canComunicate else {
 					return
@@ -816,7 +816,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 			}
 		#endif
 		
-		CoreDataStack.getStack().managedObjectContext.perform {
+		DispatchQueue.main.async {
 			let changes = preferences.saveRemote + WCObject.decodeArray(userInfo[self.changesKey] as? [[String : Any]] ?? [])
 			let deletion = preferences.deleteRemote + CDRecordID.decodeArray(userInfo[self.deletionKey] as? [[String]] ?? [])
 			if preferences.runningWorkout != nil {
@@ -844,7 +844,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 	}
 	
 	fileprivate func persistPendingChanges() {
-		CoreDataStack.getStack().managedObjectContext.perform {
+		DispatchQueue.main.async {
 			guard preferences.runningWorkout == nil else {
 				return
 			}
