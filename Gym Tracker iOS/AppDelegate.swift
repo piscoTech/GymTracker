@@ -118,6 +118,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		tabController.tabBar.items![2].selectedImage = #imageLiteral(resourceName: "Completed List Active")
 		tabController.tabBar.items![3].selectedImage = #imageLiteral(resourceName: "Settings Active")
 		
+		importExportManager.doBackup()
+		
 		return true
 	}
 	

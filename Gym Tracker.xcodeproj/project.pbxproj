@@ -23,6 +23,8 @@
 		7A6788421EAA5356009101DB /* workout.xsd in Resources */ = {isa = PBXBuildFile; fileRef = 7A6788411EAA5356009101DB /* workout.xsd */; };
 		7A6E083D1E98E94C003BB048 /* CurrentWorkoutVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A6E083C1E98E94C003BB048 /* CurrentWorkoutVC.swift */; };
 		7A95D0BC1E94228D00998D70 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A95D0BB1E94228D00998D70 /* TabBarController.swift */; };
+		7AB72FE91EB0C80400091E0D /* BackupListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB72FE81EB0C80400091E0D /* BackupListTableViewController.swift */; };
+		7AB72FEB1EB0DB2800091E0D /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB72FEA1EB0DB2800091E0D /* Date.swift */; };
 		7ABC3F2C1EA6A8DF008A3FCF /* rest_end_notification.caf in Resources */ = {isa = PBXBuildFile; fileRef = 7ABC3F2A1EA6A8DF008A3FCF /* rest_end_notification.caf */; };
 		7ABC3F2D1EA6A8DF008A3FCF /* rest_end.caf in Resources */ = {isa = PBXBuildFile; fileRef = 7ABC3F2B1EA6A8DF008A3FCF /* rest_end.caf */; };
 		7AC388F51EA21B3200EB9571 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AC388F41EA21B3200EB9571 /* UserNotifications.framework */; };
@@ -195,6 +197,8 @@
 		7A6788411EAA5356009101DB /* workout.xsd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = workout.xsd; sourceTree = "<group>"; };
 		7A6E083C1E98E94C003BB048 /* CurrentWorkoutVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentWorkoutVC.swift; sourceTree = "<group>"; };
 		7A95D0BB1E94228D00998D70 /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		7AB72FE81EB0C80400091E0D /* BackupListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackupListTableViewController.swift; sourceTree = "<group>"; };
+		7AB72FEA1EB0DB2800091E0D /* Date.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Date.swift; path = "../Gym Tracker iOS/Date.swift"; sourceTree = "<group>"; };
 		7ABC3F2A1EA6A8DF008A3FCF /* rest_end_notification.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = rest_end_notification.caf; sourceTree = "<group>"; };
 		7ABC3F2B1EA6A8DF008A3FCF /* rest_end.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = rest_end.caf; sourceTree = "<group>"; };
 		7AC388F41EA21B3200EB9571 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
@@ -349,6 +353,23 @@
 			name = WorkoutCreation;
 			sourceTree = "<group>";
 		};
+		7AB72FE51EB0C7DC00091E0D /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				7A3F61161E92958F000F7514 /* SettingsVC.swift */,
+				7AB72FE81EB0C80400091E0D /* BackupListTableViewController.swift */,
+			);
+			name = Settings;
+			sourceTree = "<group>";
+		};
+		7AB72FEC1EB0DB3400091E0D /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				7AB72FEA1EB0DB2800091E0D /* Date.swift */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
 		7ABC3F271EA6A894008A3FCF /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -432,6 +453,7 @@
 		7ADC03B81E78A187005BDC25 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				7AB72FEC1EB0DB3400091E0D /* Extensions */,
 				7ADC03C61E78A193005BDC25 /* Model */,
 				7A1A727C1E97A94500381E01 /* Controller */,
 				7ADC03BD1E78A187005BDC25 /* Main iOS & watchOS.swift */,
@@ -475,7 +497,7 @@
 				7A6E083B1E98E91E003BB048 /* WorkoutCreation */,
 				7A27276B1EA3532900E67F70 /* ExecuteWorkout */,
 				7A4DF0161E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift */,
-				7A3F61161E92958F000F7514 /* SettingsVC.swift */,
+				7AB72FE51EB0C7DC00091E0D /* Settings */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -702,8 +724,10 @@
 				7AE92D9B1EACFF750091FE74 /* ExercizeExport.swift in Sources */,
 				7ADC03C31E78A187005BDC25 /* Main iOS & watchOS.swift in Sources */,
 				7ACF6DB71E8039EB00579B67 /* Main iOS.swift in Sources */,
+				7AB72FEB1EB0DB2800091E0D /* Date.swift in Sources */,
 				7A6E083D1E98E94C003BB048 /* CurrentWorkoutVC.swift in Sources */,
 				7ADC07D71E98CEB20047E0C2 /* ExecuteWorkoutController.swift in Sources */,
+				7AB72FE91EB0C80400091E0D /* BackupListTableViewController.swift in Sources */,
 				7ADC03DE1E78A328005BDC25 /* WorkoutTVC.swift in Sources */,
 				7ADC03D91E78A328005BDC25 /* ExercizeTVC.swift in Sources */,
 				7A4DF0171E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift in Sources */,

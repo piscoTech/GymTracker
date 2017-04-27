@@ -13,7 +13,8 @@ class SettingsViewController: UITableViewController {
 	
 	private var appInfo: String!
 	private var errNoBackup: String!
-	private var backupUsage: String!
+	private var backupUsageManual: String!
+	private var backupUsageAuto: String!
 	
 	private var iCloudEnabled = false
 	
@@ -24,10 +25,12 @@ class SettingsViewController: UITableViewController {
 		
 		appInfo = NSLocalizedString("REPORT_TEXT", comment: "Report problem") + "\n\nGym Tracker \(Bundle.main.versionDescription)\n© 2017 Marco Boschi"
 		errNoBackup = NSLocalizedString("ERR_BACKUP_UNAVAILABLE", comment: "Cannot use becuase...")
-		backupUsage = NSLocalizedString("BACKUP_USAGE", comment: "How-to")
+		backupUsageManual = NSLocalizedString("BACKUP_USAGE_MANUAL", comment: "How-to")
+		backupUsageAuto = NSLocalizedString("BACKUP_USAGE_AUTO", comment: "How-to")
 		
 		dataManager.reportICloudStatus { res in
 			self.iCloudEnabled = res
+			importExportManager.doBackup()
 			
 			DispatchQueue.main.async {
 				self.tableView.reloadSections([1], with: .automatic)
@@ -42,7 +45,7 @@ class SettingsViewController: UITableViewController {
 	override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
 		switch section {
 		case 1:
-			return iCloudEnabled ? backupUsage : errNoBackup
+			return iCloudEnabled ? (preferences.useBackups ? backupUsageAuto : backupUsageManual) : errNoBackup
 		case 2:
 			return appInfo
 		default:
@@ -53,7 +56,7 @@ class SettingsViewController: UITableViewController {
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		switch section {
 		case 1:
-			return iCloudEnabled && preferences.useBackups ? 2 : 1
+			return iCloudEnabled ? 2 : 1
 		default:
 			return 1
 		}

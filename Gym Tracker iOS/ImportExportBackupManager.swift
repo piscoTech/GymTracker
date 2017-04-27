@@ -10,9 +10,11 @@
 import Foundation
 import MBLibrary
 
-class ImportExportBackupManager {
+class ImportExportBackupManager: NSObject {
 	
 	let fileExtension = ".wrkt"
+	let keepBackups = 5
+	let autoBackupTime: TimeInterval = 7 * 24 * 60 * 60 // 7 days
 	
 	let workoutsTag = "workoutlist"
 	let workoutTag = "workout"
@@ -42,7 +44,65 @@ class ImportExportBackupManager {
 		}()
 	}
 	
-	private init() {}
+	private var query: NSMetadataQuery?
+	
+	private override init() {
+		super.init()
+		
+		NotificationCenter.default.addObserver(self, selector: #selector(backupsCollected(_:)), name: .NSMetadataQueryDidFinishGathering, object: nil)
+	}
+	
+	deinit {
+		NotificationCenter.default.removeObserver(self)
+	}
+	
+	// MARK: - Backup fetch
+	
+	typealias BackupList = [(path: URL, date: Date)]
+	typealias BackupCallback = () -> Void
+	private var backupCallbacks = [BackupCallback]()
+	private(set) var backups: BackupList = []
+	
+	func loadBackups(_ completion: @escaping BackupCallback) {
+		backupCallbacks.append(completion)
+		
+		DispatchQueue.main.async {
+			if self.query == nil {
+				let query = NSMetadataQuery()
+				query.searchScopes.append(NSMetadataQueryUbiquitousDocumentsScope)
+				query.predicate = NSPredicate(format: "%K like '*\(self.fileExtension)'", NSMetadataItemFSNameKey)
+				
+				query.start()
+				self.query = query
+			}
+		}
+	}
+	
+	func backupsCollected(_ not: Notification) {
+		guard let query = not.object as? NSMetadataQuery, let savedQuery = self.query, query == savedQuery else {
+			return
+		}
+		query.stop()
+		query.disableUpdates()
+		self.query = nil
+		
+		backups = []
+		query.enumerateResults({ item, _, _ in
+			guard let data = item as? NSMetadataItem,
+				let path = data.value(forAttribute: NSMetadataItemURLKey) as? URL,
+				let date = data.value(forAttribute: NSMetadataItemFSContentChangeDateKey) as? Date else {
+					return
+			}
+			
+			backups.append((path, date))
+		})
+		backups.sort { $0.date > $1.date }
+		
+		for c in backupCallbacks {
+			c()
+		}
+		backupCallbacks = []
+	}
 	
 	// MARK: - Export
 	
@@ -56,8 +116,7 @@ class ImportExportBackupManager {
 			return xml
 		}
 		
-		// TODO: Use current UNIX timestamp for default name
-		let filePath = URL(fileURLWithPath: NSString(string: NSTemporaryDirectory()).appendingPathComponent((name ?? "workouts") + fileExtension))
+		let filePath = URL(fileURLWithPath: NSString(string: NSTemporaryDirectory()).appendingPathComponent((name ?? Date().getWorkoutExportName()) + fileExtension))
 		
 		do {
 			try res.write(to: filePath, atomically: true, encoding: .utf8)
@@ -68,15 +127,24 @@ class ImportExportBackupManager {
 		}
 	}
 	
-	func doBackup() {
-		guard preferences.useBackups else {
-			return
+	func doBackup(manual: Bool = false, completion: ((Bool) -> Void)? = nil) {
+		if !manual {
+			guard preferences.useBackups else {
+				completion?(false)
+				return
+			}
+			
+			if let last = preferences.lastBackup {
+				if Date().timeIntervalSince(last) < autoBackupTime {
+					completion?(false)
+					return
+				}
+			}
 		}
-		
-		// TODO: Should check if appropriate to do a backup (time check), call this function at the end of applicationDidFinishLaunching and in viewDidLoad of the settings controller after checking iCloud status
 		
 		dataManager.reportICloudStatus { res in
 			guard res else {
+				completion?(false)
 				return
 			}
 	
@@ -87,7 +155,26 @@ class ImportExportBackupManager {
 				}
 				
 				dataManager.loadDocumentToICloud(file) { success in
-					print(success ? "File uploaded" : "Error uploading")
+					if success {
+						preferences.lastBackup = Date()
+						DispatchQueue.main.asyncAfter(delay: 1) {
+							self.loadBackups {
+								if self.backups.count > self.keepBackups {
+									let file = FileManager.default
+									for current in (self.keepBackups ..< self.backups.count).reversed() {
+										do {
+											try file.removeItem(at: self.backups[current].path)
+											self.backups.remove(at: current)
+										} catch {}
+									}
+								}
+								
+								completion?(success)
+							}
+						}
+					} else {
+						completion?(success)
+					}
 				}
 			}
 		}

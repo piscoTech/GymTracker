@@ -59,7 +59,8 @@
 
 "REPORT_TEXT" = "Report any problem on Twitter @piscoTech or at GitHub tapping Source Code.";
 "ERR_BACKUP_UNAVAILABLE" = "Login with your iCloud account and enable iCloud Drive for Gym Tracker to use automatic backups.";
-"BACKUP_USAGE" = "Your workouts will be saved weekly to your iCloud Drive. You can restore a backup any time, share with your friends or edit directly to customize workouts and exercizes before importing them again.";
+"BACKUP_USAGE_MANUAL" = "Manually backup your workouts to your iCloud Drive. You can restore a backup any time, share with your friends or edit directly to customize workouts and exercizes before importing them again.";
+"BACKUP_USAGE_AUTO" = "Your workouts will be saved weekly to your iCloud Drive. You can restore a backup any time, share with your friends or edit directly to customize workouts and exercizes before importing them again.";
 
 // Notifications
 
