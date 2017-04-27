@@ -490,7 +490,8 @@ class ExecuteWorkoutController: NSObject {
 			if nextEx.isRest {
 				txt = nextEx.rest.getDuration(hideHours: true) + nextRestTxt
 			} else {
-				txt = nextEx.name!
+				let nextWeight = nextEx.set(n: 0)?.weight ?? 0
+				txt = nextEx.name! + (nextWeight > 0 ? ", \(nextWeight.toString())kg" : "")
 			}
 			view.setNextUpText(nextTxt + txt)
 		} else {
