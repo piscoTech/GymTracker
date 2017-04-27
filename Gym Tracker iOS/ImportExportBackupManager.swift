@@ -16,6 +16,8 @@ class ImportExportBackupManager: NSObject {
 	let keepBackups = 5
 	let autoBackupTime: TimeInterval = 7 * 24 * 60 * 60 // 7 days
 	
+	let delayReloadTime: TimeInterval = 2
+	
 	let workoutsTag = "workoutlist"
 	let workoutTag = "workout"
 	let workoutNameTag = "name"
@@ -157,7 +159,7 @@ class ImportExportBackupManager: NSObject {
 				dataManager.loadDocumentToICloud(file) { success in
 					if success {
 						preferences.lastBackup = Date()
-						DispatchQueue.main.asyncAfter(delay: 1) {
+						DispatchQueue.main.asyncAfter(delay: self.delayReloadTime) {
 							self.loadBackups {
 								if self.backups.count > self.keepBackups {
 									let file = FileManager.default
