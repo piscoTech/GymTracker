@@ -13,9 +13,7 @@ import CoreData
 class Workout: DataObject {
 	
 	override class var objectType: String {
-		get {
-			return "Workout"
-		}
+		return "Workout"
 	}
 	
 	class func getList() -> [Workout] {

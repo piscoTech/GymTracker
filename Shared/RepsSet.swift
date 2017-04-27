@@ -14,9 +14,7 @@ import MBLibrary
 class RepsSet: DataObject {
 	
 	override class var objectType: String {
-		get {
-			return "RepsSet"
-		}
+		return "RepsSet"
 	}
 	
 	//ID and last modified date are properties of DataObject
