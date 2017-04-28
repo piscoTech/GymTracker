@@ -66,6 +66,8 @@ class BackupListTableViewController: UITableViewController {
 	
 	// MARK: - Manage Backups
 	
+	private var documentController: UIActivityViewController?
+	
 	@IBAction func backupNow(_ sender: UIBarButtonItem) {
 		sender.isEnabled = false
 		
@@ -93,8 +95,16 @@ class BackupListTableViewController: UITableViewController {
 		let export = UITableViewRowAction(style: .normal, title: NSLocalizedString("EXPORT_BACKUP", comment: "export")) { _, row in
 			self.tableView.setEditing(false, animated: true)
 			
-			// TODO: Export backup
-			print("Shoudl export backup")
+			DispatchQueue.main.async {
+				self.documentController = UIActivityViewController(activityItems: [self.backups[row.row].path], applicationActivities: nil)
+				self.documentController?.popoverPresentationController?.sourceView = tableView
+				self.documentController?.popoverPresentationController?.sourceRect = tableView.rectForRow(at: indexPath)
+				self.documentController?.completionWithItemsHandler = { _, _, _, _ in
+					self.documentController = nil
+				}
+				
+				self.present(self.documentController!, animated: true)
+			}
 		}
 		act.append(export)
 		
@@ -119,17 +129,16 @@ class BackupListTableViewController: UITableViewController {
 			let name = Date.fromWorkoutExportName(URL(fileURLWithPath: b.path.lastPathComponent).deletingPathExtension().lastPathComponent) ?? b.date
 			let confirm = UIAlertController(title: NSLocalizedString("DELETE_BACKUP_TITLE", comment: "Del"), message: NSLocalizedString("DELETE_BACKUP_CONFIRM", comment: "Del confirm") + name.getFormattedDateTime() + "?", preferredStyle: .actionSheet)
 			confirm.addAction(UIAlertAction(title: NSLocalizedString("DELETE_BACKUP", comment: "Del"), style: .destructive) { _ in
-				do {
-					try FileManager.default.removeItem(at: b.path)
-					self.backups.remove(at: row.row)
-					
+				dataManager.deleteICloudDocument(b.path) { success in
 					DispatchQueue.main.async {
-						self.tableView.reloadSections([0], with: .automatic)
+						if success {
+							self.backups.remove(at: row.row)
+							self.tableView.reloadSections([0], with: .automatic)
+						} else {
+							let alert = UIAlertController(simpleAlert: NSLocalizedString("DELETE_BACKUP_FAIL", comment: "Err"), message: nil)
+							self.present(alert, animated: true)
+						}
 					}
-				} catch let error {
-					print(error)
-					let alert = UIAlertController(simpleAlert: NSLocalizedString("DELETE_BACKUP_FAIL", comment: "Err"), message: nil)
-					self.present(alert, animated: true)
 				}
 			})
 			confirm.addAction(UIAlertAction(title: NSLocalizedString("CANCEL", comment: "Cancel"), style: .cancel))

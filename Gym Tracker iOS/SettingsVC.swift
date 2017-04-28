@@ -18,6 +18,8 @@ class SettingsViewController: UITableViewController {
 	
 	private var iCloudEnabled = false
 	
+	private var documentController: UIActivityViewController?
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 

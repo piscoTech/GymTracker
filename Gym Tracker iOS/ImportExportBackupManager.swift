@@ -162,16 +162,24 @@ class ImportExportBackupManager: NSObject {
 						DispatchQueue.main.asyncAfter(delay: self.delayReloadTime) {
 							self.loadBackups {
 								if self.backups.count > self.keepBackups {
-									let file = FileManager.default
-									for current in (self.keepBackups ..< self.backups.count).reversed() {
-										do {
-											try file.removeItem(at: self.backups[current].path)
-											self.backups.remove(at: current)
-										} catch {}
+									var waiting = self.backups.count - self.keepBackups
+									for b in self.backups.suffix(from: self.keepBackups) {
+										dataManager.deleteICloudDocument(b.path) { success in
+											DispatchQueue.main.async {
+												waiting -= 1
+												if success {
+													self.backups = self.backups.filter { $0.path != b.path }
+												}
+												
+												if waiting == 0 {
+													completion?(success)
+												}
+											}
+										}
 									}
+								} else {
+									completion?(success)
 								}
-								
-								completion?(success)
 							}
 						}
 					} else {

@@ -619,6 +619,22 @@ class DataManager {
 			}
 		}
 	}
+	
+	private lazy var fileCoordinator = NSFileCoordinator(filePresenter: nil)
+	
+	func deleteICloudDocument(_ path: URL, completion: @escaping (Bool) -> Void) {
+		DispatchQueue.background.async {
+			self.fileCoordinator.coordinate(writingItemAt: path, options: .forDeleting, error: nil) { writingPath in
+				let file = FileManager()
+				do {
+					try file.removeItem(at: writingPath)
+					completion(true)
+				} catch {
+					completion(false)
+				}
+			}
+		}
+	}
 
 }
 
