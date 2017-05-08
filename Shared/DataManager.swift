@@ -928,7 +928,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 	}
 	
 	fileprivate func sessionReachabilityDidChange(_ session: WCSession) {
-		guard iswatchOS else {
+		guard iswatchOS, !preferences.initialSyncDone else {
 			return
 		}
 		

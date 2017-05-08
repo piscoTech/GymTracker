@@ -83,6 +83,11 @@ class WorkoutListInterfaceController: WKInterfaceController {
 		 workoutDetail?.reloadData()
 	}
 	
+	@IBAction func forceReloadData() {
+		preferences.initialSyncDone = false
+		reloadData()
+	}
+	
 	func authorize() {
 		healthStore.requestAuthorization(toShare: healthWriteData, read: healthReadData) { (success, _) in
 			if success {

@@ -49,6 +49,15 @@
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
                     </items>
+                    <menu key="menu" id="IKb-Vz-zbJ">
+                        <items>
+                            <menuItem title="Reload Workouts" icon="resume" id="IAh-xx-iAO">
+                                <connections>
+                                    <action selector="forceReloadData" destination="f3a-Tn-603" id="00J-a0-3co"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
                     <connections>
                         <outlet property="table" destination="Bs2-Pu-6ym" id="pM1-6q-gZy"/>
                         <outlet property="unlockMsg" destination="YIE-QR-aWG" id="3wo-f8-4d3"/>
