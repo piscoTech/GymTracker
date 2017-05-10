@@ -24,7 +24,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	fileprivate(set) var workoutController: ExecuteWorkoutController?
 	fileprivate var workoutAudio: AVAudioPlayer?
-	fileprivate var workoutRestTimer: Timer?
+	fileprivate var workoutRestTimer: Timer? {
+		didSet {
+			DispatchQueue.main.async {
+				oldValue?.invalidate()
+			}
+		}
+	}
 	
 	fileprivate let restTimeNotification = "restTimeNotificationID"
 	fileprivate let restEndNotification = "restEndNotificationID"
@@ -309,7 +315,6 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 	
 	func endNotifyEndRest() {
 		DispatchQueue.main.async {
-			self.workoutRestTimer?.invalidate()
 			self.workoutRestTimer = nil
 		}
 	}

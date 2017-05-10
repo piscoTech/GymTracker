@@ -580,7 +580,7 @@ class ExecuteWorkoutController: NSObject {
 			workoutSessionStarted()
 		}
 		
-		for _ in 0 ..< exercize - curExercize {
+		for _ in 0 ..< min(exercizes.count, exercize - curExercize) {
 			_ = exercizes.remove(at: 0)
 		}
 		

@@ -385,7 +385,7 @@ class DataManager: NSObject {
 	
 	@available(watchOS, unavailable)
 	var shouldStartWorkoutOnWatch: Bool {
-		return wcInterface.hasCounterPart && wcInterface.canComunicate && wcInterface.isReachable
+		return wcInterface.hasCounterPart && wcInterface.canComunicate
 	}
 	
 	func setRunningWorkout(_ w: Workout?, fromSource s: RunningWorkoutSource) {

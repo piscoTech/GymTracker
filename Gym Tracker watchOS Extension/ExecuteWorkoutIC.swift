@@ -33,7 +33,13 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutCo
 	@IBOutlet weak var workoutDoneBtn: WKInterfaceButton!
 	
 	private var workoutController: ExecuteWorkoutController!
-	private var restTimer: Timer?
+	private var restTimer: Timer? {
+		didSet {
+			DispatchQueue.main.async {
+				oldValue?.invalidate()
+			}
+		}
+	}
 	
 	override func awake(withContext context: Any?) {
         super.awake(withContext: context)
@@ -152,8 +158,8 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutCo
 	
 	func notifyEndRest() {
 		let sound = WKHapticType.stop
-		WKInterfaceDevice.current().play(sound)
 		DispatchQueue.main.async {
+			WKInterfaceDevice.current().play(sound)
 			self.restTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
 				WKInterfaceDevice.current().play(sound)
 			}
@@ -163,7 +169,6 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutCo
 	
 	func endNotifyEndRest() {
 		DispatchQueue.main.async {
-			self.restTimer?.invalidate()
 			self.restTimer = nil
 		}
 	}
