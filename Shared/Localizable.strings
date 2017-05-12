@@ -69,6 +69,8 @@
 "DELETE_BACKUP_TITLE" = "Delete Backup";
 "DELETE_BACKUP_CONFIRM" = "Are you sure you want to delete the backup from ";
 "DELETE_BACKUP_FAIL" = "Unable to delete backup";
+"BACKUP_FAIL" = "Unable to complete backup";
+"EXPORT_FAIL" = "Unable to export workout";
 
 // Notifications
 

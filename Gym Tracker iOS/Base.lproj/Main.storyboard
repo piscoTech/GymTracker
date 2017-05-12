@@ -232,8 +232,16 @@
                                         <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="7Ll-7B-3MG">
                                             <rect key="frame" x="8" y="0.0" width="359" height="43.5"/>
                                             <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1mQ-fQ-eqP">
+                                                    <rect key="frame" x="0.0" y="0.0" width="119.5" height="43.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <state key="normal" title="Export"/>
+                                                    <connections>
+                                                        <action selector="export:" destination="BRB-Zp-8pa" eventType="touchUpInside" id="MPF-Q4-1kn"/>
+                                                    </connections>
+                                                </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Bq2-nE-hQU">
-                                                    <rect key="frame" x="0.0" y="0.0" width="179.5" height="43.5"/>
+                                                    <rect key="frame" x="119.5" y="0.0" width="120" height="43.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <state key="normal" title="[Archive]"/>
                                                     <connections>
@@ -241,7 +249,7 @@
                                                     </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uS1-Pa-pw1" customClass="DestructiveButton" customModule="Gym_Tracker" customModuleProvider="target">
-                                                    <rect key="frame" x="179.5" y="0.0" width="179.5" height="43.5"/>
+                                                    <rect key="frame" x="239.5" y="0.0" width="119.5" height="43.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="tintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <state key="normal" title="Delete"/>

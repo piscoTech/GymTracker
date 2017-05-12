@@ -34,6 +34,8 @@ class ImportExportBackupManager: NSObject {
 	let setWeightTag = "weight"
 	let setRepsTag = "reps"
 	
+	private let nameFilter = try! NSRegularExpression(pattern: "[^a-z0-9]+", options: .caseInsensitive)
+	
 	// MARK: - Initialization
 	
 	private static var manager: ImportExportBackupManager?
@@ -108,17 +110,25 @@ class ImportExportBackupManager: NSObject {
 	
 	// MARK: - Export
 	
-	///- parameter isExternal: whether to save the resulting file in the temporary directory for exporting or in the backup folder.
-	private func export(name: String? = nil) -> URL? {
+	func export(workout: Workout) -> URL? {
+		let name = dataManager.performCoreDataCodeAndWait { return workout.name }
+		return export(workouts: [workout], name: nameFilter.stringByReplacingMatches(in: name, options: [], range: NSRange(location: 0, length: name.length), withTemplate: "_"))
+	}
+	
+	func export() -> URL? {
+		return export(workouts: Workout.getList(), name: Date().getWorkoutExportName())
+	}
+	
+	private func export(workouts: [Workout], name: String) -> URL? {
 		let res: String = dataManager.performCoreDataCodeAndWait {
 			var xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><\(self.workoutsTag)>"
-			xml += Workout.getList().map { $0.export() }.reduce("") { $0 + $1 }
+			xml += workouts.map { $0.export() }.joined()
 			xml += "</\(self.workoutsTag)>\n"
 			
 			return xml
 		}
 		
-		let filePath = URL(fileURLWithPath: NSString(string: NSTemporaryDirectory()).appendingPathComponent((name ?? Date().getWorkoutExportName()) + fileExtension))
+		let filePath = URL(fileURLWithPath: NSString(string: NSTemporaryDirectory()).appendingPathComponent(name + fileExtension))
 		
 		do {
 			try res.write(to: filePath, atomically: true, encoding: .utf8)

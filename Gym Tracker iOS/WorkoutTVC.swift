@@ -539,6 +539,8 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 
     // MARK: - Navigation
 	
+	private var documentController: UIActivityViewController?
+	
 	@IBAction func cancel(_ sender: AnyObject) {
 		dataManager.discardAllChanges()
 		
@@ -546,6 +548,31 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 			self.dismiss(animated: true)
 		} else {
 			exitEdit()
+		}
+	}
+	
+	@IBAction func export(_ sender: UIButton) {
+		let loading = UIAlertController.getModalLoading()
+		present(loading, animated: true)
+		DispatchQueue.background.async {
+			if let path = importExportManager.export(workout: self.workout) {
+				DispatchQueue.main.async {
+					loading.dismiss(animated: true) {
+						self.documentController = UIActivityViewController(activityItems: [path], applicationActivities: nil)
+						self.documentController?.completionWithItemsHandler = { _, _, _, _ in
+							self.documentController = nil
+						}
+						
+						self.present(self.documentController!, animated: true)
+					}
+				}
+			} else {
+				DispatchQueue.main.async {
+					loading.dismiss(animated: true) {
+						self.present(UIAlertController(simpleAlert: NSLocalizedString("EXPORT_FAIL", comment: "Error"), message: nil), animated: true)
+					}
+				}
+			}
 		}
 	}
 

@@ -76,6 +76,8 @@ class BackupListTableViewController: UITableViewController {
 				sender.isEnabled = true
 				if success {
 					self.updateList(lazy: true)
+				} else {
+					self.present(UIAlertController(simpleAlert: NSLocalizedString("BACKUP_FAIL", comment: "Error"), message: nil), animated: true)
 				}
 			}
 		}
