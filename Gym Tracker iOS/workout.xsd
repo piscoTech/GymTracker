@@ -43,7 +43,7 @@
 																				<xs:element name="weight">
 																					<xs:simpleType>
 																						<xs:restriction base="xs:decimal">
-																							<xs:minExclusive value="0" />
+																							<xs:minInclusive value="0" />
 																						</xs:restriction>
 																					</xs:simpleType>
 																				</xs:element>

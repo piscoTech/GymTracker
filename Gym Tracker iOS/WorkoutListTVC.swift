@@ -57,6 +57,18 @@ class WorkoutListTableViewController: UITableViewController {
 		updateView()
 		self.enableEdit(old)
 	}
+	
+	func exitDetailAndCreation(completion: (() -> Void)?) {
+		if let wrkt = workoutController {
+			wrkt.cancel(self, animated: false, animationCompletion: completion)
+			if !wrkt.isNew {
+				self.navigationController?.popToRootViewController(animated: false)
+				completion?()
+			}
+		} else {
+			completion?()
+		}
+	}
 
     // MARK: - Table view data source
 

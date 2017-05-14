@@ -71,6 +71,13 @@
 "DELETE_BACKUP_FAIL" = "Unable to delete backup";
 "BACKUP_FAIL" = "Unable to complete backup";
 "EXPORT_FAIL" = "Unable to export workout";
+"RESTORE_FAIL" = "Unable to restore backup";
+"RESTORE_SUCCESS" = "Restore completed";
+"WRKT_INVALID" = "Data is corrupted";
+"RESTORE_CONFIRM" = "Confirm restore";
+"RESTORE_CONFIRM_TXT_MANY" = " workouts found";
+"RESTORE_CONFIRM_TXT" = " workout found";
+"RESTORE_CONFIRM_BTN" = "Restore";
 
 // Notifications
 

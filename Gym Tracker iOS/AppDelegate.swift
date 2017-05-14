@@ -22,6 +22,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	weak var completedWorkouts: CompletedWorkoutsTableViewController!
 	weak var settings: SettingsViewController!
 	
+	var canEdit: Bool {
+		return workoutList.canEdit
+	}
+	
 	fileprivate(set) var workoutController: ExecuteWorkoutController?
 	fileprivate var workoutAudio: AVAudioPlayer?
 	fileprivate var workoutRestTimer: Timer?

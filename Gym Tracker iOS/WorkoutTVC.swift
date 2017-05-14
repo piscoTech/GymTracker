@@ -15,7 +15,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	weak var exercizeController: ExercizeTableViewController?
 	var workout: Workout!
 	var editMode = false
-	private var isNew = false
+	private(set) var isNew = false
 	
 	@IBOutlet var cancelBtn: UIBarButtonItem!
 	@IBOutlet var doneBtn: UIBarButtonItem!
@@ -542,10 +542,14 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	private var documentController: UIActivityViewController?
 	
 	@IBAction func cancel(_ sender: AnyObject) {
+		cancel(sender, animated: true, animationCompletion: nil)
+	}
+	
+	func cancel(_ sender: AnyObject, animated: Bool, animationCompletion: (() -> Void)?) {
 		dataManager.discardAllChanges()
 		
 		if isNew {
-			self.dismiss(animated: true)
+			self.dismiss(animated: animated, completion: animationCompletion)
 		} else {
 			exitEdit()
 		}

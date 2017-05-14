@@ -162,7 +162,6 @@ class ImportExportBackupManager: NSObject {
 	
 			DispatchQueue.background.async {
 				guard let file = self.export() else {
-					print("Cannot export")
 					return
 				}
 				
@@ -200,34 +199,38 @@ class ImportExportBackupManager: NSObject {
 		}
 	}
 	
-//	private func `import`(_ file: URL) {
-//		guard let xsd = Bundle.main.url(forResource: "workout", withExtension: "xsd"),
-//			let workouts = file.loadAsXML(validatingWithXSD: xsd)?.children else {
-//				return
-//		}
-//		
-//		var save = [Workout]()
-//		var delete = [Workout]()
-//		
-//		for wData in workouts {
-//			let (w, success) = Workout.import(fromXML: wData)
-//			
-//			if let w = w {
-//				if success {
-//					save.append(w)
-//				} else {
-//					delete.append(w)
-//				}
-//			}
-//		}
-//		
-//		if dataManager.persistChangesForObjects(save, andDeleteObjects: delete) {
-//			print("Import-Export successful")
-//			appDelegate.workoutList.refreshData()
-//		} else {
-//			dataManager.discardAllChanges()
-//			print("Import-Export failed")
-//		}
-//	}
+	public func `import`(_ file: URL, performCallback: (Bool, Int?, (() -> ())?) -> Void, callback: @escaping (Bool) -> Void) {
+		if let xsd = Bundle.main.url(forResource: "workout", withExtension: "xsd"),
+			let workouts = file.loadAsXML(validatingWithXSD: xsd)?.children, workouts.count > 0 {
+			performCallback(true, workouts.count) {
+				DispatchQueue.main.async {
+					var save = [Workout]()
+					var delete = Workout.getList()
+					
+					for wData in workouts {
+						let (w, success) = Workout.import(fromXML: wData)
+						
+						if let w = w {
+							if success {
+								save.append(w)
+							} else {
+								delete.append(w)
+							}
+						}
+					}
+					
+					if dataManager.persistChangesForObjects(save, andDeleteObjects: delete) {
+						appDelegate.workoutList.refreshData()
+						callback(true)
+					} else {
+						dataManager.discardAllChanges()
+						callback(false)
+					}
+				}
+			}
+		} else {
+			performCallback(false, nil, nil)
+		}
+	}
 	
 }

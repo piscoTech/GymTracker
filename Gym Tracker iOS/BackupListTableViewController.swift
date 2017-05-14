@@ -67,6 +67,7 @@ class BackupListTableViewController: UITableViewController {
 	// MARK: - Manage Backups
 	
 	private var documentController: UIActivityViewController?
+	private var loading: UIAlertController?
 	
 	@IBAction func backupNow(_ sender: UIBarButtonItem) {
 		sender.isEnabled = false
@@ -110,15 +111,53 @@ class BackupListTableViewController: UITableViewController {
 		}
 		act.append(export)
 		
-		if appDelegate.workoutList.canEdit {
+		if appDelegate.canEdit {
 			let restore = UITableViewRowAction(style: .default, title: NSLocalizedString("RESTORE_BACKUP", comment: "Restore")) { _, row in
 				self.tableView.setEditing(false, animated: true)
-				guard appDelegate.workoutList.canEdit else {
+				guard appDelegate.canEdit else {
 					return
 				}
 	
-				// TODO: Restore backup
-				print("Should restore backup with confirm")
+				self.loading = UIAlertController.getModalLoading()
+				appDelegate.workoutList.exitDetailAndCreation {
+					self.present(self.loading!, animated: true) {
+						importExportManager.import(self.backups[row.row].path, performCallback: { success, count, proceed in
+							let confirm = {
+								let alert: UIAlertController
+								if let count = count, let proceed = proceed {
+									alert = UIAlertController(title: NSLocalizedString("RESTORE_CONFIRM", comment: "err"), message: "\(count)" + NSLocalizedString("RESTORE_CONFIRM_TXT\(count > 1 ? "_MANY" : "")", comment: "err"), preferredStyle: .alert)
+									alert.addAction(UIAlertAction(title: NSLocalizedString("CANCEL", comment: "Cancel"), style: .cancel, handler: nil))
+									alert.addAction(UIAlertAction(title: NSLocalizedString("RESTORE_CONFIRM_BTN", comment: "Restore"), style: .default) { _ in
+										self.loading = UIAlertController.getModalLoading()
+										self.present(self.loading!, animated: true)
+										proceed()
+									})
+								} else {
+									alert = UIAlertController(simpleAlert: NSLocalizedString("RESTORE_FAIL", comment: "err"), message: NSLocalizedString("WRKT_INVALID", comment: "err"))
+								}
+								
+								self.present(alert, animated: true)
+							}
+							
+							if let load = self.loading {
+								load.dismiss(animated: true, completion: confirm)
+							} else {
+								confirm()
+							}
+						}) { success in
+							let error = {
+								self.present(UIAlertController(simpleAlert: NSLocalizedString(success ? "RESTORE_SUCCESS" : "RESTORE_FAIL", comment: "err/ok"), message: nil), animated: true)
+							}
+							
+							if let load = self.loading {
+								load.dismiss(animated: true, completion: error)
+							} else {
+								error()
+							}
+							self.loading = nil
+						}
+					}
+				}
 			}
 			restore.backgroundColor = #colorLiteral(red: 0, green: 0.7529411765, blue: 0, alpha: 1)
 			act.append(restore)
