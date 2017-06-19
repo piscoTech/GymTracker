@@ -45,6 +45,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	fileprivate let notifyNowDelay: TimeInterval = 1
 	
+	private var tryImport: URL?
+	private var launched = false
+	
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 		tabController = self.window!.rootViewController as! TabBarController
 		tabController.delegate = tabController
@@ -124,9 +127,43 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		tabController.tabBar.items![2].selectedImage = #imageLiteral(resourceName: "Completed List Active")
 		tabController.tabBar.items![3].selectedImage = #imageLiteral(resourceName: "Settings Active")
 		
+		launched = true
+		
 		importExportManager.doBackup()
+		importFile()
 		
 		return true
+	}
+	
+	func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+		if url.isFileURL {
+			tryImport = url
+			importFile()
+			
+			return true
+		}
+		
+		return false
+	}
+	
+	private func importFile() {
+		guard launched else {
+			return
+		}
+		
+		DispatchQueue.main.async {
+			if let url = self.tryImport, ".\(url.pathExtension)" == importExportManager.fileExtension {
+				if self.canEdit {
+					let alert = UIAlertController(simpleAlert: "Should try import", message: nil)
+					self.tabController.present(alert, animated: true)
+				} else {
+					let alert = UIAlertController(simpleAlert: "STOP WORKOUT & RETRY", message: nil)
+					self.tabController.present(alert, animated: true)
+				}
+			}
+			
+			self.tryImport = nil
+		}
 	}
 	
 	func authorizeHealthAccess() {
