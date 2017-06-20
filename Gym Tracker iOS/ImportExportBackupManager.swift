@@ -199,13 +199,13 @@ class ImportExportBackupManager: NSObject {
 		}
 	}
 	
-	public func `import`(_ file: URL, performCallback: (Bool, Int?, (() -> ())?) -> Void, callback: @escaping (Bool) -> Void) {
+	public func `import`(_ file: URL, isRestoring restore: Bool, performCallback: (Bool, Int?, (() -> ())?) -> Void, callback: @escaping (Bool) -> Void) {
 		if let xsd = Bundle.main.url(forResource: "workout", withExtension: "xsd"),
 			let workouts = file.loadAsXML(validatingWithXSD: xsd)?.children, workouts.count > 0 {
 			performCallback(true, workouts.count) {
 				DispatchQueue.main.async {
 					var save = [Workout]()
-					var delete = Workout.getList()
+					var delete = restore ? Workout.getList() : []
 					
 					for wData in workouts {
 						let (w, success) = Workout.import(fromXML: wData)

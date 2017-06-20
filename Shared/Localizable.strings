@@ -78,6 +78,9 @@
 "RESTORE_CONFIRM_TXT_MANY" = " workouts found";
 "RESTORE_CONFIRM_TXT" = " workout found";
 "RESTORE_CONFIRM_BTN" = "Restore";
+"IMPORT_FAIL" = "Unable to import workouts";
+"IMPORT_SUCCESS" = "Import completed";
+"IMPORT_STOP_WRKT" = "Stop running workout and try again";
 
 // Notifications
 

@@ -56,10 +56,9 @@ class BackupListTableViewController: UITableViewController {
 		}
 		
 		let b = backups[indexPath.row]
-		let name = Date.fromWorkoutExportName(URL(fileURLWithPath: b.path.lastPathComponent).deletingPathExtension().lastPathComponent) ?? b.date
 		let cell = tableView.dequeueReusableCell(withIdentifier: "backup", for: indexPath)
 			
-		cell.textLabel?.text = name.getFormattedDateTime()
+		cell.textLabel?.text = b.date.getFormattedDateTime()
 		
 		return cell
     }
@@ -121,7 +120,7 @@ class BackupListTableViewController: UITableViewController {
 				self.loading = UIAlertController.getModalLoading()
 				appDelegate.workoutList.exitDetailAndCreation {
 					self.present(self.loading!, animated: true) {
-						importExportManager.import(self.backups[row.row].path, performCallback: { success, count, proceed in
+						importExportManager.import(self.backups[row.row].path, isRestoring: true, performCallback: { success, count, proceed in
 							let confirm = {
 								let alert: UIAlertController
 								if let count = count, let proceed = proceed {
@@ -167,8 +166,7 @@ class BackupListTableViewController: UITableViewController {
 			self.tableView.setEditing(false, animated: true)
 			
 			let b = self.backups[row.row]
-			let name = Date.fromWorkoutExportName(URL(fileURLWithPath: b.path.lastPathComponent).deletingPathExtension().lastPathComponent) ?? b.date
-			let confirm = UIAlertController(title: NSLocalizedString("DELETE_BACKUP_TITLE", comment: "Del"), message: NSLocalizedString("DELETE_BACKUP_CONFIRM", comment: "Del confirm") + name.getFormattedDateTime() + "?", preferredStyle: .actionSheet)
+			let confirm = UIAlertController(title: NSLocalizedString("DELETE_BACKUP_TITLE", comment: "Del"), message: NSLocalizedString("DELETE_BACKUP_CONFIRM", comment: "Del confirm") + b.date.getFormattedDateTime() + "?", preferredStyle: .actionSheet)
 			confirm.addAction(UIAlertAction(title: NSLocalizedString("DELETE_BACKUP", comment: "Del"), style: .destructive) { _ in
 				dataManager.deleteICloudDocument(b.path) { success in
 					DispatchQueue.main.async {

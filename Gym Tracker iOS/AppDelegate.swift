@@ -152,12 +152,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 		
 		DispatchQueue.main.async {
-			if let url = self.tryImport, ".\(url.pathExtension)" == importExportManager.fileExtension {
-				if self.canEdit {
-					let alert = UIAlertController(simpleAlert: "Should try import", message: nil)
-					self.tabController.present(alert, animated: true)
+			if let url = self.tryImport {
+				if ".\(url.pathExtension)" == importExportManager.fileExtension {
+					if self.canEdit {
+						let loading = UIAlertController.getModalLoading()
+						self.tabController.present(loading, animated: true) {
+							importExportManager.import(url, isRestoring: false, performCallback: { _, _, proceed in
+								if let proceed = proceed {
+									proceed()
+								} else {
+									loading.dismiss(animated: true) {
+										let alert = UIAlertController(simpleAlert: NSLocalizedString("IMPORT_FAIL", comment: "Fail"), message: NSLocalizedString("WRKT_INVALID", comment: "Invalid file"))
+										self.tabController.present(alert, animated: true)
+									}
+								}
+							}) { success in
+								loading.dismiss(animated: true) {
+									self.tabController.present(UIAlertController(simpleAlert: NSLocalizedString(success ? "IMPORT_SUCCESS" : "IMPORT_FAIL", comment: "err/ok"), message: nil), animated: true)
+								}
+							}
+						}
+					} else {
+						let alert = UIAlertController(simpleAlert: NSLocalizedString("IMPORT_FAIL", comment: "Fail"), message: NSLocalizedString("IMPORT_STOP_WRKT", comment: "stop & retry"))
+						self.tabController.present(alert, animated: true)
+					}
 				} else {
-					let alert = UIAlertController(simpleAlert: "STOP WORKOUT & RETRY", message: nil)
+					let alert = UIAlertController(simpleAlert: NSLocalizedString("IMPORT_FAIL", comment: "Fail"), message: NSLocalizedString("WRKT_INVALID", comment: "Invalid file"))
 					self.tabController.present(alert, animated: true)
 				}
 			}

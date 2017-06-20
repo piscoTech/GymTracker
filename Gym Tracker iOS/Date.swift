@@ -21,8 +21,4 @@ extension Date {
 		return Date.workoutF.string(from: self)
 	}
 	
-	public static func fromWorkoutExportName(_ name: String) -> Date? {
-		return Date.workoutF.date(from: name)
-	}
-	
 }
