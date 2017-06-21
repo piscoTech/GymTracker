@@ -45,6 +45,10 @@ class Exercize: DataObject {
 		return (dataManager.executeFetchRequest(req) ?? []).first
 	}
 	
+	var isValid: Bool {
+		return isRest || name?.length ?? 0 > 0 && sets.count > 0
+	}
+	
 	var setList: [RepsSet] {
 		return Array(sets).sorted { $0.order < $1.order }
 	}
@@ -66,7 +70,7 @@ class Exercize: DataObject {
 	///Set the rest time of the exercize and configure it as rest period.
 	func set(rest r: TimeInterval) {
 		self.isRest = true
-		self.rest = max(r, 0).rounded(to: 30)
+		self.rest = max(r, 30).rounded(to: 30)
 	}
 	
 	///Checks all sets and remove invalid ones.

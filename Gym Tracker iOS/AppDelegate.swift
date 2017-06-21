@@ -22,6 +22,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	weak var completedWorkouts: CompletedWorkoutsTableViewController!
 	weak var settings: SettingsViewController!
 	
+	var canEdit: Bool {
+		return workoutList.canEdit
+	}
+	
 	fileprivate(set) var workoutController: ExecuteWorkoutController?
 	fileprivate var workoutAudio: AVAudioPlayer?
 	fileprivate var workoutRestTimer: Timer? {
@@ -47,6 +51,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	fileprivate let notifyNowDelay: TimeInterval = 1
 	
+	private var tryImport: URL?
+	private var launched = false
+	
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 		tabController = self.window!.rootViewController as! TabBarController
 		tabController.delegate = tabController
@@ -66,6 +73,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		if !preferences.authorized || preferences.authVersion < authRequired {
 			authorizeHealthAccess()
+		}
+		
+		if !preferences.firstLaunchDone {
+			preferences.firstLaunchDone = true
+			
+			// Just set the default choice to use backups, checks if this is possible will be done by the appropriate manager
+			preferences.useBackups = true
 		}
 		
 		let center = UNUserNotificationCenter.current()
@@ -92,7 +106,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			let view = UIView.appearance()
 			view.tintColor = #colorLiteral(red: 0.7568627451, green: 0.9215686275, blue: 0.2, alpha: 1)
 			DestructiveButton.appearance().tintColor = .red
-			
+
 			let table = UITableView.appearance()
 			table.backgroundColor = .black
 			table.separatorColor = #colorLiteral(red: 0.2243117094, green: 0.2243117094, blue: 0.2243117094, alpha: 1)
@@ -110,14 +124,72 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			textField.textColor = textColor
 			textField.keyboardAppearance = .dark
 			
-			UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = #colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1)
+			let defaultTint = #colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1)
+			UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = defaultTint
+			UIView.appearance(whenContainedInInstancesOf: [UIActivityViewController.self]).tintColor = defaultTint
 		}
 		
 		tabController.tabBar.items![1].selectedImage = #imageLiteral(resourceName: "Workout Active")
 		tabController.tabBar.items![2].selectedImage = #imageLiteral(resourceName: "Completed List Active")
 		tabController.tabBar.items![3].selectedImage = #imageLiteral(resourceName: "Settings Active")
 		
+		launched = true
+		
+		importExportManager.doBackup()
+		importFile()
+		
 		return true
+	}
+	
+	func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+		if url.isFileURL {
+			tryImport = url
+			importFile()
+			
+			return true
+		}
+		
+		return false
+	}
+	
+	private func importFile() {
+		guard launched else {
+			return
+		}
+		
+		DispatchQueue.main.async {
+			if let url = self.tryImport {
+				if ".\(url.pathExtension)" == importExportManager.fileExtension {
+					if self.canEdit {
+						let loading = UIAlertController.getModalLoading()
+						self.tabController.present(loading, animated: true) {
+							importExportManager.import(url, isRestoring: false, performCallback: { _, _, proceed in
+								if let proceed = proceed {
+									proceed()
+								} else {
+									loading.dismiss(animated: true) {
+										let alert = UIAlertController(simpleAlert: NSLocalizedString("IMPORT_FAIL", comment: "Fail"), message: NSLocalizedString("WRKT_INVALID", comment: "Invalid file"))
+										self.tabController.present(alert, animated: true)
+									}
+								}
+							}) { success in
+								loading.dismiss(animated: true) {
+									self.tabController.present(UIAlertController(simpleAlert: NSLocalizedString(success ? "IMPORT_SUCCESS" : "IMPORT_FAIL", comment: "err/ok"), message: nil), animated: true)
+								}
+							}
+						}
+					} else {
+						let alert = UIAlertController(simpleAlert: NSLocalizedString("IMPORT_FAIL", comment: "Fail"), message: NSLocalizedString("IMPORT_STOP_WRKT", comment: "stop & retry"))
+						self.tabController.present(alert, animated: true)
+					}
+				} else {
+					let alert = UIAlertController(simpleAlert: NSLocalizedString("IMPORT_FAIL", comment: "Fail"), message: NSLocalizedString("WRKT_INVALID", comment: "Invalid file"))
+					self.tabController.present(alert, animated: true)
+				}
+			}
+			
+			self.tryImport = nil
+		}
 	}
 	
 	func authorizeHealthAccess() {

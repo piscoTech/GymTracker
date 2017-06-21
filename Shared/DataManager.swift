@@ -251,7 +251,7 @@ class WCObject: Equatable {
 
 // MARK: - Data Manager
 
-class DataManager: NSObject {
+class DataManager {
 	
 	weak var delegate: DataManagerDelegate?
 	
@@ -270,11 +270,9 @@ class DataManager: NSObject {
 		}()
 	}
 	
-	override private init() {
+	private init() {
 		localData = CoreDataStack.getStack()
 		wcInterface = WatchConnectivityInterface.getInterface()
-		
-		super.init()
 
 		print("Data Manager initialized")
 		
@@ -295,6 +293,15 @@ class DataManager: NSObject {
 		}
 		
 		return result
+	}
+	
+	func performCoreDataCodeAndWait<T>(_ block: @escaping () -> T) -> T {
+		var res: T!
+		localData.managedObjectContext.performAndWait {
+			res = block()
+		}
+		
+		return res
 	}
 	
 	private func newObjectFor<T: DataObject>(_ obj: T.Type) -> T {
@@ -540,6 +547,85 @@ class DataManager: NSObject {
 	
 	func askPhoneForData() -> Bool {
 		return wcInterface.askPhoneForData()
+	}
+	
+	// MARK: - iCloude Drive handling
+	
+	private func rootDirectoryForICloud(_ completion: @escaping (URL?) -> Void) {
+		DispatchQueue.background.async {
+			let file = FileManager.default
+			guard let root = file.url(forUbiquityContainerIdentifier: nil)?.appendingPathComponent("Documents") else {
+				DispatchQueue.main.async {
+					completion(nil)
+				}
+				
+				return
+			}
+			
+			if !file.fileExists(atPath: root.path, isDirectory: nil) {
+				do {
+					try file.createDirectory(at: root, withIntermediateDirectories: true, attributes: nil)
+				} catch {
+					DispatchQueue.main.async {
+						completion(nil)
+					}
+					
+					return
+				}
+			}
+			
+			DispatchQueue.main.async {
+				completion(root)
+			}
+		}
+	}
+	
+	func reportICloudStatus(_ completion: @escaping (Bool) -> Void) {
+		rootDirectoryForICloud { url in
+			completion(url != nil)
+		}
+	}
+	
+	func loadDocumentToICloud(_ localPath: URL, completion: @escaping (Bool) -> Void) {
+		rootDirectoryForICloud { path in
+			guard let root = path else {
+				completion(false)
+				
+				return
+			}
+			
+			DispatchQueue.background.async {
+				let remotePath = root.appendingPathComponent(localPath.lastPathComponent)
+				do {
+					let file = FileManager.default
+					if file.fileExists(atPath: remotePath.path) {
+						try file.removeItem(at: remotePath)
+					}
+					
+					try file.setUbiquitous(true, itemAt: localPath, destinationURL: remotePath)
+					
+					completion(true)
+				} catch {
+					completion(false)
+				}
+			}
+		}
+	}
+	
+	private lazy var fileCoordinator = NSFileCoordinator(filePresenter: nil)
+	
+	func deleteICloudDocument(_ path: URL, completion: @escaping (Bool) -> Void) {
+		DispatchQueue.background.async {
+			self.fileCoordinator.coordinate(writingItemAt: path, options: .forDeleting, error: nil) { writingPath in
+				let file = FileManager()
+				do {
+					try file.removeItem(at: writingPath)
+					completion(true)
+				} catch {
+					completion(false)
+				}
+			}
+		}
 	}
 
 }

@@ -45,7 +45,7 @@ class RepsSet: DataObject {
 	}
 	
 	var isValid: Bool {
-		return reps > 0
+		return reps > 0 && weight >= 0 && rest >= 0
 	}
 	
 	func set(reps n: Int32) {

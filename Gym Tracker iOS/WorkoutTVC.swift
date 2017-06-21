@@ -15,7 +15,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	weak var exercizeController: ExercizeTableViewController?
 	var workout: Workout!
 	var editMode = false
-	private var isNew = false
+	private(set) var isNew = false
 	
 	@IBOutlet var cancelBtn: UIBarButtonItem!
 	@IBOutlet var doneBtn: UIBarButtonItem!
@@ -297,9 +297,8 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		precondition(e.workout == workout, "Exercize is not from current workout")
 		
 		deletedEntities += e.compactSets() as [DataObject]
-		let keep = e.name?.length ?? 0 > 0 && e.sets.count > 0
-		
-		if !keep {
+	
+		if !e.isValid {
 			removeExercize(e)
 		} else {
 			tableView.reloadRows(at: [IndexPath(row: Int(e.order), section: 1)], with: .none)
@@ -546,13 +545,44 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 
     // MARK: - Navigation
 	
+	private var documentController: UIActivityViewController?
+	
 	@IBAction func cancel(_ sender: AnyObject) {
+		cancel(sender, animated: true, animationCompletion: nil)
+	}
+	
+	func cancel(_ sender: AnyObject, animated: Bool, animationCompletion: (() -> Void)?) {
 		dataManager.discardAllChanges()
 		
 		if isNew {
-			self.dismiss(animated: true)
+			self.dismiss(animated: animated, completion: animationCompletion)
 		} else {
 			exitEdit()
+		}
+	}
+	
+	@IBAction func export(_ sender: UIButton) {
+		let loading = UIAlertController.getModalLoading()
+		present(loading, animated: true)
+		DispatchQueue.background.async {
+			if let path = importExportManager.export(workout: self.workout) {
+				DispatchQueue.main.async {
+					loading.dismiss(animated: true) {
+						self.documentController = UIActivityViewController(activityItems: [path], applicationActivities: nil)
+						self.documentController?.completionWithItemsHandler = { _, _, _, _ in
+							self.documentController = nil
+						}
+						
+						self.present(self.documentController!, animated: true)
+					}
+				}
+			} else {
+				DispatchQueue.main.async {
+					loading.dismiss(animated: true) {
+						self.present(UIAlertController(simpleAlert: NSLocalizedString("EXPORT_FAIL", comment: "Error"), message: nil), animated: true)
+					}
+				}
+			}
 		}
 	}
 

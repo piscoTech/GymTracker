@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7A1305921EAB418700D29048 /* RepsSetExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A1305911EAB418700D29048 /* RepsSetExport.swift */; };
+		7A1305991EAB567300D29048 /* libxml2.2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A1305971EAB567300D29048 /* libxml2.2.tbd */; };
+		7A13059A1EAB567300D29048 /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A1305981EAB567300D29048 /* libxml2.tbd */; };
 		7A27276F1EA3536400E67F70 /* UpdateWeightVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A27276E1EA3536400E67F70 /* UpdateWeightVC.swift */; };
 		7A3F61171E92958F000F7514 /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A3F61161E92958F000F7514 /* SettingsVC.swift */; };
 		7A4DF0171E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4DF0161E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift */; };
@@ -15,8 +18,13 @@
 		7A5A47F11E78A3CF00ABCF46 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7A5A47F01E78A3CF00ABCF46 /* Localizable.strings */; };
 		7A5D2B711E8422DB008EED4C /* WorkoutDetailIC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A5D2B701E8422DB008EED4C /* WorkoutDetailIC.swift */; };
 		7A5EFA491E81408000A4CF41 /* Main iOS & watchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADC03BD1E78A187005BDC25 /* Main iOS & watchOS.swift */; };
+		7A67883D1EAA521A009101DB /* ImportExportBackupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A67883C1EAA521A009101DB /* ImportExportBackupManager.swift */; };
+		7A6788401EAA5267009101DB /* WorkoutExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A67883F1EAA5267009101DB /* WorkoutExport.swift */; };
+		7A6788421EAA5356009101DB /* workout.xsd in Resources */ = {isa = PBXBuildFile; fileRef = 7A6788411EAA5356009101DB /* workout.xsd */; };
 		7A6E083D1E98E94C003BB048 /* CurrentWorkoutVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A6E083C1E98E94C003BB048 /* CurrentWorkoutVC.swift */; };
 		7A95D0BC1E94228D00998D70 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A95D0BB1E94228D00998D70 /* TabBarController.swift */; };
+		7AB72FE91EB0C80400091E0D /* BackupListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB72FE81EB0C80400091E0D /* BackupListTableViewController.swift */; };
+		7AB72FEB1EB0DB2800091E0D /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB72FEA1EB0DB2800091E0D /* Date.swift */; };
 		7ABC3F2C1EA6A8DF008A3FCF /* rest_end_notification.caf in Resources */ = {isa = PBXBuildFile; fileRef = 7ABC3F2A1EA6A8DF008A3FCF /* rest_end_notification.caf */; };
 		7ABC3F2D1EA6A8DF008A3FCF /* rest_end.caf in Resources */ = {isa = PBXBuildFile; fileRef = 7ABC3F2B1EA6A8DF008A3FCF /* rest_end.caf */; };
 		7AC388F51EA21B3200EB9571 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AC388F41EA21B3200EB9571 /* UserNotifications.framework */; };
@@ -59,6 +67,7 @@
 		7ADC07D81E98CEB20047E0C2 /* ExecuteWorkoutController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADC07D61E98CEB20047E0C2 /* ExecuteWorkoutController.swift */; };
 		7ADCF6911E81135700ECF011 /* TableView CellControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADCF6901E81135700ECF011 /* TableView CellControllers.swift */; };
 		7AE10A431E7D6F1000A64CF7 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE10A421E7D6F1000A64CF7 /* Preferences.swift */; };
+		7AE92D9B1EACFF750091FE74 /* ExercizeExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE92D9A1EACFF750091FE74 /* ExercizeExport.swift */; };
 		7AEE4D661E812A9200D843EB /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7AEE4D641E812A9200D843EB /* Interface.storyboard */; };
 		7AF561271E93A845009BF658 /* Appearance Classes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AF561261E93A845009BF658 /* Appearance Classes.swift */; };
 /* End PBXBuildFile section */
@@ -170,6 +179,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		7A1305911EAB418700D29048 /* RepsSetExport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepsSetExport.swift; sourceTree = "<group>"; };
+		7A1305971EAB567300D29048 /* libxml2.2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.2.tbd; path = usr/lib/libxml2.2.tbd; sourceTree = SDKROOT; };
+		7A1305981EAB567300D29048 /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
 		7A27276E1EA3536400E67F70 /* UpdateWeightVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateWeightVC.swift; sourceTree = "<group>"; };
 		7A3F61161E92958F000F7514 /* SettingsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
 		7A4539C31E75CFC200AD0215 /* Gym Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gym Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -180,8 +192,13 @@
 		7A5346BA1E86BA7000AC5638 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		7A5A47F01E78A3CF00ABCF46 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		7A5D2B701E8422DB008EED4C /* WorkoutDetailIC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkoutDetailIC.swift; sourceTree = "<group>"; };
+		7A67883C1EAA521A009101DB /* ImportExportBackupManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportExportBackupManager.swift; sourceTree = "<group>"; };
+		7A67883F1EAA5267009101DB /* WorkoutExport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkoutExport.swift; sourceTree = "<group>"; };
+		7A6788411EAA5356009101DB /* workout.xsd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = workout.xsd; sourceTree = "<group>"; };
 		7A6E083C1E98E94C003BB048 /* CurrentWorkoutVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentWorkoutVC.swift; sourceTree = "<group>"; };
 		7A95D0BB1E94228D00998D70 /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		7AB72FE81EB0C80400091E0D /* BackupListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackupListTableViewController.swift; sourceTree = "<group>"; };
+		7AB72FEA1EB0DB2800091E0D /* Date.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Date.swift; path = "../Gym Tracker iOS/Date.swift"; sourceTree = "<group>"; };
 		7ABC3F2A1EA6A8DF008A3FCF /* rest_end_notification.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = rest_end_notification.caf; sourceTree = "<group>"; };
 		7ABC3F2B1EA6A8DF008A3FCF /* rest_end.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = rest_end.caf; sourceTree = "<group>"; };
 		7AC388F41EA21B3200EB9571 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
@@ -216,6 +233,7 @@
 		7ADC07D61E98CEB20047E0C2 /* ExecuteWorkoutController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExecuteWorkoutController.swift; sourceTree = "<group>"; };
 		7ADCF6901E81135700ECF011 /* TableView CellControllers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TableView CellControllers.swift"; sourceTree = "<group>"; };
 		7AE10A421E7D6F1000A64CF7 /* Preferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
+		7AE92D9A1EACFF750091FE74 /* ExercizeExport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExercizeExport.swift; sourceTree = "<group>"; };
 		7AEE4D651E812A9200D843EB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
 		7AF561261E93A845009BF658 /* Appearance Classes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Appearance Classes.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -225,6 +243,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A1305991EAB567300D29048 /* libxml2.2.tbd in Frameworks */,
+				7A13059A1EAB567300D29048 /* libxml2.tbd in Frameworks */,
 				7AC388F51EA21B3200EB9571 /* UserNotifications.framework in Frameworks */,
 				7ACE8B6F1E76D0D00011F839 /* MBLibrary.framework in Frameworks */,
 				7A5346BB1E86BA7000AC5638 /* HealthKit.framework in Frameworks */,
@@ -286,6 +306,8 @@
 		7A5346B31E86B16400AC5638 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7A1305971EAB567300D29048 /* libxml2.2.tbd */,
+				7A1305981EAB567300D29048 /* libxml2.tbd */,
 				7AC388F41EA21B3200EB9571 /* UserNotifications.framework */,
 				7A5346BA1E86BA7000AC5638 /* HealthKit.framework */,
 				7A5346B41E86B16400AC5638 /* HealthKit.framework */,
@@ -302,6 +324,25 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		7A67883B1EAA51C7009101DB /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				7A67883F1EAA5267009101DB /* WorkoutExport.swift */,
+				7AE92D9A1EACFF750091FE74 /* ExercizeExport.swift */,
+				7A1305911EAB418700D29048 /* RepsSetExport.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		7A67883E1EAA524A009101DB /* ImportExportBackup */ = {
+			isa = PBXGroup;
+			children = (
+				7A6788411EAA5356009101DB /* workout.xsd */,
+				7A67883C1EAA521A009101DB /* ImportExportBackupManager.swift */,
+			);
+			name = ImportExportBackup;
+			sourceTree = "<group>";
+		};
 		7A6E083B1E98E91E003BB048 /* WorkoutCreation */ = {
 			isa = PBXGroup;
 			children = (
@@ -310,6 +351,23 @@
 				7ADC03CF1E78A328005BDC25 /* ExercizeTVC.swift */,
 			);
 			name = WorkoutCreation;
+			sourceTree = "<group>";
+		};
+		7AB72FE51EB0C7DC00091E0D /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				7A3F61161E92958F000F7514 /* SettingsVC.swift */,
+				7AB72FE81EB0C80400091E0D /* BackupListTableViewController.swift */,
+			);
+			name = Settings;
+			sourceTree = "<group>";
+		};
+		7AB72FEC1EB0DB3400091E0D /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				7AB72FEA1EB0DB2800091E0D /* Date.swift */,
+			);
+			name = Extensions;
 			sourceTree = "<group>";
 		};
 		7ABC3F271EA6A894008A3FCF /* Resources */ = {
@@ -395,6 +453,7 @@
 		7ADC03B81E78A187005BDC25 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				7AB72FEC1EB0DB3400091E0D /* Extensions */,
 				7ADC03C61E78A193005BDC25 /* Model */,
 				7A1A727C1E97A94500381E01 /* Controller */,
 				7ADC03BD1E78A187005BDC25 /* Main iOS & watchOS.swift */,
@@ -419,6 +478,8 @@
 		7ADC03C81E78A328005BDC25 /* Gym Tracker iOS */ = {
 			isa = PBXGroup;
 			children = (
+				7A67883E1EAA524A009101DB /* ImportExportBackup */,
+				7A67883B1EAA51C7009101DB /* Model */,
 				7ADC03E31E78A337005BDC25 /* Controller */,
 				7ADC03E41E78A34E005BDC25 /* View */,
 				7ADC03C91E78A328005BDC25 /* AppDelegate.swift */,
@@ -436,7 +497,7 @@
 				7A6E083B1E98E91E003BB048 /* WorkoutCreation */,
 				7A27276B1EA3532900E67F70 /* ExecuteWorkout */,
 				7A4DF0161E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift */,
-				7A3F61161E92958F000F7514 /* SettingsVC.swift */,
+				7AB72FE51EB0C7DC00091E0D /* Settings */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -530,6 +591,9 @@
 							com.apple.HealthKit = {
 								enabled = 1;
 							};
+							com.apple.iCloud = {
+								enabled = 1;
+							};
 						};
 					};
 					7ACF6D801E802FD200579B67 = {
@@ -615,6 +679,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7ADC03D81E78A328005BDC25 /* Main.storyboard in Resources */,
+				7A6788421EAA5356009101DB /* workout.xsd in Resources */,
 				7A5A47F11E78A3CF00ABCF46 /* Localizable.strings in Resources */,
 				7ADC03D71E78A328005BDC25 /* LaunchScreen.storyboard in Resources */,
 				7ADC03D61E78A328005BDC25 /* Assets.xcassets in Resources */,
@@ -650,23 +715,29 @@
 			files = (
 				7A95D0BC1E94228D00998D70 /* TabBarController.swift in Sources */,
 				7A3F61171E92958F000F7514 /* SettingsVC.swift in Sources */,
+				7A67883D1EAA521A009101DB /* ImportExportBackupManager.swift in Sources */,
 				7A27276F1EA3536400E67F70 /* UpdateWeightVC.swift in Sources */,
 				7ADC03DC1E78A328005BDC25 /* TableView Cells.swift in Sources */,
 				7ADC03D51E78A328005BDC25 /* AppDelegate.swift in Sources */,
 				7AE10A431E7D6F1000A64CF7 /* Preferences.swift in Sources */,
 				7AF561271E93A845009BF658 /* Appearance Classes.swift in Sources */,
+				7AE92D9B1EACFF750091FE74 /* ExercizeExport.swift in Sources */,
 				7ADC03C31E78A187005BDC25 /* Main iOS & watchOS.swift in Sources */,
 				7ACF6DB71E8039EB00579B67 /* Main iOS.swift in Sources */,
+				7AB72FEB1EB0DB2800091E0D /* Date.swift in Sources */,
 				7A6E083D1E98E94C003BB048 /* CurrentWorkoutVC.swift in Sources */,
 				7ADC07D71E98CEB20047E0C2 /* ExecuteWorkoutController.swift in Sources */,
+				7AB72FE91EB0C80400091E0D /* BackupListTableViewController.swift in Sources */,
 				7ADC03DE1E78A328005BDC25 /* WorkoutTVC.swift in Sources */,
 				7ADC03D91E78A328005BDC25 /* ExercizeTVC.swift in Sources */,
 				7A4DF0171E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift in Sources */,
 				7ADC03C21E78A187005BDC25 /* GymTracker.xcdatamodeld in Sources */,
 				7ADC03DD1E78A328005BDC25 /* WorkoutListTVC.swift in Sources */,
+				7A6788401EAA5267009101DB /* WorkoutExport.swift in Sources */,
 				7ADC03C01E78A187005BDC25 /* DataManager.swift in Sources */,
 				7ADC03C41E78A187005BDC25 /* RepsSet.swift in Sources */,
 				7ADC03C51E78A187005BDC25 /* Workout.swift in Sources */,
+				7A1305921EAB418700D29048 /* RepsSetExport.swift in Sources */,
 				7ADC03C11E78A187005BDC25 /* Exercize.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

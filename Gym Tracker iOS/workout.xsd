@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:simpleType name="nameType">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+			<xs:whiteSpace value="collapse" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:element name="workoutlist">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="workout" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="name" type="nameType" />
+							<xs:element name="archived" type="xs:boolean" />
+							
+							<xs:element name="exercizes">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:choice minOccurs="1" maxOccurs="unbounded">
+											<xs:element name="rest">
+												<xs:simpleType>
+													<xs:restriction base="xs:integer">
+														<xs:minInclusive value="30" />
+													</xs:restriction>
+												</xs:simpleType>
+											</xs:element>
+											<xs:element name="exercize">
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="name" type="nameType" />
+														<xs:element name="sets">
+															<xs:complexType>
+																<xs:sequence>
+																	<xs:element name="set" minOccurs="1" maxOccurs="unbounded">
+																		<xs:complexType>
+																			<xs:sequence>
+																				<xs:element name="reps" type="xs:positiveInteger" />
+																				<xs:element name="weight">
+																					<xs:simpleType>
+																						<xs:restriction base="xs:decimal">
+																							<xs:minInclusive value="0" />
+																						</xs:restriction>
+																					</xs:simpleType>
+																				</xs:element>
+																				<xs:element name="rest">
+																					<xs:simpleType>
+																						<xs:restriction base="xs:integer">
+																							<xs:minInclusive value="0" />
+																						</xs:restriction>
+																					</xs:simpleType>
+																				</xs:element>
+																			</xs:sequence>
+																		</xs:complexType>
+																	</xs:element>
+																</xs:sequence>
+															</xs:complexType>
+														</xs:element>
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+										</xs:choice>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
