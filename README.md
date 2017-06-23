@@ -9,11 +9,13 @@ Do you go to the gym and are tired of manually keep track of exercizes, sets and
 
 At the end your workout is automatically saved inside the Health app, if you're using an Apple Watch with detailed heart rate and calories.
 
+Backup and restore your workouts using iCloud Drive or export and share them with your friends. Backups and exported workout are in XML format and easily accessible from inside the iCloud Drive folder and app, you can manually edit them and importing them again, before import data is validated against this [XSD grammar](https://github.com/piscoTech/GymTracker/blob/master/Gym%20Tracker%20iOS/workout.xsd).
+
 Support me by buying the app on the AppStore<br>
 [![Download on the AppStore](http://www.marcoboschi.altervista.org/img/app_store_en.svg)](https://itunes.apple.com/us/app/gym-tracker-gym-workout-tracker/id1224155362?ls=1&mt=8)
 
 ## Project Setup
-The framework `MBLibrary` referenced by this project is available [here](https://github.com/piscoTech/MBLibrary), version currently in use is [1.0.4](https://github.com/piscoTech/MBLibrary/releases/tag/v1.0.4(5)).
+The framework `MBLibrary` referenced by this project is available [here](https://github.com/piscoTech/MBLibrary), version currently in use is [1.1](https://github.com/piscoTech/MBLibrary/releases/tag/v1.1(6)).
 
 ## Customization
 General behaviour of the app can be configured via global variables in `Main iOS & watchOS.swift`:
