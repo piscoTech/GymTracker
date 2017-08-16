@@ -32,6 +32,9 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		if #available(iOS 11, *) {
 			self.navigationItem.largeTitleDisplayMode = .never
 		}
+		
+		tableView.rowHeight = UITableViewAutomaticDimension
+		tableView.estimatedRowHeight = 44
 
 		// Create a new workout
 		if editMode && workout == nil {
@@ -118,9 +121,11 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		if indexPath.section == 1 && workout.exercizes.count > 0 && exercizeCell(for: indexPath) == .picker {
 			return 150
+		} else if indexPath.section == 0 && !editMode {
+			return UITableViewAutomaticDimension
 		}
 		
-		return UITableViewAutomaticDimension
+		return tableView.estimatedRowHeight
 	}
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -139,11 +144,16 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		switch indexPath.section {
 		case 0:
-			let cell = tableView.dequeueReusableCell(withIdentifier: "title", for: indexPath) as! SingleFieldCell
-			cell.isEnabled = editMode
-			cell.isUserInteractionEnabled = editMode
-			cell.textField.text = workout.name
-			return cell
+			if editMode {
+				let cell = tableView.dequeueReusableCell(withIdentifier: "editTitle", for: indexPath) as! SingleFieldCell
+				cell.textField.text = workout.name
+				return cell
+			} else {
+				let cell = tableView.dequeueReusableCell(withIdentifier: "title", for: indexPath) as! MultilineCell
+				cell.isUserInteractionEnabled = false
+				cell.label.text = workout.name
+				return cell
+			}
 		case 1:
 			if workout.exercizes.count == 0 {
 				return tableView.dequeueReusableCell(withIdentifier: "noExercize", for: indexPath)

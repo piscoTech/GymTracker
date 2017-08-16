@@ -27,6 +27,9 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
     override func viewDidLoad() {
         super.viewDidLoad()
 		
+		tableView.rowHeight = UITableViewAutomaticDimension
+		tableView.estimatedRowHeight = 44
+		
 		if exercize.sets.count == 0 {
 			//This can only appen if it's a new exercize
 			newSet(self)
@@ -76,9 +79,11 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		if indexPath.section == 1 && setCell(for: indexPath) == .picker {
 			return 150
+		} else if indexPath.section == 0 && !editMode {
+			return UITableViewAutomaticDimension
 		}
 		
-		return UITableViewAutomaticDimension
+		return tableView.estimatedRowHeight
 	}
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -97,10 +102,16 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		switch indexPath.section {
 		case 0:
-			let cell = tableView.dequeueReusableCell(withIdentifier: "title", for: indexPath) as! SingleFieldCell
-			cell.isEnabled = editMode
-			cell.textField.text = exercize.name
-			return cell
+			if editMode {
+				let cell = tableView.dequeueReusableCell(withIdentifier: "editTitle", for: indexPath) as! SingleFieldCell
+				cell.textField.text = exercize.name
+				return cell
+			} else {
+				let cell = tableView.dequeueReusableCell(withIdentifier: "title", for: indexPath) as! MultilineCell
+				cell.isUserInteractionEnabled = false
+				cell.label.text = exercize.name
+				return cell
+			}
 		case 1:
 			let s = exercize.set(n: setNumber(for: indexPath))!
 			switch setCell(for: indexPath) {

@@ -9,17 +9,23 @@
 import UIKit
 import MBLibrary
 
+class MultilineCell: UITableViewCell {
+	
+	static let font = UIFont.systemFont(ofSize: 20, weight: .heavy)
+	
+	@IBOutlet weak var label: UILabel! {
+		didSet {
+			label.font = MultilineCell.font
+		}
+	}
+	
+}
+
 class SingleFieldCell: UITableViewCell {
 
-	@IBOutlet weak var textField: UITextField!
-	
-	var isEnabled: Bool {
-		get {
-			return textField.isEnabled
-		}
-		set {
-			textField.isEnabled = newValue
-			textField.isUserInteractionEnabled = newValue
+	@IBOutlet weak var textField: UITextField! {
+		didSet {
+			textField.font = MultilineCell.font
 		}
 	}
 

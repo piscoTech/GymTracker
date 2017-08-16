@@ -39,37 +39,62 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="title" id="HoW-fv-5mQ" customClass="SingleFieldCell" customModule="Gym_Tracker" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="title" id="HoW-fv-5mQ" customClass="MultilineCell" customModule="Gym_Tracker" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="55.5" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="HoW-fv-5mQ" id="68e-XG-ryo">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Workout Name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="VhB-vf-USR">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wMh-DL-ske">
+                                            <rect key="frame" x="8" y="11" width="42" height="21.5"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="wMh-DL-ske" secondAttribute="trailing" id="7a9-0S-UqA"/>
+                                        <constraint firstItem="wMh-DL-ske" firstAttribute="top" secondItem="68e-XG-ryo" secondAttribute="top" constant="11" id="OOD-mK-9oe"/>
+                                        <constraint firstAttribute="bottom" secondItem="wMh-DL-ske" secondAttribute="bottom" constant="11" id="PeL-FP-gNG"/>
+                                        <constraint firstItem="wMh-DL-ske" firstAttribute="leading" secondItem="68e-XG-ryo" secondAttribute="leadingMargin" id="adc-O3-rga"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="label" destination="wMh-DL-ske" id="Hfi-aq-Qsz"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="editTitle" id="d3U-Ak-G8x" customClass="SingleFieldCell" customModule="Gym_Tracker" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="99.5" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="d3U-Ak-G8x" id="G17-Zl-K42">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Workout Name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="EeI-JU-IeR">
                                             <rect key="frame" x="8" y="0.0" width="359" height="43.5"/>
                                             <nil key="textColor"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             <connections>
-                                                <action selector="nameChanged:" destination="BRB-Zp-8pa" eventType="editingChanged" id="kbo-lt-ggr"/>
-                                                <outlet property="delegate" destination="BRB-Zp-8pa" id="gLG-Uu-oGr"/>
+                                                <action selector="nameChanged:" destination="BRB-Zp-8pa" eventType="editingChanged" id="0We-3H-ZRd"/>
+                                                <outlet property="delegate" destination="BRB-Zp-8pa" id="03C-a3-dYZ"/>
                                             </connections>
                                         </textField>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="VhB-vf-USR" firstAttribute="top" secondItem="68e-XG-ryo" secondAttribute="top" id="Cyt-vG-Lqk"/>
-                                        <constraint firstAttribute="bottom" secondItem="VhB-vf-USR" secondAttribute="bottom" id="HLr-PW-APd"/>
-                                        <constraint firstItem="VhB-vf-USR" firstAttribute="leading" secondItem="68e-XG-ryo" secondAttribute="leadingMargin" id="d8Q-Jn-S1A"/>
-                                        <constraint firstAttribute="trailingMargin" secondItem="VhB-vf-USR" secondAttribute="trailing" id="iCm-cF-kp5"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="EeI-JU-IeR" secondAttribute="trailing" id="Kkl-1c-QVv"/>
+                                        <constraint firstItem="EeI-JU-IeR" firstAttribute="leading" secondItem="G17-Zl-K42" secondAttribute="leadingMargin" id="KxV-hy-Rsr"/>
+                                        <constraint firstItem="EeI-JU-IeR" firstAttribute="top" secondItem="G17-Zl-K42" secondAttribute="top" id="bCf-Uz-u5o"/>
+                                        <constraint firstAttribute="bottom" secondItem="EeI-JU-IeR" secondAttribute="bottom" id="n3X-XV-Fci"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <outlet property="textField" destination="VhB-vf-USR" id="gTV-Kn-j4N"/>
+                                    <outlet property="textField" destination="EeI-JU-IeR" id="JS9-Jz-5gV"/>
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="noExercize" textLabel="B8F-9i-8x1" style="IBUITableViewCellStyleDefault" id="AGL-Uc-Vpi">
-                                <rect key="frame" x="0.0" y="99.5" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="143.5" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="AGL-Uc-Vpi" id="s8G-Pt-cby">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
@@ -86,7 +111,7 @@
                                 </tableViewCellContentView>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="exercize" textLabel="vQc-bf-j0O" detailTextLabel="03f-u6-ann" style="IBUITableViewCellStyleSubtitle" id="8LH-rW-Nxy">
-                                <rect key="frame" x="0.0" y="143.5" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="187.5" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="8LH-rW-Nxy" id="sZc-hY-Bzs">
                                     <rect key="frame" x="0.0" y="0.0" width="342" height="43.5"/>
@@ -113,7 +138,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="rest" id="9pm-0a-Lfk" customClass="RestCell" customModule="Gym_Tracker" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="187.5" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="231.5" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="9pm-0a-Lfk" id="1QP-MW-ER6">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
@@ -149,7 +174,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="restPicker" rowHeight="150" id="Sps-m3-nIa" customClass="RestPickerCell" customModule="Gym_Tracker" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="231.5" width="375" height="150"/>
+                                <rect key="frame" x="0.0" y="275.5" width="375" height="150"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Sps-m3-nIa" id="QTu-95-YVR">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="149.5"/>
@@ -175,7 +200,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="add" id="vcE-fY-fCn" customClass="WorkoutManageExercizeCell" customModule="Gym_Tracker" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="381.5" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="425.5" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="vcE-fY-fCn" id="06g-BB-WIR">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
@@ -223,7 +248,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="actions" id="DIq-rd-LXf" customClass="WorkoutDeleteArchiveCell" customModule="Gym_Tracker" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="425.5" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="469.5" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="DIq-rd-LXf" id="l90-eG-VgF">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
@@ -515,8 +540,33 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="title" id="lDJ-vv-ucJ" customClass="SingleFieldCell" customModule="Gym_Tracker" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="title" id="Uxg-HJ-T90" customClass="MultilineCell" customModule="Gym_Tracker" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="55.5" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Uxg-HJ-T90" id="H9u-Ar-fuM">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wA5-pW-3WM">
+                                            <rect key="frame" x="8" y="11" width="42" height="21.5"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="wA5-pW-3WM" secondAttribute="trailing" id="5Hc-Xy-wvq"/>
+                                        <constraint firstItem="wA5-pW-3WM" firstAttribute="leading" secondItem="H9u-Ar-fuM" secondAttribute="leadingMargin" id="8Jb-xI-SnP"/>
+                                        <constraint firstItem="wA5-pW-3WM" firstAttribute="top" secondItem="H9u-Ar-fuM" secondAttribute="top" constant="11" id="JO2-vb-39f"/>
+                                        <constraint firstAttribute="bottom" secondItem="wA5-pW-3WM" secondAttribute="bottom" constant="11" id="g0F-6c-F8X"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="label" destination="wA5-pW-3WM" id="s6R-ye-D9y"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="editTitle" id="lDJ-vv-ucJ" customClass="SingleFieldCell" customModule="Gym_Tracker" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="99.5" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="lDJ-vv-ucJ" id="ZiN-UW-NDc">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
@@ -545,7 +595,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="set" id="TDU-AH-bgc" customClass="RepsSetCell" customModule="Gym_Tracker" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="99.5" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="143.5" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="TDU-AH-bgc" id="MNJ-Ir-CsN">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
@@ -616,7 +666,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="rest" id="3V5-QJ-OFp" customClass="RestCell" customModule="Gym_Tracker" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="143.5" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="187.5" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="3V5-QJ-OFp" id="hYc-BY-jhr">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
@@ -652,7 +702,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="restPicker" rowHeight="150" id="t6M-3Y-CbA" customClass="RestPickerCell" customModule="Gym_Tracker" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="187.5" width="375" height="150"/>
+                                <rect key="frame" x="0.0" y="231.5" width="375" height="150"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="t6M-3Y-CbA" id="Tec-VZ-cPD">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="149.5"/>
@@ -678,7 +728,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="add" id="TT0-RW-5jS">
-                                <rect key="frame" x="0.0" y="337.5" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="381.5" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="TT0-RW-5jS" id="Kxl-EB-f3l">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
