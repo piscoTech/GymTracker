@@ -283,10 +283,9 @@ class DataManager {
 		wcInterface.persistPendingChanges()
 	}
 	
-
 	// MARK: - Interaction
 
-	func executeFetchRequest<T: NSFetchRequestResult>(_ request: NSFetchRequest<T>) -> [T]? {
+	func executeFetchRequest<T>(_ request: NSFetchRequest<T>) -> [T]? {
 		var result: [T]? = nil
 		localData.managedObjectContext.performAndWait {
 			result = try? self.localData.managedObjectContext.fetch(request)
@@ -657,7 +656,7 @@ private class CoreDataStack {
 	lazy var managedObjectModel: NSManagedObjectModel = {
 		// The managed object model for the application. This property is not optional. It is a fatal error for the application not to be able to find and load its model.
 		let modelURL = Bundle.main.url(forResource: self.storeName, withExtension: "momd")!
-		return NSManagedObjectModel(contentsOf: modelURL)!
+		return NSManagedObjectModel(contentsOf: modelURL)
 	}()
 	
 	lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
@@ -737,7 +736,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 		super.init()
 		
 		if WCSession.isSupported() {
-			session = WCSession.default()
+			session = WCSession.default
 			session.delegate = self
 			session.activate()
 		}

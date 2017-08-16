@@ -10,7 +10,7 @@ import Foundation
 
 extension Date {
 	
-	private static let workoutF = { Void -> DateFormatter in
+	private static let workoutF: DateFormatter = {
 		let formatter = DateFormatter()
 		formatter.dateFormat = "yyyyMMddHHmmss"
 		

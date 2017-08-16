@@ -24,6 +24,11 @@ class WorkoutListTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		
+		if #available(iOS 11, *) {
+			self.navigationController?.navigationBar.prefersLargeTitles = true
+			self.navigationItem.largeTitleDisplayMode = .always
+		}
+		
 		appDelegate.workoutList = self
 		updateView()
 		enableEdit(canEdit)

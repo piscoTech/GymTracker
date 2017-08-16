@@ -189,11 +189,11 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutCo
 		workoutController.endSet()
 	}
 	
-	func endWorkout() {
+	@objc func endWorkout() {
 		workoutController.endWorkout()
 	}
 	
-	func cancelWorkout() {
+	@objc func cancelWorkout() {
 		workoutController.cancelWorkout()
 	}
 	

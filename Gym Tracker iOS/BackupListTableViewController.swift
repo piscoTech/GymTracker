@@ -32,7 +32,7 @@ class BackupListTableViewController: UITableViewController {
 		}
 		
 		if !lazy {
-			importExportManager.loadBackups { bcks in
+			importExportManager.loadBackups {
 				load()
 			}
 		} else {

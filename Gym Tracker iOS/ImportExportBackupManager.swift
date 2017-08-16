@@ -82,7 +82,7 @@ class ImportExportBackupManager: NSObject {
 		}
 	}
 	
-	func backupsCollected(_ not: Notification) {
+	@objc func backupsCollected(_ not: Notification) {
 		guard let query = not.object as? NSMetadataQuery, let savedQuery = self.query, query == savedQuery else {
 			return
 		}

@@ -28,6 +28,10 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 
     override func viewDidLoad() {
         super.viewDidLoad()
+		
+		if #available(iOS 11, *) {
+			self.navigationItem.largeTitleDisplayMode = .never
+		}
 
 		// Create a new workout
 		if editMode && workout == nil {
@@ -71,7 +75,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		doneBtn.isEnabled = workout.name.length > 0 && workout.hasExercizes
 	}
 	
-	func startWorkout() {
+	@objc func startWorkout() {
 		guard delegate.canEdit && !isNew else {
 			return
 		}
@@ -187,7 +191,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	
 	// MARK: - Editing
 	
-	func edit(_ sender: AnyObject) {
+	@objc func edit(_ sender: AnyObject) {
 		guard delegate.canEdit else {
 			return
 		}
@@ -474,7 +478,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		let color = UILabel.appearance().textColor ?? .black
 		let txt = (TimeInterval(row + 1) * 30).getDuration(hideHours: true)
 		
-		return NSAttributedString(string: txt, attributes: [NSForegroundColorAttributeName : color])
+		return NSAttributedString(string: txt, attributes: [.foregroundColor : color])
 	}
 	
 	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
