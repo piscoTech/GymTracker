@@ -205,17 +205,19 @@ class ImportExportBackupManager: NSObject {
 			let workouts = file.loadAsXML(validatingWithXSD: xsd)?.children, workouts.count > 0 {
 			performCallback(true, workouts.count) {
 				DispatchQueue.main.async {
-					var save = [Workout]()
-					var delete = restore ? Workout.getList() : []
+					var save = [DataObject]()
+                    var delete: [DataObject] = restore ? Workout.getList() : []
 					
 					for wData in workouts {
 						let (w, success) = Workout.import(fromXML: wData)
 						
 						if let w = w {
+                            let objs = [w as DataObject]
+                                + w.exercizes.map { [$0 as DataObject] + Array($0.sets) as [DataObject] }.reduce([]) { $0 + $1 }
 							if success {
-								save.append(w)
+								save += objs
 							} else {
-								delete.append(w)
+								delete += objs
 							}
 						}
 					}
