@@ -236,6 +236,7 @@
 		7AE92D9A1EACFF750091FE74 /* ExercizeExport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExercizeExport.swift; sourceTree = "<group>"; };
 		7AEE4D651E812A9200D843EB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
 		7AF561261E93A845009BF658 /* Appearance Classes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Appearance Classes.swift"; sourceTree = "<group>"; };
+		7AFDA7D31FBB5E290055C768 /* GymTracker Circuit.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "GymTracker Circuit.xcdatamodel"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1077,9 +1078,10 @@
 		7ADC03BB1E78A187005BDC25 /* GymTracker.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				7AFDA7D31FBB5E290055C768 /* GymTracker Circuit.xcdatamodel */,
 				7ADC03BC1E78A187005BDC25 /* GymTracker.xcdatamodel */,
 			);
-			currentVersion = 7ADC03BC1E78A187005BDC25 /* GymTracker.xcdatamodel */;
+			currentVersion = 7AFDA7D31FBB5E290055C768 /* GymTracker Circuit.xcdatamodel */;
 			path = GymTracker.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

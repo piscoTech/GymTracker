@@ -22,6 +22,9 @@ class Exercize: DataObject {
 	@NSManaged var order: Int32
 	@NSManaged private(set) var isRest: Bool
 	
+	@NSManaged private(set) var isCircuit: Bool
+	@NSManaged private(set) var hasCircuitRest: Bool
+	
 	@NSManaged private(set) var name: String?
 	@NSManaged private(set) var rest: TimeInterval
 	
