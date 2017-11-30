@@ -9,13 +9,7 @@
 import Foundation
 import HealthKit
 
-let applicationDocumentsDirectory: URL = {
-	return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last!
-}()
-
 let dataManager = DataManager.getManager()
-let preferences = Preferences.getPreferences()
-let timesSign = "×"
 let maxRest: TimeInterval = 5 * 60
 
 ///Keep track of the version of health authorization required, increase this number to automatically display an authorization request.

@@ -9,6 +9,7 @@
 import Foundation
 import CoreData
 
+// TODO: Make Sequence
 @objc(Workout)
 class Workout: DataObject {
 	
@@ -43,6 +44,10 @@ class Workout: DataObject {
 		req.predicate = pred
 		
 		return (dataManager.executeFetchRequest(req) ?? []).first
+	}
+	
+	var isValid: Bool {
+		return name.length > 0 && hasExercizes
 	}
 	
 	var hasExercizes: Bool {

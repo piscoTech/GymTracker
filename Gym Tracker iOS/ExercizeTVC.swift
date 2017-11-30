@@ -79,7 +79,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		if indexPath.section == 1 && setCell(for: indexPath) == .picker {
 			return 150
-		} else if indexPath.section == 0 && !editMode {
+		} else if indexPath.section == 0 && indexPath.row == 0 && !editMode {
 			return UITableViewAutomaticDimension
 		}
 		
@@ -89,7 +89,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		switch section {
 		case 0:
-			return 1
+			return 1 + 3 // TODO: Handle coorectly how many row to display for circuits
 		case 1:
 			return exercize.sets.count * 2 - 1 + (editRest != nil ? 1 : 0)
 		case 2:
@@ -102,14 +102,42 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		switch indexPath.section {
 		case 0:
-			if editMode {
-				let cell = tableView.dequeueReusableCell(withIdentifier: "editTitle", for: indexPath) as! SingleFieldCell
-				cell.textField.text = exercize.name
-				return cell
-			} else {
-				let cell = tableView.dequeueReusableCell(withIdentifier: "title", for: indexPath) as! MultilineCell
-				cell.isUserInteractionEnabled = false
-				cell.label.text = exercize.name
+			if indexPath.row == 0 {
+				if editMode {
+					let cell = tableView.dequeueReusableCell(withIdentifier: "editTitle", for: indexPath) as! SingleFieldCell
+					cell.textField.text = exercize.name
+					return cell
+				} else {
+					let cell = tableView.dequeueReusableCell(withIdentifier: "title", for: indexPath) as! MultilineCell
+					cell.isUserInteractionEnabled = false
+					cell.label.text = exercize.name
+					return cell
+				}
+			} else { // Circuit rows
+				let cell = tableView.dequeueReusableCell(withIdentifier: "circuitData", for: indexPath)
+				let accessory = cell.accessoryView as? UISwitch ?? UISwitch()
+				cell.accessoryView = accessory
+				
+				cell.detailTextLabel?.text = nil
+				accessory.isOn = false
+				let msg: String
+				
+				switch indexPath.row {
+				case 1: // Is circuit
+					msg = "IS_CIRCUIT"
+					cell.detailTextLabel?.text = "0/t exercizes"
+					accessory.isOn = true
+				case 2: // Chain with next
+					msg = "CIRCUIT_CHAIN"
+				case 3: // Use rest periods
+					msg = "CIRCUITE_USE_REST"
+					accessory.isOn = true
+				default:
+					fatalError("Unknown row")
+				}
+				
+				cell.textLabel?.text = NSLocalizedString(msg, comment: "CIRCUIT_DATA")
+				
 				return cell
 			}
 		case 1:
@@ -246,6 +274,8 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	func textFieldDidEndEditing(_ textField: UITextField) {
 		textField.text = exercize.name ?? ""
 	}
+	
+	// MARK: - Circuit management
 	
 	// MARK: - Edit rest
 	

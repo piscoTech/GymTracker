@@ -22,6 +22,7 @@ class Exercize: DataObject {
 	@NSManaged var order: Int32
 	@NSManaged private(set) var isRest: Bool
 	
+	///Whether this exercize create a circuit with the next, can be chained.
 	@NSManaged private(set) var isCircuit: Bool
 	@NSManaged private(set) var hasCircuitRest: Bool
 	
@@ -49,7 +50,7 @@ class Exercize: DataObject {
 	}
 	
 	var isValid: Bool {
-		return isRest || name?.length ?? 0 > 0 && sets.count > 0
+		return isRest || name?.length ?? 0 > 0 && sets.count > 0 && sets.reduce(true) { $0 && $1.isValid }
 	}
 	
 	var setList: [RepsSet] {
@@ -73,7 +74,39 @@ class Exercize: DataObject {
 	///Set the rest time of the exercize and configure it as rest period.
 	func set(rest r: TimeInterval) {
 		self.isRest = true
+		self.isCircuit = false
+		self.hasCircuitRest = false
 		self.rest = max(r, 30).rounded(to: 30)
+	}
+	
+	var previous: Exercize? {
+		return workout.exercize(n: order - 1)
+	}
+	
+	var next: Exercize? {
+		return workout.exercize(n: order + 1)
+	}
+	
+	///Make this exercize part of a circuit with the next one.
+	///
+	/// - Important: Don't call this function directly, use `OrganizedWorkout` instead.
+	func makeCircuit(_ isCircuit: Bool) {
+		guard !self.isRest else {
+			return
+		}
+		
+		self.isCircuit = isCircuit
+	}
+	
+	///Enables rest periods in circuits for this exercize.
+	///
+	/// - Important: Don't call this function directly, use `OrganizedWorkout` instead.
+	func enableCircuitRest(_ hasCircuitRest: Bool) {
+		guard !self.isRest else {
+			return
+		}
+		
+		self.hasCircuitRest = hasCircuitRest
 	}
 	
 	///Checks all sets and remove invalid ones.

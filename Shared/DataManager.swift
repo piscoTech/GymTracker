@@ -253,6 +253,10 @@ class WCObject: Equatable {
 
 class DataManager {
 	
+	enum Usage {
+		case application, testing
+	}
+	
 	weak var delegate: DataManagerDelegate?
 	
 	fileprivate private(set) var localData: CoreDataStack
@@ -262,17 +266,17 @@ class DataManager {
 	
 	private static var manager: DataManager?
 	
-	class func getManager() -> DataManager {
+	class func getManager(for use: Usage = .application) -> DataManager {
 		return DataManager.manager ?? {
-			let m = DataManager()
+			let m = DataManager(for: use)
 			DataManager.manager = m
 			return m
 		}()
 	}
 	
-	private init() {
-		localData = CoreDataStack.getStack()
-		wcInterface = WatchConnectivityInterface.getInterface()
+	private init(for use: Usage) {
+		localData = CoreDataStack.getStack(for: use)
+		wcInterface = WatchConnectivityInterface.getInterface(for: use)
 
 		print("Data Manager initialized")
 		
@@ -634,20 +638,23 @@ class DataManager {
 private class CoreDataStack {
 	
 	let storeName = "GymTracker"
+	let use: DataManager.Usage
 	
 	// MARK: - Initialization
 	
 	private static var stack: CoreDataStack?
 	
-	class func getStack() -> CoreDataStack {
+	class func getStack(for use: DataManager.Usage) -> CoreDataStack {
 		return CoreDataStack.stack ?? {
-			let s = CoreDataStack()
+			let s = CoreDataStack(for: use)
 			CoreDataStack.stack = s
 			return s
 		}()
 	}
 	
-	private init() {
+	private init(for use: DataManager.Usage) {
+		self.use = use
+		
 		print("Local store initialized")
 	}
 	
@@ -665,14 +672,16 @@ private class CoreDataStack {
 		let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
 		
 		let failureReason = "There was an error creating or loading the application's saved data."
-		let url = applicationDocumentsDirectory.appendingPathComponent("\(self.storeName).sqlite")
-		let options: [AnyHashable : Any] = [
+		
+		let type = use == .application ? NSSQLiteStoreType : NSInMemoryStoreType
+		let url = use == .application ? applicationDocumentsDirectory.appendingPathComponent("\(self.storeName).sqlite") : nil
+		let options = use == .application ? [
 			NSMigratePersistentStoresAutomaticallyOption: true,
 			NSInferMappingModelAutomaticallyOption: true
-		]
+		] : nil
 		
 		do {
-			try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: url, options: options)
+			try coordinator.addPersistentStore(ofType: type, configurationName: nil, at: url, options: options)
 		} catch {
 			// Report any error we got.
 			var dict = [String: Any]()
@@ -704,6 +713,7 @@ private class CoreDataStack {
 
 private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 	
+	private let use: DataManager.Usage
 	private var session: WCSession!
 	fileprivate var hasCounterPart: Bool {
 		var res = session != nil
@@ -724,7 +734,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 	
 	private static var interface: WatchConnectivityInterface?
 	
-	class func getInterface() -> WatchConnectivityInterface {
+	class func getInterface(for use: DataManager.Usage = .application) -> WatchConnectivityInterface {
 		return WatchConnectivityInterface.interface ?? {
 			let i = WatchConnectivityInterface()
 			WatchConnectivityInterface.interface = i
@@ -732,10 +742,16 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 		}()
 	}
 
-	private override init() {
+	private convenience override init() {
+		self.init(for: .application)
+	}
+	
+	private init(for use: DataManager.Usage) {
+		self.use = use
+		
 		super.init()
 		
-		if WCSession.isSupported() {
+		if use == .application, WCSession.isSupported() {
 			session = WCSession.default
 			session.delegate = self
 			session.activate()

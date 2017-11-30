@@ -20,11 +20,6 @@ class CompletedWorkoutsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		
-		if #available(iOS 11, *) {
-			self.navigationController?.navigationBar.prefersLargeTitles = true
-			self.navigationItem.largeTitleDisplayMode = .always
-		}
-		
 		appDelegate.completedWorkouts = self
 
         refresh(self)

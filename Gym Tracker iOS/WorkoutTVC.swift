@@ -15,6 +15,8 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	weak var exercizeController: ExercizeTableViewController?
 	var workout: Workout!
 	var editMode = false
+	private var workoutValidator: OrganizedWorkout!
+	private var circuitInvalidityCache: [Int]!
 	private(set) var isNew = false
 	
 	@IBOutlet var cancelBtn: UIBarButtonItem!
@@ -29,10 +31,6 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
     override func viewDidLoad() {
         super.viewDidLoad()
 		
-		if #available(iOS 11, *) {
-			self.navigationItem.largeTitleDisplayMode = .never
-		}
-		
 		tableView.rowHeight = UITableViewAutomaticDimension
 		tableView.estimatedRowHeight = 44
 
@@ -41,6 +39,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 			workout = dataManager.newWorkout()
 			isNew = true
 		}
+		workoutValidator = OrganizedWorkout(workout)
 		
 		startBtn = UIBarButtonItem(title: NSLocalizedString("START_WORKOUT", comment: "Start"), style: .done, target: self, action: #selector(startWorkout))
 		editBtn = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(edit(_:)))
@@ -49,7 +48,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		if !editMode {
 			updateButtons()
 		} else {
-			updateDoneBtn()
+			updateValidityAndButtons()
 		}
     }
 
@@ -59,6 +58,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
     }
 	
 	func updateButtons(includeDeleteArchive: Bool = false) {
+		// TODO: Rely on OrganizedWorkout
 		navigationItem.leftBarButtonItem = editMode ? cancelBtn : nil
 		navigationItem.rightBarButtonItems = editMode
 			? [doneBtn]
@@ -74,8 +74,21 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		}
 	}
 	
-	private func updateDoneBtn() {
-		doneBtn.isEnabled = workout.name.length > 0 && workout.hasExercizes
+	private func updateValidityAndButtons(doUpdateTable: Bool = true) {
+		let (global, circuit) = workoutValidator.validityStatus
+		doneBtn.isEnabled = global
+		circuitInvalidityCache = circuit
+		
+		if doUpdateTable {
+			// TODO: Rely on OrganizedWorkout
+			for e in 0 ..< workout.exercizes.count {
+				guard let cell = tableView.cellForRow(at: IndexPath(row: e, section: 1)) else {
+					continue
+				}
+				
+				// TODO: Set/Unset accessory view for circuit error
+			}
+		}
 	}
 	
 	@objc func startWorkout() {
@@ -112,13 +125,15 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	
 	override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
 		if editMode && section == 1 {
-			return NSLocalizedString("REMOVE_EXERCIZE_TIP", comment: "Remove exercize")
+			// TODO: Explain what ⚠️ means
+			return NSLocalizedString("EXERCIZE_MANAGEMENT_TIP", comment: "Remove exercize")
 		}
 		
 		return nil
 	}
 	
 	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+		// TODO: Rely on OrganizedWorkout
 		if indexPath.section == 1 && workout.exercizes.count > 0 && exercizeCell(for: indexPath) == .picker {
 			return 150
 		} else if indexPath.section == 0 && !editMode {
@@ -133,6 +148,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		case 0:
 			return 1
 		case 1:
+			// TODO: Rely on OrganizedWorkout
 			return max(workout.exercizes.count, 1) + (editRest != nil ? 1 : 0)
 		case 2:
 			return 1
@@ -144,6 +160,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		switch indexPath.section {
 		case 0:
+			// TODO: Rely on OrganizedWorkout
 			if editMode {
 				let cell = tableView.dequeueReusableCell(withIdentifier: "editTitle", for: indexPath) as! SingleFieldCell
 				cell.textField.text = workout.name
@@ -159,6 +176,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 				return tableView.dequeueReusableCell(withIdentifier: "noExercize", for: indexPath)
 			}
 			
+			// TODO: Rely on OrganizedWorkout
 			let e = workout.exercize(n: exercizeNumber(for: indexPath))!
 			switch exercizeCell(for: indexPath) {
 			case .rest:
@@ -168,9 +186,15 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 				
 				return cell
 			case .exercize:
+				if circuitInvalidityCache == nil {
+					updateValidityAndButtons(doUpdateTable: false)
+				}
+				
 				let cell = tableView.dequeueReusableCell(withIdentifier: "exercize", for: indexPath)
 				cell.textLabel?.text = e.name
 				cell.detailTextLabel?.text = e.setsSummary
+				
+				// TODO: Set/Unset accessory view for circuit error
 				
 				return cell
 			case .picker:
@@ -186,6 +210,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 				
 				return cell
 			} else {
+				// TODO: Rely on OrganizedWorkout
 				let cell = tableView.dequeueReusableCell(withIdentifier: "actions", for: indexPath) as! WorkoutDeleteArchiveCell
 				let title = (workout.archived ? "UN" : "") + "ARCHIVE_WORKOUT"
 				cell.archiveBtn.setTitle(NSLocalizedString(title, comment: "(Un)archive"), for: [])
@@ -239,10 +264,12 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 			self.tableView(tableView, didSelectRowAt: IndexPath(row: rest, section: 1))
 		}
 		
+		// TODO: Rely on OrganizedWorkout
 		if workout.exercizes.count > 0 {
 			tableView.beginUpdates()
 			
 			let totExercizeRows = tableView.numberOfRows(inSection: 1)
+			// TODO: Rely on OrganizedWorkout
 			let (s, e, m) = workout.compactExercizes()
 			deletedEntities += (s + e + m.map { $0.e } ) as [DataObject]
 			var removeRows = [IndexPath]()
@@ -259,7 +286,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 			
 			tableView.deleteRows(at: removeRows, with: .automatic)
 			tableView.endUpdates()
-			updateDoneBtn()
+			updateValidityAndButtons()
 		}
 		
 		guard doneBtn.isEnabled else {
@@ -295,6 +322,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		}
 		
 		tableView.beginUpdates()
+		// TODO: Rely on OrganizedWorkout
 		if workout.exercizes.count == 0 {
 			tableView.deleteRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
 		}
@@ -318,18 +346,20 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 			tableView.reloadRows(at: [IndexPath(row: Int(e.order), section: 1)], with: .none)
 		}
 		
-		updateDoneBtn()
+		updateValidityAndButtons()
 	}
 	
 	private func removeExercize(_ e: Exercize) {
 		let index = IndexPath(row: Int(e.order), section: 1)
 		// No need to also mark the sets as removed: if they are new there is no need to send them, else they will be deleted in cascade with the exercize.
 		deletedEntities.append(e)
+		// TODO: Rely on OrganizedWorkout
 		workout.removeExercize(e)
 		
 		tableView.beginUpdates()
 		tableView.deleteRows(at: [index], with: .automatic)
 		
+		// TODO: Rely on OrganizedWorkout
 		if workout.exercizes.count == 0 {
 			tableView.insertRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
 		}
@@ -370,6 +400,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		}
 		
 		let errTitle = NSLocalizedString((workout.archived ? "UN" : "") + "ARCHIVE_WORKOUT_FAIL", comment: "(Un)archive fail")
+		// TODO: Rely on OrganizedWorkout
 		let archived = workout.archived
 		workout.archived = !archived
 		if dataManager.persistChangesForObjects([self.workout], andDeleteObjects: []) {
@@ -392,13 +423,15 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	}
 	
 	@IBAction func nameChanged(_ sender: UITextField) {
+		// TODO: Rely on OrganizedWorkout
 		workout.set(name: sender.text ?? "")
-		updateDoneBtn()
+		updateValidityAndButtons()
 	}
 	
 	func textFieldDidEndEditing(_ textField: UITextField) {
+		// TODO: Rely on OrganizedWorkout
 		textField.text = workout.name
-		updateDoneBtn()
+		updateValidityAndButtons()
 	}
 	
 	// MARK: - Edit rest
@@ -430,6 +463,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 			}
 		}
 		
+		// TODO: Rely on OrganizedWorkout
 		return workout.exercize(n: Int32(row))!.isRest ? .rest : .exercize
 	}
 	
@@ -439,6 +473,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		}
 		
 		tableView.beginUpdates()
+		// TODO: Rely on OrganizedWorkout
 		if workout.exercizes.count == 0 {
 			tableView.deleteRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
 		}
@@ -453,6 +488,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		tableView.deselectRow(at: indexPath, animated: true)
 		
+		// TODO: Rely on OrganizedWorkout
 		guard editMode, workout.exercizes.count > 0, indexPath.section == 1 && exercizeCell(for: indexPath) == .rest else {
 			return
 		}
@@ -492,6 +528,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	}
 	
 	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+		// TODO: Rely on OrganizedWorkout
 		guard let exN = editRest, let ex = workout.exercize(n: Int32(exN)) else {
 			return
 		}
@@ -503,6 +540,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	// MARK: - Delete rest & exercize
 	
 	override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+		// TODO: Rely on OrganizedWorkout
 		return editMode && indexPath.section == 1 && workout.exercizes.count > 0 && exercizeCell(for: indexPath) != .picker
 	}
 	
@@ -522,6 +560,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	// MARK: - Reorder rest & exercize
 	
 	@IBAction func updateReorderMode(_ sender: AnyObject) {
+		// TODO: Rely on OrganizedWorkout
 		guard editMode && workout.exercizes.count > 0 else {
 			return
 		}
@@ -536,6 +575,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	}
 
 	override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+		// TODO: Rely on OrganizedWorkout
 		return editMode && indexPath.section == 1 && workout.exercizes.count > 0 && exercizeCell(for: indexPath) != .picker
 	}
 	
@@ -550,11 +590,14 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	}
 	
 	override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
+		// TODO: Rely on OrganizedWorkout
 		guard editMode && fromIndexPath.section == 1 && to.section == 1 && workout.exercizes.count > 0 else {
 			return
 		}
 		
+		// TODO: Rely on OrganizedWorkout
 		workout.moveExercizeAt(number: fromIndexPath.row, to: to.row)
+		updateValidityAndButtons()
 	}
 
     // MARK: - Navigation
@@ -616,6 +659,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 					fallthrough
 				}
 				
+				// TODO: Rely on OrganizedWorkout
 				guard let tmp = workout.exercize(n: Int32(index.row)), !tmp.isRest else {
 					fallthrough
 				}
