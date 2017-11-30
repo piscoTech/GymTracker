@@ -80,11 +80,11 @@ class Exercize: DataObject {
 	}
 	
 	var previous: Exercize? {
-		return workout.exercize(n: order - 1)
+		return workout[order - 1]
 	}
 	
 	var next: Exercize? {
-		return workout.exercize(n: order + 1)
+		return workout[order + 1]
 	}
 	
 	///Make this exercize part of a circuit with the next one.

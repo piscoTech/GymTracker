@@ -36,17 +36,17 @@ class WorkoutTest: XCTestCase {
     func testCreation() {
 		XCTAssertEqual(workout.exercizes.count, 3, "Not the expected number of exercizes")
 		
-		let first = workout.exercize(n: 0)
+		let first = workout[0]
 		XCTAssertNotNil(first, "Missing exercize")
 		XCTAssertEqual(first, e1)
 		XCTAssertFalse(e1.isRest, "This should be an exercize")
 		
-		let r = workout.exercize(n: 1)
+		let r = workout[1]
 		XCTAssertNotNil(r, "Missing rest period")
 		XCTAssertEqual(r, self.r)
 		XCTAssertTrue(r!.isRest, "This should be a rest period")
 		
-		let last = workout.exercize(n: 2)
+		let last = workout[2]
 		XCTAssertNotNil(last, "Missing exercize")
 		XCTAssertEqual(last, e2)
 		XCTAssertFalse(e2.isRest, "This should be an exercize")
@@ -55,17 +55,17 @@ class WorkoutTest: XCTestCase {
 	func testReorderBefore() {
 		workout.moveExercizeAt(number: 2, to: 1)
 		XCTAssertEqual(workout.exercizes.count, 3, "Some exercizes disappeared")
-		XCTAssertEqual(workout.exercize(n: 0), e1)
-		XCTAssertEqual(workout.exercize(n: 1), e2)
-		XCTAssertEqual(workout.exercize(n: 2), r)
+		XCTAssertEqual(workout[0], e1)
+		XCTAssertEqual(workout[1], e2)
+		XCTAssertEqual(workout[2], r)
 	}
 	
 	func testReorderAfter() {
 		workout.moveExercizeAt(number: 0, to: 1)
 		XCTAssertEqual(workout.exercizes.count, 3, "Some exercizes disappeared")
-		XCTAssertEqual(workout.exercize(n: 1), e1)
-		XCTAssertEqual(workout.exercize(n: 2), e2)
-		XCTAssertEqual(workout.exercize(n: 0), r)
+		XCTAssertEqual(workout[1], e1)
+		XCTAssertEqual(workout[2], e2)
+		XCTAssertEqual(workout[0], r)
 	}
 	
 	func testCompactSimpleEnd() {

@@ -64,7 +64,7 @@ class Workout: DataObject {
 		return Array(exercizes).sorted { $0.order < $1.order }
 	}
 	
-	func exercize(n: Int32) -> Exercize? {
+	subscript (n: Int32) -> Exercize? {
 		return exercizes.first { $0.order == n }
 	}
 	
@@ -78,7 +78,7 @@ class Workout: DataObject {
 	}
 	
 	func moveExercizeAt(number from: Int, to dest: Int) {
-		guard let e = exercize(n: Int32(from)), dest < exercizes.count else {
+		guard let e = self[Int32(from)], dest < exercizes.count else {
 			return
 		}
 		

@@ -177,7 +177,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 			}
 			
 			// TODO: Rely on OrganizedWorkout
-			let e = workout.exercize(n: exercizeNumber(for: indexPath))!
+			let e = workout[exercizeNumber(for: indexPath)]!
 			switch exercizeCell(for: indexPath) {
 			case .rest:
 				let cell = tableView.dequeueReusableCell(withIdentifier: "rest", for: indexPath) as! RestCell
@@ -464,7 +464,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		}
 		
 		// TODO: Rely on OrganizedWorkout
-		return workout.exercize(n: Int32(row))!.isRest ? .rest : .exercize
+		return workout[Int32(row)]!.isRest ? .rest : .exercize
 	}
 	
 	@IBAction func newRest(_ sender: AnyObject) {
@@ -529,7 +529,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	
 	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
 		// TODO: Rely on OrganizedWorkout
-		guard let exN = editRest, let ex = workout.exercize(n: Int32(exN)) else {
+		guard let exN = editRest, let ex = workout[Int32(exN)] else {
 			return
 		}
 		
@@ -550,7 +550,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		}
 		
 		let exN = Int(exercizeNumber(for: indexPath))
-		guard let e = workout.exercize(n: Int32(exN)) else {
+		guard let e = workout[Int32(exN)] else {
 			return
 		}
 		
@@ -660,7 +660,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 				}
 				
 				// TODO: Rely on OrganizedWorkout
-				guard let tmp = workout.exercize(n: Int32(index.row)), !tmp.isRest else {
+				guard let tmp = workout[Int32(index.row)], !tmp.isRest else {
 					fallthrough
 				}
 				

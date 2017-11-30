@@ -36,8 +36,8 @@ class OrganizedWorkout {
 		return raw.exercizeList
 	}
 	
-	func exercize(n: Int) -> Exercize? {
-		return raw.exercize(n: Int32(n))
+	subscript (n: Int) -> Exercize? {
+		return raw[Int32(n)]
 	}
 	
 	var hasExercizes: Bool {
@@ -47,6 +47,10 @@ class OrganizedWorkout {
 	func moveExercizeAt(number from: Int, to dest: Int) {
 		raw.moveExercizeAt(number: from, to: dest)
 		recalculateCircuitStatus()
+	}
+	
+	private func verifyExercize(_ e: Exercize) {
+		precondition(e.workout == raw, "Exercize does not belong to this workout")
 	}
 	
 	// MARK: - Circuit Support
@@ -80,6 +84,8 @@ class OrganizedWorkout {
 	}
 	
 	func circuitStatus(for exercize: Exercize) -> (isInCircuit: Bool, number: Int?, total: Int?) {
+		verifyExercize(exercize)
+		
 		let inCircuit = exercize.isCircuit || exercize.previous?.isCircuit ?? false
 		
 		let number: Int?
@@ -111,6 +117,8 @@ class OrganizedWorkout {
 	
 	/// Whether or not the passed exercize can become part of a circuit, if the exercize is already in one this function always return `true`.
 	func canBecomeCircuit(exercize: Exercize) -> Bool {
+		verifyExercize(exercize)
+		
 		guard !exercize.isRest else {
 			return false
 		}
@@ -136,6 +144,8 @@ class OrganizedWorkout {
 	///
 	/// This function manipulates the `isCircuit` property of the passed exercize or the previuos one respectively if the previuos exercize is part of a crcuit or not.
 	func makeCircuit(exercize: Exercize, isCircuit: Bool) {
+		verifyExercize(exercize)
+		
 		if !isCircuit {
 			exercize.makeCircuit(false)
 			exercize.previous?.makeCircuit(false)
@@ -164,19 +174,40 @@ class OrganizedWorkout {
 		}
 	}
 	
-	/// Whether or not the `isCircuit` property can be set to `true` for the passed exercize, i.e. the next exercize can become part of the current circuit, if `canBecomeCircuit(exercize:)` is `false` this function always return `false`.
+	/// Whether or not the `isCircuit` property can be set to `true` for the passed exercize, i.e. the next exercize can become part of the current circuit, if the exercize is not in a circuit this function always returns `false`, it returns always `true` if the exercize is already chaining.
 	func canChainCircuit(for exercize: Exercize) -> Bool {
-		// FIXME: Implement me
-		return false
+		verifyExercize(exercize)
+		
+		let (status, _, _) = circuitStatus(for: exercize)
+		guard status else {
+			return false
+		}
+		guard !exercize.isCircuit else {
+			return true
+		}
+		
+		return !(exercize.next?.isRest ?? true)
 	}
 	
 	/// Set the `isCircuit` property for the passed exercize adding the next exercize to the current circuit.
 	func chainCircuit(for exercize: Exercize, chain: Bool) {
-		// FIXME: Implement me
+		verifyExercize(exercize)
+		
+		if !chain {
+			exercize.makeCircuit(false)
+		} else {
+			guard canChainCircuit(for: exercize) else {
+				return
+			}
+			
+			exercize.makeCircuit(true)
+		}
 	}
 	
 	/// Enable or disable the use of rest period for the current exercize inside the circuit, this function has not effect if the exercize is outside of a circuit.
 	func enableCircuitRestPeriods(for exercize: Exercize, enable: Bool) {
+		verifyExercize(exercize)
+		
 		// FIXME: Implement me
 	}
 	
