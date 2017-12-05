@@ -77,15 +77,17 @@ class Workout: DataObject {
 		self.name = name.trimmingCharacters(in: .whitespacesAndNewlines)
 	}
 	
+	/// Move the exercize at the specified index to `to` index, the old exercize at `to` index will have index `dest+1` if the exercize is being moved towards the start of the workout, `dest-1` otherwise.
 	func moveExercizeAt(number from: Int, to dest: Int) {
 		guard let e = self[Int32(from)], dest < exercizes.count else {
 			return
 		}
 		
 		let newIndex = dest > from ? dest + 1 : dest
-
-		for tmp in exercizes.filter({ Int($0.order) >= newIndex }) {
-			tmp.order += 1
+		_ = exercizes.map {
+			if Int($0.order) >= newIndex {
+				$0.order += 1
+			}
 		}
 		
 		e.order = Int32(newIndex)

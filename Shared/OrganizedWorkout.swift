@@ -44,9 +44,80 @@ class OrganizedWorkout {
 		return raw.hasExercizes
 	}
 	
+	/// Move the exercize at the specified index to a new location, the old exercize at `to` index will have index `dest+1` if the exercize is being moved towards the start of the workout, `dest-1` otherwise.
+	///
+	/// The moved exercize will retain or gain the status of circuit only if moved after *and* before exercizes that are part of the same circuit.
 	func moveExercizeAt(number from: Int, to dest: Int) {
+		guard let exercize = self[from] else {
+			return
+		}
+		
+		// Determine the circuit status of the moving exercize
+		let newCircuitStatus: Bool
+		do {
+			let newPrev, newNext: Exercize?
+			if dest < from {
+				newPrev = self[dest - 1]
+				newNext = self[dest]
+			} else { // dest > from
+				newPrev = self[dest]
+				newNext = self[dest + 1]
+			}
+			if let p = newPrev, let n = newNext {
+				let (pS, pNum, pTot) = circuitStatus(for: p)
+				let (nS, nNum, nTot) = circuitStatus(for: n)
+				if pS, nS, let pN = pNum, let pT = pTot, let nN = nNum, let nT = nTot {
+					newCircuitStatus = pT == nT && pN + 1 == nN
+				} else {
+					newCircuitStatus = false
+				}
+			} else {
+				newCircuitStatus = false
+			}
+		}
+		
+		// Determine the circuit status of previous and next exercizes on the old position
+		let (s, rawN, rawT) = circuitStatus(for: exercize)
+		var fixCircuit = [Exercize]()
+		// Leaving behind a circuit that should cease to exists
+		if s, let t = rawT, t == 2, let n = rawN {
+			if n == 1, let next = exercize.next {
+				fixCircuit.append(next)
+			}
+			if n == 2, let prev = exercize.previous {
+				prev.makeCircuit(false)
+				fixCircuit.append(prev)
+			}
+		}
+		if let p = exercize.previous, let n = exercize.next {
+			let (pS, pNum, pTot) = circuitStatus(for: p)
+			let (nS, nNum, nTot) = circuitStatus(for: n)
+			let preventJoinPrevNext: Bool
+			
+			if !nS {
+				preventJoinPrevNext = true
+			} else if pS, nS, let pN = pNum, let pT = pTot, let nN = nNum, let nT = nTot {
+				preventJoinPrevNext = pT != nT || pN + 2 != nN
+			} else {
+				preventJoinPrevNext = false
+			}
+			
+			if preventJoinPrevNext {
+				p.makeCircuit(false)
+				fixCircuit.append(p)
+			}
+		}
+		
 		raw.moveExercizeAt(number: from, to: dest)
-		recalculateCircuitStatus()
+		let moving = self[dest]!
+		makeCircuit(exercize: moving, isCircuit: newCircuitStatus)
+		if newCircuitStatus {
+			chainCircuit(for: moving, chain: true)
+		}
+		
+		for e in fixCircuit {
+			fixCircuitStatus(for: e)
+		}
 	}
 	
 	private func verifyExercize(_ e: Exercize) {
@@ -148,7 +219,15 @@ class OrganizedWorkout {
 		
 		if !isCircuit {
 			exercize.makeCircuit(false)
-			exercize.previous?.makeCircuit(false)
+			exercize.enableCircuitRest(false)
+			
+			if let p = exercize.previous {
+				p.makeCircuit(false)
+				fixCircuitStatus(for: p)
+			}
+			if let n = exercize.next {
+				fixCircuitStatus(for: n)
+			}
 		} else {
 			guard canBecomeCircuit(exercize: exercize) else {
 				return
@@ -208,11 +287,17 @@ class OrganizedWorkout {
 	func enableCircuitRestPeriods(for exercize: Exercize, enable: Bool) {
 		verifyExercize(exercize)
 		
-		// FIXME: Implement me
+		if enable {
+			exercize.enableCircuitRest(circuitStatus(for: exercize).isInCircuit)
+		} else {
+			exercize.enableCircuitRest(false)
+		}
 	}
 	
-	private func recalculateCircuitStatus() {
-		// FIXME: Implement me
+	private func fixCircuitStatus(for exercize: Exercize) {
+		if !circuitStatus(for: exercize).isInCircuit {
+			exercize.enableCircuitRest(false)
+		}
 	}
 	
 }
