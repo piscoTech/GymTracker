@@ -103,8 +103,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		center.delegate = self
 		
 		do {
-			let view = UIView.appearance()
-			view.tintColor = #colorLiteral(red: 0.7568627451, green: 0.9215686275, blue: 0.2, alpha: 1)
+			let customTint = #colorLiteral(red: 0.7568627451, green: 0.9215686275, blue: 0.2, alpha: 1)
+//			let defaultTint = #colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1)
+			UITabBar.appearance().tintColor = customTint
 			DestructiveButton.appearance().tintColor = .red
 
 			let table = UITableView.appearance()
@@ -123,10 +124,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			let textField = UITextField.appearance()
 			textField.textColor = textColor
 			textField.keyboardAppearance = .dark
-			
-			let defaultTint = #colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1)
-			UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = defaultTint
-			UIView.appearance(whenContainedInInstancesOf: [UIActivityViewController.self]).tintColor = defaultTint
 		}
 		
 		tabController.tabBar.items![1].selectedImage = #imageLiteral(resourceName: "Workout Active")

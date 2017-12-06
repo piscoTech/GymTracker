@@ -15,7 +15,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	weak var exercizeController: ExercizeTableViewController?
 	var workout: Workout!
 	var editMode = false
-	private var workoutValidator: OrganizedWorkout!
+	private(set) var workoutValidator: OrganizedWorkout!
 	private var circuitInvalidityCache: [Int]!
 	private(set) var isNew = false
 	
@@ -70,7 +70,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		editBtn.isEnabled = delegate.canEdit
 		startBtn.isEnabled = delegate.canEdit
 		if includeDeleteArchive {
-			tableView.reloadSections(IndexSet(integer: 2), with: .none)
+			tableView.reloadSections([2], with: .none)
 		}
 	}
 	
@@ -80,14 +80,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		circuitInvalidityCache = circuit
 		
 		if doUpdateTable {
-			// TODO: Rely on OrganizedWorkout
-			for e in 0 ..< workout.exercizes.count {
-				guard let cell = tableView.cellForRow(at: IndexPath(row: e, section: 1)) else {
-					continue
-				}
-				
-				// TODO: Set/Unset accessory view for circuit error
-			}
+			tableView.reloadRows(at: workoutValidator.exercizes.filter { !$0.isRest }.map { self.exercizeCellIndexPath(for: $0) }, with: .automatic)
 		}
 	}
 	
@@ -134,7 +127,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	
 	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		// TODO: Rely on OrganizedWorkout
-		if indexPath.section == 1 && workout.exercizes.count > 0 && exercizeCell(for: indexPath) == .picker {
+		if indexPath.section == 1 && workout.exercizes.count > 0 && exercizeCellType(for: indexPath) == .picker {
 			return 150
 		} else if indexPath.section == 0 && !editMode {
 			return UITableViewAutomaticDimension
@@ -178,7 +171,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 			
 			// TODO: Rely on OrganizedWorkout
 			let e = workout[exercizeNumber(for: indexPath)]!
-			switch exercizeCell(for: indexPath) {
+			switch exercizeCellType(for: indexPath) {
 			case .rest:
 				let cell = tableView.dequeueReusableCell(withIdentifier: "rest", for: indexPath) as! RestCell
 				cell.set(rest: e.rest)
@@ -190,11 +183,9 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 					updateValidityAndButtons(doUpdateTable: false)
 				}
 				
-				let cell = tableView.dequeueReusableCell(withIdentifier: "exercize", for: indexPath)
-				cell.textLabel?.text = e.name
-				cell.detailTextLabel?.text = e.setsSummary
-				
-				// TODO: Set/Unset accessory view for circuit error
+				let cell = tableView.dequeueReusableCell(withIdentifier: "exercize", for: indexPath) as! ExercizeTableViewCell
+				cell.setInfo(for: e, circuitInfo: workoutValidator.circuitStatus(for: e))
+				cell.setValidity(circuitInvalidityCache.index(of: Int(e.order)) == nil)
 				
 				return cell
 			case .picker:
@@ -335,15 +326,13 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		performSegue(withIdentifier: "exercizeDetail", sender: e)
 	}
 	
-	func updateExercize(_ e: Exercize) {
+	func exercizeUpdated(_ e: Exercize) {
 		precondition(e.workout == workout, "Exercize is not from current workout")
 		
 		deletedEntities += e.compactSets() as [DataObject]
 	
 		if !e.isValid {
 			removeExercize(e)
-		} else {
-			tableView.reloadRows(at: [IndexPath(row: Int(e.order), section: 1)], with: .none)
 		}
 		
 		updateValidityAndButtons()
@@ -449,10 +438,10 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 			}
 		}
 		
-		return Int32(i.row)
+		return Int32(row)
 	}
 	
-	private func exercizeCell(for i: IndexPath) -> ExercizeCellType {
+	private func exercizeCellType(for i: IndexPath) -> ExercizeCellType {
 		var row = i.row
 		
 		if let r = editRest {
@@ -465,6 +454,16 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		
 		// TODO: Rely on OrganizedWorkout
 		return workout[Int32(row)]!.isRest ? .rest : .exercize
+	}
+	
+	private func exercizeCellIndexPath(for e: Exercize) -> IndexPath {
+		var i = IndexPath(row: Int(e.order), section: 1)
+		
+		if let r = editRest, r < i.row {
+			i.row += 1
+		}
+		
+		return i
 	}
 	
 	@IBAction func newRest(_ sender: AnyObject) {
@@ -489,7 +488,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		tableView.deselectRow(at: indexPath, animated: true)
 		
 		// TODO: Rely on OrganizedWorkout
-		guard editMode, workout.exercizes.count > 0, indexPath.section == 1 && exercizeCell(for: indexPath) == .rest else {
+		guard editMode, workout.exercizes.count > 0, indexPath.section == 1 && exercizeCellType(for: indexPath) == .rest else {
 			return
 		}
 		let exNum = exercizeNumber(for: indexPath)
@@ -541,7 +540,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	
 	override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
 		// TODO: Rely on OrganizedWorkout
-		return editMode && indexPath.section == 1 && workout.exercizes.count > 0 && exercizeCell(for: indexPath) != .picker
+		return editMode && indexPath.section == 1 && workout.exercizes.count > 0 && exercizeCellType(for: indexPath) != .picker
 	}
 	
 	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
@@ -576,7 +575,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 
 	override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
 		// TODO: Rely on OrganizedWorkout
-		return editMode && indexPath.section == 1 && workout.exercizes.count > 0 && exercizeCell(for: indexPath) != .picker
+		return editMode && indexPath.section == 1 && workout.exercizes.count > 0 && exercizeCellType(for: indexPath) != .picker
 	}
 	
 	override func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
@@ -597,7 +596,9 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		
 		// TODO: Rely on OrganizedWorkout
 		workout.moveExercizeAt(number: fromIndexPath.row, to: to.row)
-		updateValidityAndButtons()
+		DispatchQueue.main.async {
+			self.updateValidityAndButtons()
+		}
 	}
 
     // MARK: - Navigation
@@ -679,4 +680,51 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		}
 	}
 
+}
+
+// MARK: - Cells
+
+class ExercizeTableViewCell: UITableViewCell {
+	@IBOutlet private weak var stack: UIStackView!
+	
+	@IBOutlet private weak var name: UILabel!
+	@IBOutlet private weak var exercizeInfo: UILabel!
+
+	@IBOutlet private var circuitWarning: UIView!
+	@IBOutlet private var circuitStatus: UIView!
+	@IBOutlet private weak var circuitNumber: UILabel!
+	
+	private var isCircuit = false
+	
+	fileprivate func setInfo(for exercize: Exercize, circuitInfo: (number: Int, total: Int)?) {
+		guard !exercize.isRest else {
+			return
+		}
+		
+		name.text = exercize.name
+		exercizeInfo.text = exercize.setsSummary
+		
+		circuitWarning.removeFromSuperview()
+		if let (n, t) = circuitInfo {
+			isCircuit = true
+			stack.addArrangedSubview(circuitStatus)
+			circuitNumber.text = "\(n)/\(t)"
+		} else {
+			isCircuit = false
+			circuitStatus.removeFromSuperview()
+		}
+	}
+	
+	fileprivate func setValidity(_ valid: Bool) {
+		if valid {
+			circuitWarning.removeFromSuperview()
+			if isCircuit {
+				stack.addArrangedSubview(circuitStatus)
+			}
+		} else {
+			circuitStatus.removeFromSuperview()
+			stack.addArrangedSubview(circuitWarning)
+		}
+	}
+	
 }

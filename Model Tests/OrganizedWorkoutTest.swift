@@ -71,47 +71,44 @@ class OrganizedWorkoutTest: XCTestCase {
         super.tearDown()
     }
 	
+	func testIsCircuit() {
+		XCTAssertFalse(workout.isCircuit(workout[0]!))
+		XCTAssertFalse(workout.isCircuit(workout[1]!))
+		XCTAssertFalse(workout.isCircuit(workout[4]!))
+		XCTAssertFalse(workout.isCircuit(workout[14]!))
+		
+		XCTAssertTrue(workout.isCircuit(workout[6]!))
+		XCTAssertTrue(workout.isCircuit(workout[7]!))
+		XCTAssertTrue(workout.isCircuit(workout[8]!))
+	}
+	
 	func testCircuitStatus() {
-		var (isCirc, n, tot) = workout.circuitStatus(for: workout[0]!)
-		XCTAssertFalse(isCirc)
-		XCTAssertNil(n)
-		XCTAssertNil(tot)
+		XCTAssertNil(workout.circuitStatus(for: workout[0]!))
+		XCTAssertNil(workout.circuitStatus(for: workout[1]!))
+		XCTAssertNil(workout.circuitStatus(for: workout[4]!))
 		
-		(isCirc, n, tot) = workout.circuitStatus(for: workout[1]!)
-		XCTAssertFalse(isCirc)
-		XCTAssertNil(n)
-		XCTAssertNil(tot)
+		if let (n, t) = workout.circuitStatus(for: workout[6]!) {
+			XCTAssertEqual(n, 1)
+			XCTAssertEqual(t, 3)
+		} else {
+			XCTFail("Unexpected nil")
+		}
 		
-		(isCirc, n, tot) = workout.circuitStatus(for: workout[4]!)
-		XCTAssertFalse(isCirc)
-		XCTAssertNil(n)
-		XCTAssertNil(tot)
+		if let (n, t) = workout.circuitStatus(for: workout[7]!) {
+			XCTAssertEqual(n, 2)
+			XCTAssertEqual(t, 3)
+		} else {
+			XCTFail("Unexpected nil")
+		}
 		
-		(isCirc, n, tot) = workout.circuitStatus(for: workout[6]!)
-		XCTAssertTrue(isCirc)
-		XCTAssertNotNil(n)
-		XCTAssertNotNil(tot)
-		XCTAssertEqual(n, 1)
-		XCTAssertEqual(tot, 3)
+		if let (n, t) = workout.circuitStatus(for: workout[8]!) {
+			XCTAssertEqual(n, 3)
+			XCTAssertEqual(t, 3)
+		} else {
+			XCTFail("Unexpected nil")
+		}
 		
-		(isCirc, n, tot) = workout.circuitStatus(for: workout[7]!)
-		XCTAssertTrue(isCirc)
-		XCTAssertNotNil(n)
-		XCTAssertNotNil(tot)
-		XCTAssertEqual(n, 2)
-		XCTAssertEqual(tot, 3)
-		
-		(isCirc, n, tot) = workout.circuitStatus(for: workout[8]!)
-		XCTAssertTrue(isCirc)
-		XCTAssertNotNil(n)
-		XCTAssertNotNil(tot)
-		XCTAssertEqual(n, 3)
-		XCTAssertEqual(tot, 3)
-		
-		(isCirc, n, tot) = workout.circuitStatus(for: workout[14]!)
-		XCTAssertFalse(isCirc)
-		XCTAssertNil(n)
-		XCTAssertNil(tot)
+		XCTAssertNil(workout.circuitStatus(for: workout[14]!))
 	}
     
     func testCanBecomeCircuit() {
@@ -148,8 +145,7 @@ class OrganizedWorkoutTest: XCTestCase {
 		XCTAssertTrue(e2.isCircuit)
 		XCTAssertTrue(e3.isCircuit)
 		XCTAssertFalse(e4.isCircuit)
-		var (s4, _, _) = workout.circuitStatus(for: e4)
-		XCTAssertTrue(s4)
+		XCTAssertTrue(workout.isCircuit(e4))
 		
 		let e6 = workout[6]!
 		let e7 = workout[7]!
@@ -159,11 +155,10 @@ class OrganizedWorkoutTest: XCTestCase {
 		
 		XCTAssertFalse(workout[5]!.isCircuit)
 		XCTAssertFalse(e6.isCircuit)
-		XCTAssertFalse(workout.circuitStatus(for: workout[6]!).isInCircuit)
+		XCTAssertFalse(workout.isCircuit(workout[6]!))
 		XCTAssertFalse(e7.isCircuit)
 		XCTAssertFalse(e8.isCircuit)
-		let (s8, _, _) = workout.circuitStatus(for: e8)
-		XCTAssertFalse(s8)
+		XCTAssertFalse(workout.isCircuit(e8))
 		
 		workout.makeCircuit(exercize: e3, isCircuit: false)
 		
@@ -171,52 +166,92 @@ class OrganizedWorkoutTest: XCTestCase {
 		XCTAssertFalse(e2.isCircuit)
 		XCTAssertFalse(e3.isCircuit)
 		XCTAssertFalse(e4.isCircuit)
-		(s4, _, _) = workout.circuitStatus(for: e4)
-		XCTAssertFalse(s4)
+		XCTAssertFalse(workout.isCircuit(e4))
 		
 		XCTAssertTrue(complexWorkout[0]!.isCircuit)
 		XCTAssertFalse(complexWorkout[1]!.isCircuit)
-		var (s, n, t) = complexWorkout.circuitStatus(for: complexWorkout[1]!)
-		XCTAssertTrue(s)
-		XCTAssertEqual(n, 2)
-		XCTAssertEqual(t, 2)
+		if let (n, t) = complexWorkout.circuitStatus(for: complexWorkout[1]!) {
+			XCTAssertEqual(n, 2)
+			XCTAssertEqual(t, 2)
+		} else {
+			XCTFail("Unexpected nil")
+		}
 		
 		XCTAssertFalse(complexWorkout[2]!.isCircuit)
-		(s, _, _) = complexWorkout.circuitStatus(for: complexWorkout[2]!)
-		XCTAssertFalse(s)
+		XCTAssertFalse(complexWorkout.isCircuit(complexWorkout[2]!))
 		
 		XCTAssertTrue(complexWorkout[3]!.isCircuit)
 		XCTAssertTrue(complexWorkout[4]!.isCircuit)
-		(s, n, t) = complexWorkout.circuitStatus(for: complexWorkout[5]!)
-		XCTAssertTrue(s)
-		XCTAssertEqual(n, 3)
-		XCTAssertEqual(t, 3)
+		if let (n, t) = complexWorkout.circuitStatus(for: complexWorkout[5]!) {
+			XCTAssertEqual(n, 3)
+			XCTAssertEqual(t, 3)
+		} else {
+			XCTFail("Unexpected nil")
+		}
 		
-		complexWorkout.makeCircuit(exercize: complexWorkout[2]!, isCircuit: true) // Whole workout is a circuit
+		complexWorkout.makeCircuit(exercize: complexWorkout[2]!, isCircuit: true) // 0,1 and 2,3,4,5 are a circuit
 		XCTAssertTrue(complexWorkout[2]!.isCircuit)
-		(s, n, t) = complexWorkout.circuitStatus(for: complexWorkout[2]!)
-		XCTAssertTrue(s)
-		XCTAssertEqual(n, 3)
-		XCTAssertEqual(t, 6)
+		if let (n, t) = complexWorkout.circuitStatus(for: complexWorkout[2]!) {
+			XCTAssertEqual(n, 1)
+			XCTAssertEqual(t, 4)
+		} else {
+			XCTFail("Unexpected nil")
+		}
 		
 		complexWorkout.makeCircuit(exercize: complexWorkout[2]!, isCircuit: false) // Back to 0,1 and 3,4,5
 		XCTAssertTrue(complexWorkout[0]!.isCircuit)
 		XCTAssertFalse(complexWorkout[1]!.isCircuit)
-		(s, n, t) = complexWorkout.circuitStatus(for: complexWorkout[1]!)
-		XCTAssertTrue(s)
-		XCTAssertEqual(n, 2)
-		XCTAssertEqual(t, 2)
+		if let (n, t) = complexWorkout.circuitStatus(for: complexWorkout[1]!) {
+			XCTAssertEqual(n, 2)
+			XCTAssertEqual(t, 2)
+		} else {
+			XCTFail("Unexpected nil")
+		}
 		
 		XCTAssertFalse(complexWorkout[2]!.isCircuit)
-		(s, _, _) = complexWorkout.circuitStatus(for: complexWorkout[2]!)
-		XCTAssertFalse(s)
+		XCTAssertFalse(complexWorkout.isCircuit(complexWorkout[2]!))
 		
 		XCTAssertTrue(complexWorkout[3]!.isCircuit)
 		XCTAssertTrue(complexWorkout[4]!.isCircuit)
-		(s, n, t) = complexWorkout.circuitStatus(for: complexWorkout[5]!)
-		XCTAssertTrue(s)
-		XCTAssertEqual(n, 3)
-		XCTAssertEqual(t, 3)
+		if let (n, t) = complexWorkout.circuitStatus(for: complexWorkout[5]!) {
+			XCTAssertEqual(n, 3)
+			XCTAssertEqual(t, 3)
+		} else {
+			XCTFail("Unexpected nil")
+		}
+	}
+	
+	func testMakeCircuitForceChainBefore() {
+		let e2 = workout[2]!
+		let e3 = workout[3]!
+		let e4 = workout[4]!
+		workout.makeCircuit(exercize: e2, isCircuit: true)
+		workout.makeCircuit(exercize: e4, isCircuit: true)
+		
+		XCTAssertTrue(e2.isCircuit)
+		XCTAssertTrue(e3.isCircuit)
+		XCTAssertFalse(e4.isCircuit)
+		
+		if let (n, t) = workout.circuitStatus(for: e2) {
+			XCTAssertEqual(n, 1)
+			XCTAssertEqual(t, 3)
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		
+		if let (n, t) = workout.circuitStatus(for: e3) {
+			XCTAssertEqual(n, 2)
+			XCTAssertEqual(t, 3)
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		
+		if let (n, t) = workout.circuitStatus(for: e4) {
+			XCTAssertEqual(n, 3)
+			XCTAssertEqual(t, 3)
+		} else {
+			XCTFail("Unexpected nil")
+		}
 	}
 	
 	func testUnmakeCircuitAfter() {
@@ -225,8 +260,8 @@ class OrganizedWorkoutTest: XCTestCase {
 		
 		complexWorkout.makeCircuit(exercize: complexWorkout[1]!, isCircuit: false)
 		
-		XCTAssertFalse(complexWorkout.circuitStatus(for: complexWorkout[0]!).isInCircuit)
-		XCTAssertFalse(complexWorkout.circuitStatus(for: complexWorkout[1]!).isInCircuit)
+		XCTAssertFalse(complexWorkout.isCircuit(complexWorkout[0]!))
+		XCTAssertFalse(complexWorkout.isCircuit(complexWorkout[1]!))
 		XCTAssertFalse(complexWorkout[0]!.hasCircuitRest)
 		XCTAssertFalse(complexWorkout[1]!.hasCircuitRest)
 	}
@@ -237,8 +272,8 @@ class OrganizedWorkoutTest: XCTestCase {
 		
 		complexWorkout.makeCircuit(exercize: complexWorkout[0]!, isCircuit: false)
 		
-		XCTAssertFalse(complexWorkout.circuitStatus(for: complexWorkout[0]!).isInCircuit)
-		XCTAssertFalse(complexWorkout.circuitStatus(for: complexWorkout[1]!).isInCircuit)
+		XCTAssertFalse(complexWorkout.isCircuit(complexWorkout[0]!))
+		XCTAssertFalse(complexWorkout.isCircuit(complexWorkout[1]!))
 		XCTAssertFalse(complexWorkout[0]!.hasCircuitRest)
 		XCTAssertFalse(complexWorkout[1]!.hasCircuitRest)
 	}
@@ -250,9 +285,9 @@ class OrganizedWorkoutTest: XCTestCase {
 		
 		complexWorkout.makeCircuit(exercize: complexWorkout[4]!, isCircuit: false)
 		
-		XCTAssertFalse(complexWorkout.circuitStatus(for: complexWorkout[3]!).isInCircuit)
-		XCTAssertFalse(complexWorkout.circuitStatus(for: complexWorkout[4]!).isInCircuit)
-		XCTAssertFalse(complexWorkout.circuitStatus(for: complexWorkout[5]!).isInCircuit)
+		XCTAssertFalse(complexWorkout.isCircuit(complexWorkout[3]!))
+		XCTAssertFalse(complexWorkout.isCircuit(complexWorkout[4]!))
+		XCTAssertFalse(complexWorkout.isCircuit(complexWorkout[5]!))
 		XCTAssertFalse(complexWorkout[3]!.hasCircuitRest)
 		XCTAssertFalse(complexWorkout[4]!.hasCircuitRest)
 		XCTAssertFalse(complexWorkout[5]!.hasCircuitRest)
@@ -276,48 +311,55 @@ class OrganizedWorkoutTest: XCTestCase {
 		complexWorkout[1]!.makeCircuit(true)
 		
 		XCTAssertTrue(workout.canChainCircuit(for: workout[3]!))
-		var (s, _, _) = workout.circuitStatus(for: workout[2]!)
-		XCTAssertTrue(s)
+		XCTAssertTrue(workout.isCircuit(workout[2]!))
 		
 		XCTAssertTrue(complexWorkout.canChainCircuit(for: complexWorkout[2]!))
-		(s, _, _) = complexWorkout.circuitStatus(for: complexWorkout[2]!)
-		XCTAssertTrue(s)
+		XCTAssertTrue(complexWorkout.isCircuit(complexWorkout[2]!))
 	}
 	
 	func testChainCircuit() {
 		complexWorkout.chainCircuit(for: complexWorkout[1]!, chain: true)
-		var (s, n, t) = complexWorkout.circuitStatus(for: complexWorkout[2]!)
-		XCTAssertTrue(s)
-		XCTAssertEqual(n, 3)
-		XCTAssertEqual(t, 3)
+		if let (n, t) = complexWorkout.circuitStatus(for: complexWorkout[2]!) {
+			XCTAssertEqual(n, 3)
+			XCTAssertEqual(t, 3)
+		} else {
+			XCTFail("Unexpected nil")
+		}
 		
-		(s, n, t) = complexWorkout.circuitStatus(for: complexWorkout[3]!)
-		XCTAssertTrue(s)
-		XCTAssertEqual(n, 1)
-		XCTAssertEqual(t, 3)
+		if let (n, t) = complexWorkout.circuitStatus(for: complexWorkout[3]!) {
+			XCTAssertEqual(n, 1)
+			XCTAssertEqual(t, 3)
+		} else {
+			XCTFail("Unexpected nil")
+		}
 		
 		complexWorkout.chainCircuit(for: complexWorkout[2]!, chain: true)
-		(s, n, t) = complexWorkout.circuitStatus(for: complexWorkout[2]!)
-		XCTAssertTrue(s)
-		XCTAssertEqual(n, 3)
-		XCTAssertEqual(t, 6)
+		if let (n, t) = complexWorkout.circuitStatus(for: complexWorkout[2]!) {
+			XCTAssertEqual(n, 3)
+			XCTAssertEqual(t, 6)
+		} else {
+			XCTFail("Unexpected nil")
+		}
 		
-		(s, n, t) = complexWorkout.circuitStatus(for: complexWorkout[3]!)
-		XCTAssertTrue(s)
-		XCTAssertEqual(n, 4)
-		XCTAssertEqual(t, 6)
+		if let (n, t) = complexWorkout.circuitStatus(for: complexWorkout[3]!) {
+			XCTAssertEqual(n, 4)
+			XCTAssertEqual(t, 6)
+		} else {
+			XCTFail("Unexpected nil")
+		}
 		
 		workout.chainCircuit(for: workout[7]!, chain: false)
-		(s, _, _) = workout.circuitStatus(for: workout[8]!)
-		XCTAssertFalse(s)
-		(s, n, t) = workout.circuitStatus(for: workout[7]!)
-		XCTAssertTrue(s)
-		XCTAssertEqual(n, 2)
-		XCTAssertEqual(t, 2)
+		XCTAssertFalse(workout.isCircuit(workout[8]!))
+		if let (n, t) = workout.circuitStatus(for: workout[7]!) {
+			XCTAssertEqual(n, 2)
+			XCTAssertEqual(t, 2)
+		} else {
+			XCTFail("Unexpected nil")
+		}
 		
 		workout.chainCircuit(for: workout[6]!, chain: false)
-		XCTAssertFalse(workout.circuitStatus(for: workout[6]!).isInCircuit)
-		XCTAssertFalse(workout.circuitStatus(for: workout[7]!).isInCircuit)
+		XCTAssertFalse(workout.isCircuit(workout[6]!))
+		XCTAssertFalse(workout.isCircuit(workout[7]!))
 	}
 	
 	func testEnableRestPeriod() {
@@ -348,10 +390,10 @@ class OrganizedWorkoutTest: XCTestCase {
 		XCTAssertEqual(e6, workout[1])
 		XCTAssertEqual(e7, workout[2])
 		
-		XCTAssertFalse(workout.circuitStatus(for: workout[0]!).isInCircuit)
-		XCTAssertFalse(workout.circuitStatus(for: workout[1]!).isInCircuit)
-		XCTAssertFalse(workout.circuitStatus(for: workout[2]!).isInCircuit)
-		XCTAssertFalse(workout.circuitStatus(for: workout[8]!).isInCircuit)
+		XCTAssertFalse(workout.isCircuit(workout[0]!))
+		XCTAssertFalse(workout.isCircuit(workout[1]!))
+		XCTAssertFalse(workout.isCircuit(workout[2]!))
+		XCTAssertFalse(workout.isCircuit(workout[8]!))
 		XCTAssertFalse(workout[0]!.hasCircuitRest)
 		XCTAssertFalse(workout[1]!.hasCircuitRest)
 		XCTAssertFalse(workout[2]!.hasCircuitRest)
@@ -362,99 +404,133 @@ class OrganizedWorkoutTest: XCTestCase {
 		complexWorkout.moveExercizeAt(number: 4, to: 0)
 		XCTAssertEqual(c4, complexWorkout[0])
 		XCTAssertEqual(c0, complexWorkout[1])
-		XCTAssertFalse(complexWorkout.circuitStatus(for: complexWorkout[0]!).isInCircuit) // Old 4
-		let (s0, n0, _) = complexWorkout.circuitStatus(for: complexWorkout[1]!) // Old 0
-		XCTAssertTrue(s0)
-		XCTAssertEqual(n0, 1)
-		XCTAssertTrue(complexWorkout.circuitStatus(for: complexWorkout[4]!).isInCircuit) // Old 3
-		XCTAssertTrue(complexWorkout.circuitStatus(for: complexWorkout[5]!).isInCircuit)
+		XCTAssertFalse(complexWorkout.isCircuit(complexWorkout[0]!)) // Old 4
+		if let (n0, _) = complexWorkout.circuitStatus(for: complexWorkout[1]!) { // Old 0
+			XCTAssertEqual(n0, 1)
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		XCTAssertTrue(complexWorkout.isCircuit(complexWorkout[4]!)) // Old 3
+		XCTAssertTrue(complexWorkout.isCircuit(complexWorkout[5]!))
 		
 		complexWorkout.moveExercizeAt(number: 1, to: 5)
 		XCTAssertEqual(c0, complexWorkout[5])
 		XCTAssertEqual(c4, complexWorkout[0])
-		XCTAssertFalse(complexWorkout.circuitStatus(for: complexWorkout[0]!).isInCircuit) // Old 4
-		XCTAssertFalse(complexWorkout.circuitStatus(for: complexWorkout[1]!).isInCircuit) // Old 1
-		XCTAssertFalse(complexWorkout.circuitStatus(for: complexWorkout[5]!).isInCircuit) // Old 0
-		let (s5, n5, t5) = complexWorkout.circuitStatus(for: complexWorkout[4]!) // Old 5
-		XCTAssertTrue(s5)
-		XCTAssertEqual(n5, t5)
-		XCTAssertEqual(t5, 2)
+		XCTAssertFalse(complexWorkout.isCircuit(complexWorkout[0]!)) // Old 4
+		XCTAssertFalse(complexWorkout.isCircuit(complexWorkout[1]!)) // Old 1
+		XCTAssertFalse(complexWorkout.isCircuit(complexWorkout[5]!)) // Old 0
+		if let (n5, t5) = complexWorkout.circuitStatus(for: complexWorkout[4]!) { // Old 5
+			XCTAssertEqual(n5, t5)
+			XCTAssertEqual(t5, 2)
+		} else {
+			XCTFail("Unexpected nil")
+		}
 	}
 	
 	func testMoveExercizeCircuit() {
 		complexWorkout.moveExercizeAt(number: 3, to: 1) // 0,3(now 1),1(now 2) and 4,5 are a circuit; 2(now 3) still not a circuit
-		var (s, n, t) = complexWorkout.circuitStatus(for: complexWorkout[0]!)
-		XCTAssertTrue(s)
-		XCTAssertEqual(n, 1)
-		XCTAssertEqual(t, 3)
-		(s, n, t) = complexWorkout.circuitStatus(for: complexWorkout[1]!) // Old 3
-		XCTAssertTrue(s)
+		if let (n, t) = complexWorkout.circuitStatus(for: complexWorkout[0]!) {
+			XCTAssertEqual(n, 1)
+			XCTAssertEqual(t, 3)
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		if let (n, t) = complexWorkout.circuitStatus(for: complexWorkout[1]!) { // Old 3
+			XCTAssertEqual(n, 2)
+			XCTAssertEqual(t, 3)
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		if let (n, t) = complexWorkout.circuitStatus(for: complexWorkout[2]!) { // Old 1
+			XCTAssertEqual(n, 3)
+			XCTAssertEqual(t, 3)
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		XCTAssertFalse(complexWorkout.isCircuit(complexWorkout[3]!))
+		if let (n, t) = complexWorkout.circuitStatus(for: complexWorkout[4]!) {
+			XCTAssertEqual(n, 1)
+			XCTAssertEqual(t, 2)
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		if let (n, t) = complexWorkout.circuitStatus(for: complexWorkout[5]!) {
 		XCTAssertEqual(n, 2)
-		XCTAssertEqual(t, 3)
-		(s, n, t) = complexWorkout.circuitStatus(for: complexWorkout[2]!) // Old 1
-		XCTAssertTrue(s)
-		XCTAssertEqual(n, 3)
-		XCTAssertEqual(t, 3)
-		XCTAssertFalse(complexWorkout.circuitStatus(for: complexWorkout[3]!).isInCircuit)
-		(s, n, t) = complexWorkout.circuitStatus(for: complexWorkout[4]!)
-		XCTAssertTrue(s)
-		XCTAssertEqual(n, 1)
 		XCTAssertEqual(t, 2)
-		(s, n, t) = complexWorkout.circuitStatus(for: complexWorkout[5]!)
-		XCTAssertTrue(s)
-		XCTAssertEqual(n, 2)
-		XCTAssertEqual(t, 2)
+		} else {
+			XCTFail("Unexpected nil")
+		}
 		
 		complexWorkout.moveExercizeAt(number: 2, to: 4) // 0,3(now 1) and 4(now 3),1(now 4),5 are a circuit; 2(now 2 again) still not a circuit
-		(s, n, t) = complexWorkout.circuitStatus(for: complexWorkout[0]!)
-		XCTAssertTrue(s)
+		if let (n, t) = complexWorkout.circuitStatus(for: complexWorkout[0]!) {
 		XCTAssertEqual(n, 1)
 		XCTAssertEqual(t, 2)
-		(s, n, t) = complexWorkout.circuitStatus(for: complexWorkout[1]!)
-		XCTAssertTrue(s)
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		if let (n, t) = complexWorkout.circuitStatus(for: complexWorkout[1]!) {
 		XCTAssertEqual(n, 2)
 		XCTAssertEqual(t, 2)
-		XCTAssertFalse(complexWorkout.circuitStatus(for: complexWorkout[2]!).isInCircuit)
-		(s, n, t) = complexWorkout.circuitStatus(for: complexWorkout[3]!)
-		XCTAssertTrue(s)
-		XCTAssertEqual(n, 1)
-		XCTAssertEqual(t, 3)
-		(s, n, t) = complexWorkout.circuitStatus(for: complexWorkout[4]!)
-		XCTAssertTrue(s)
-		XCTAssertEqual(n, 2)
-		XCTAssertEqual(t, 3)
-		(s, n, t) = complexWorkout.circuitStatus(for: complexWorkout[5]!)
-		XCTAssertTrue(s)
-		XCTAssertEqual(n, 3)
-		XCTAssertEqual(t, 3)
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		XCTAssertFalse(complexWorkout.isCircuit(complexWorkout[2]!))
+		if let (n, t) = complexWorkout.circuitStatus(for: complexWorkout[3]!) {
+			XCTAssertEqual(n, 1)
+			XCTAssertEqual(t, 3)
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		if let (n, t) = complexWorkout.circuitStatus(for: complexWorkout[4]!) {
+			XCTAssertEqual(n, 2)
+			XCTAssertEqual(t, 3)
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		if let (n, t) = complexWorkout.circuitStatus(for: complexWorkout[5]!) {
+			XCTAssertEqual(n, 3)
+			XCTAssertEqual(t, 3)
+		} else {
+			XCTFail("Unexpected nil")
+		}
 	}
 	
 	func testMoveExercizeMultipleCircuits() {
 		complexWorkout[1]!.makeCircuit(true) // 0,1,2 and 3,4,5 are now a circuit
-		var (s, n, t) = complexWorkout.circuitStatus(for: complexWorkout[2]!)
-		XCTAssertTrue(s)
-		XCTAssertEqual(n, 3)
-		XCTAssertEqual(t, 3)
-		(s, n, t) = complexWorkout.circuitStatus(for: complexWorkout[3]!)
-		XCTAssertTrue(s)
-		XCTAssertEqual(n, 1)
-		XCTAssertEqual(t, 3)
+		if let (n, t) = complexWorkout.circuitStatus(for: complexWorkout[2]!) {
+			XCTAssertEqual(n, 3)
+			XCTAssertEqual(t, 3)
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		if let (n, t) = complexWorkout.circuitStatus(for: complexWorkout[3]!) {
+			XCTAssertEqual(n, 1)
+			XCTAssertEqual(t, 3)
+		} else {
+			XCTFail("Unexpected nil")
+		}
 		
 		let c2 = complexWorkout[2]!
 		complexWorkout.moveExercizeAt(number: 2, to: 1) // 0,1,2 and 3,4,5 are a circuit
 		XCTAssertEqual(c2, complexWorkout[1]!)
-		(s, n, t) = complexWorkout.circuitStatus(for: c2)
-		XCTAssertTrue(s)
-		XCTAssertEqual(n, 2)
-		XCTAssertEqual(t, 3)
-		(s, n, t) = complexWorkout.circuitStatus(for: complexWorkout[2]!)
-		XCTAssertTrue(s)
-		XCTAssertEqual(n, 3)
-		XCTAssertEqual(t, 3)
-		(s, n, t) = complexWorkout.circuitStatus(for: complexWorkout[3]!)
-		XCTAssertTrue(s)
-		XCTAssertEqual(n, 1)
-		XCTAssertEqual(t, 3)
+		if let (n, t) = complexWorkout.circuitStatus(for: c2) {
+			XCTAssertEqual(n, 2)
+			XCTAssertEqual(t, 3)
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		if let (n, t) = complexWorkout.circuitStatus(for: complexWorkout[2]!) {
+			XCTAssertEqual(n, 3)
+			XCTAssertEqual(t, 3)
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		if let (n, t) = complexWorkout.circuitStatus(for: complexWorkout[3]!) {
+			XCTAssertEqual(n, 1)
+			XCTAssertEqual(t, 3)
+		} else {
+			XCTFail("Unexpected nil")
+		}
 	}
 	
 	func testMoveExercizeUnmakeCircuitAfter() {
@@ -463,8 +539,8 @@ class OrganizedWorkoutTest: XCTestCase {
 		
 		complexWorkout.moveExercizeAt(number: 1, to: 5)
 		
-		XCTAssertFalse(complexWorkout.circuitStatus(for: complexWorkout[0]!).isInCircuit)
-		XCTAssertFalse(complexWorkout.circuitStatus(for: complexWorkout[5]!).isInCircuit)
+		XCTAssertFalse(complexWorkout.isCircuit(complexWorkout[0]!))
+		XCTAssertFalse(complexWorkout.isCircuit(complexWorkout[5]!))
 		XCTAssertFalse(complexWorkout[0]!.hasCircuitRest)
 		XCTAssertFalse(complexWorkout[5]!.hasCircuitRest)
 	}
@@ -475,8 +551,8 @@ class OrganizedWorkoutTest: XCTestCase {
 		
 		complexWorkout.moveExercizeAt(number: 0, to: 5)
 		
-		XCTAssertFalse(complexWorkout.circuitStatus(for: complexWorkout[0]!).isInCircuit)
-		XCTAssertFalse(complexWorkout.circuitStatus(for: complexWorkout[5]!).isInCircuit)
+		XCTAssertFalse(complexWorkout.isCircuit(complexWorkout[0]!))
+		XCTAssertFalse(complexWorkout.isCircuit(complexWorkout[5]!))
 		XCTAssertFalse(complexWorkout[0]!.hasCircuitRest)
 		XCTAssertFalse(complexWorkout[5]!.hasCircuitRest)
 	}
@@ -488,9 +564,9 @@ class OrganizedWorkoutTest: XCTestCase {
 		
 		complexWorkout.moveExercizeAt(number: 4, to: 0)
 		
-		XCTAssertFalse(complexWorkout.circuitStatus(for: complexWorkout[0]!).isInCircuit)
-		XCTAssertTrue(complexWorkout.circuitStatus(for: complexWorkout[4]!).isInCircuit)
-		XCTAssertTrue(complexWorkout.circuitStatus(for: complexWorkout[5]!).isInCircuit)
+		XCTAssertFalse(complexWorkout.isCircuit(complexWorkout[0]!))
+		XCTAssertTrue(complexWorkout.isCircuit(complexWorkout[4]!))
+		XCTAssertTrue(complexWorkout.isCircuit(complexWorkout[5]!))
 		XCTAssertFalse(complexWorkout[0]!.hasCircuitRest)
 		XCTAssertTrue(complexWorkout[4]!.hasCircuitRest)
 		XCTAssertTrue(complexWorkout[5]!.hasCircuitRest)

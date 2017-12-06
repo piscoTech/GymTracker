@@ -64,9 +64,7 @@ class OrganizedWorkout {
 				newNext = self[dest + 1]
 			}
 			if let p = newPrev, let n = newNext {
-				let (pS, pNum, pTot) = circuitStatus(for: p)
-				let (nS, nNum, nTot) = circuitStatus(for: n)
-				if pS, nS, let pN = pNum, let pT = pTot, let nN = nNum, let nT = nTot {
+				if let (pN, pT) = circuitStatus(for: p), let (nN, nT) = circuitStatus(for: n) {
 					newCircuitStatus = pT == nT && pN + 1 == nN
 				} else {
 					newCircuitStatus = false
@@ -77,10 +75,9 @@ class OrganizedWorkout {
 		}
 		
 		// Determine the circuit status of previous and next exercizes on the old position
-		let (s, rawN, rawT) = circuitStatus(for: exercize)
 		var fixCircuit = [Exercize]()
 		// Leaving behind a circuit that should cease to exists
-		if s, let t = rawT, t == 2, let n = rawN {
+		if let (n, t) = circuitStatus(for: exercize), t == 2 {
 			if n == 1, let next = exercize.next {
 				fixCircuit.append(next)
 			}
@@ -90,16 +87,17 @@ class OrganizedWorkout {
 			}
 		}
 		if let p = exercize.previous, let n = exercize.next {
-			let (pS, pNum, pTot) = circuitStatus(for: p)
-			let (nS, nNum, nTot) = circuitStatus(for: n)
+			
 			let preventJoinPrevNext: Bool
 			
-			if !nS {
-				preventJoinPrevNext = true
-			} else if pS, nS, let pN = pNum, let pT = pTot, let nN = nNum, let nT = nTot {
-				preventJoinPrevNext = pT != nT || pN + 2 != nN
+			if let (nN, nT) = circuitStatus(for: n) {
+				if let (pN, pT) = circuitStatus(for: p) {
+					preventJoinPrevNext = pT != nT || pN + 2 != nN
+				} else {
+					preventJoinPrevNext = false
+				}
 			} else {
-				preventJoinPrevNext = false
+				preventJoinPrevNext = true
 			}
 			
 			if preventJoinPrevNext {
@@ -129,6 +127,8 @@ class OrganizedWorkout {
 	/// Whether or not the workout is valid.
 	///
 	/// The workout is valid if the underling `Workout` is valid and all exercizes in a circuit have the same number of sets.
+	///
+	/// Every exercize that is considered invalid due to the circuit it belongs to has its index included in `circuitError`.
 	var validityStatus: (global: Bool, circuitError: [Int]) {
 		var global = raw.isValid
 		var circuitError = [Int]()
@@ -154,36 +154,32 @@ class OrganizedWorkout {
 		return (global, circuitError)
 	}
 	
-	func circuitStatus(for exercize: Exercize) -> (isInCircuit: Bool, number: Int?, total: Int?) {
+	func isCircuit(_ exercize: Exercize) -> Bool {
 		verifyExercize(exercize)
 		
-		let inCircuit = exercize.isCircuit || exercize.previous?.isCircuit ?? false
-		
-		let number: Int?
-		let total: Int?
-		if inCircuit {
-			var n = 1
-			var e = exercize
-			while let prev = e.previous, prev.isCircuit {
-				n += 1
-				e = prev
-			}
-			
-			number = n
-			var t = n
-			e = exercize
-			while let next = e.next, e.isCircuit {
-				t += 1
-				e = next
-			}
-			
-			total = t
-		} else {
-			number = nil
-			total = nil
+		return exercize.isCircuit || exercize.previous?.isCircuit ?? false
+	}
+	
+	func circuitStatus(for exercize: Exercize) -> (number: Int, total: Int)? {
+		guard isCircuit(exercize) else {
+			return nil
 		}
 		
-		return (inCircuit, number, total)
+		var number = 1
+		var e = exercize
+		while let prev = e.previous, prev.isCircuit {
+			number += 1
+			e = prev
+		}
+		
+		var total = number
+		e = exercize
+		while let next = e.next, e.isCircuit {
+			total += 1
+			e = next
+		}
+		
+		return (number, total)
 	}
 	
 	/// Whether or not the passed exercize can become part of a circuit, if the exercize is already in one this function always return `true`.
@@ -194,8 +190,7 @@ class OrganizedWorkout {
 			return false
 		}
 		
-		let (status, _, _) = circuitStatus(for: exercize)
-		guard !status else {
+		guard !isCircuit(exercize) else {
 			return true
 		}
 		
@@ -204,8 +199,7 @@ class OrganizedWorkout {
 		}
 		
 		if let prev = exercize.previous {
-			let (prevStatus, _, _) = circuitStatus(for: prev)
-			return prevStatus
+			return isCircuit(prev)
 		}
 		
 		return false
@@ -233,22 +227,21 @@ class OrganizedWorkout {
 				return
 			}
 			
-			let (status, _, _) = circuitStatus(for: exercize)
-			guard !status else {
+			guard !self.isCircuit(exercize) else {
 				return
 			}
 			
-			// Exercize can become a circuit and is not already in one
+			if let next = exercize.next, !next.isRest {
+				exercize.makeCircuit(true) // Start circuit with next one
+				return
+			}
+			
+			// Exercize can only become a circuit by joing the previous circuit, if any
 			if let prev = exercize.previous {
-				let (prevStatus, _, _) = circuitStatus(for: prev)
-				if prevStatus {
+				if self.isCircuit(prev) {
 					prev.makeCircuit(true)
 					// Add exercize at the end of the circuit of the previous exercize
 				}
-			}
-			
-			if let next = exercize.next, !next.isRest {
-				exercize.makeCircuit(true) // Start (or continue) circuit with next one
 			}
 		}
 	}
@@ -257,8 +250,7 @@ class OrganizedWorkout {
 	func canChainCircuit(for exercize: Exercize) -> Bool {
 		verifyExercize(exercize)
 		
-		let (status, _, _) = circuitStatus(for: exercize)
-		guard status else {
+		guard isCircuit(exercize) else {
 			return false
 		}
 		guard !exercize.isCircuit else {
@@ -288,14 +280,14 @@ class OrganizedWorkout {
 		verifyExercize(exercize)
 		
 		if enable {
-			exercize.enableCircuitRest(circuitStatus(for: exercize).isInCircuit)
+			exercize.enableCircuitRest(isCircuit(exercize))
 		} else {
 			exercize.enableCircuitRest(false)
 		}
 	}
 	
 	private func fixCircuitStatus(for exercize: Exercize) {
-		if !circuitStatus(for: exercize).isInCircuit {
+		if !isCircuit(exercize) {
 			exercize.enableCircuitRest(false)
 		}
 	}

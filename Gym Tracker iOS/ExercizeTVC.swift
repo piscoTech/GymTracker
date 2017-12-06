@@ -17,7 +17,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	
 	private var oldName: String? {
 		didSet {
-			if let val = oldName, val == "" {
+			if let val = oldName, val.isEmpty {
 				oldName = nil
 			}
 		}
@@ -30,7 +30,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		tableView.rowHeight = UITableViewAutomaticDimension
 		tableView.estimatedRowHeight = 44
 		
-		if exercize.sets.count == 0 {
+		if exercize.sets.isEmpty {
 			//This can only appen if it's a new exercize
 			newSet(self)
 		}
@@ -41,11 +41,11 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		super.viewWillDisappear(animated)
 		
 		if self.isMovingFromParentViewController {
-			if exercize.name ?? "" == "" {
+			if (exercize.name ?? "").isEmpty {
 				exercize.set(name: oldName ?? defaultName)
 			}
 			
-			delegate.updateExercize(exercize)
+			delegate.exercizeUpdated(exercize)
 		}
 	}
 
@@ -77,7 +77,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	}
 	
 	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		if indexPath.section == 1 && setCell(for: indexPath) == .picker {
+		if indexPath.section == 1 && setCellType(for: indexPath) == .picker {
 			return 150
 		} else if indexPath.section == 0 && indexPath.row == 0 && !editMode {
 			return UITableViewAutomaticDimension
@@ -89,7 +89,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		switch section {
 		case 0:
-			return 1 + 3 // TODO: Handle coorectly how many row to display for circuits
+			return 2 + (delegate.workoutValidator.circuitStatus(for: exercize) != nil ? 2 : 0)
 		case 1:
 			return exercize.sets.count * 2 - 1 + (editRest != nil ? 1 : 0)
 		case 2:
@@ -120,29 +120,43 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 				
 				cell.detailTextLabel?.text = nil
 				accessory.isOn = false
+				accessory.removeTarget(nil, action: nil, for: .allEvents)
 				let msg: String
+				let sel: Selector
 				
 				switch indexPath.row {
 				case 1: // Is circuit
 					msg = "IS_CIRCUIT"
-					cell.detailTextLabel?.text = "0/t exercizes"
-					accessory.isOn = true
+					if let (n, t) = delegate.workoutValidator.circuitStatus(for: exercize) {
+						cell.detailTextLabel?.text = "\(n)/\(t) " + NSLocalizedString("EXERCIZES", comment: "exercizes").lowercased()
+						accessory.isOn = true
+					}
+					sel = #selector(enableCircuit(_:))
+					accessory.isEnabled = delegate.workoutValidator.canBecomeCircuit(exercize: exercize)
 				case 2: // Chain with next
 					msg = "CIRCUIT_CHAIN"
+					accessory.isOn = exercize.isCircuit
+					sel = #selector(enableCircuitChain(_:))
+					accessory.isEnabled = delegate.workoutValidator.canChainCircuit(for: exercize)
 				case 3: // Use rest periods
 					msg = "CIRCUITE_USE_REST"
-					accessory.isOn = true
+					accessory.isOn = exercize.hasCircuitRest
+					sel = #selector(enableCircuitRest(_:))
+					accessory.isEnabled = delegate.workoutValidator.circuitStatus(for: exercize) != nil
+					
 				default:
 					fatalError("Unknown row")
 				}
 				
 				cell.textLabel?.text = NSLocalizedString(msg, comment: "CIRCUIT_DATA")
+				accessory.addTarget(self, action: sel, for: .valueChanged)
+				accessory.isEnabled = editMode && accessory.isEnabled
 				
 				return cell
 			}
 		case 1:
 			let s = exercize.set(n: setNumber(for: indexPath))!
-			switch setCell(for: indexPath) {
+			switch setCellType(for: indexPath) {
 			case .rest:
 				let cell = tableView.dequeueReusableCell(withIdentifier: "rest", for: indexPath) as! RestCell
 				cell.set(rest: s.rest)
@@ -215,7 +229,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	// MARK: - Delete set
 	
 	override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-		return editMode && indexPath.section == 1 && setCell(for: indexPath) == .reps
+		return editMode && indexPath.section == 1 && setCellType(for: indexPath) == .reps
 	}
 	
 	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
@@ -277,6 +291,55 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	
 	// MARK: - Circuit management
 	
+	@objc func enableCircuit(_ sender: UISwitch) {
+		guard editMode else {
+			return
+		}
+		
+		let wasCircuit = delegate.workoutValidator.isCircuit(exercize)
+		delegate.workoutValidator.makeCircuit(exercize: exercize, isCircuit: sender.isOn)
+		// Switch is reset by reloading the table
+		
+		updateCircuitCells(wasCircuit: wasCircuit)
+	}
+	
+	@objc func enableCircuitChain(_ sender: UISwitch) {
+		guard editMode else {
+			return
+		}
+		
+		let wasCircuit = delegate.workoutValidator.isCircuit(exercize)
+		delegate.workoutValidator.chainCircuit(for: exercize, chain: sender.isOn)
+		sender.isOn = exercize.isCircuit
+		
+		updateCircuitCells(wasCircuit: wasCircuit)
+	}
+	
+	@objc func enableCircuitRest(_ sender: UISwitch) {
+		guard editMode else {
+			return
+		}
+		
+		delegate.workoutValidator.enableCircuitRestPeriods(for: exercize, enable: sender.isOn)
+		sender.isOn = exercize.hasCircuitRest
+	}
+	
+	private func updateCircuitCells(wasCircuit: Bool) {
+		let isCircuit = delegate.workoutValidator.isCircuit(exercize)
+		
+		tableView.beginUpdates()
+		let index = [2, 3].map { IndexPath(row: $0, section: 0) }
+		if wasCircuit && !isCircuit {
+			tableView.deleteRows(at: index, with: .automatic)
+		} else if !wasCircuit && isCircuit {
+			tableView.insertRows(at: index, with: .automatic)
+		} else if wasCircuit && isCircuit {
+			tableView.reloadRows(at: index, with: .automatic)
+		}
+		tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .automatic)
+		tableView.endUpdates()
+	}
+	
 	// MARK: - Edit rest
 	
 	private var editRest: Int?
@@ -295,7 +358,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		return Int32(row / 2)
 	}
 	
-	private func setCell(for i: IndexPath) -> SetCellType {
+	private func setCellType(for i: IndexPath) -> SetCellType {
 		var row = i.row
 		
 		if let r = editRest {
@@ -312,7 +375,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		tableView.deselectRow(at: indexPath, animated: true)
 		
-		guard editMode && indexPath.section == 1 && setCell(for: indexPath) == .rest else {
+		guard editMode && indexPath.section == 1 && setCellType(for: indexPath) == .rest else {
 			return
 		}
 		let setNum = setNumber(for: indexPath)
