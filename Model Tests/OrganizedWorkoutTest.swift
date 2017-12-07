@@ -71,6 +71,41 @@ class OrganizedWorkoutTest: XCTestCase {
         super.tearDown()
     }
 	
+	func testCircuitValidity() {
+		let e6 = workout[6]!
+		let e7 = workout[7]!
+		let e8 = workout[8]!
+		
+		_ = dataManager.newSet(for: e6)
+		_ = dataManager.newSet(for: e6)
+		_ = dataManager.newSet(for: e7)
+		_ = dataManager.newSet(for: e8)
+		_ = dataManager.newSet(for: e8)
+		
+		XCTAssertEqual(workout.validityStatus.circuitError, [7])
+		
+		let c0 = complexWorkout[0]!
+		let c1 = complexWorkout[1]!
+		let c3 = complexWorkout[3]!
+		let c4 = complexWorkout[4]!
+		let c5 = complexWorkout[5]!
+		
+		_ = dataManager.newSet(for: c0)
+		_ = dataManager.newSet(for: c1)
+		_ = dataManager.newSet(for: c1)
+		
+		XCTAssertEqual(complexWorkout.validityStatus.circuitError, [1])
+		
+		_ = dataManager.newSet(for: c0)
+		_ = dataManager.newSet(for: c3)
+		_ = dataManager.newSet(for: c4)
+		_ = dataManager.newSet(for: c4)
+		_ = dataManager.newSet(for: c5)
+		_ = dataManager.newSet(for: c5)
+		
+		XCTAssertEqual(complexWorkout.validityStatus.circuitError, [3])
+	}
+	
 	func testIsCircuit() {
 		XCTAssertFalse(workout.isCircuit(workout[0]!))
 		XCTAssertFalse(workout.isCircuit(workout[1]!))
@@ -495,6 +530,24 @@ class OrganizedWorkoutTest: XCTestCase {
 		}
 	}
 	
+	func testMoveExercizeTrimCircuit() {
+		XCTAssertTrue(complexWorkout[4]!.isCircuit)
+		
+		complexWorkout.moveExercizeAt(number: 5, to: 0)
+		
+		XCTAssertTrue(complexWorkout.isCircuit(complexWorkout[4]!))
+		XCTAssertTrue(complexWorkout.isCircuit(complexWorkout[5]!))
+		XCTAssertFalse(complexWorkout[5]!.isCircuit)
+		
+		XCTAssertTrue(workout[7]!.isCircuit)
+		
+		workout.moveExercizeAt(number: 8, to: 14)
+		
+		XCTAssertTrue(workout.isCircuit(workout[6]!))
+		XCTAssertTrue(workout.isCircuit(workout[7]!))
+		XCTAssertFalse(workout[7]!.isCircuit)
+	}
+	
 	func testMoveExercizeMultipleCircuits() {
 		complexWorkout[1]!.makeCircuit(true) // 0,1,2 and 3,4,5 are now a circuit
 		if let (n, t) = complexWorkout.circuitStatus(for: complexWorkout[2]!) {
@@ -570,6 +623,57 @@ class OrganizedWorkoutTest: XCTestCase {
 		XCTAssertFalse(complexWorkout[0]!.hasCircuitRest)
 		XCTAssertTrue(complexWorkout[4]!.hasCircuitRest)
 		XCTAssertTrue(complexWorkout[5]!.hasCircuitRest)
+	}
+	
+	func testRemoveExercizeUnmakeCircuitAfter() {
+		complexWorkout[0]!.enableCircuitRest(true)
+		complexWorkout[1]!.enableCircuitRest(true)
+		
+		complexWorkout.removeExercize(complexWorkout[1]!)
+		
+		XCTAssertFalse(complexWorkout.isCircuit(complexWorkout[0]!))
+		XCTAssertFalse(complexWorkout[0]!.hasCircuitRest)
+	}
+	
+	func testRemoveExercizeUnmakeCircuitBefore() {
+		complexWorkout[0]!.enableCircuitRest(true)
+		complexWorkout[1]!.enableCircuitRest(true)
+		
+		complexWorkout.removeExercize(complexWorkout[1]!)
+		
+		XCTAssertFalse(complexWorkout.isCircuit(complexWorkout[0]!))
+		XCTAssertFalse(complexWorkout[0]!.hasCircuitRest)
+	}
+	
+	func testRemoveExercizeNotUnmakeCircuitMid() {
+		complexWorkout[3]!.enableCircuitRest(true)
+		complexWorkout[4]!.enableCircuitRest(true)
+		complexWorkout[5]!.enableCircuitRest(true)
+		
+		complexWorkout.removeExercize(complexWorkout[4]!)
+		
+		XCTAssertTrue(complexWorkout.isCircuit(complexWorkout[3]!))
+		XCTAssertTrue(complexWorkout.isCircuit(complexWorkout[4]!))
+		XCTAssertTrue(complexWorkout[3]!.hasCircuitRest)
+		XCTAssertTrue(complexWorkout[4]!.hasCircuitRest)
+	}
+	
+	func testRemoveExercize() {
+		XCTAssertTrue(complexWorkout[4]!.isCircuit)
+		
+		complexWorkout.removeExercize(complexWorkout[5]!)
+		
+		XCTAssertTrue(complexWorkout.isCircuit(complexWorkout[3]!))
+		XCTAssertTrue(complexWorkout.isCircuit(complexWorkout[4]!))
+		XCTAssertFalse(complexWorkout[4]!.isCircuit)
+		
+		XCTAssertTrue(workout[7]!.isCircuit)
+		
+		workout.removeExercize(workout[8]!)
+		
+		XCTAssertTrue(workout.isCircuit(workout[6]!))
+		XCTAssertTrue(workout.isCircuit(workout[7]!))
+		XCTAssertFalse(workout[7]!.isCircuit)
 	}
     
 }

@@ -104,9 +104,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		do {
 			let customTint = #colorLiteral(red: 0.7568627451, green: 0.9215686275, blue: 0.2, alpha: 1)
+			let redTint = #colorLiteral(red: 1, green: 0.1882352941, blue: 0, alpha: 1)
 //			let defaultTint = #colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1)
 			UITabBar.appearance().tintColor = customTint
-			DestructiveButton.appearance().tintColor = .red
+			DestructiveButton.appearance().tintColor = redTint
 
 			let table = UITableView.appearance()
 			table.backgroundColor = .black
@@ -119,7 +120,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			let textColor = #colorLiteral(red: 0.9198423028, green: 0.9198423028, blue: 0.9198423028, alpha: 1)
 			UILabel.appearance().textColor = textColor
 			UILabel.appearance(whenContainedInInstancesOf: [UITableViewHeaderFooterView.self]).textColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
-			HeartLabel.appearance().textColor = #colorLiteral(red: 1, green: 0.1882352941, blue: 0, alpha: 1)
+			HeartLabel.appearance().textColor = redTint
 			
 			let textField = UITextField.appearance()
 			textField.textColor = textColor

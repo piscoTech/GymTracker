@@ -13,10 +13,10 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	
 	weak var delegate: WorkoutListTableViewController!
 	weak var exercizeController: ExercizeTableViewController?
-	var workout: Workout!
+	var workout: Workout! // FIXME: Remove and only keep workoutValidator with name workout
 	var editMode = false
 	private(set) var workoutValidator: OrganizedWorkout!
-	private var circuitInvalidityCache: [Int]!
+	private var circuitInvalidityCache: Set<Int>!
 	private(set) var isNew = false
 	
 	@IBOutlet var cancelBtn: UIBarButtonItem!
@@ -118,7 +118,6 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	
 	override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
 		if editMode && section == 1 {
-			// TODO: Explain what ⚠️ means
 			return NSLocalizedString("EXERCIZE_MANAGEMENT_TIP", comment: "Remove exercize")
 		}
 		
@@ -342,14 +341,12 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		let index = IndexPath(row: Int(e.order), section: 1)
 		// No need to also mark the sets as removed: if they are new there is no need to send them, else they will be deleted in cascade with the exercize.
 		deletedEntities.append(e)
-		// TODO: Rely on OrganizedWorkout
-		workout.removeExercize(e)
+		workoutValidator.removeExercize(e)
 		
 		tableView.beginUpdates()
 		tableView.deleteRows(at: [index], with: .automatic)
 		
-		// TODO: Rely on OrganizedWorkout
-		if workout.exercizes.count == 0 {
+		if workoutValidator.exercizes.isEmpty {
 			tableView.insertRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
 		}
 		
@@ -359,6 +356,10 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		}
 		
 		tableView.endUpdates()
+		
+		DispatchQueue.main.async {
+			self.updateValidityAndButtons()
+		}
 	}
 	
 	@IBAction func deleteWorkout(_ sender: AnyObject) {

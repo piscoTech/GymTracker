@@ -74,47 +74,20 @@ class OrganizedWorkout {
 			}
 		}
 		
-		// Determine the circuit status of previous and next exercizes on the old position
-		var fixCircuit = [Exercize]()
-		// Leaving behind a circuit that should cease to exists
-		if let (n, t) = circuitStatus(for: exercize), t == 2 {
-			if n == 1, let next = exercize.next {
-				fixCircuit.append(next)
-			}
-			if n == 2, let prev = exercize.previous {
-				prev.makeCircuit(false)
-				fixCircuit.append(prev)
-			}
-		}
-		if let p = exercize.previous, let n = exercize.next {
-			
-			let preventJoinPrevNext: Bool
-			
-			if let (nN, nT) = circuitStatus(for: n) {
-				if let (pN, pT) = circuitStatus(for: p) {
-					preventJoinPrevNext = pT != nT || pN + 2 != nN
-				} else {
-					preventJoinPrevNext = false
-				}
-			} else {
-				preventJoinPrevNext = true
-			}
-			
-			if preventJoinPrevNext {
-				p.makeCircuit(false)
-				fixCircuit.append(p)
-			}
+		handleCircuitAroundRemovedExercize(exercize) {
+			self.raw.moveExercizeAt(number: from, to: dest)
 		}
 		
-		raw.moveExercizeAt(number: from, to: dest)
 		let moving = self[dest]!
 		makeCircuit(exercize: moving, isCircuit: newCircuitStatus)
 		if newCircuitStatus {
 			chainCircuit(for: moving, chain: true)
 		}
-		
-		for e in fixCircuit {
-			fixCircuitStatus(for: e)
+	}
+	
+	func removeExercize(_ e: Exercize) {
+		handleCircuitAroundRemovedExercize(e) {
+			self.raw.removeExercize(e)
 		}
 	}
 	
@@ -128,30 +101,46 @@ class OrganizedWorkout {
 	///
 	/// The workout is valid if the underling `Workout` is valid and all exercizes in a circuit have the same number of sets.
 	///
-	/// Every exercize that is considered invalid due to the circuit it belongs to has its index included in `circuitError`.
-	var validityStatus: (global: Bool, circuitError: [Int]) {
+	/// An exercize has its index included in `circuitError` if it's considered invalid due to the circuit it belongs to, i.e. it has not the same number of sets as the most frequent sets count in the circuit.
+	var validityStatus: (global: Bool, circuitError: Set<Int>) {
 		var global = raw.isValid
-		var circuitError = [Int]()
+		var circuitError = Set<Int>()
 		
-		var circuitCount: Int?
-		for e in raw.exercizeList {
+		var circuitSetsInfo: (first: Int, counts: [Int])?
+		for e in exercizes {
 			global = global && e.isValid
 			
-			if e.isCircuit, circuitCount == nil {
-				circuitCount = e.sets.count
+			if e.isCircuit, circuitSetsInfo == nil {
+				circuitSetsInfo = (Int(e.order), [])
 			}
-			
-			if let c = circuitCount, c != e.sets.count {
-				global = false
-				circuitError.append(Int(e.order))
-			}
+			circuitSetsInfo?.counts.append(e.sets.count)
 			
 			if !e.isCircuit {
-				circuitCount = nil
+				if let (start, counts) = circuitSetsInfo {
+					var counter = [Int: Int]()
+					var max = 0
+					var mode: Int?
+					
+					for i in counts {
+						let count = (counter[i] ?? 0) + 1
+						counter[i] = count
+						
+						if count == max {
+							mode = mode ?? max
+						} else if count > max {
+							mode = i
+							max = count
+						}
+					}
+					
+					circuitError.formUnion(zip(counts, 0 ..< counts.count).filter { $0.0 != mode }.map { $0.1 + start })
+				}
+				
+				circuitSetsInfo = nil
 			}
 		}
 		
-		return (global, circuitError)
+		return (global && circuitError.isEmpty, circuitError)
 	}
 	
 	func isCircuit(_ exercize: Exercize) -> Bool {
@@ -289,6 +278,47 @@ class OrganizedWorkout {
 	private func fixCircuitStatus(for exercize: Exercize) {
 		if !isCircuit(exercize) {
 			exercize.enableCircuitRest(false)
+		}
+	}
+	
+	private func handleCircuitAroundRemovedExercize(_ exercize: Exercize, withRemoveAction action: () -> ()) {
+		verifyExercize(exercize)
+		
+		// Determine the circuit status of previous and next exercizes on the old position
+		var fixCircuit = [Exercize]()
+		// Leaving behind a circuit that should cease to exists
+		if let (n, t) = circuitStatus(for: exercize), t == 2 {
+			if n == 1, let next = exercize.next {
+				fixCircuit.append(next)
+			}
+			if n == 2, let prev = exercize.previous {
+				prev.makeCircuit(false)
+				fixCircuit.append(prev)
+			}
+		}
+		if let p = exercize.previous {
+			let preventJoinPrevNext: Bool
+			
+			if let n = exercize.next, let (nN, nT) = circuitStatus(for: n) {
+				if let (pN, pT) = circuitStatus(for: p) {
+					preventJoinPrevNext = pT != nT || pN + 2 != nN
+				} else {
+					preventJoinPrevNext = false
+				}
+			} else {
+				preventJoinPrevNext = true
+			}
+			
+			if preventJoinPrevNext {
+				p.makeCircuit(false)
+				fixCircuit.append(p)
+			}
+		}
+		
+		action()
+		
+		for e in fixCircuit {
+			fixCircuitStatus(for: e)
 		}
 	}
 	
