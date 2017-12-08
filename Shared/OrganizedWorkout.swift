@@ -171,6 +171,26 @@ class OrganizedWorkout {
 		return (number, total)
 	}
 	
+	/// Whether or not the exercize has mid-sets rests, always `true` outside circuits, and wheter the last set has an explit rest, can be `true` only inside a circuit.
+	///
+	/// `last` is always `false` if `global` is `false`, returns `nil` for rest periods.
+	func restStatus(for exercize: Exercize) -> (global: Bool, last: Bool)? {
+		verifyExercize(exercize)
+		guard !exercize.isRest else {
+			return nil
+		}
+		
+		guard let (n, t) = circuitStatus(for: exercize) else {
+			return (true, false)
+		}
+		
+		if exercize.hasCircuitRest {
+			return (true, n != t)
+		} else {
+			return (false, false)
+		}
+	}
+	
 	/// Whether or not the passed exercize can become part of a circuit, if the exercize is already in one this function always return `true`.
 	func canBecomeCircuit(exercize: Exercize) -> Bool {
 		verifyExercize(exercize)
@@ -255,6 +275,7 @@ class OrganizedWorkout {
 		
 		if !chain {
 			exercize.makeCircuit(false)
+			fixCircuitStatus(for: exercize)
 		} else {
 			guard canChainCircuit(for: exercize) else {
 				return

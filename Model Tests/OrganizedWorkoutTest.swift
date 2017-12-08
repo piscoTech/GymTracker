@@ -397,6 +397,14 @@ class OrganizedWorkoutTest: XCTestCase {
 		XCTAssertFalse(workout.isCircuit(workout[7]!))
 	}
 	
+	func testUnchainCircuit() {
+		workout.chainCircuit(for: workout[6]!, chain: false)
+		XCTAssertFalse(workout.isCircuit(workout[6]!))
+		XCTAssertTrue(workout.isCircuit(workout[7]!))
+		XCTAssertFalse(workout[6]!.hasCircuitRest)
+		XCTAssertTrue(workout[7]!.hasCircuitRest)
+	}
+	
 	func testEnableRestPeriod() {
 		XCTAssertTrue(workout[6]!.hasCircuitRest)
 		XCTAssertTrue(workout[7]!.hasCircuitRest)
@@ -674,6 +682,48 @@ class OrganizedWorkoutTest: XCTestCase {
 		XCTAssertTrue(workout.isCircuit(workout[6]!))
 		XCTAssertTrue(workout.isCircuit(workout[7]!))
 		XCTAssertFalse(workout[7]!.isCircuit)
+	}
+	
+	func testRestStatus() {
+		if let (g, l) = workout.restStatus(for: workout[0]!) {
+			XCTAssertTrue(g)
+			XCTAssertFalse(l)
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		XCTAssertNil(workout.restStatus(for: workout[1]!))
+		
+		if let (g, l) = workout.restStatus(for: workout[6]!) {
+			XCTAssertTrue(g)
+			XCTAssertTrue(l)
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		if let (g, l) = workout.restStatus(for: workout[7]!) {
+			XCTAssertTrue(g)
+			XCTAssertTrue(l)
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		if let (g, l) = workout.restStatus(for: workout[8]!) {
+			XCTAssertTrue(g)
+			XCTAssertFalse(l)
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		
+		if let (g, l) = complexWorkout.restStatus(for: complexWorkout[0]!) {
+			XCTAssertFalse(g)
+			XCTAssertFalse(l)
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		if let (g, l) = complexWorkout.restStatus(for: complexWorkout[1]!) {
+			XCTAssertFalse(g)
+			XCTAssertFalse(l)
+		} else {
+			XCTFail("Unexpected nil")
+		}
 	}
     
 }

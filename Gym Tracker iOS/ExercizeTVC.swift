@@ -91,7 +91,11 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		case 0:
 			return 2 + (delegate.workoutValidator.circuitStatus(for: exercize) != nil ? 2 : 0)
 		case 1:
-			return exercize.sets.count * 2 - 1 + (editRest != nil ? 1 : 0)
+			guard let (g, l) = delegate.workoutValidator.restStatus(for: exercize) else {
+				fatalError("Trying to edit a rest period, exercize expected")
+			}
+			
+			return exercize.sets.count * (g ? 2 : 1) + (g && !l ? -1 : 0) + (editRest != nil ? 1 : 0)
 		case 2:
 			return 1
 		default:
@@ -217,10 +221,14 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	}
 	
 	private func insertSet(_ s: RepsSet) {
+		guard let (g, _) = delegate.workoutValidator.restStatus(for: exercize) else {
+			fatalError("Trying to edit a rest period, exercize expected")
+		}
+		
 		let count = tableView(tableView, numberOfRowsInSection: 1)
-		var rows = [IndexPath(row: count - 1, section: 1)]
-		if count > 1 {
-			rows.append(IndexPath(row: count - 2, section: 1))
+		var rows = [IndexPath(row: count - 1, section: 1)] // Last set (if no last rest) or last rest
+		if count > 1 && g {
+			rows.append(IndexPath(row: count - 2, section: 1)) // Rest before last set (if no last rest) or last set
 		}
 		
 		tableView.insertRows(at: rows, with: .automatic)
@@ -236,8 +244,12 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		guard editingStyle == .delete else {
 			return
 		}
+		guard let (g, l) = delegate.workoutValidator.restStatus(for: exercize) else {
+			fatalError("Trying to edit a rest period, exercize expected")
+		}
 		
 		let setN = Int(setNumber(for: indexPath))
+		let isLast = setN == exercize.sets.count - 1
 		guard let set = exercize.set(n: Int32(setN)) else {
 			return
 		}
@@ -245,23 +257,21 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		var remove = [indexPath]
 		var removeFade = [IndexPath]()
 		
-		if setN != exercize.sets.count - 1 {
-			// Remove set rest row
-			remove.append(IndexPath(row: indexPath.row + 1, section: 1))
-		} else if setN != 0 {
-			// Remove previous (now last) set rest row
-			var offset = 1
-			if let rest = editRest, rest == setN - 1 {
-				editRest = nil
-				removeFade.append(IndexPath(row: indexPath.row - 1, section: 1))
-				offset += 1
+		if g {
+			var removedPreviousRest = false
+			if l || !isLast { // Always has own rest
+				// Remove own set rest row
+				remove.append(IndexPath(row: indexPath.row + 1, section: 1))
+			} else { // Last with no own rest, remove previous one
+				// Remove previous set rest row
+				removedPreviousRest = true
+				remove.append(IndexPath(row: indexPath.row - (editRest == setN - 1 ? 2 : 1), section: 1))
 			}
-			remove.append(IndexPath(row: indexPath.row - offset, section: 1))
-		}
-		
-		if let rest = editRest, rest == setN {
-			editRest = nil
-			removeFade.append(IndexPath(row: indexPath.row + 2, section: 1))
+			
+			if let rest = editRest, rest == (removedPreviousRest ? setN - 1 : setN) {
+				editRest = nil
+				removeFade.append(IndexPath(row: indexPath.row + (removedPreviousRest ? -1 : 2), section: 1))
+			}
 		}
 		
 		exercize.removeSet(set)
@@ -322,6 +332,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		
 		delegate.workoutValidator.enableCircuitRestPeriods(for: exercize, enable: sender.isOn)
 		sender.isOn = exercize.hasCircuitRest
+		tableView.reloadSections([1], with: .automatic)
 	}
 	
 	private func updateCircuitCells(wasCircuit: Bool) {
@@ -337,6 +348,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 			tableView.reloadRows(at: index, with: .automatic)
 		}
 		tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .automatic)
+		tableView.reloadSections([1], with: .automatic)
 		tableView.endUpdates()
 	}
 	
@@ -345,31 +357,45 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	private var editRest: Int?
 	
 	private func setNumber(for i: IndexPath) -> Int32 {
+		guard let (g, _) = delegate.workoutValidator.restStatus(for: exercize) else {
+			fatalError("Trying to edit a rest period, exercize expected")
+		}
 		var row = i.row
 		
-		if let r = editRest {
-			if (r + 1) * 2 == row {
-				return Int32(r)
-			} else if (r + 1) * 2 < row {
-				row -= 1
+		if g { // If have rests, having or not the last one is indiffferent here
+			if let r = editRest {
+				if (r + 1) * 2 == row {
+					return Int32(r)
+				} else if (r + 1) * 2 < row {
+					row -= 1
+				}
 			}
+			
+			return Int32(row / 2)
+		} else { // No rests
+			return Int32(row)
 		}
-		
-		return Int32(row / 2)
 	}
 	
 	private func setCellType(for i: IndexPath) -> SetCellType {
+		guard let (g, _) = delegate.workoutValidator.restStatus(for: exercize) else {
+			fatalError("Trying to edit a rest period, exercize expected")
+		}
 		var row = i.row
 		
-		if let r = editRest {
-			if (r + 1) * 2 == row {
-				return .picker
-			} else if (r + 1) * 2 < row {
-				row -= 1
+		if g { // If have rests, having or not the last one is indiffferent here
+			if let r = editRest {
+				if (r + 1) * 2 == row {
+					return .picker
+				} else if (r + 1) * 2 < row {
+					row -= 1
+				}
 			}
+			
+			return row % 2 == 0 ? .reps : .rest
+		} else { // No rests
+			return .reps
 		}
-		
-		return row % 2 == 0 ? .reps : .rest
 	}
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
