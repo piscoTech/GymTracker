@@ -57,8 +57,8 @@ struct CDRecordID: Hashable {
 		return NSClassFromString(type) as? DataObject.Type
 	}
 	
-	func getObject() -> DataObject? {
-		return getType()?.loadWithID(id)
+	func getObject(fromDataManager dataManager: DataManager) -> DataObject? {
+		return getType()?.loadWithID(id, fromDataManager: dataManager)
 	}
 	
 	static func encodeArray(_ ar: [CDRecordID]) -> [[String]] {
@@ -81,7 +81,7 @@ struct CDRecordID: Hashable {
 	
 }
 
-class DataObject: NSManagedObject {
+public class DataObject: NSManagedObject {
 	
 	class var objectType: String {
 		return "DataObject"
@@ -97,7 +97,7 @@ class DataObject: NSManagedObject {
 	fileprivate static let createdKey = "created"
 	fileprivate static let modifiedKey = "modified"
 	
-	override required init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
+	override public required init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
 		super.init(entity: entity, insertInto: context)
 	}
 	
@@ -111,13 +111,13 @@ class DataObject: NSManagedObject {
 		return CDRecordID(obj: self)
 	}
 	
-	class func loadWithID(_ id: String) -> DataObject? {
+	class func loadWithID(_ id: String, fromDataManager dataManager: DataManager) -> DataObject? {
 		fatalError("Abstarct method not implemented")
 	}
 	
 	///- returns: Whether or not the object represented by this instance is still present in the database, `false` is returned even if it was impossible to determine.
-	func stillExists() -> Bool {
-		if let _ = recordID.getType()?.loadWithID(self.id) {
+	func stillExists(inDataManager dataManager: DataManager) -> Bool {
+		if let _ = recordID.getType()?.loadWithID(self.id, fromDataManager: dataManager) {
 			return true
 		} else {
 			return false
@@ -137,7 +137,7 @@ class DataObject: NSManagedObject {
 		return obj
 	}
 	
-	func mergeUpdatesFrom(_ src: WCObject) -> Bool {
+	func mergeUpdatesFrom(_ src: WCObject, inDataManager dataManager: DataManager) -> Bool {
 		guard src.id == self.recordID, let modified = src[DataObject.modifiedKey] as? Date else {
 			return false
 		}
@@ -251,7 +251,7 @@ class WCObject: Equatable {
 
 // MARK: - Data Manager
 
-class DataManager {
+public class DataManager {
 	
 	enum Usage {
 		case application, testing
@@ -259,24 +259,34 @@ class DataManager {
 	
 	weak var delegate: DataManagerDelegate?
 	
-	fileprivate private(set) var localData: CoreDataStack
-	fileprivate private(set) var wcInterface: WatchConnectivityInterface
+	let use: Usage
+	let preferences: Preferences
+	#if os(iOS)
+	private(set) var importExportManager: ImportExportBackupManager!
+	#endif
+	private let localData: CoreDataStack
+	private let wcInterface: WatchConnectivityInterface
 	
-	// MARK: - Initialization
+//	private static var manager: DataManager?
+//
+//	class func getManager(for use: Usage = .application) -> DataManager {
+//		return DataManager.manager ?? {
+//			let m = DataManager(for: use)
+//			DataManager.manager = m
+//			return m
+//		}()
+//	}
 	
-	private static var manager: DataManager?
-	
-	class func getManager(for use: Usage = .application) -> DataManager {
-		return DataManager.manager ?? {
-			let m = DataManager(for: use)
-			DataManager.manager = m
-			return m
-		}()
-	}
-	
-	private init(for use: Usage) {
-		localData = CoreDataStack.getStack(for: use)
-		wcInterface = WatchConnectivityInterface.getInterface(for: use)
+	init(for use: Usage) {
+		preferences = Preferences()
+		localData = CoreDataStack(for: use)
+		wcInterface = WatchConnectivityInterface(for: use)
+		self.use = use
+		
+		wcInterface.dataManager = self
+		#if os(iOS)
+			importExportManager = ImportExportBackupManager(dataManager: self)
+		#endif
 
 		print("Data Manager initialized")
 		
@@ -385,7 +395,8 @@ class DataManager {
 				self.wcInterface.sendUpdateForChangedObjects(data, andDeleted: removedIDs)
 				
 				res = true
-			} catch {
+			} catch let error {
+				print(error)
 				res = false
 			}
 		}
@@ -395,12 +406,12 @@ class DataManager {
 	
 	@available(watchOS, unavailable)
 	var shouldStartWorkoutOnWatch: Bool {
-		return wcInterface.hasCounterPart && wcInterface.canComunicate
+		return use == .application && wcInterface.hasCounterPart && wcInterface.canComunicate
 	}
 	
 	func setRunningWorkout(_ w: Workout?, fromSource s: RunningWorkoutSource) {
 		// Can set workout only for current platform, the phone can set also for the watch
-		guard s.isCurrentPlatform() || s == .watch else {
+		guard use == .application, s.isCurrentPlatform() || s == .watch else {
 			return
 		}
 		
@@ -446,17 +457,17 @@ class DataManager {
 		}
 		
 		DispatchQueue.main.async {
-			preferences.transferLocal = []
-			preferences.deleteLocal = []
+			self.preferences.transferLocal = []
+			self.preferences.deleteLocal = []
 			
-			preferences.saveRemote = []
-			preferences.deleteRemote = []
+			self.preferences.saveRemote = []
+			self.preferences.deleteRemote = []
 			
-			let data = Workout.getList().flatMap { [$0 as DataObject]
+			let data = Workout.getList(fromDataManager: self).flatMap { [$0 as DataObject]
 				+ $0.exercizes.map { [$0 as DataObject] + Array($0.sets) as [DataObject] }.reduce([]) { $0 + $1 } }
 			self.wcInterface.sendUpdateForChangedObjects(data, andDeleted: [], markAsInitial: true)
 			
-			preferences.initialSyncDone = true
+			self.preferences.initialSyncDone = true
 			print("Initial data sent to watch")
 		}
 	}
@@ -472,7 +483,7 @@ class DataManager {
 		// Delete objects
 		for d in deletion {
 			// If the object is missing it's been already deleted so no problem
-			if let obj = d.getObject() {
+			if let obj = d.getObject(fromDataManager: self) {
 				context.delete(obj)
 			}
 		}
@@ -488,7 +499,7 @@ class DataManager {
 				}
 				
 				let cdObj: DataObject
-				if let tmp = obj.id.getObject() {
+				if let tmp = obj.id.getObject(fromDataManager: self) {
 					cdObj = tmp
 				} else if obj.isNew ?? false || obj.isInitialData {
 					if let tmp = newObjectFor(obj) {
@@ -501,7 +512,7 @@ class DataManager {
 					continue
 				}
 				
-				if !cdObj.mergeUpdatesFrom(obj) {
+				if !cdObj.mergeUpdatesFrom(obj, inDataManager: self) {
 					res = false
 					break
 				}
@@ -532,7 +543,7 @@ class DataManager {
 		var res = false
 		let context = localData.managedObjectContext
 		context.performAndWait {
-			for w in Workout.getList() {
+			for w in Workout.getList(fromDataManager: self) {
 				context.delete(w)
 			}
 			
@@ -642,17 +653,17 @@ private class CoreDataStack {
 	
 	// MARK: - Initialization
 	
-	private static var stack: CoreDataStack?
+//	private static var stack: CoreDataStack?
+//
+//	class func getStack(for use: DataManager.Usage) -> CoreDataStack {
+//		return CoreDataStack.stack ?? {
+//			let s = CoreDataStack(for: use)
+//			CoreDataStack.stack = s
+//			return s
+//		}()
+//	}
 	
-	class func getStack(for use: DataManager.Usage) -> CoreDataStack {
-		return CoreDataStack.stack ?? {
-			let s = CoreDataStack(for: use)
-			CoreDataStack.stack = s
-			return s
-		}()
-	}
-	
-	private init(for use: DataManager.Usage) {
+	fileprivate init(for use: DataManager.Usage) {
 		self.use = use
 		
 		print("Local store initialized")
@@ -729,24 +740,26 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 	fileprivate var isReachable: Bool {
 		return session?.isReachable ?? false
 	}
+	
+	fileprivate var dataManager: DataManager!
 
 	// MARK: - Initialization
 	
-	private static var interface: WatchConnectivityInterface?
-	
-	class func getInterface(for use: DataManager.Usage = .application) -> WatchConnectivityInterface {
-		return WatchConnectivityInterface.interface ?? {
-			let i = WatchConnectivityInterface()
-			WatchConnectivityInterface.interface = i
-			return i
-		}()
-	}
+//	private static var interface: WatchConnectivityInterface?
+//
+//	class func getInterface(for use: DataManager.Usage = .application) -> WatchConnectivityInterface {
+//		return WatchConnectivityInterface.interface ?? {
+//			let i = WatchConnectivityInterface()
+//			WatchConnectivityInterface.interface = i
+//			return i
+//		}()
+//	}
 
-	private convenience override init() {
+	override convenience fileprivate init() {
 		self.init(for: .application)
 	}
 	
-	private init(for use: DataManager.Usage) {
+	fileprivate init(for use: DataManager.Usage) {
 		self.use = use
 		
 		super.init()
@@ -765,7 +778,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 	func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
 		print("Watch Connectivity Session activated")
 		
-		if isiOS, preferences.runningWorkout != nil, let src = preferences.runningWorkoutSource, src == .watch, !self.hasCounterPart {
+		if isiOS, dataManager.preferences.runningWorkout != nil, let src = dataManager.preferences.runningWorkoutSource, src == .watch, !self.hasCounterPart {
 			dataManager.setRunningWorkout(nil, fromSource: .watch)
 		}
 		
@@ -790,7 +803,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 	}
 	
 	func sessionWatchStateDidChange(_ session: WCSession) {
-		if hasCounterPart && !preferences.initialSyncDone {
+		if hasCounterPart && !dataManager.preferences.initialSyncDone {
 			dataManager.initializeWatchDatabase()
 		}
 	}
@@ -812,16 +825,16 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 		
 		DispatchQueue.main.async {
 			//Prepend pending transfer to new ones
-			let changedObjects = preferences.transferLocal.flatMap { $0.getObject() } + data
-			let deletedIDs = preferences.deleteLocal + delete
+			let changedObjects = self.dataManager.preferences.transferLocal.flatMap { $0.getObject(fromDataManager: self.dataManager) } + data
+			let deletedIDs = self.dataManager.preferences.deleteLocal + delete
 			
 			guard changedObjects.count != 0 || deletedIDs.count != 0 else {
 				return
 			}
 			
 			guard self.canComunicate else {
-				preferences.transferLocal = changedObjects.map { $0.recordID }
-				preferences.deleteLocal = deletedIDs
+				self.dataManager.preferences.transferLocal = changedObjects.map { $0.recordID }
+				self.dataManager.preferences.deleteLocal = deletedIDs
 				
 				return
 			}
@@ -842,26 +855,26 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 			}
 			
 			sess.transferUserInfo(data)
-			preferences.transferLocal = []
-			preferences.deleteLocal = []
+			self.dataManager.preferences.transferLocal = []
+			self.dataManager.preferences.deleteLocal = []
 		}
 	}
 	
 	fileprivate func setRunningWorkout() {
-		guard let sess = session, hasCounterPart, preferences.runningWorkoutNeedsTransfer else {
+		guard let sess = session, hasCounterPart, dataManager.preferences.runningWorkoutNeedsTransfer else {
 			return
 		}
 		
 		guard canComunicate else {
-			preferences.runningWorkoutNeedsTransfer = true
+			dataManager.preferences.runningWorkoutNeedsTransfer = true
 			return
 		}
 		
 		sess.transferUserInfo([currentWorkoutKey: [
-			preferences.runningWorkout?.wcRepresentation ?? ["nil"],
-			preferences.runningWorkoutSource?.rawValue ?? "nil"
+			dataManager.preferences.runningWorkout?.wcRepresentation ?? ["nil"],
+			dataManager.preferences.runningWorkoutSource?.rawValue ?? "nil"
 		]])
-		preferences.runningWorkoutNeedsTransfer = false
+		dataManager.preferences.runningWorkoutNeedsTransfer = false
 	}
 	
 	fileprivate func session(_ session: WCSession, didFinish userInfoTransfer: WCSessionUserInfoTransfer, error: Error?) {
@@ -889,8 +902,8 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 		if let curWorkout = userInfo[currentWorkoutKey] as? [Any], curWorkout.count == 2 {
 			// Pass something that's not an ID to signal that workout has ended
 			let w = CDRecordID(wcRepresentation: curWorkout[0] as? [String] ?? [])
-			preferences.runningWorkout = w
-			preferences.runningWorkoutSource = RunningWorkoutSource(rawValue: curWorkout[1] as? String ?? "")
+			dataManager.preferences.runningWorkout = w
+			dataManager.preferences.runningWorkoutSource = RunningWorkoutSource(rawValue: curWorkout[1] as? String ?? "")
 			
 			if w == nil {
 				dataManager.delegate?.enableEdit()
@@ -904,12 +917,12 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 		
 		#if os(iOS)
 			if let curStart = userInfo[currentWorkoutStartDate] as? Date {
-				preferences.currentStart = curStart
+				dataManager.preferences.currentStart = curStart
 			}
 			
 			if let currentProgress = userInfo[currentWorkoutProgress] as? [Any], currentProgress.count == 3,
 				let curExercize = currentProgress[0] as? Int, let curPart = currentProgress[1] as? Int, let time = currentProgress[2] as? Date,
-				preferences.runningWorkout != nil {
+				dataManager.preferences.runningWorkout != nil {
 				
 				dataManager.delegate?.updateMirroredWorkout(withCurrentExercize: curExercize, part: curPart, andTime: time)
 				
@@ -917,18 +930,18 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 		#endif
 		
 		DispatchQueue.main.async {
-			let changes = preferences.saveRemote + WCObject.decodeArray(userInfo[self.changesKey] as? [[String : Any]] ?? [])
-			let deletion = preferences.deleteRemote + CDRecordID.decodeArray(userInfo[self.deletionKey] as? [[String]] ?? [])
-			if preferences.runningWorkout != nil {
-				preferences.saveRemote = changes
-				preferences.deleteRemote = deletion
+			let changes = self.dataManager.preferences.saveRemote + WCObject.decodeArray(userInfo[self.changesKey] as? [[String : Any]] ?? [])
+			let deletion = self.dataManager.preferences.deleteRemote + CDRecordID.decodeArray(userInfo[self.deletionKey] as? [[String]] ?? [])
+			if self.dataManager.preferences.runningWorkout != nil {
+				self.dataManager.preferences.saveRemote = changes
+				self.dataManager.preferences.deleteRemote = deletion
 				
 				return
 			}
 			
-			if !dataManager.saveCounterPartUpdatesForChangedObjects(changes, andDeleted: deletion) {
-				preferences.saveRemote = changes
-				preferences.deleteRemote = deletion
+			if !self.dataManager.saveCounterPartUpdatesForChangedObjects(changes, andDeleted: deletion) {
+				self.dataManager.preferences.saveRemote = changes
+				self.dataManager.preferences.deleteRemote = deletion
 				
 				DispatchQueue.main.async {
 					let timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
@@ -937,19 +950,19 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 					RunLoop.main.add(timer, forMode: .commonModes)
 				}
 			} else {
-				preferences.saveRemote = []
-				preferences.deleteRemote = []
+				self.dataManager.preferences.saveRemote = []
+				self.dataManager.preferences.deleteRemote = []
 			}
 		}
 	}
 	
 	fileprivate func persistPendingChanges() {
 		DispatchQueue.main.async {
-			guard preferences.runningWorkout == nil else {
+			guard self.dataManager.preferences.runningWorkout == nil else {
 				return
 			}
 			
-			if !dataManager.saveCounterPartUpdatesForChangedObjects(preferences.saveRemote, andDeleted: preferences.deleteRemote) {
+			if !self.dataManager.saveCounterPartUpdatesForChangedObjects(self.dataManager.preferences.saveRemote, andDeleted: self.dataManager.preferences.deleteRemote) {
 				DispatchQueue.main.async {
 					let timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
 						self.persistPendingChanges()
@@ -957,28 +970,28 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 					RunLoop.main.add(timer, forMode: .commonModes)
 				}
 			} else {
-				preferences.saveRemote = []
-				preferences.deleteRemote = []
+				self.dataManager.preferences.saveRemote = []
+				self.dataManager.preferences.deleteRemote = []
 			}
 		}
 	}
 	
 	fileprivate func sendWorkoutStartDate() {
-		guard iswatchOS, preferences.runningWorkout != nil, canComunicate, let sess = self.session else {
+		guard iswatchOS, dataManager.preferences.runningWorkout != nil, canComunicate, let sess = self.session else {
 			return
 		}
 		
-		sess.transferUserInfo([currentWorkoutStartDate: preferences.currentStart])
+		sess.transferUserInfo([currentWorkoutStartDate: dataManager.preferences.currentStart])
 	}
 	
 	fileprivate func sendWorkoutStatusUpdate() {
-		guard iswatchOS, preferences.runningWorkout != nil, canComunicate, let sess = self.session else {
+		guard iswatchOS, dataManager.preferences.runningWorkout != nil, canComunicate, let sess = self.session else {
 			return
 		}
 		
 		sess.transferUserInfo([currentWorkoutProgress: [
-			preferences.currentExercize,
-			preferences.currentPart,
+			dataManager.preferences.currentExercize,
+			dataManager.preferences.currentPart,
 			Date()
 		]])
 	}
@@ -1016,8 +1029,8 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 					return
 				}
 				
-				preferences.initialSyncDone = true
-				dataManager.delegate?.refreshData()
+				self.dataManager.preferences.initialSyncDone = true
+				self.dataManager.delegate?.refreshData()
 			}) { _ in
 				DispatchQueue.main.async {
 					reschedule()
@@ -1029,7 +1042,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 	}
 	
 	fileprivate func sessionReachabilityDidChange(_ session: WCSession) {
-		guard iswatchOS, !preferences.initialSyncDone else {
+		guard iswatchOS, !dataManager.preferences.initialSyncDone else {
 			return
 		}
 		
@@ -1055,7 +1068,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 	}
 	
 	fileprivate func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
-		if let wData = message[remoteWorkoutStartKey] as? [String], iswatchOS, let wID = CDRecordID(wcRepresentation: wData), let workout = wID.getObject() as? Workout {
+		if let wData = message[remoteWorkoutStartKey] as? [String], iswatchOS, let wID = CDRecordID(wcRepresentation: wData), let workout = wID.getObject(fromDataManager: dataManager) as? Workout {
 			#if os(watchOS)
 				dataManager.delegate?.remoteWorkoutStart(workout)
 			#endif

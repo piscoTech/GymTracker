@@ -145,7 +145,7 @@ class ExecuteWorkoutController: NSObject {
 		
 		workout = data.workout
 		exercizes = workout.exercizeList
-		dataManager.setRunningWorkout(workout, fromSource: source)
+		appDelegate.dataManager.setRunningWorkout(workout, fromSource: source)
 		
 		if let (date, exercize, part) = data.resumeData {
 			restoring = true
@@ -161,11 +161,11 @@ class ExecuteWorkoutController: NSObject {
 				exercizes.remove(at: 0)
 			}
 			
-			preferences.currentExercize = exercize
-			preferences.currentPart = part
+			appDelegate.dataManager.preferences.currentExercize = exercize
+			appDelegate.dataManager.preferences.currentPart = part
 		} else {
-			preferences.currentExercize = 0
-			preferences.currentPart = 0
+			appDelegate.dataManager.preferences.currentExercize = 0
+			appDelegate.dataManager.preferences.currentPart = 0
 		}
 		
 		super.init()
@@ -187,7 +187,7 @@ class ExecuteWorkoutController: NSObject {
 				session.delegate = self
 				healthStore.start(session)
 			} catch {
-				dataManager.setRunningWorkout(nil, fromSource: source)
+				appDelegate.dataManager.setRunningWorkout(nil, fromSource: source)
 				
 				view.setWorkoutDoneText(NSLocalizedString("WORKOUT_START_ERR", comment: "Err starting"))
 				view.setWorkoutDoneViewHidden(false)
@@ -204,7 +204,7 @@ class ExecuteWorkoutController: NSObject {
 	
 	@available(watchOS, unavailable)
 	init?(mirrorWorkoutForViewController viewController: ExecuteWorkoutControllerDelegate) {
-		guard let workout = preferences.runningWorkout?.getObject() as? Workout else {
+		guard let workout = appDelegate.dataManager.preferences.runningWorkout?.getObject(fromDataManager: appDelegate.dataManager) as? Workout else {
 			return nil
 		}
 		
@@ -249,8 +249,8 @@ class ExecuteWorkoutController: NSObject {
 	// MARK: - Workout Handling
 	
 	fileprivate func workoutSessionStarted(_ date: Date? = nil) {
-		preferences.currentStart = start
-		dataManager.sendWorkoutStartDate()
+		appDelegate.dataManager.preferences.currentStart = start
+		appDelegate.dataManager.sendWorkoutStartDate()
 		
 		let heartUnit = HKUnit.count().unitDivided(by: .minute())
 		let heartRate = HKObjectType.quantityType(forIdentifier: .heartRate)!
@@ -279,7 +279,7 @@ class ExecuteWorkoutController: NSObject {
 			self.view.startTimer(at: self.start)
 			self.view.setNextUpTextHidden(false)
 			
-			dataManager.sendWorkoutStatusUpdate()
+			appDelegate.dataManager.sendWorkoutStatusUpdate()
 			self.displayStep()
 		}
 	}
@@ -343,11 +343,11 @@ class ExecuteWorkoutController: NSObject {
 			exercizes.remove(at: 0)
 			curPart = 0
 			
-			preferences.currentExercize += 1
-			preferences.currentPart = curPart
+			appDelegate.dataManager.preferences.currentExercize += 1
+			appDelegate.dataManager.preferences.currentPart = curPart
 		} else {
 			if curPart % 2 == 0 {
-				set = curEx.set(n: Int32(curPart / 2))
+				set = curEx[Int32(curPart / 2)]
 			}
 			
 			let maxPart = 2 * curEx.sets.count - 1
@@ -356,13 +356,13 @@ class ExecuteWorkoutController: NSObject {
 				exercizes.remove(at: 0)
 				curPart = 0
 				
-				preferences.currentExercize += 1
+				appDelegate.dataManager.preferences.currentExercize += 1
 			}
 			
-			preferences.currentPart = curPart
+			appDelegate.dataManager.preferences.currentPart = curPart
 		}
 		
-		dataManager.sendWorkoutStatusUpdate()
+		appDelegate.dataManager.sendWorkoutStatusUpdate()
 		return set
 	}
 	
@@ -388,7 +388,7 @@ class ExecuteWorkoutController: NSObject {
 			view.setCurrentExercizeViewHidden(false)
 			
 			let setN = curPart / 2
-			guard let set = curEx.set(n: Int32(setN)) else {
+			guard let set = curEx[Int32(setN)] else {
 				if !isMirroring {
 					nextStep()
 				}
@@ -449,12 +449,12 @@ class ExecuteWorkoutController: NSObject {
 			}
 			
 			let now = Date()
-			var endTime = preferences.currentRestEnd ?? (time ?? now).addingTimeInterval(restTime)
+			var endTime = appDelegate.dataManager.preferences.currentRestEnd ?? (time ?? now).addingTimeInterval(restTime)
 			if endTime < now {
 				endTime = now
 			}
 			let endsIn = endTime.timeIntervalSince(now)
-			preferences.currentRestEnd = endTime
+			appDelegate.dataManager.preferences.currentRestEnd = endTime
 			self.restEndDate = endTime
 			
 			view.startRestTimer(to: endTime)
@@ -472,7 +472,7 @@ class ExecuteWorkoutController: NSObject {
 				RunLoop.main.add(self.restTimer!, forMode: .commonModes)
 			}
 		} else {
-			preferences.currentRestEnd = nil
+			appDelegate.dataManager.preferences.currentRestEnd = nil
 			self.restEndDate = nil
 			
 			view.stopRestTimer()
@@ -490,7 +490,7 @@ class ExecuteWorkoutController: NSObject {
 			if nextEx.isRest {
 				txt = nextEx.rest.getDuration(hideHours: true) + nextRestTxt
 			} else {
-				let nextWeight = nextEx.set(n: 0)?.weight ?? 0
+				let nextWeight = nextEx[0]?.weight ?? 0
 				txt = nextEx.name! + (nextWeight > 0 ? ", \(nextWeight.toString())kg" : "")
 			}
 			view.setNextUpText(nextTxt + txt)
@@ -505,7 +505,7 @@ class ExecuteWorkoutController: NSObject {
 		}
 		
 		let endTxt = hasTerminationError ? NSLocalizedString("WORKOUT_STOP_ERR", comment: "Err") + "\n" : ""
-		dataManager.setRunningWorkout(nil, fromSource: source)
+		appDelegate.dataManager.setRunningWorkout(nil, fromSource: source)
 		
 		let activeEnergyType = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!
 		let device = HKDevice.local()
@@ -576,7 +576,7 @@ class ExecuteWorkoutController: NSObject {
 		}
 		
 		if self.start == nil {
-			start = preferences.currentStart
+			start = appDelegate.dataManager.preferences.currentStart
 			workoutSessionStarted()
 		}
 		
@@ -587,8 +587,8 @@ class ExecuteWorkoutController: NSObject {
 		curExercize = exercize
 		curPart = part
 		
-		preferences.currentExercize = curExercize
-		preferences.currentPart = curPart
+		appDelegate.dataManager.preferences.currentExercize = curExercize
+		appDelegate.dataManager.preferences.currentPart = curPart
 		
 		self.restoring = true
 		displayStep(withTime: date)
@@ -665,7 +665,7 @@ class ExecuteWorkoutController: NSObject {
 		self.terminateAndSave = false
 		endWorkoutSession()
 		terminate()
-		dataManager.setRunningWorkout(nil, fromSource: source)
+		appDelegate.dataManager.setRunningWorkout(nil, fromSource: source)
 		view.exitWorkoutTracking()
 	}
 	
@@ -679,7 +679,7 @@ class ExecuteWorkoutController: NSObject {
 		if curEx.isRest {
 			return (curEx.rest, end)
 		} else {
-			guard let set = curEx.set(n: Int32(curPart / 2)), curPart % 2 == 1 else {
+			guard let set = curEx[Int32(curPart / 2)], curPart % 2 == 1 else {
 				return nil
 			}
 			
@@ -689,7 +689,7 @@ class ExecuteWorkoutController: NSObject {
 	
 	var currentSetInfo: (exercize: String, setInfo: String, otherSetsInfo: String?)? {
 		let setN = curPart / 2
-		guard let curEx = exercizes.first, !curEx.isRest, let set = curEx.set(n: Int32(setN)) else {
+		guard let curEx = exercizes.first, !curEx.isRest, let set = curEx[Int32(setN)] else {
 			return nil
 		}
 		

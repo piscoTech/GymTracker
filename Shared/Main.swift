@@ -12,5 +12,4 @@ let applicationDocumentsDirectory: URL = {
 	return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last!
 }()
 
-let preferences = Preferences.getPreferences()
 let timesSign = "×"

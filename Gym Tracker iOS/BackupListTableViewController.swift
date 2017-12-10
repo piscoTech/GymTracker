@@ -26,13 +26,13 @@ class BackupListTableViewController: UITableViewController {
 	func updateList(lazy: Bool = false) {
 		let load = {
 			DispatchQueue.main.async {
-				self.backups = importExportManager.backups
+				self.backups = appDelegate.dataManager.importExportManager.backups
 				self.tableView.reloadSections([0], with: .automatic)
 			}
 		}
 		
 		if !lazy {
-			importExportManager.loadBackups {
+			appDelegate.dataManager.importExportManager.loadBackups {
 				load()
 			}
 		} else {
@@ -71,7 +71,7 @@ class BackupListTableViewController: UITableViewController {
 	@IBAction func backupNow(_ sender: UIBarButtonItem) {
 		sender.isEnabled = false
 		
-		importExportManager.doBackup(manual: true) { success in
+		appDelegate.dataManager.importExportManager.doBackup(manual: true) { success in
 			DispatchQueue.main.async {
 				sender.isEnabled = true
 				if success {
@@ -88,7 +88,7 @@ class BackupListTableViewController: UITableViewController {
 	}
 	
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return importExportManager.backups.count > 0
+        return appDelegate.dataManager.importExportManager.backups.count > 0
     }
 
 	override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
@@ -120,7 +120,7 @@ class BackupListTableViewController: UITableViewController {
 				self.loading = UIAlertController.getModalLoading()
 				appDelegate.workoutList.exitDetailAndCreation {
 					self.present(self.loading!, animated: true) {
-						importExportManager.import(self.backups[row.row].path, isRestoring: true, performCallback: { success, count, proceed in
+						appDelegate.dataManager.importExportManager.import(self.backups[row.row].path, isRestoring: true, performCallback: { success, count, proceed in
 							let confirm = {
 								let alert: UIAlertController
 								if let count = count, let proceed = proceed {
@@ -143,7 +143,11 @@ class BackupListTableViewController: UITableViewController {
 							} else {
 								confirm()
 							}
-						}) { success in
+						}) { wrkt in
+							let success = wrkt != nil
+							if success {
+								appDelegate.workoutList.refreshData()
+							}
 							let error = {
 								self.present(UIAlertController(simpleAlert: NSLocalizedString(success ? "RESTORE_SUCCESS" : "RESTORE_FAIL", comment: "err/ok"), message: nil), animated: true)
 							}
@@ -168,7 +172,7 @@ class BackupListTableViewController: UITableViewController {
 			let b = self.backups[row.row]
 			let confirm = UIAlertController(title: NSLocalizedString("DELETE_BACKUP_TITLE", comment: "Del"), message: NSLocalizedString("DELETE_BACKUP_CONFIRM", comment: "Del confirm") + b.date.getFormattedDateTime() + "?", preferredStyle: .actionSheet)
 			confirm.addAction(UIAlertAction(title: NSLocalizedString("DELETE_BACKUP", comment: "Del"), style: .destructive) { _ in
-				dataManager.deleteICloudDocument(b.path) { success in
+				appDelegate.dataManager.deleteICloudDocument(b.path) { success in
 					DispatchQueue.main.async {
 						if success {
 							self.backups.remove(at: row.row)

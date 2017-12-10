@@ -78,10 +78,10 @@ class UpdateWeightViewController: UIViewController {
 		if sum != 0 {
 			// Avoid unnecessary saves
 			set.set(weight: sum + set.weight)
-			if dataManager.persistChangesForObjects([set], andDeleteObjects: []) && doSave {
+			if appDelegate.dataManager.persistChangesForObjects([set], andDeleteObjects: []) && doSave {
 				delegate.setAddWeight(sum)
 			} else {
-				dataManager.discardAllChanges()
+				appDelegate.dataManager.discardAllChanges()
 			}
 		} else {
 			delegate.setAddWeight(sum)

@@ -159,7 +159,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 				return cell
 			}
 		case 1:
-			let s = exercize.set(n: setNumber(for: indexPath))!
+			let s = exercize[setNumber(for: indexPath)]!
 			switch setCellType(for: indexPath) {
 			case .rest:
 				let cell = tableView.dequeueReusableCell(withIdentifier: "rest", for: indexPath) as! RestCell
@@ -192,7 +192,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 			return
 		}
 		
-		let s = dataManager.newSet(for: exercize)
+		let s = appDelegate.dataManager.newSet(for: exercize)
 		s.set(rest: 60)
 	
 		if let tmp = sender as? ExercizeTableViewController, tmp == self {
@@ -212,7 +212,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 			return
 		}
 		
-		let s = dataManager.newSet(for: exercize)
+		let s = appDelegate.dataManager.newSet(for: exercize)
 		s.set(reps: last.reps)
 		s.set(weight: last.weight)
 		last.set(rest: setList.last?.rest ?? last.rest)
@@ -250,7 +250,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		
 		let setN = Int(setNumber(for: indexPath))
 		let isLast = setN == exercize.sets.count - 1
-		guard let set = exercize.set(n: Int32(setN)) else {
+		guard let set = exercize[Int32(setN)] else {
 			return
 		}
 		
@@ -440,7 +440,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	}
 	
 	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-		guard let setN = editRest, let set = exercize.set(n: Int32(setN)) else {
+		guard let setN = editRest, let set = exercize[Int32(setN)] else {
 			return
 		}
 		

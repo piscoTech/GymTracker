@@ -19,7 +19,7 @@ class WorkoutListTableViewController: UITableViewController {
 			workoutController?.delegate = self
 		}
 	}
-	var canEdit = preferences.runningWorkout == nil
+	lazy var canEdit = appDelegate.dataManager.preferences.runningWorkout == nil
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,7 +38,7 @@ class WorkoutListTableViewController: UITableViewController {
 		self.workouts.removeAll(keepingCapacity: true)
 		self.archivedWorkouts.removeAll(keepingCapacity: true)
 		
-		for w in Workout.getList() {
+		for w in Workout.getList(fromDataManager: appDelegate.dataManager) {
 			if w.archived {
 				archivedWorkouts.append(w)
 			} else {
@@ -161,10 +161,10 @@ class WorkoutListTableViewController: UITableViewController {
 			let errTitle = NSLocalizedString((workout.archived ? "UN" : "") + "ARCHIVE_WORKOUT_FAIL", comment: "(Un)archive fail")
 			let archived = workout.archived
 			workout.archived = !archived
-			if dataManager.persistChangesForObjects([workout], andDeleteObjects: []) {
+			if appDelegate.dataManager.persistChangesForObjects([workout], andDeleteObjects: []) {
 				self.updateWorkout(workout, how: .archiveChange, wasArchived: archived)
 			} else {
-				dataManager.discardAllChanges()
+				appDelegate.dataManager.discardAllChanges()
 				let alert = UIAlertController(simpleAlert: errTitle, message: nil)
 				self.present(alert, animated: true)
 			}
@@ -181,10 +181,10 @@ class WorkoutListTableViewController: UITableViewController {
 			let confirm = UIAlertController(title: NSLocalizedString("DELETE_WORKOUT", comment: "Del"), message: NSLocalizedString("DELETE_WORKOUT_CONFIRM", comment: "Del confirm") + workout.name + "?", preferredStyle: .actionSheet)
 			confirm.addAction(UIAlertAction(title: NSLocalizedString("DELETE", comment: "Del"), style: .destructive) { _ in
 				let archived = workout.archived
-				if dataManager.persistChangesForObjects([], andDeleteObjects: [workout]) {
+				if appDelegate.dataManager.persistChangesForObjects([], andDeleteObjects: [workout]) {
 					self.updateWorkout(workout, how: .delete, wasArchived: archived)
 				} else {
-					dataManager.discardAllChanges()
+					appDelegate.dataManager.discardAllChanges()
 					let alert = UIAlertController(simpleAlert: NSLocalizedString("DELETE_WORKOUT_FAIL", comment: "Err"), message: nil)
 					self.present(alert, animated: true)
 				}

@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 
 @objc(Exercize)
-class Exercize: DataObject {
+public class Exercize: DataObject {
 	
 	override class var objectType: String {
 		return "Exercize"
@@ -37,11 +37,11 @@ class Exercize: DataObject {
 	private let nameKey = "name"
 	private let restKey = "rest"
 	
-	override var description: String {
+	override public var description: String {
 		return "N \(order): \(String(describing: name)) - \(sets.count) set(s) - \(setsSummary)"
 	}
 	
-	override class func loadWithID(_ id: String) -> Exercize? {
+	override class func loadWithID(_ id: String, fromDataManager dataManager: DataManager) -> Exercize? {
 		let req = NSFetchRequest<Exercize>(entityName: self.objectType)
 		let pred = NSPredicate(format: "id == %@", id)
 		req.predicate = pred
@@ -57,7 +57,7 @@ class Exercize: DataObject {
 		return Array(sets).sorted { $0.order < $1.order }
 	}
 	
-	func set(n: Int32) -> RepsSet? {
+	subscript (n: Int32) -> RepsSet? {
 		return sets.first { $0.order == n }
 	}
 	
@@ -155,12 +155,12 @@ class Exercize: DataObject {
 		return obj
 	}
 	
-	override func mergeUpdatesFrom(_ src: WCObject) -> Bool {
-		guard super.mergeUpdatesFrom(src) else {
+	override func mergeUpdatesFrom(_ src: WCObject, inDataManager dataManager: DataManager) -> Bool {
+		guard super.mergeUpdatesFrom(src, inDataManager: dataManager) else {
 			return false
 		}
 		
-		guard let wData = src[workoutKey] as? [String], let workout = CDRecordID(wcRepresentation: wData)?.getObject() as? Workout else {
+		guard let wData = src[workoutKey] as? [String], let workout = CDRecordID(wcRepresentation: wData)?.getObject(fromDataManager: dataManager) as? Workout else {
 			return false
 		}
 		

@@ -7,7 +7,7 @@
 //
 
 import XCTest
-import Foundation
+@testable import Gym_Tracker
 
 class WorkoutTest: XCTestCase {
 	
@@ -31,6 +31,8 @@ class WorkoutTest: XCTestCase {
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
+		
+		dataManager.discardAllChanges()
     }
     
     func testCreation() {

@@ -53,15 +53,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	private var tryImport: URL?
 	private var launched = false
+
+	private(set) var dataManager: DataManager!
 	
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+		dataManager = DataManager(for: .application)
+		
 		tabController = self.window!.rootViewController as! TabBarController
 		tabController.delegate = tabController
 		tabController.loadNeededControllers()
 		
-		if preferences.runningWorkout != nil, let src = preferences.runningWorkoutSource {
+		if dataManager.preferences.runningWorkout != nil, let src = dataManager.preferences.runningWorkoutSource {
 			if src == .watch {
-				self.updateMirroredWorkout(withCurrentExercize: preferences.currentExercize, part: preferences.currentPart, andTime: Date())
+				self.updateMirroredWorkout(withCurrentExercize: dataManager.preferences.currentExercize, part: dataManager.preferences.currentPart, andTime: Date())
 			} else {
 				self.startLocalWorkout()
 			}
@@ -71,15 +75,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		dataManager.delegate = self
 		
-		if !preferences.authorized || preferences.authVersion < authRequired {
+		if !dataManager.preferences.authorized || dataManager.preferences.authVersion < authRequired {
 			authorizeHealthAccess()
 		}
 		
-		if !preferences.firstLaunchDone {
-			preferences.firstLaunchDone = true
+		if !dataManager.preferences.firstLaunchDone {
+			dataManager.preferences.firstLaunchDone = true
 			
 			// Just set the default choice to use backups, checks if this is possible will be done by the appropriate manager
-			preferences.useBackups = true
+			dataManager.preferences.useBackups = true
 		}
 		
 		let center = UNUserNotificationCenter.current()
@@ -133,7 +137,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		launched = true
 		
-		importExportManager.doBackup()
+		dataManager.importExportManager.doBackup()
 		importFile()
 		
 		return true
@@ -157,11 +161,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		DispatchQueue.main.async {
 			if let url = self.tryImport {
-				if ".\(url.pathExtension)" == importExportManager.fileExtension {
+				if ".\(url.pathExtension)" == self.dataManager.importExportManager.fileExtension {
 					if self.canEdit {
 						let loading = UIAlertController.getModalLoading()
 						self.tabController.present(loading, animated: true) {
-							importExportManager.import(url, isRestoring: false, performCallback: { _, _, proceed in
+							self.dataManager.importExportManager.import(url, isRestoring: false, performCallback: { _, _, proceed in
 								if let proceed = proceed {
 									proceed()
 								} else {
@@ -170,7 +174,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 										self.tabController.present(alert, animated: true)
 									}
 								}
-							}) { success in
+							}) { wrkt in
+								let success = wrkt != nil
+								if success {
+									appDelegate.workoutList.refreshData()
+								}
+								
 								loading.dismiss(animated: true) {
 									self.tabController.present(UIAlertController(simpleAlert: NSLocalizedString(success ? "IMPORT_SUCCESS" : "IMPORT_FAIL", comment: "err/ok"), message: nil), animated: true)
 								}
@@ -193,8 +202,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func authorizeHealthAccess() {
 		healthStore.requestAuthorization(toShare: healthWriteData, read: healthReadData) { success, _ in
 			if success {
-				preferences.authorized = true
-				preferences.authVersion = authRequired
+				self.dataManager.preferences.authorized = true
+				self.dataManager.preferences.authVersion = authRequired
 			}
 		}
 	}
@@ -202,8 +211,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func applicationShouldRequestHealthAuthorization(_ application: UIApplication) {
 		healthStore.handleAuthorizationForExtension { success, _ in
 			if success {
-				preferences.authorized = true
-				preferences.authVersion = authRequired
+				self.dataManager.preferences.authorized = true
+				self.dataManager.preferences.authVersion = authRequired
 			}
 		}
 	}
@@ -260,7 +269,7 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 				if !success {
 					displayError()
 				} else {
-					if !dataManager.requestStarting(workout) {
+					if !self.dataManager.requestStarting(workout) {
 						displayError()
 					}
 				}
@@ -271,7 +280,7 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 	}
 	
 	fileprivate func startLocalWorkout(_ workout: Workout? = nil) {
-		guard workoutController == nil, workout == nil || (workout != nil && preferences.runningWorkout == nil) else {
+		guard workoutController == nil, workout == nil || dataManager.preferences.runningWorkout == nil else {
 			return
 		}
 		
@@ -279,11 +288,13 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 		if let w = workout {
 			data = ExecuteWorkoutData(workout: w, resumeData: nil)
 		} else {
-			guard let wID = preferences.runningWorkout, let w = wID.getObject() as? Workout, let src = preferences.runningWorkoutSource, src == .phone else {
+			guard let wID = dataManager.preferences.runningWorkout,
+				let w = wID.getObject(fromDataManager: dataManager) as? Workout,
+				let src = dataManager.preferences.runningWorkoutSource, src == .phone else {
 				return
 			}
 			
-			data = ExecuteWorkoutData(workout: w, resumeData: (start: preferences.currentStart, curExercize: preferences.currentExercize, curPart: preferences.currentPart))
+			data = ExecuteWorkoutData(workout: w, resumeData: (start: dataManager.preferences.currentStart, curExercize: dataManager.preferences.currentExercize, curPart: dataManager.preferences.currentPart))
 		}
 		
 		workoutController = ExecuteWorkoutController(data: data, viewController: self, source: .phone)
@@ -526,7 +537,7 @@ extension AppDelegate: DataManagerDelegate {
 	}
 	
 	func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date) {
-		guard preferences.runningWorkout != nil else {
+		guard dataManager.preferences.runningWorkout != nil else {
 			return
 		}
 		

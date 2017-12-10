@@ -36,7 +36,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 
 		// Create a new workout
 		if editMode && workout == nil {
-			workout = dataManager.newWorkout()
+			workout = appDelegate.dataManager.newWorkout()
 			isNew = true
 		}
 		workoutValidator = OrganizedWorkout(workout)
@@ -285,7 +285,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		
 		let changes = [workout as DataObject]
 			+ workout.exercizes.map { [$0 as DataObject] + Array($0.sets) as [DataObject] }.reduce([]) { $0 + $1 }
-		if dataManager.persistChangesForObjects(changes, andDeleteObjects: deletedEntities) {
+		if appDelegate.dataManager.persistChangesForObjects(changes, andDeleteObjects: deletedEntities) {
 			if isNew {
 				delegate.updateWorkout(workout, how: .new, wasArchived: false)
 				self.dismiss(animated: true)
@@ -317,7 +317,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 			tableView.deleteRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
 		}
 		
-		let e = dataManager.newExercize(for: workout)
+		let e = appDelegate.dataManager.newExercize(for: workout)
 		e.set(name: nil)
 		
 		tableView.insertRows(at: [IndexPath(row: Int(e.order), section: 1)], with: .automatic)
@@ -370,11 +370,11 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		let confirm = UIAlertController(title: NSLocalizedString("DELETE_WORKOUT", comment: "Del"), message: NSLocalizedString("DELETE_WORKOUT_CONFIRM", comment: "Del confirm") + workout.name + "?", preferredStyle: .actionSheet)
 		confirm.addAction(UIAlertAction(title: NSLocalizedString("DELETE", comment: "Del"), style: .destructive) { _ in
 			let archived = self.workout.archived
-			if dataManager.persistChangesForObjects([], andDeleteObjects: [self.workout]) {
+			if appDelegate.dataManager.persistChangesForObjects([], andDeleteObjects: [self.workout]) {
 				self.delegate.updateWorkout(self.workout, how: .delete, wasArchived: archived)
 				_ = self.navigationController?.popViewController(animated: true)
 			} else {
-				dataManager.discardAllChanges()
+				appDelegate.dataManager.discardAllChanges()
 				let alert = UIAlertController(simpleAlert: NSLocalizedString("DELETE_WORKOUT_FAIL", comment: "Err"), message: nil)
 				self.present(alert, animated: true)
 			}
@@ -393,12 +393,12 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		// TODO: Rely on OrganizedWorkout
 		let archived = workout.archived
 		workout.archived = !archived
-		if dataManager.persistChangesForObjects([self.workout], andDeleteObjects: []) {
+		if appDelegate.dataManager.persistChangesForObjects([self.workout], andDeleteObjects: []) {
 			self.delegate.updateWorkout(self.workout, how: .archiveChange, wasArchived: archived)
 			self.updateButtons()
 			tableView.reloadSections(IndexSet(integer: 2), with: .fade)
 		} else {
-			dataManager.discardAllChanges()
+			appDelegate.dataManager.discardAllChanges()
 			let alert = UIAlertController(simpleAlert: errTitle, message: nil)
 			self.present(alert, animated: true)
 		}
@@ -478,7 +478,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 			tableView.deleteRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
 		}
 		
-		let r = dataManager.newExercize(for: workout)
+		let r = appDelegate.dataManager.newExercize(for: workout)
 		r.set(rest: 4 * 60)
 		
 		tableView.insertRows(at: [IndexPath(row: Int(r.order), section: 1)], with: .automatic)
@@ -611,7 +611,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	}
 	
 	func cancel(_ sender: AnyObject, animated: Bool, animationCompletion: (() -> Void)?) {
-		dataManager.discardAllChanges()
+		appDelegate.dataManager.discardAllChanges()
 		
 		if isNew {
 			self.dismiss(animated: animated, completion: animationCompletion)
@@ -624,7 +624,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		let loading = UIAlertController.getModalLoading()
 		present(loading, animated: true)
 		DispatchQueue.background.async {
-			if let path = importExportManager.export(workout: self.workout) {
+			if let path = appDelegate.dataManager.importExportManager.export(workout: self.workout) {
 				DispatchQueue.main.async {
 					loading.dismiss(animated: true) {
 						self.documentController = UIActivityViewController(activityItems: [path], applicationActivities: nil)

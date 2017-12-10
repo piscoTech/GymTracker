@@ -10,7 +10,9 @@
 import Foundation
 import MBLibrary
 
-class ImportExportBackupManager: NSObject {
+public class ImportExportBackupManager: NSObject {
+	
+	let dataManager: DataManager
 	
 	let fileExtension = ".wrkt"
 	let keepBackups = 5
@@ -18,39 +20,43 @@ class ImportExportBackupManager: NSObject {
 	
 	let delayReloadTime: TimeInterval = 2
 	
-	let workoutsTag = "workoutlist"
-	let workoutTag = "workout"
-	let workoutNameTag = "name"
-	let archivedTag = "archived"
-	let exercizesTag = "exercizes"
+	static let workoutsTag = "workoutlist"
+	static let workoutTag = "workout"
+	static let workoutNameTag = "name"
+	static let archivedTag = "archived"
+	static let exercizesTag = "exercizes"
 	
-	let restTag = "rest"
-	let exercizeTag = "exercize"
-	let exercizeNameTag = "name"
-	let setsTag = "sets"
+	static let restTag = "rest"
+	static let exercizeTag = "exercize"
+	static let exercizeNameTag = "name"
+	static let setsTag = "sets"
 	
-	let setTag = "set"
-	let setRestTag = "rest"
-	let setWeightTag = "weight"
-	let setRepsTag = "reps"
+	static let setTag = "set"
+	static let setRestTag = "rest"
+	static let setWeightTag = "weight"
+	static let setRepsTag = "reps"
 	
 	private let nameFilter = try! NSRegularExpression(pattern: "[^a-z0-9]+", options: .caseInsensitive)
-	
-	// MARK: - Initialization
-	
-	private static var manager: ImportExportBackupManager?
-	
-	class func getManager() -> ImportExportBackupManager {
-		return ImportExportBackupManager.manager ?? {
-			let m = ImportExportBackupManager()
-			ImportExportBackupManager.manager = m
-			return m
-		}()
-	}
+//
+//	private static var manager: ImportExportBackupManager?
+//
+//	class func getManager() -> ImportExportBackupManager {
+//		return ImportExportBackupManager.manager ?? {
+//			let m = ImportExportBackupManager()
+//			ImportExportBackupManager.manager = m
+//			return m
+//		}()
+//	}
 	
 	private var query: NSMetadataQuery?
 	
 	private override init() {
+		fatalError("Use init(dataManager:_)")
+	}
+	
+	init(dataManager: DataManager) {
+		self.dataManager = dataManager
+		
 		super.init()
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(backupsCollected(_:)), name: .NSMetadataQueryDidFinishGathering, object: nil)
@@ -116,14 +122,14 @@ class ImportExportBackupManager: NSObject {
 	}
 	
 	func export() -> URL? {
-		return export(workouts: Workout.getList(), name: Date().getWorkoutExportName())
+		return export(workouts: Workout.getList(fromDataManager: dataManager), name: Date().getWorkoutExportName())
 	}
 	
 	private func export(workouts: [Workout], name: String) -> URL? {
 		let res: String = dataManager.performCoreDataCodeAndWait {
-			var xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><\(self.workoutsTag)>"
+			var xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><\(ImportExportBackupManager.workoutsTag)>"
 			xml += workouts.map { $0.export() }.joined()
-			xml += "</\(self.workoutsTag)>\n"
+			xml += "</\(ImportExportBackupManager.workoutsTag)>\n"
 			
 			return xml
 		}
@@ -141,12 +147,12 @@ class ImportExportBackupManager: NSObject {
 	
 	func doBackup(manual: Bool = false, completion: ((Bool) -> Void)? = nil) {
 		if !manual {
-			guard preferences.useBackups else {
+			guard dataManager.preferences.useBackups else {
 				completion?(false)
 				return
 			}
 			
-			if let last = preferences.lastBackup {
+			if let last = dataManager.preferences.lastBackup {
 				if Date().timeIntervalSince(last) < autoBackupTime {
 					completion?(false)
 					return
@@ -165,15 +171,15 @@ class ImportExportBackupManager: NSObject {
 				}
 				
 				DispatchQueue.background.async {
-					dataManager.loadDocumentToICloud(file) { success in
+					self.dataManager.loadDocumentToICloud(file) { success in
 						if success {
-							preferences.lastBackup = Date()
+							self.dataManager.preferences.lastBackup = Date()
 							DispatchQueue.main.asyncAfter(delay: self.delayReloadTime) {
 								self.loadBackups {
 									if self.backups.count > self.keepBackups {
 										var waiting = self.backups.count - self.keepBackups
 										for b in self.backups.suffix(from: self.keepBackups) {
-											dataManager.deleteICloudDocument(b.path) { success in
+											self.dataManager.deleteICloudDocument(b.path) { success in
 												DispatchQueue.main.async {
 													waiting -= 1
 													if success {
@@ -200,34 +206,33 @@ class ImportExportBackupManager: NSObject {
 		}
 	}
 	
-	public func `import`(_ file: URL, isRestoring restore: Bool, performCallback: (Bool, Int?, (() -> ())?) -> Void, callback: @escaping (Bool) -> Void) {
+	public func `import`(_ file: URL, isRestoring restore: Bool, performCallback: (Bool, Int?, (() -> ())?) -> Void, callback: @escaping ([Workout]?) -> Void) {
 		if let xsd = Bundle.main.url(forResource: "workout", withExtension: "xsd"),
 			let workouts = file.loadAsXML(validatingWithXSD: xsd)?.children, workouts.count > 0 {
 			performCallback(true, workouts.count) {
 				DispatchQueue.main.async {
-					var save = [DataObject]()
-                    var delete: [DataObject] = restore ? Workout.getList() : []
+					var saveWorkouts = [Workout]()
+					var saveOthers = [DataObject]()
+					var delete = restore ? Workout.getList(fromDataManager: self.dataManager) : []
 					
 					for wData in workouts {
-						let (w, success) = Workout.import(fromXML: wData)
+						let (w, success) = Workout.import(fromXML: wData, withDataManager: self.dataManager)
 						
 						if let w = w {
-                            let objs = [w as DataObject]
-                                + w.exercizes.map { [$0 as DataObject] + Array($0.sets) as [DataObject] }.reduce([]) { $0 + $1 }
-							if success {
-								save += objs
+                            if success {
+								saveWorkouts.append(w)
+								saveOthers += w.exercizes.map { [$0 as DataObject] + Array($0.sets) as [DataObject] }.reduce([]) { $0 + $1 }
 							} else {
-								delete += objs
+								delete.append(w)
 							}
 						}
 					}
 					
-					if dataManager.persistChangesForObjects(save, andDeleteObjects: delete) {
-						appDelegate.workoutList.refreshData()
-						callback(true)
+					if self.dataManager.persistChangesForObjects(saveWorkouts + saveOthers, andDeleteObjects: delete) {
+						callback(saveWorkouts)
 					} else {
-						dataManager.discardAllChanges()
-						callback(false)
+						self.dataManager.discardAllChanges()
+						callback(nil)
 					}
 				}
 			}

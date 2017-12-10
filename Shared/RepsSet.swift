@@ -11,7 +11,7 @@ import CoreData
 import MBLibrary
 
 @objc(RepsSet)
-class RepsSet: DataObject {
+public class RepsSet: DataObject {
 	
 	override class var objectType: String {
 		return "RepsSet"
@@ -32,11 +32,11 @@ class RepsSet: DataObject {
 	private let weightKey = "weight"
 	private let restKey = "rest"
 	
-	override var description: String {
+	override public var description: String {
 		return "\(reps)" + (weight > 0 ? "\(timesSign)\(weight.toString())kg" : "")
 	}
 	
-	override class func loadWithID(_ id: String) -> RepsSet? {
+	override class func loadWithID(_ id: String, fromDataManager dataManager: DataManager) -> RepsSet? {
 		let req = NSFetchRequest<RepsSet>(entityName: self.objectType)
 		let pred = NSPredicate(format: "id == %@", id)
 		req.predicate = pred
@@ -76,12 +76,12 @@ class RepsSet: DataObject {
 		return obj
 	}
 	
-	override func mergeUpdatesFrom(_ src: WCObject) -> Bool {
-		guard super.mergeUpdatesFrom(src) else {
+	override func mergeUpdatesFrom(_ src: WCObject, inDataManager dataManager: DataManager) -> Bool {
+		guard super.mergeUpdatesFrom(src, inDataManager: dataManager) else {
 			return false
 		}
 		
-		guard let eData = src[exercizeKey] as? [String], let exercize = CDRecordID(wcRepresentation: eData)?.getObject() as? Exercize else {
+		guard let eData = src[exercizeKey] as? [String], let exercize = CDRecordID(wcRepresentation: eData)?.getObject(fromDataManager: dataManager) as? Exercize else {
 			return false
 		}
 		

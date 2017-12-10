@@ -46,7 +46,7 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 	
 	func reloadData(checkExistence: Bool = true) {
 		if checkExistence {
-			guard workout.stillExists(), !workout.archived else {
+			guard workout.stillExists(inDataManager: appDelegate.dataManager), !workout.archived else {
 				self.pop()
 				
 				return
@@ -85,7 +85,7 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 	}
 	
 	@IBAction func startWorkout() {
-		guard delegate.canEdit, preferences.runningWorkout == nil else {
+		guard delegate.canEdit, appDelegate.dataManager.preferences.runningWorkout == nil else {
 			return
 		}
 		

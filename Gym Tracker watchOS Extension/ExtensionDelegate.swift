@@ -23,14 +23,21 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
 	weak var executeWorkout: ExecuteWorkoutInterfaceController?
 	
 	var tryResumeData: (workout: Workout, start: Date, curExercize: Int, curPart: Int)?
+	
+	private(set) var dataManager: DataManager!
 
     func applicationDidFinishLaunching() {
         // Perform any final initialization of your application.
 		
+		dataManager = DataManager(for: .application)
 		dataManager.delegate = self
-		if let src = preferences.runningWorkoutSource, src == .watch, let workoutID = preferences.runningWorkout {
-			if let workout = workoutID.getObject() as? Workout {
-				tryResumeData = (workout, preferences.currentStart, preferences.currentExercize, preferences.currentPart)
+		if let src = dataManager.preferences.runningWorkoutSource, src == .watch,
+			let workoutID = dataManager.preferences.runningWorkout {
+			if let workout = workoutID.getObject(fromDataManager: dataManager) as? Workout {
+				tryResumeData = (workout,
+								 dataManager.preferences.currentStart,
+								 dataManager.preferences.currentExercize,
+								 dataManager.preferences.currentPart)
 				
 				workoutList?.resumeWorkout()
 			}

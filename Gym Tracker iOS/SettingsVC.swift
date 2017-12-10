@@ -30,9 +30,9 @@ class SettingsViewController: UITableViewController {
 		backupUsageManual = NSLocalizedString("BACKUP_USAGE_MANUAL", comment: "How-to")
 		backupUsageAuto = NSLocalizedString("BACKUP_USAGE_AUTO", comment: "How-to")
 		
-		dataManager.reportICloudStatus { res in
+		appDelegate.dataManager.reportICloudStatus { res in
 			self.iCloudEnabled = res
-			importExportManager.doBackup()
+			appDelegate.dataManager.importExportManager.doBackup()
 			
 			DispatchQueue.main.async {
 				self.tableView.reloadSections([1], with: .automatic)
@@ -47,7 +47,9 @@ class SettingsViewController: UITableViewController {
 	override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
 		switch section {
 		case 1:
-			return iCloudEnabled ? (preferences.useBackups ? backupUsageAuto : backupUsageManual) : errNoBackup
+			return iCloudEnabled ? (
+				appDelegate.dataManager.preferences.useBackups ? backupUsageAuto : backupUsageManual
+				) : errNoBackup
 		case 2:
 			return appInfo
 		default:
@@ -73,7 +75,7 @@ class SettingsViewController: UITableViewController {
 				let cell = tableView.dequeueReusableCell(withIdentifier: "enableBackup", for: indexPath)
 				let swt = cell.viewWithTag(10) as! UISwitch
 				swt.isEnabled = iCloudEnabled
-				swt.isOn = iCloudEnabled && preferences.useBackups
+				swt.isOn = iCloudEnabled && appDelegate.dataManager.preferences.useBackups
 				
 				return cell
 			} else {
@@ -109,10 +111,10 @@ class SettingsViewController: UITableViewController {
 			return
 		}
 		
-		preferences.useBackups = sender.isOn
+		appDelegate.dataManager.preferences.useBackups = sender.isOn
 		tableView.reloadSections([1], with: .automatic)
 		if sender.isOn {
-			importExportManager.doBackup()
+			appDelegate.dataManager.importExportManager.doBackup()
 		}
 	}
 	

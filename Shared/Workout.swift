@@ -11,13 +11,13 @@ import CoreData
 
 // TODO: Make Sequence
 @objc(Workout)
-class Workout: DataObject {
+public class Workout: DataObject {
 	
 	override class var objectType: String {
 		return "Workout"
 	}
 	
-	class func getList() -> [Workout] {
+	class func getList(fromDataManager dataManager: DataManager) -> [Workout] {
 		let workoutQuery = NSFetchRequest<Workout>(entityName: self.objectType)
 		var list = dataManager.executeFetchRequest(workoutQuery) ?? []
 		list.sort { $0.name < $1.name }
@@ -33,12 +33,12 @@ class Workout: DataObject {
 	private let nameKey = "name"
 	private let archivedKey = "archived"
 	
-	override var description: String {
+	override public var description: String {
 		let n = exercizes.filter { !$0.isRest }.count
 		return "\(n) " + NSLocalizedString("EXERCIZE" + (n > 1 ? "S" : ""), comment: "exercize(s)").lowercased()
 	}
 	
-	override class func loadWithID(_ id: String) -> Workout? {
+	override class func loadWithID(_ id: String, fromDataManager dataManager: DataManager) -> Workout? {
 		let req = NSFetchRequest<Workout>(entityName: self.objectType)
 		let pred = NSPredicate(format: "id == %@", id)
 		req.predicate = pred
@@ -156,8 +156,8 @@ class Workout: DataObject {
 		return obj
 	}
 	
-	override func mergeUpdatesFrom(_ src: WCObject) -> Bool {
-		guard super.mergeUpdatesFrom(src) else {
+	override func mergeUpdatesFrom(_ src: WCObject, inDataManager dataManager: DataManager) -> Bool {
+		guard super.mergeUpdatesFrom(src, inDataManager: dataManager) else {
 			return false
 		}
 		

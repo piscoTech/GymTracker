@@ -9,7 +9,7 @@
 import Foundation
 
 // TODO: Make IteratorProtocol, next() must return nil if invalid
-class OrganizedWorkout {
+public class OrganizedWorkout {
 	
 	private(set) var raw: Workout
 	
@@ -18,6 +18,15 @@ class OrganizedWorkout {
 	}
 	
 	// MARK: - Underlying Layer Accessors
+	
+	var name: String {
+		get {
+			return raw.name
+		}
+		set {
+			raw.set(name: newValue)
+		}
+	}
 	
 	func set(name: String) {
 		raw.set(name: name)

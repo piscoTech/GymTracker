@@ -9,7 +9,6 @@
 import Foundation
 import HealthKit
 
-let dataManager = DataManager.getManager()
 let maxRest: TimeInterval = 5 * 60
 
 ///Keep track of the version of health authorization required, increase this number to automatically display an authorization request.

@@ -58,23 +58,23 @@ class Preferences {
 	
 	// MARK: - Initialization
 	
-	private static var pref: Preferences?
+//	private static var pref: Preferences?
 	
 	private var local: KeyValueStore
+//
+//	class func getPreferences() -> Preferences {
+//		return Preferences.pref ?? {
+//			let p = Preferences()
+//			Preferences.pref = p
+//			return p
+//		}()
+//	}
 	
-	class func getPreferences() -> Preferences {
-		return Preferences.pref ?? {
-			let p = Preferences()
-			Preferences.pref = p
-			return p
-		}()
-	}
-	
-	class func activate() {
-		let _ = getPreferences()
-	}
-	
-	private init() {
+//	class func activate() {
+//		let _ = getPreferences()
+//	}
+//
+	init() {
 		local = KeyValueStore(userDefaults: UserDefaults.standard)
 		
 		print("Preferences initialized")

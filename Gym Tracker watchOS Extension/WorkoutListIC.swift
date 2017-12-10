@@ -18,7 +18,7 @@ class WorkoutListInterfaceController: WKInterfaceController {
 	@IBOutlet weak var table: WKInterfaceTable!
 	@IBOutlet weak var unlockMsg: WKInterfaceLabel!
 	
-	var canEdit = preferences.runningWorkout == nil
+	var canEdit = appDelegate.dataManager.preferences.runningWorkout == nil
 	private var activated = false
 	private(set) var resuming = false
 
@@ -35,7 +35,7 @@ class WorkoutListInterfaceController: WKInterfaceController {
         // This method is called when watch view controller is about to be visible to user
         super.willActivate()
 		
-		if !preferences.authorized || preferences.authVersion < authRequired {
+		if !appDelegate.dataManager.preferences.authorized || appDelegate.dataManager.preferences.authVersion < authRequired {
 			authorize()
 		}
 		
@@ -49,7 +49,7 @@ class WorkoutListInterfaceController: WKInterfaceController {
     }
 	
 	func reloadData() {
-		if !preferences.initialSyncDone && dataManager.askPhoneForData() {
+		if !appDelegate.dataManager.preferences.initialSyncDone && appDelegate.dataManager.askPhoneForData() {
 			table.setHidden(true)
 			unlockMsg.setHidden(false)
 		} else {
@@ -59,7 +59,7 @@ class WorkoutListInterfaceController: WKInterfaceController {
 		
 		self.workouts.removeAll(keepingCapacity: true)
 		
-		for w in Workout.getList() {
+		for w in Workout.getList(fromDataManager: appDelegate.dataManager) {
 			if !w.archived {
 				workouts.append(w)
 			}
@@ -84,15 +84,15 @@ class WorkoutListInterfaceController: WKInterfaceController {
 	}
 	
 	@IBAction func forceReloadData() {
-		preferences.initialSyncDone = false
+		appDelegate.dataManager.preferences.initialSyncDone = false
 		reloadData()
 	}
 	
 	func authorize() {
 		healthStore.requestAuthorization(toShare: healthWriteData, read: healthReadData) { (success, _) in
 			if success {
-				preferences.authorized = true
-				preferences.authVersion = authRequired
+				appDelegate.dataManager.preferences.authorized = true
+				appDelegate.dataManager.preferences.authVersion = authRequired
 			}
 		}
 	}
