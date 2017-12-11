@@ -54,30 +54,22 @@ enum RunningWorkoutSource: String {
 	
 }
 
+// MARK: -
+
 class Preferences {
 	
-	// MARK: - Initialization
-	
-//	private static var pref: Preferences?
-	
+	let use: DataManager.Usage
 	private var local: KeyValueStore
-//
-//	class func getPreferences() -> Preferences {
-//		return Preferences.pref ?? {
-//			let p = Preferences()
-//			Preferences.pref = p
-//			return p
-//		}()
-//	}
-	
-//	class func activate() {
-//		let _ = getPreferences()
-//	}
-//
-	init() {
-		local = KeyValueStore(userDefaults: UserDefaults.standard)
+
+	init(for use: DataManager.Usage) {
+		self.use = use
+		if use == .application {
+			local = KeyValueStore(userDefaults: UserDefaults.standard)
+		} else {
+			local = KeyValueStore(userDefaults: UserDefaults())
+		}
 		
-		print("Preferences initialized")
+		print("\(use) Preferences initialized")
 	}
 	
 	// MARK: - Data

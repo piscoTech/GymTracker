@@ -19,6 +19,9 @@
 		7A2E10411FBDD4C2004767D7 /* Main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A2E103F1FBDD4C2004767D7 /* Main.swift */; };
 		7A2E10461FBDE2EA004767D7 /* OrganizedWorkout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFDA7DC1FBB64A70055C768 /* OrganizedWorkout.swift */; };
 		7A3F61171E92958F000F7514 /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A3F61161E92958F000F7514 /* SettingsVC.swift */; };
+		7A45113A1FDDCCFA0065282A /* oldVersion_1.1.1.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7A4511371FDDCCF90065282A /* oldVersion_1.1.1.xml */; };
+		7A45113C1FDDD4510065282A /* invalidCircuitSets.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7A45113B1FDDD4500065282A /* invalidCircuitSets.xml */; };
+		7A4DC7A01FDDC9AB00BC60FE /* invalidCircuitRest.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7A4DC79F1FDDC9AB00BC60FE /* invalidCircuitRest.xml */; };
 		7A4DF0171E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4DF0161E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift */; };
 		7A5346B51E86B16400AC5638 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A5346B41E86B16400AC5638 /* HealthKit.framework */; };
 		7A5346BB1E86BA7000AC5638 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A5346BA1E86BA7000AC5638 /* HealthKit.framework */; };
@@ -206,7 +209,10 @@
 		7A2E103F1FBDD4C2004767D7 /* Main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Main.swift; sourceTree = "<group>"; };
 		7A2E10431FBDDDBA004767D7 /* OrganizedWorkoutTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizedWorkoutTest.swift; sourceTree = "<group>"; };
 		7A3F61161E92958F000F7514 /* SettingsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
+		7A4511371FDDCCF90065282A /* oldVersion_1.1.1.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = oldVersion_1.1.1.xml; sourceTree = "<group>"; };
+		7A45113B1FDDD4500065282A /* invalidCircuitSets.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = invalidCircuitSets.xml; sourceTree = "<group>"; };
 		7A4539C31E75CFC200AD0215 /* Gym Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gym Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7A4DC79F1FDDC9AB00BC60FE /* invalidCircuitRest.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = invalidCircuitRest.xml; sourceTree = "<group>"; };
 		7A4DF0161E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompletedWorkoutsTVC.swift; sourceTree = "<group>"; };
 		7A5346B21E86B16400AC5638 /* Gym Tracker watchOS Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Gym Tracker watchOS Extension.entitlements"; sourceTree = "<group>"; };
 		7A5346B41E86B16400AC5638 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS3.1.sdk/System/Library/Frameworks/HealthKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -314,6 +320,7 @@
 		7A2E10231FBDCC6F004767D7 /* Gym Tracker Tests */ = {
 			isa = PBXGroup;
 			children = (
+				7A4DC79C1FDDC99100BC60FE /* Tricky Circuit Import */,
 				7A2E102F1FBDCCC3004767D7 /* WorkoutTest.swift */,
 				7A2E10431FBDDDBA004767D7 /* OrganizedWorkoutTest.swift */,
 				7A1CF9361FDD4CD6009C572C /* ImportExportTest.swift */,
@@ -355,6 +362,16 @@
 				7A2E10221FBDCC6F004767D7 /* Gym Tracker Tests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		7A4DC79C1FDDC99100BC60FE /* Tricky Circuit Import */ = {
+			isa = PBXGroup;
+			children = (
+				7A4511371FDDCCF90065282A /* oldVersion_1.1.1.xml */,
+				7A4DC79F1FDDC9AB00BC60FE /* invalidCircuitRest.xml */,
+				7A45113B1FDDD4500065282A /* invalidCircuitSets.xml */,
+			);
+			path = "Tricky Circuit Import";
 			sourceTree = "<group>";
 		};
 		7A5346B31E86B16400AC5638 /* Frameworks */ = {
@@ -776,6 +793,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A45113C1FDDD4510065282A /* invalidCircuitSets.xml in Resources */,
+				7A45113A1FDDCCFA0065282A /* oldVersion_1.1.1.xml in Resources */,
+				7A4DC7A01FDDC9AB00BC60FE /* invalidCircuitRest.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

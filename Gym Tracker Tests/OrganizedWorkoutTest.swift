@@ -74,6 +74,58 @@ class OrganizedWorkoutTest: XCTestCase {
 		dataManager.discardAllChanges()
     }
 	
+	func testPurgeInvalidSettingsSingle() {
+		let w = dataManager.newWorkout()
+		let ow = OrganizedWorkout(w)
+		var e = dataManager.newExercize(for: w)
+		e.set(name: "E")
+		e.makeCircuit(true)
+		e.enableCircuitRest(true)
+		e = dataManager.newExercize(for: w)
+		e.set(rest: 30)
+		e = dataManager.newExercize(for: w)
+		e.set(name: "E")
+		e.makeCircuit(true)
+		e.enableCircuitRest(true)
+		
+		ow.purgeInvalidSettings()
+		XCTAssertFalse(ow.isCircuit(ow[0]!))
+		XCTAssertFalse(ow[0]!.isCircuit)
+		XCTAssertFalse(ow[0]!.hasCircuitRest)
+		XCTAssertFalse(ow[0]!.isRest)
+		XCTAssertFalse(ow.isCircuit(ow[1]!))
+		XCTAssertFalse(ow[1]!.isCircuit)
+		XCTAssertFalse(ow[1]!.hasCircuitRest)
+		XCTAssertTrue(ow[1]!.isRest)
+		XCTAssertFalse(ow.isCircuit(ow[2]!))
+		XCTAssertFalse(ow[2]!.isCircuit)
+		XCTAssertFalse(ow[2]!.hasCircuitRest)
+		XCTAssertFalse(ow[2]!.isRest)
+	}
+	
+	func testPurgeInvalidSettingsCircuit() {
+		let w = dataManager.newWorkout()
+		let ow = OrganizedWorkout(w)
+		var e = dataManager.newExercize(for: w)
+		e.set(name: "E")
+		e.makeCircuit(true)
+		e.enableCircuitRest(true)
+		e = dataManager.newExercize(for: w)
+		e.set(name: "E")
+		e.makeCircuit(true)
+		e.enableCircuitRest(true)
+		
+		ow.purgeInvalidSettings()
+		XCTAssertTrue(ow.isCircuit(ow[0]!))
+		XCTAssertTrue(ow[0]!.isCircuit)
+		XCTAssertTrue(ow[0]!.hasCircuitRest)
+		XCTAssertFalse(ow[0]!.isRest)
+		XCTAssertTrue(ow.isCircuit(ow[1]!))
+		XCTAssertFalse(ow[1]!.isCircuit)
+		XCTAssertTrue(ow[1]!.hasCircuitRest)
+		XCTAssertFalse(ow[1]!.isRest)
+	}
+	
 	func testCircuitValidity() {
 		let e6 = workout[6]!
 		let e7 = workout[7]!

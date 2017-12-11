@@ -75,6 +75,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 	}
 	
 	private func updateValidityAndButtons(doUpdateTable: Bool = true) {
+		workoutValidator.purgeInvalidSettings()
 		let (global, circuit) = workoutValidator.validityStatus
 		doneBtn.isEnabled = global
 		circuitInvalidityCache = circuit

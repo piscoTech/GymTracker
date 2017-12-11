@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workoutlist>
+	<workout>
+		<name>Test</name>
+		<archived>false</archived>
+		<exercizes>
+			<exercize>
+				<name>Test</name>
+				<iscircuit>true</iscircuit>
+				<hascircuitrest>true</hascircuitrest>
+				<sets>
+					<set>
+						<reps>10</reps>
+						<weight>35.0</weight>
+						<rest>30</rest>
+					</set>
+				</sets>
+			</exercize>
+			<rest>30</rest>
+			<exercize>
+				<name>Prova</name>
+				<iscircuit>true</iscircuit>
+				<hascircuitrest>true</hascircuitrest>
+				<sets>
+					<set>
+						<reps>5</reps>
+						<weight>4.0</weight>
+						<rest>60</rest>
+					</set>
+				</sets>
+			</exercize>
+		</exercizes>
+	</workout>
+</workoutlist>

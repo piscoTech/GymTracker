@@ -104,7 +104,7 @@ public class OrganizedWorkout {
 		precondition(e.workout == raw, "Exercize does not belong to this workout")
 	}
 	
-	// MARK: - Circuit Support
+	// MARK: - Validation
 	
 	/// Whether or not the workout is valid.
 	///
@@ -151,6 +151,25 @@ public class OrganizedWorkout {
 		
 		return (global && circuitError.isEmpty, circuitError)
 	}
+	
+	func purgeInvalidSettings() {
+		for e in exercizes {
+			if e.isRest {
+				e.makeCircuit(false)
+				e.enableCircuitRest(false)
+			} else {
+				let prev = e.previous
+				let next = e.next
+				
+				let chain = e.isCircuit && !(next?.isRest ?? true)
+				e.makeCircuit(chain)
+				let rest = e.hasCircuitRest && (chain || (prev?.isCircuit ?? false))
+				e.enableCircuitRest(rest)
+			}
+		}
+	}
+	
+	// MARK: - Circuit Support
 	
 	func isCircuit(_ exercize: Exercize) -> Bool {
 		verifyExercize(exercize)

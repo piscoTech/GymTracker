@@ -184,7 +184,7 @@ class WCObject: Equatable {
 		return res
 	}
 	
-	subscript(index: String) -> Any? {
+	subscript (index: String) -> Any? {
 		get {
 			return data[index]
 		}
@@ -253,8 +253,17 @@ class WCObject: Equatable {
 
 public class DataManager {
 	
-	enum Usage {
+	enum Usage: CustomStringConvertible {
 		case application, testing
+		
+		var description: String {
+			switch self {
+			case .application:
+				return "[App]"
+			case .testing:
+				return "[Test]"
+			}
+		}
 	}
 	
 	weak var delegate: DataManagerDelegate?
@@ -267,18 +276,8 @@ public class DataManager {
 	private let localData: CoreDataStack
 	private let wcInterface: WatchConnectivityInterface
 	
-//	private static var manager: DataManager?
-//
-//	class func getManager(for use: Usage = .application) -> DataManager {
-//		return DataManager.manager ?? {
-//			let m = DataManager(for: use)
-//			DataManager.manager = m
-//			return m
-//		}()
-//	}
-	
 	init(for use: Usage) {
-		preferences = Preferences()
+		preferences = Preferences(for: use)
 		localData = CoreDataStack(for: use)
 		wcInterface = WatchConnectivityInterface(for: use)
 		self.use = use
@@ -288,7 +287,7 @@ public class DataManager {
 			importExportManager = ImportExportBackupManager(dataManager: self)
 		#endif
 
-		print("Data Manager initialized")
+		print("\(use) Data Manager initialized")
 		
 		if wcInterface.hasCounterPart && !preferences.initialSyncDone {
 			initializeWatchDatabase()
@@ -395,8 +394,7 @@ public class DataManager {
 				self.wcInterface.sendUpdateForChangedObjects(data, andDeleted: removedIDs)
 				
 				res = true
-			} catch let error {
-				print(error)
+			} catch {
 				res = false
 			}
 		}
@@ -468,7 +466,7 @@ public class DataManager {
 			self.wcInterface.sendUpdateForChangedObjects(data, andDeleted: [], markAsInitial: true)
 			
 			self.preferences.initialSyncDone = true
-			print("Initial data sent to watch")
+			print("\(self.use) Initial data sent to watch")
 		}
 	}
 
@@ -651,22 +649,10 @@ private class CoreDataStack {
 	let storeName = "GymTracker"
 	let use: DataManager.Usage
 	
-	// MARK: - Initialization
-	
-//	private static var stack: CoreDataStack?
-//
-//	class func getStack(for use: DataManager.Usage) -> CoreDataStack {
-//		return CoreDataStack.stack ?? {
-//			let s = CoreDataStack(for: use)
-//			CoreDataStack.stack = s
-//			return s
-//		}()
-//	}
-	
 	fileprivate init(for use: DataManager.Usage) {
 		self.use = use
 		
-		print("Local store initialized")
+		print("\(use) Local store initialized")
 	}
 	
 	// MARK: - Core Data objects
@@ -743,18 +729,6 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 	
 	fileprivate var dataManager: DataManager!
 
-	// MARK: - Initialization
-	
-//	private static var interface: WatchConnectivityInterface?
-//
-//	class func getInterface(for use: DataManager.Usage = .application) -> WatchConnectivityInterface {
-//		return WatchConnectivityInterface.interface ?? {
-//			let i = WatchConnectivityInterface()
-//			WatchConnectivityInterface.interface = i
-//			return i
-//		}()
-//	}
-
 	override convenience fileprivate init() {
 		self.init(for: .application)
 	}
@@ -770,13 +744,13 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 			session.activate()
 		}
 		
-		print("Watch/iOS interface initialized")
+		print("\(use) Watch/iOS interface initialized")
 	}
 	
 	private var pendingBlock: [() -> Void] = []
 	
 	func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
-		print("Watch Connectivity Session activated")
+		print("\(use) Watch Connectivity Session activated")
 		
 		if isiOS, dataManager.preferences.runningWorkout != nil, let src = dataManager.preferences.runningWorkoutSource, src == .watch, !self.hasCounterPart {
 			dataManager.setRunningWorkout(nil, fromSource: .watch)

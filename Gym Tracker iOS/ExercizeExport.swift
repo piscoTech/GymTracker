@@ -17,6 +17,8 @@ extension Exercize {
 		} else {
 			var res = "<\(ImportExportBackupManager.exercizeTag)>"
 			res += "<\(ImportExportBackupManager.exercizeNameTag)>\(self.name?.toXML() ?? "")</\(ImportExportBackupManager.exercizeNameTag)>"
+			res += "<\(ImportExportBackupManager.exercizeIsCircuit)>\(self.isCircuit)</\(ImportExportBackupManager.exercizeIsCircuit)>"
+			res += "<\(ImportExportBackupManager.exercizeHasCircuitRest)>\(self.hasCircuitRest)</\(ImportExportBackupManager.exercizeHasCircuitRest)>"
 			res += "<\(ImportExportBackupManager.setsTag)>\(self.setList.map { $0.export() }.reduce("") { $0 + $1 })</\(ImportExportBackupManager.setsTag)>"
 			res += "</\(ImportExportBackupManager.exercizeTag)>"
 			
@@ -41,9 +43,13 @@ extension Exercize {
 				let sets = xml.children.first(where: { $0.name == ImportExportBackupManager.setsTag })?.children else {
 				return (nil, false)
 			}
+			let isCircuit = xml.children.first(where: { $0.name == ImportExportBackupManager.exercizeIsCircuit })?.content ?? "false"
+			let hasCircuitRest = xml.children.first(where: { $0.name == ImportExportBackupManager.exercizeHasCircuitRest })?.content ?? "false"
 			
 			let e = dataManager.newExercize(for: w)
 			e.set(name: name)
+			e.makeCircuit(isCircuit == "true")
+			e.enableCircuitRest(hasCircuitRest == "true")
 			for s in sets {
 				let (_, success) = RepsSet.import(fromXML: s, for: e, withDataManager: dataManager)
 				if !success {

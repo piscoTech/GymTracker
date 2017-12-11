@@ -31,6 +31,8 @@
 												<xs:complexType>
 													<xs:sequence>
 														<xs:element name="name" type="nameType" />
+														<xs:element name="iscircuit" type="xs:boolean" minOccurs="0" />
+														<xs:element name="hascircuitrest" type="xs:boolean" minOccurs="0" />
 														<xs:element name="sets">
 															<xs:complexType>
 																<xs:sequence>

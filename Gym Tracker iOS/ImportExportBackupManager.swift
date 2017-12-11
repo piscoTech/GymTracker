@@ -17,7 +17,6 @@ public class ImportExportBackupManager: NSObject {
 	let fileExtension = ".wrkt"
 	let keepBackups = 5
 	let autoBackupTime: TimeInterval = 7 * 24 * 60 * 60 // 7 days
-	
 	let delayReloadTime: TimeInterval = 2
 	
 	static let workoutsTag = "workoutlist"
@@ -29,6 +28,8 @@ public class ImportExportBackupManager: NSObject {
 	static let restTag = "rest"
 	static let exercizeTag = "exercize"
 	static let exercizeNameTag = "name"
+	static let exercizeIsCircuit = "iscircuit"
+	static let exercizeHasCircuitRest = "hascircuitrest"
 	static let setsTag = "sets"
 	
 	static let setTag = "set"
@@ -37,17 +38,6 @@ public class ImportExportBackupManager: NSObject {
 	static let setRepsTag = "reps"
 	
 	private let nameFilter = try! NSRegularExpression(pattern: "[^a-z0-9]+", options: .caseInsensitive)
-//
-//	private static var manager: ImportExportBackupManager?
-//
-//	class func getManager() -> ImportExportBackupManager {
-//		return ImportExportBackupManager.manager ?? {
-//			let m = ImportExportBackupManager()
-//			ImportExportBackupManager.manager = m
-//			return m
-//		}()
-//	}
-	
 	private var query: NSMetadataQuery?
 	
 	private override init() {
@@ -219,7 +209,9 @@ public class ImportExportBackupManager: NSObject {
 						let (w, success) = Workout.import(fromXML: wData, withDataManager: self.dataManager)
 						
 						if let w = w {
-                            if success {
+							let ow = OrganizedWorkout(w)
+							ow.purgeInvalidSettings()
+                            if success, ow.validityStatus.global {
 								saveWorkouts.append(w)
 								saveOthers += w.exercizes.map { [$0 as DataObject] + Array($0.sets) as [DataObject] }.reduce([]) { $0 + $1 }
 							} else {

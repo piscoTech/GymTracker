@@ -161,6 +161,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		DispatchQueue.main.async {
 			if let url = self.tryImport {
+				// FIXME: Call here workoutList.exitDetailAndCreation(), fixes #2
 				if ".\(url.pathExtension)" == self.dataManager.importExportManager.fileExtension {
 					if self.canEdit {
 						let loading = UIAlertController.getModalLoading()
