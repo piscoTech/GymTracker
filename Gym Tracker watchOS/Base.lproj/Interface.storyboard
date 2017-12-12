@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="f3a-Tn-603">
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="13771" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="f3a-Tn-603">
     <device id="watch42" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="12029"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="13756"/>
     </dependencies>
     <scenes>
         <!--Workouts-->
@@ -180,7 +180,7 @@
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="117" y="475"/>
+            <point key="canvasLocation" x="117" y="513"/>
         </scene>
         <!--updateWeight-->
         <scene sceneID="u0t-wj-7YZ">
@@ -262,7 +262,7 @@
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="382" y="438"/>
+            <point key="canvasLocation" x="457" y="475"/>
         </scene>
         <!--Workout-->
         <scene sceneID="Zdc-Zm-5g9">
@@ -280,20 +280,48 @@
                         </button>
                         <table alignment="left" id="itK-2w-s1f">
                             <items>
-                                <tableRow identifier="exercize" selectable="NO" id="TqS-vF-PJI" customClass="BasicDetailCell" customModule="Gym_Tracker_watchOS_Extension">
-                                    <group key="rootItem" width="1" height="0.0" alignment="left" layout="vertical" id="P8d-ix-mag">
+                                <tableRow identifier="exercizeCircuit" selectable="NO" id="TqS-vF-PJI" customClass="BasicDetailCell" customModule="Gym_Tracker_watchOS_Extension">
+                                    <group key="rootItem" width="1" height="0.0" alignment="left" spacing="0.0" id="P8d-ix-mag">
                                         <items>
-                                            <label alignment="left" text="Label" numberOfLines="0" id="c9m-oy-Yey">
-                                                <fontDescription key="font" style="UICTFontTextStyleBody"/>
-                                            </label>
-                                            <label alignment="left" text="Label" id="VXn-ev-WQp">
-                                                <fontDescription key="font" style="UICTFontTextStyleCaption2"/>
-                                            </label>
+                                            <group width="1" widthAdjustment="-22" alignment="left" verticalAlignment="center" layout="vertical" spacing="1" id="mcV-pv-jbx">
+                                                <items>
+                                                    <label alignment="left" text="Label" numberOfLines="0" id="c9m-oy-Yey">
+                                                        <fontDescription key="font" style="UICTFontTextStyleBody"/>
+                                                    </label>
+                                                    <label alignment="left" text="Label" numberOfLines="0" id="VXn-ev-WQp">
+                                                        <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
+                                                    </label>
+                                                </items>
+                                            </group>
+                                            <group alignment="right" verticalAlignment="center" layout="vertical" spacing="0.0" id="rZR-cv-2CH" userLabel="Circuit">
+                                                <items>
+                                                    <imageView width="21" height="21" alignment="center" image="IsCircuit" id="gSD-J8-nAb"/>
+                                                    <label alignment="center" text="0/0" id="tQI-BU-p1y">
+                                                        <fontDescription key="font" type="system" pointSize="7"/>
+                                                    </label>
+                                                </items>
+                                            </group>
                                         </items>
                                     </group>
                                     <connections>
                                         <outlet property="detailLabel" destination="VXn-ev-WQp" id="HTD-D5-uMf"/>
                                         <outlet property="titleLabel" destination="c9m-oy-Yey" id="8jK-D6-Nsc"/>
+                                    </connections>
+                                </tableRow>
+                                <tableRow identifier="exercize" selectable="NO" id="i3I-EY-pnf" customClass="BasicDetailCell" customModule="Gym_Tracker_watchOS_Extension">
+                                    <group key="rootItem" width="1" height="0.0" alignment="left" layout="vertical" spacing="1" id="Mq0-bl-Qy5">
+                                        <items>
+                                            <label alignment="left" text="Label" numberOfLines="0" id="AYN-Tv-chk">
+                                                <fontDescription key="font" style="UICTFontTextStyleBody"/>
+                                            </label>
+                                            <label alignment="left" text="Label" numberOfLines="0" id="DJH-In-QYp">
+                                                <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
+                                            </label>
+                                        </items>
+                                    </group>
+                                    <connections>
+                                        <outlet property="detailLabel" destination="DJH-In-QYp" id="7JT-G2-Nmf"/>
+                                        <outlet property="titleLabel" destination="AYN-Tv-chk" id="E86-bR-4PH"/>
                                     </connections>
                                 </tableRow>
                                 <tableRow identifier="rest" selectable="NO" id="7MH-wF-y5l" customClass="RestCell" customModule="Gym_Tracker" customModuleProvider="target">
@@ -316,7 +344,7 @@
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="382" y="134"/>
+            <point key="canvasLocation" x="457" y="144"/>
         </scene>
     </scenes>
     <color key="tintColor" red="0.75686274509803919" green="0.92156862745098034" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
