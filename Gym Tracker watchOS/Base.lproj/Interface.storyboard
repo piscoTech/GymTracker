@@ -304,6 +304,7 @@
                                         </items>
                                     </group>
                                     <connections>
+                                        <outlet property="circuitLabel" destination="tQI-BU-p1y" id="ZN7-Yl-P29"/>
                                         <outlet property="detailLabel" destination="VXn-ev-WQp" id="HTD-D5-uMf"/>
                                         <outlet property="titleLabel" destination="c9m-oy-Yey" id="8jK-D6-Nsc"/>
                                     </connections>

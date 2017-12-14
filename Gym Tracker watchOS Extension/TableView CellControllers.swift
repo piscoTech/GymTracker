@@ -12,6 +12,7 @@ class BasicDetailCell: NSObject {
 	
 	@IBOutlet var titleLabel: WKInterfaceLabel!
 	@IBOutlet var detailLabel: WKInterfaceLabel!
+	@IBOutlet var circuitLabel: WKInterfaceLabel!
 	
 }
 

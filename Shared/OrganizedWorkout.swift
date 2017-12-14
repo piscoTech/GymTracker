@@ -8,7 +8,6 @@
 
 import Foundation
 
-// TODO: Make IteratorProtocol, next() must return nil if invalid
 public class OrganizedWorkout {
 	
 	private(set) var raw: Workout

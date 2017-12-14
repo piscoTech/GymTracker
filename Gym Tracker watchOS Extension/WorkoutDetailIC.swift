@@ -23,7 +23,7 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 	
 	@IBOutlet weak var startBtn: WKInterfaceButton!
 	
-	private var workout: Workout!
+	private var workout: OrganizedWorkout!
 	private var delegate: WorkoutListInterfaceController!
 
     override func awake(withContext context: Any?) {
@@ -36,7 +36,7 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 			return
 		}
 		
-		workout = data.workout
+		workout = OrganizedWorkout(data.workout)
 		delegate = data.listController
 		delegate.workoutDetail = self
 		
@@ -46,7 +46,7 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 	
 	func reloadData(checkExistence: Bool = true) {
 		if checkExistence {
-			guard workout.stillExists(inDataManager: appDelegate.dataManager), !workout.archived else {
+			guard workout.raw.stillExists(inDataManager: appDelegate.dataManager), !workout.archived else {
 				self.pop()
 				
 				return
@@ -54,18 +54,29 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 		}
 		
 		workoutName.setText(workout.name)
-		let exercizes = workout.exercizeList
-		let rows = exercizes.map { $0.isRest ? "rest" : "exercize" }
-		table.setRowTypes(rows)
+		let exercizes = workout.exercizes
+		let rows = exercizes.map { e -> (Int, String, (Int, Int)?) in
+			let ord = Int(e.order)
+			if e.isRest {
+				return (ord, "rest", nil)
+			} else {
+				let circuit = workout.circuitStatus(for: e)
+				return (ord, "exercize" + (circuit != nil ? "Circuit" : ""), circuit)
+			}
+		}
+		table.setRowTypes(rows.map { $0.1 })
 		
-		for i in 0 ..< rows.count {
-			if rows[i] == "rest" {
+		for (i, type, circuit) in rows {
+			if type == "rest" {
 				let row = table.rowController(at: i) as! RestCell
 				row.setRest(exercizes[i].rest)
 			} else {
 				let row = table.rowController(at: i) as! BasicDetailCell
 				row.titleLabel.setText(exercizes[i].name)
 				row.detailLabel.setText(exercizes[i].setsSummary)
+				if let (n, t) = circuit {
+					row.circuitLabel.setText("\(n)/\(t)")
+				}
 			}
 		}
     }
@@ -90,7 +101,7 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 		}
 		
 		WKInterfaceController.reloadRootControllers(withNames: ["executeWorkout"],
-		                                            contexts: [ExecuteWorkoutData(workout: workout, resumeData: nil)])
+		                                            contexts: [ExecuteWorkoutData(workout: workout.raw, resumeData: nil)])
 	}
 
 }

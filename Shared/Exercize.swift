@@ -34,6 +34,8 @@ public class Exercize: DataObject {
 	private let workoutKey = "workout"
 	private let orderKey = "order"
 	private let isRestKey = "isRest"
+	private let isCircuitKey = "isCircuit"
+	private let hasCircuitRestKey = "hasCircuitRest"
 	private let nameKey = "name"
 	private let restKey = "rest"
 	
@@ -147,6 +149,8 @@ public class Exercize: DataObject {
 		obj[workoutKey] = workout.recordID.wcRepresentation
 		obj[orderKey] = order
 		obj[isRestKey] = isRest
+		obj[isCircuitKey] = isCircuit
+		obj[hasCircuitRestKey] = hasCircuitRest
 		obj[nameKey] = name ?? ""
 		obj[restKey] = rest
 		
@@ -176,6 +180,10 @@ public class Exercize: DataObject {
 		self.isRest = isRest
 		self.name = name
 		self.rest = rest
+		
+		// Make sure old messages are accepted if update is performed mid-trasfer
+		self.isCircuit = src[isCircuitKey] as? Bool ?? false
+		self.hasCircuitRest = src[hasCircuitRestKey] as? Bool ?? false
 		
 		return true
 	}

@@ -11,6 +11,7 @@ import HealthKit
 
 struct ExecuteWorkoutData {
 	
+	// FIXME: Make an OrganizedWorkout
 	let workout: Workout
 	let resumeData: (start: Date, curExercize: Int, curPart: Int)?
 	

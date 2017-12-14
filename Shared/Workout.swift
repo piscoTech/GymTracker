@@ -9,7 +9,6 @@
 import Foundation
 import CoreData
 
-// TODO: Make Sequence
 @objc(Workout)
 public class Workout: DataObject {
 	
