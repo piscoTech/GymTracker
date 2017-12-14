@@ -40,6 +40,14 @@ public class OrganizedWorkout {
 		}
 	}
 	
+	var count: Int {
+		return raw.exercizes.count
+	}
+	
+	var isEmpty: Bool {
+		return raw.exercizes.isEmpty
+	}
+	
 	var exercizes: [Exercize] {
 		return raw.exercizeList
 	}
@@ -50,6 +58,12 @@ public class OrganizedWorkout {
 	
 	var hasExercizes: Bool {
 		return raw.hasExercizes
+	}
+	
+	func compactExercizes() -> (start: [Exercize], end: [Exercize], middle: [(e: Exercize, oldOrder: Int)]) {
+		let (s, e, m) = raw.compactExercizes()
+		
+		return (s, e, m.map { ($0, Int($1)) })
 	}
 	
 	/// Move the exercize at the specified index to a new location, the old exercize at `to` index will have index `dest+1` if the exercize is being moved towards the start of the workout, `dest-1` otherwise.

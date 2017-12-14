@@ -89,9 +89,9 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		switch section {
 		case 0:
-			return 2 + (delegate.workoutValidator.circuitStatus(for: exercize) != nil ? 2 : 0)
+			return 2 + (delegate.workout.circuitStatus(for: exercize) != nil ? 2 : 0)
 		case 1:
-			guard let (g, l) = delegate.workoutValidator.restStatus(for: exercize) else {
+			guard let (g, l) = delegate.workout.restStatus(for: exercize) else {
 				fatalError("Trying to edit a rest period, exercize expected")
 			}
 			
@@ -131,22 +131,22 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 				switch indexPath.row {
 				case 1: // Is circuit
 					msg = "IS_CIRCUIT"
-					if let (n, t) = delegate.workoutValidator.circuitStatus(for: exercize) {
+					if let (n, t) = delegate.workout.circuitStatus(for: exercize) {
 						cell.detailTextLabel?.text = "\(n)/\(t) " + NSLocalizedString("EXERCIZES", comment: "exercizes").lowercased()
 						accessory.isOn = true
 					}
 					sel = #selector(enableCircuit(_:))
-					accessory.isEnabled = delegate.workoutValidator.canBecomeCircuit(exercize: exercize)
+					accessory.isEnabled = delegate.workout.canBecomeCircuit(exercize: exercize)
 				case 2: // Chain with next
 					msg = "CIRCUIT_CHAIN"
 					accessory.isOn = exercize.isCircuit
 					sel = #selector(enableCircuitChain(_:))
-					accessory.isEnabled = delegate.workoutValidator.canChainCircuit(for: exercize)
+					accessory.isEnabled = delegate.workout.canChainCircuit(for: exercize)
 				case 3: // Use rest periods
 					msg = "CIRCUITE_USE_REST"
 					accessory.isOn = exercize.hasCircuitRest
 					sel = #selector(enableCircuitRest(_:))
-					accessory.isEnabled = delegate.workoutValidator.circuitStatus(for: exercize) != nil
+					accessory.isEnabled = delegate.workout.circuitStatus(for: exercize) != nil
 					
 				default:
 					fatalError("Unknown row")
@@ -221,7 +221,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	}
 	
 	private func insertSet(_ s: RepsSet) {
-		guard let (g, _) = delegate.workoutValidator.restStatus(for: exercize) else {
+		guard let (g, _) = delegate.workout.restStatus(for: exercize) else {
 			fatalError("Trying to edit a rest period, exercize expected")
 		}
 		
@@ -244,7 +244,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		guard editingStyle == .delete else {
 			return
 		}
-		guard let (g, l) = delegate.workoutValidator.restStatus(for: exercize) else {
+		guard let (g, l) = delegate.workout.restStatus(for: exercize) else {
 			fatalError("Trying to edit a rest period, exercize expected")
 		}
 		
@@ -306,8 +306,8 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 			return
 		}
 		
-		let wasCircuit = delegate.workoutValidator.isCircuit(exercize)
-		delegate.workoutValidator.makeCircuit(exercize: exercize, isCircuit: sender.isOn)
+		let wasCircuit = delegate.workout.isCircuit(exercize)
+		delegate.workout.makeCircuit(exercize: exercize, isCircuit: sender.isOn)
 		// Switch is reset by reloading the table
 		
 		updateCircuitCells(wasCircuit: wasCircuit)
@@ -318,8 +318,8 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 			return
 		}
 		
-		let wasCircuit = delegate.workoutValidator.isCircuit(exercize)
-		delegate.workoutValidator.chainCircuit(for: exercize, chain: sender.isOn)
+		let wasCircuit = delegate.workout.isCircuit(exercize)
+		delegate.workout.chainCircuit(for: exercize, chain: sender.isOn)
 		sender.isOn = exercize.isCircuit
 		
 		updateCircuitCells(wasCircuit: wasCircuit)
@@ -330,13 +330,13 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 			return
 		}
 		
-		delegate.workoutValidator.enableCircuitRestPeriods(for: exercize, enable: sender.isOn)
+		delegate.workout.enableCircuitRestPeriods(for: exercize, enable: sender.isOn)
 		sender.isOn = exercize.hasCircuitRest
 		tableView.reloadSections([1], with: .automatic)
 	}
 	
 	private func updateCircuitCells(wasCircuit: Bool) {
-		let isCircuit = delegate.workoutValidator.isCircuit(exercize)
+		let isCircuit = delegate.workout.isCircuit(exercize)
 		
 		tableView.beginUpdates()
 		let index = [2, 3].map { IndexPath(row: $0, section: 0) }
@@ -357,7 +357,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	private var editRest: Int?
 	
 	private func setNumber(for i: IndexPath) -> Int32 {
-		guard let (g, _) = delegate.workoutValidator.restStatus(for: exercize) else {
+		guard let (g, _) = delegate.workout.restStatus(for: exercize) else {
 			fatalError("Trying to edit a rest period, exercize expected")
 		}
 		var row = i.row
@@ -378,7 +378,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	}
 	
 	private func setCellType(for i: IndexPath) -> SetCellType {
-		guard let (g, _) = delegate.workoutValidator.restStatus(for: exercize) else {
+		guard let (g, _) = delegate.workout.restStatus(for: exercize) else {
 			fatalError("Trying to edit a rest period, exercize expected")
 		}
 		var row = i.row

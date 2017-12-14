@@ -252,6 +252,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 extension AppDelegate: ExecuteWorkoutControllerDelegate {
 	
+	// FIXME: Accept a OrganizedWorkout
 	func startWorkout(_ workout: Workout) {
 		guard workoutController == nil else {
 			return

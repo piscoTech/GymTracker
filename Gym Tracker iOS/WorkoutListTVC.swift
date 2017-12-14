@@ -319,8 +319,7 @@ class WorkoutListTableViewController: UITableViewController {
 			
 			let dest = segue.destination as! WorkoutTableViewController
 			workoutController = dest
-			// TODO: Give only OrganizedWorkout
-			dest.workout = w
+			dest.workout = OrganizedWorkout(w)
 		default:
 			break
 		}
