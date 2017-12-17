@@ -12,17 +12,16 @@
 		7A13059A1EAB567300D29048 /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A1305981EAB567300D29048 /* libxml2.tbd */; };
 		7A16CDDA1FE03228008141D6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7A16CDD91FE03227008141D6 /* Assets.xcassets */; };
 		7A16CDDB1FE03228008141D6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7A16CDD91FE03227008141D6 /* Assets.xcassets */; };
-		7A18D4DA1FE28C79009CD58C /* WorkoutStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A18D4D91FE28C79009CD58C /* WorkoutStep.swift */; };
-		7A18D4DB1FE28C79009CD58C /* WorkoutStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A18D4D91FE28C79009CD58C /* WorkoutStep.swift */; };
-		7A18D4DC1FE28C79009CD58C /* WorkoutStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A18D4D91FE28C79009CD58C /* WorkoutStep.swift */; };
-		7A18D4E01FE28C97009CD58C /* WorkoutIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A18D4DF1FE28C97009CD58C /* WorkoutIterator.swift */; };
-		7A18D4E11FE28C97009CD58C /* WorkoutIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A18D4DF1FE28C97009CD58C /* WorkoutIterator.swift */; };
-		7A18D4E21FE28C97009CD58C /* WorkoutIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A18D4DF1FE28C97009CD58C /* WorkoutIterator.swift */; };
 		7A1CF9521FDD8BBF009C572C /* WorkoutTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A2E102F1FBDCCC3004767D7 /* WorkoutTest.swift */; };
 		7A1CF9531FDD8BBF009C572C /* OrganizedWorkoutTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A2E10431FBDDDBA004767D7 /* OrganizedWorkoutTest.swift */; };
 		7A1CF9541FDD8BBF009C572C /* ImportExportTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A1CF9361FDD4CD6009C572C /* ImportExportTest.swift */; };
 		7A1CF9551FDD8BC2009C572C /* TestsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A2E103A1FBDD3E6004767D7 /* TestsDelegate.swift */; };
+		7A2262851FE5853A00E16871 /* WorkoutIteratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A2262841FE5853A00E16871 /* WorkoutIteratorTests.swift */; };
+		7A24C65D1FE6FF320015C3CD /* Double.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A24C65C1FE6FF320015C3CD /* Double.swift */; };
+		7A24C65E1FE6FF320015C3CD /* Double.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A24C65C1FE6FF320015C3CD /* Double.swift */; };
 		7A27276F1EA3536400E67F70 /* UpdateWeightVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A27276E1EA3536400E67F70 /* UpdateWeightVC.swift */; };
+		7A2AD7381FE6A84C00A27649 /* WorkoutIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A18D4DF1FE28C97009CD58C /* WorkoutIterator.swift */; };
+		7A2AD73B1FE6A84D00A27649 /* WorkoutIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A18D4DF1FE28C97009CD58C /* WorkoutIterator.swift */; };
 		7A2E10401FBDD4C2004767D7 /* Main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A2E103F1FBDD4C2004767D7 /* Main.swift */; };
 		7A2E10411FBDD4C2004767D7 /* Main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A2E103F1FBDD4C2004767D7 /* Main.swift */; };
 		7A2E10461FBDE2EA004767D7 /* OrganizedWorkout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFDA7DC1FBB64A70055C768 /* OrganizedWorkout.swift */; };
@@ -206,9 +205,10 @@
 		7A1305971EAB567300D29048 /* libxml2.2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.2.tbd; path = usr/lib/libxml2.2.tbd; sourceTree = SDKROOT; };
 		7A1305981EAB567300D29048 /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
 		7A16CDD91FE03227008141D6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		7A18D4D91FE28C79009CD58C /* WorkoutStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutStep.swift; sourceTree = "<group>"; };
 		7A18D4DF1FE28C97009CD58C /* WorkoutIterator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutIterator.swift; sourceTree = "<group>"; };
 		7A1CF9361FDD4CD6009C572C /* ImportExportTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportExportTest.swift; sourceTree = "<group>"; };
+		7A2262841FE5853A00E16871 /* WorkoutIteratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutIteratorTests.swift; sourceTree = "<group>"; };
+		7A24C65C1FE6FF320015C3CD /* Double.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Double.swift; sourceTree = "<group>"; };
 		7A27276E1EA3536400E67F70 /* UpdateWeightVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateWeightVC.swift; sourceTree = "<group>"; };
 		7A2E10221FBDCC6F004767D7 /* Gym Tracker Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Gym Tracker Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A2E10261FBDCC6F004767D7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -338,6 +338,7 @@
 				7A2E102F1FBDCCC3004767D7 /* WorkoutTest.swift */,
 				7A2E10431FBDDDBA004767D7 /* OrganizedWorkoutTest.swift */,
 				7A1CF9361FDD4CD6009C572C /* ImportExportTest.swift */,
+				7A2262841FE5853A00E16871 /* WorkoutIteratorTests.swift */,
 				7A2E103D1FBDD44F004767D7 /* Supporting Files */,
 			);
 			path = "Gym Tracker Tests";
@@ -451,6 +452,7 @@
 			isa = PBXGroup;
 			children = (
 				7AB72FEA1EB0DB2800091E0D /* Date.swift */,
+				7A24C65C1FE6FF320015C3CD /* Double.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -609,7 +611,6 @@
 			isa = PBXGroup;
 			children = (
 				7AFDA7DC1FBB64A70055C768 /* OrganizedWorkout.swift */,
-				7A18D4D91FE28C79009CD58C /* WorkoutStep.swift */,
 				7A18D4DF1FE28C97009CD58C /* WorkoutIterator.swift */,
 			);
 			name = Managed;
@@ -851,9 +852,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				7A1CF9521FDD8BBF009C572C /* WorkoutTest.swift in Sources */,
-				7A18D4DC1FE28C79009CD58C /* WorkoutStep.swift in Sources */,
 				7A1CF9541FDD8BBF009C572C /* ImportExportTest.swift in Sources */,
-				7A18D4E21FE28C97009CD58C /* WorkoutIterator.swift in Sources */,
+				7A2262851FE5853A00E16871 /* WorkoutIteratorTests.swift in Sources */,
 				7A1CF9531FDD8BBF009C572C /* OrganizedWorkoutTest.swift in Sources */,
 				7A1CF9551FDD8BC2009C572C /* TestsDelegate.swift in Sources */,
 			);
@@ -869,10 +869,10 @@
 				7A27276F1EA3536400E67F70 /* UpdateWeightVC.swift in Sources */,
 				7ADC03DC1E78A328005BDC25 /* TableView Cells.swift in Sources */,
 				7ADC03D51E78A328005BDC25 /* AppDelegate.swift in Sources */,
-				7A18D4DA1FE28C79009CD58C /* WorkoutStep.swift in Sources */,
 				7AE10A431E7D6F1000A64CF7 /* Preferences.swift in Sources */,
 				7AF561271E93A845009BF658 /* Appearance Classes.swift in Sources */,
 				7AE92D9B1EACFF750091FE74 /* ExercizeExport.swift in Sources */,
+				7A2AD73B1FE6A84D00A27649 /* WorkoutIterator.swift in Sources */,
 				7ADC03C31E78A187005BDC25 /* Main iOS & watchOS.swift in Sources */,
 				7ACF6DB71E8039EB00579B67 /* Main iOS.swift in Sources */,
 				7AB72FEB1EB0DB2800091E0D /* Date.swift in Sources */,
@@ -884,7 +884,6 @@
 				7A4DF0171E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift in Sources */,
 				7ADC03C21E78A187005BDC25 /* GymTracker.xcdatamodeld in Sources */,
 				7ADC03DD1E78A328005BDC25 /* WorkoutListTVC.swift in Sources */,
-				7A18D4E01FE28C97009CD58C /* WorkoutIterator.swift in Sources */,
 				7A6788401EAA5267009101DB /* WorkoutExport.swift in Sources */,
 				7ADC03C01E78A187005BDC25 /* DataManager.swift in Sources */,
 				7ADC03C41E78A187005BDC25 /* RepsSet.swift in Sources */,
@@ -892,6 +891,7 @@
 				7A1305921EAB418700D29048 /* RepsSetExport.swift in Sources */,
 				7AFDA7DD1FBB64A70055C768 /* OrganizedWorkout.swift in Sources */,
 				7A2E10401FBDD4C2004767D7 /* Main.swift in Sources */,
+				7A24C65D1FE6FF320015C3CD /* Double.swift in Sources */,
 				7ADC03C11E78A187005BDC25 /* Exercize.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -903,14 +903,14 @@
 				7A5D2B711E8422DB008EED4C /* WorkoutDetailIC.swift in Sources */,
 				7A5EFA491E81408000A4CF41 /* Main iOS & watchOS.swift in Sources */,
 				7ADC07D81E98CEB20047E0C2 /* ExecuteWorkoutController.swift in Sources */,
-				7A18D4E11FE28C97009CD58C /* WorkoutIterator.swift in Sources */,
 				7ACF6DB41E8039B500579B67 /* Main watchOS.swift in Sources */,
 				7ADC07D31E98CE450047E0C2 /* ExecuteWorkoutIC.swift in Sources */,
 				7ACF6DC01E803DF300579B67 /* DataManager.swift in Sources */,
 				7ACF6DAD1E8038FB00579B67 /* Preferences.swift in Sources */,
-				7A18D4DB1FE28C79009CD58C /* WorkoutStep.swift in Sources */,
 				7ADCF6911E81135700ECF011 /* TableView CellControllers.swift in Sources */,
 				7ACF6D951E802FD200579B67 /* ExtensionDelegate.swift in Sources */,
+				7A24C65E1FE6FF320015C3CD /* Double.swift in Sources */,
+				7A2AD7381FE6A84C00A27649 /* WorkoutIterator.swift in Sources */,
 				7ACF6D931E802FD200579B67 /* WorkoutListIC.swift in Sources */,
 				7A2E10411FBDD4C2004767D7 /* Main.swift in Sources */,
 				7ADC07D51E98CE860047E0C2 /* UpdateWeightIC.swift in Sources */,

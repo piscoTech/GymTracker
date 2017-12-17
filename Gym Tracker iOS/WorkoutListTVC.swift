@@ -147,7 +147,7 @@ class WorkoutListTableViewController: UITableViewController {
 				let workout = self.workouts[row.row]
 				appDelegate.startWorkout(workout)
 			}
-			start.backgroundColor = #colorLiteral(red: 0, green: 0.7529411765, blue: 0, alpha: 1)
+			start.backgroundColor = greenTint
 			act.append(start)
 		}
 		

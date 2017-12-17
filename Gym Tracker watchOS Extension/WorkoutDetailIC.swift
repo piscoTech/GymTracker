@@ -100,8 +100,7 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 			return
 		}
 		
-		WKInterfaceController.reloadRootControllers(withNames: ["executeWorkout"],
-		                                            contexts: [ExecuteWorkoutData(workout: workout.raw, resumeData: nil)])
+		appDelegate.startWorkout(with: ExecuteWorkoutData(workout: workout.raw, resumeData: nil))
 	}
 
 }

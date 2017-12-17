@@ -11,18 +11,8 @@ import HealthKit
 
 class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
 	
-	weak var workoutList: WorkoutListInterfaceController? {
-		didSet {
-			guard let list = workoutList, tryResumeData != nil else {
-				return
-			}
-			
-			list.resumeWorkout()
-		}
-	}
+	weak var workoutList: WorkoutListInterfaceController?
 	weak var executeWorkout: ExecuteWorkoutInterfaceController?
-	
-	var tryResumeData: (workout: Workout, start: Date, curExercize: Int, curPart: Int)?
 	
 	private(set) var dataManager: DataManager!
 
@@ -34,15 +24,11 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
 		if let src = dataManager.preferences.runningWorkoutSource, src == .watch,
 			let workoutID = dataManager.preferences.runningWorkout {
 			if let workout = workoutID.getObject(fromDataManager: dataManager) as? Workout {
-				tryResumeData = (workout,
-								 dataManager.preferences.currentStart,
-								 dataManager.preferences.currentExercize,
-								 dataManager.preferences.currentPart)
-				
-				workoutList?.resumeWorkout()
+				let data = ExecuteWorkoutData(workout: workout, resumeData: (dataManager.preferences.currentStart,
+																			 dataManager.preferences.currentExercize,
+																			 dataManager.preferences.currentPart))
+				self.startWorkout(with: data)
 			}
-			
-			dataManager.setRunningWorkout(nil, fromSource: .watch)
 		}
     }
 
@@ -60,7 +46,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
 	}
 	
 	func remoteWorkoutStart(_ workout: Workout) {
-		guard executeWorkout == nil, !(workoutList?.resuming ?? false) else {
+		guard executeWorkout == nil else {
 			return
 		}
 		
@@ -91,8 +77,12 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
         }
     }
 	
-	func restoredefaultState() {
+	func restoreDefaultState() {
 		WKInterfaceController.reloadRootControllers(withNames: ["workoutList"], contexts: nil)
+	}
+	
+	func startWorkout(with data: ExecuteWorkoutData) {
+		WKInterfaceController.reloadRootControllers(withNames: ["executeWorkout"], contexts: [data])
 	}
 	
 	// MARK: - Data Manager Delegate

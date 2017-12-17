@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 
 @objc(Exercize)
-public class Exercize: DataObject {
+class Exercize: DataObject {
 	
 	override class var objectType: String {
 		return "Exercize"
@@ -39,7 +39,7 @@ public class Exercize: DataObject {
 	private let nameKey = "name"
 	private let restKey = "rest"
 	
-	override public var description: String {
+	override var description: String {
 		return "N \(order): \(String(describing: name)) - \(sets.count) set(s) - \(setsSummary)"
 	}
 	

@@ -11,34 +11,34 @@ import MBLibrary
 
 class CurrentWorkoutViewController: UIViewController {
 	
-	@IBOutlet var cancelBtn: UIBarButtonItem!
-	@IBOutlet var endNowBtn: UIBarButtonItem!
+	@IBOutlet private var cancelBtn: UIBarButtonItem!
+	@IBOutlet private var endNowBtn: UIBarButtonItem!
 	
-	@IBOutlet weak var manageFromWatchLbl: UILabel!
-	@IBOutlet weak var noWorkoutLabel: UIView!
-	@IBOutlet weak var workoutInfo: UIStackView!
+	@IBOutlet private weak var manageFromWatchLbl: UILabel!
+	@IBOutlet private weak var noWorkoutLabel: UIView!
+	@IBOutlet private weak var workoutInfo: UIStackView!
 
-	@IBOutlet weak var workoutTitleLbl: UILabel!
-	@IBOutlet weak var bpmLbl: UILabel!
-	@IBOutlet weak var timerLbl: UILabel!
+	@IBOutlet private weak var workoutTitleLbl: UILabel!
+	@IBOutlet private weak var bpmLbl: UILabel!
+	@IBOutlet private weak var timerLbl: UILabel!
 	
-	@IBOutlet weak var currentExercizeInfo: UIStackView!
-	@IBOutlet weak var exercizeNameLbl: UILabel!
-	@IBOutlet weak var currentSetInfo: UIView!
-	@IBOutlet weak var currentSetInfoLbl: UILabel!
-	@IBOutlet weak var otherSetsLbl: UILabel!
-	@IBOutlet weak var setDoneBtn: UIButton!
+	@IBOutlet private weak var currentExercizeInfo: UIStackView!
+	@IBOutlet private weak var exercizeNameLbl: UILabel!
+	@IBOutlet private weak var currentSetInfo: UIView!
+	@IBOutlet private weak var currentSetInfoLbl: UILabel!
+	@IBOutlet private weak var otherSetsLbl: UILabel!
+	@IBOutlet private weak var setDoneBtn: UIButton!
 	
-	@IBOutlet weak var restInfo: UIStackView!
-	@IBOutlet weak var restTimerLbl: UILabel!
-	@IBOutlet weak var restDoneBtn: UIButton!
+	@IBOutlet private weak var restInfo: UIStackView!
+	@IBOutlet private weak var restTimerLbl: UILabel!
+	@IBOutlet private weak var restDoneBtn: UIButton!
 	
-	@IBOutlet weak var workoutDoneInfo: UIStackView!
-	@IBOutlet weak var workoutDoneLbl: UILabel!
-	@IBOutlet weak var workoutDoneBtn: UIButton!
+	@IBOutlet private weak var workoutDoneInfo: UIStackView!
+	@IBOutlet private weak var workoutDoneLbl: UILabel!
+	@IBOutlet private weak var workoutDoneBtn: UIButton!
 	
-	@IBOutlet weak var nextUpInfo: UIView!
-	@IBOutlet weak var nextUpLbl: UILabel!
+	@IBOutlet private weak var nextUpInfo: UIView!
+	@IBOutlet private weak var nextUpLbl: UILabel!
 	
 	private var workoutController: ExecuteWorkoutController? {
 		return appDelegate.workoutController

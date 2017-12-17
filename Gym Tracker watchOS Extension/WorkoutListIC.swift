@@ -20,7 +20,6 @@ class WorkoutListInterfaceController: WKInterfaceController {
 	
 	var canEdit = appDelegate.dataManager.preferences.runningWorkout == nil
 	private var activated = false
-	private(set) var resuming = false
 
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
@@ -40,7 +39,6 @@ class WorkoutListInterfaceController: WKInterfaceController {
 		}
 		
 		activated = true
-		resumeWorkout()
     }
     
     override func didDeactivate() {
@@ -95,32 +93,6 @@ class WorkoutListInterfaceController: WKInterfaceController {
 				appDelegate.dataManager.preferences.authVersion = authRequired
 			}
 		}
-	}
-	
-	func resumeWorkout() {
-		guard activated else {
-			return
-		}
-		
-		guard let (workout, start, exercize, part) = appDelegate.tryResumeData else {
-			return
-		}
-		
-		resuming = true
-		let resumeAct = WKAlertAction(title: NSLocalizedString("WORKOUT_DO_RESUME", comment: "Yes"), style: .default) {
-			WKInterfaceController.reloadRootControllers(withNames: ["executeWorkout"],
-														contexts: [ExecuteWorkoutData(workout: workout, resumeData: (start, exercize, part))])
-			self.resuming = false
-		}
-		let cancelAct = WKAlertAction(title: NSLocalizedString("WORKOUT_DONT_RESUME", comment: "No"), style: .destructive) {
-			self.resuming = false
-		}
-		
-		DispatchQueue.main.asyncAfter(delay: 0.5) {
-			self.presentAlert(withTitle: NSLocalizedString("WORKOUT_RESUME", comment: "Resume?"), message: NSLocalizedString("WORKOUT_RESUME_TEXT", comment: "Resume?"), preferredStyle: .sideBySideButtonsAlert, actions: [resumeAct, cancelAct])
-		}
-		
-		appDelegate.tryResumeData = nil
 	}
 	
 	override func contextForSegue(withIdentifier segueIdentifier: String, in table: WKInterfaceTable, rowIndex: Int) -> Any? {

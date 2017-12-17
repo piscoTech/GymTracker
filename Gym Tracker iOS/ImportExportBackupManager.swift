@@ -10,7 +10,7 @@
 import Foundation
 import MBLibrary
 
-public class ImportExportBackupManager: NSObject {
+class ImportExportBackupManager: NSObject {
 	
 	let dataManager: DataManager
 	
@@ -196,7 +196,7 @@ public class ImportExportBackupManager: NSObject {
 		}
 	}
 	
-	public func `import`(_ file: URL, isRestoring restore: Bool, performCallback: (Bool, Int?, (() -> ())?) -> Void, callback: @escaping ([Workout]?) -> Void) {
+	func `import`(_ file: URL, isRestoring restore: Bool, performCallback: (Bool, Int?, (() -> ())?) -> Void, callback: @escaping ([Workout]?) -> Void) {
 		if let xsd = Bundle.main.url(forResource: "workout", withExtension: "xsd"),
 			let workouts = file.loadAsXML(validatingWithXSD: xsd)?.children, workouts.count > 0 {
 			performCallback(true, workouts.count) {

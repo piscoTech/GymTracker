@@ -14,6 +14,7 @@
 "ARCH_WORKOUTS" = "Archived Workouts";
 "EXERCIZES" = "Exercizes";
 "EXERCIZE" = "Exercize";
+"ROUND" = "Round"; // Round of a circuit
 "REST" = "Rest";
 
 "DELETE_WORKOUT" = "Delete Workout";
@@ -52,14 +53,9 @@
 "WORKOUT_START_ERR" = "Unable to start workout";
 "WORKOUT_START_ERR_WATCH" = "Cannot start workout on Apple Watch";
 "WORKOUT_STOP_ERR" = "Workout terminated due to an error";
-"WORKOUT_SAVING" = "Saving Workout...";
+"WORKOUT_SAVING" = "Saving workout...";
 "WORKOUT_SAVED" = "Workout saved";
 "WORKOUT_SAVE_ERROR" = "Error saving workout";
-
-"WORKOUT_RESUME" = "Resume Workout?";
-"WORKOUT_RESUME_TEXT" = "The app was closed while a workout was in progress, do you want to resume it?";
-"WORKOUT_DO_RESUME" = "Yes";
-"WORKOUT_DONT_RESUME" = "No";
 
 "REPORT_TEXT" = "Report any problem on Twitter @piscoTech or at GitHub tapping Source Code.";
 "ERR_BACKUP_UNAVAILABLE" = "Login with your iCloud account and enable iCloud Drive for Gym Tracker to use automatic backups.";

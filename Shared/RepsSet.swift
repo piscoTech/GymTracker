@@ -11,7 +11,7 @@ import CoreData
 import MBLibrary
 
 @objc(RepsSet)
-public class RepsSet: DataObject {
+class RepsSet: DataObject {
 	
 	override class var objectType: String {
 		return "RepsSet"
@@ -32,8 +32,8 @@ public class RepsSet: DataObject {
 	private let weightKey = "weight"
 	private let restKey = "rest"
 	
-	override public var description: String {
-		return "\(reps)" + (weight > 0 ? "\(timesSign)\(weight.toString())kg" : "")
+	override var description: String {
+		return "\(reps)x\(weight.toString())kg"
 	}
 	
 	override class func loadWithID(_ id: String, fromDataManager dataManager: DataManager) -> RepsSet? {

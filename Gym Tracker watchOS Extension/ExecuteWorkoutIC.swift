@@ -45,7 +45,7 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutCo
         super.awake(withContext: context)
 		
 		guard let data = context as? ExecuteWorkoutData else {
-			appDelegate.restoredefaultState()
+			appDelegate.restoreDefaultState()
 			return
 		}
 		
@@ -200,7 +200,7 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutCo
 	func workoutHasStarted() {}
 	
 	@IBAction func exitWorkoutTracking() {
-		appDelegate.restoredefaultState()
+		appDelegate.restoreDefaultState()
 	}
 
 }

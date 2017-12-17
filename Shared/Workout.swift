@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 
 @objc(Workout)
-public class Workout: DataObject {
+class Workout: DataObject {
 	
 	override class var objectType: String {
 		return "Workout"
@@ -32,7 +32,7 @@ public class Workout: DataObject {
 	private let nameKey = "name"
 	private let archivedKey = "archived"
 	
-	override public var description: String {
+	override var description: String {
 		let n = exercizes.filter { !$0.isRest }.count
 		return "\(n) " + NSLocalizedString("EXERCIZE" + (n > 1 ? "S" : ""), comment: "exercize(s)").lowercased()
 	}

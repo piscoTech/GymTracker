@@ -17,7 +17,7 @@ extension Date {
 		return formatter
 	}()
 	
-	public func getWorkoutExportName() -> String {
+	func getWorkoutExportName() -> String {
 		return Date.workoutF.string(from: self)
 	}
 	

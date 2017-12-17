@@ -132,7 +132,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 				case 1: // Is circuit
 					msg = "IS_CIRCUIT"
 					if let (n, t) = delegate.workout.circuitStatus(for: exercize) {
-						cell.detailTextLabel?.text = "\(n)/\(t) " + NSLocalizedString("EXERCIZES", comment: "exercizes").lowercased()
+						cell.detailTextLabel?.text = NSLocalizedString("EXERCIZE", comment: "exercize") + " \(n)/\(t)"
 						accessory.isOn = true
 					}
 					sel = #selector(enableCircuit(_:))

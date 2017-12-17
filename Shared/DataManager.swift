@@ -81,7 +81,7 @@ struct CDRecordID: Hashable {
 	
 }
 
-public class DataObject: NSManagedObject {
+class DataObject: NSManagedObject {
 	
 	class var objectType: String {
 		return "DataObject"
@@ -97,7 +97,7 @@ public class DataObject: NSManagedObject {
 	fileprivate static let createdKey = "created"
 	fileprivate static let modifiedKey = "modified"
 	
-	override public required init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
+	override required init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
 		super.init(entity: entity, insertInto: context)
 	}
 	
@@ -251,7 +251,7 @@ class WCObject: Equatable {
 
 // MARK: - Data Manager
 
-public class DataManager {
+class DataManager {
 	
 	enum Usage: CustomStringConvertible {
 		case application, testing

@@ -74,9 +74,7 @@ class ExecuteWorkoutController: NSObject {
 	private let noHeart = "– –"
 	private let nextTxt = NSLocalizedString("NEXT_EXERCIZE_FLAG", comment: "Next:")
 	private let nextEndTxt = NSLocalizedString("NEXT_EXERCIZE_END", comment: "End")
-	private let nextRestTxt = NSLocalizedString("NEXT_EXERCIZE_REST", comment: "rest")
-	private let otherSetTxt = NSLocalizedString("OTHER_N_SET", comment: "other set")
-	private let otherSetsTxt = NSLocalizedString("OTHER_N_SETS", comment: "other sets")
+	
 	private let activityType = HKWorkoutActivityType.traditionalStrengthTraining
 	private let isIndoor = true
 	
@@ -85,8 +83,11 @@ class ExecuteWorkoutController: NSObject {
 	fileprivate var start: Date!
 	fileprivate var end: Date!
 	private var exercizes: [Exercize]
-	private var curExercize: Int
-	private var curPart: Int
+	/// The current exercize, rest or circuit.
+	private var curExercize: Int // TODO: Remove
+	/// TODO: Rename to 'currentSet'
+	/// The current set inside the current exercize or circuit, this identifies both the set and, if any, its subsequent rest period.
+	private var curPart: Int // TODO: Remove
 	private(set) var isLastPart = false
 	private(set) var isRestMode: Bool
 	private var restTimer: Timer? {
@@ -489,7 +490,7 @@ class ExecuteWorkoutController: NSObject {
 			let txt: String
 			let nextEx = exercizes[1]
 			if nextEx.isRest {
-				txt = nextEx.rest.getDuration(hideHours: true) + nextRestTxt
+				txt = nextEx.rest.getDuration(hideHours: true) //+ nextRestTxt
 			} else {
 				let nextWeight = nextEx[0]?.weight ?? 0
 				txt = nextEx.name! + (nextWeight > 0 ? ", \(nextWeight.toString())kg" : "")
@@ -619,6 +620,7 @@ class ExecuteWorkoutController: NSObject {
 		restTimer = nil
 		
 		nextStep()
+		// TODO: Save `nil` in preferences for current rest end
 	}
 	
 	func endSet() {
@@ -697,7 +699,7 @@ class ExecuteWorkoutController: NSObject {
 		var other: String?
 		let otherSet = Array(curEx.setList.suffix(from: setN + 1))
 		if otherSet.count > 0 {
-			other = "\(otherSet.count)\(otherSet.count > 1 ? self.otherSetsTxt : self.otherSetTxt): " + otherSet.map { "\($0.weight.toString())kg" }.joined(separator: ", ")
+			other = "\(otherSet.count) other: " + otherSet.map { $0.description }.joined(separator: ", ")
 		}
 		
 		return (curEx.name ?? "", set.description, other)
@@ -709,6 +711,7 @@ class ExecuteWorkoutController: NSObject {
 	
 }
 
+// MARK: - HealthKit Integration
 #if os(watchOS)
 
 extension ExecuteWorkoutController: HKWorkoutSessionDelegate {

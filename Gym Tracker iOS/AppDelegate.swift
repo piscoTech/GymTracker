@@ -107,9 +107,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		center.delegate = self
 		
 		do {
-			let customTint = #colorLiteral(red: 0.7568627451, green: 0.9215686275, blue: 0.2, alpha: 1)
-			let redTint = #colorLiteral(red: 1, green: 0.1882352941, blue: 0, alpha: 1)
-//			let defaultTint = #colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1)
 			UITabBar.appearance().tintColor = customTint
 			DestructiveButton.appearance().tintColor = redTint
 
@@ -296,7 +293,9 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 				return
 			}
 			
-			data = ExecuteWorkoutData(workout: w, resumeData: (start: dataManager.preferences.currentStart, curExercize: dataManager.preferences.currentExercize, curPart: dataManager.preferences.currentPart))
+			data = ExecuteWorkoutData(workout: w, resumeData: (dataManager.preferences.currentStart,
+															   dataManager.preferences.currentExercize,
+															   dataManager.preferences.currentPart))
 		}
 		
 		workoutController = ExecuteWorkoutController(data: data, viewController: self, source: .phone)

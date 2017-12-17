@@ -162,7 +162,7 @@ class BackupListTableViewController: UITableViewController {
 					}
 				}
 			}
-			restore.backgroundColor = #colorLiteral(red: 0, green: 0.7529411765, blue: 0, alpha: 1)
+			restore.backgroundColor = greenTint
 			act.append(restore)
 		}
 		

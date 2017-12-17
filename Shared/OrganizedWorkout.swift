@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class OrganizedWorkout {
+class OrganizedWorkout {
 	
 	private(set) var raw: Workout
 	
