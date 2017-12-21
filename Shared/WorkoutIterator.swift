@@ -132,20 +132,24 @@ class WorkoutExercizeStep: WorkoutSetStep {
 	static private let otherSetsTxt = NSLocalizedString("OTHER_N_SETS", comment: "other sets")
 	
 	fileprivate init(exercizeName: String, reps: WorkoutSetStepData, rest: TimeInterval?, otherWeights other: [Double], nextUp: WorkoutStepNext?) {
-		let otherSets = NSMutableAttributedString(string: "\(other.count)\(other.count > 1 ? WorkoutExercizeStep.otherSetsTxt : WorkoutExercizeStep.otherSetTxt): ")
-		let kg = NSAttributedString(string: "kg")
-		otherSets.append(other.flatMap { weight -> NSAttributedString? in
-			guard let w = weight.weightDescription(withChange: reps.change) else {
-				return nil
-			}
+		if other.count > 0 {
+			let otherSets = NSMutableAttributedString(string: "\(other.count)\(other.count > 1 ? WorkoutExercizeStep.otherSetsTxt : WorkoutExercizeStep.otherSetTxt): ")
+			let kg = NSAttributedString(string: "kg")
+			otherSets.append(other.flatMap { weight -> NSAttributedString? in
+				guard let w = weight.weightDescription(withChange: reps.change) else {
+					return nil
+				}
+				
+				let res = NSMutableAttributedString(attributedString: w)
+				res.append(kg)
+				
+				return res
+				}.joined(separator: ", "))
 			
-			let res = NSMutableAttributedString(attributedString: w)
-			res.append(kg)
-			
-			return res
-		}.joined(separator: ", "))
-		
-		self.otherSets = otherSets
+			self.otherSets = otherSets
+		} else {
+			self.otherSets = nil
+		}
 		self.otherWeights = other
 		
 		super.init(exercizeName: exercizeName, reps: reps, rest: rest, nextUp: nextUp)
@@ -201,13 +205,16 @@ class WorkoutRestStep: WorkoutStep {
 /// After creation make sure not to change the structure of workout, i.e. how exercizes and sets are ordered and arranged in circuit, after creation, weight update is fine. Any change in exercize arrangement will not be reflected, change in number of sets can result in unexpected behaviour.
 class WorkoutIterator: IteratorProtocol {
 	
+	private let workout: OrganizedWorkout
+	
 	private let exercizes: [[Exercize]]
 	/// The current exercize, rest or circuit.
 	private var curExercize = 0
-	/// The current set inside the current exercize or circuit, this identifies both the set and, if any, its subsequent rest period.
-	private var curSet = 0
+	/// The current part, i.e. set, inside the current exercize or circuit, this identifies both the set and, if any, its subsequent rest period.
+	private var curPart = 0
 
 	init(_ w: OrganizedWorkout) {
+		workout = w
 		guard w.validityStatus.global else {
 			exercizes = []
 			return
@@ -232,12 +239,55 @@ class WorkoutIterator: IteratorProtocol {
 		exercizes = exGroups
 	}
 	
+	func weightChange(for: Exercize) -> Double {
+		return 0
+	}
+	
 	func next() -> WorkoutStep? {
 		guard exercizes.count > curExercize else {
 			return nil
 		}
 		
-		return nil
+		func prepareNext(with e: Exercize, set: Int = 0) -> WorkoutStepNext {
+			if e.isRest {
+				return WorkoutStepNextRest(rest: e.rest)
+			} else {
+				return WorkoutStepNextSet(exercizeName: e.name ?? "", weight: e[Int32(set)]!.weight, change: self.weightChange(for: e))
+			}
+		}
+		
+		let curGroup = exercizes[curExercize]
+		if curGroup[0].isRest { // Rest period
+			curExercize += 1
+			curPart = 0
+			// Here we assume the workout is valid and unused data is purged, i.e. after a rest there is always another exercize
+			return WorkoutRestStep(rest: curGroup[0].rest, nextUp: prepareNext(with: exercizes[curExercize][0]))
+		} else { // Set
+			if curGroup.count > 1 { // Circuit
+				return nil
+			} else { // Single exercize
+				let e = curGroup[0]
+				let s = e[Int32(curPart)]!
+				let isLast = curPart == e.sets.count - 1
+				var next: WorkoutStepNext?
+				
+				let reps = WorkoutSetStep.WorkoutSetStepData(reps: Int(s.reps), s.weight, weightChange(for: e))
+				let (globalRest, lastRest) = workout.restStatus(for: e)!
+				let rest = (isLast && lastRest) || (!isLast && globalRest) ? s.rest : nil
+				let others = e.setList[(curPart + 1)...].map { $0.weight }
+				if curExercize + 1 < exercizes.count {
+					next = prepareNext(with: exercizes[curExercize + 1][0])
+				}
+				
+				if isLast {
+					curPart = 0
+					curExercize += 1
+				} else {
+					curPart += 1
+				}
+				return WorkoutExercizeStep(exercizeName: e.name ?? "", reps: reps, rest: rest, otherWeights: others, nextUp: next)
+			}
+		}
 	}
 	
 }

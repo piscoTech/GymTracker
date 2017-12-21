@@ -27,7 +27,7 @@ enum PreferenceKeys: String, KeyValueStoreKey {
 	case runningWorkoutNeedsTransfer = "runningWorkoutNeedsTransfer"
 	case currentStart = "currentStart"
 	case currentExercize = "currentExercize"
-	case currentPart = "currentPart" // TODO: Rename to 'currentSet'
+	case currentPart = "currentPart"
 	case currentRestEnd = "currentRestEnd"
 	
 	case authorized = "authorized"
@@ -221,7 +221,6 @@ class Preferences {
 		}
 	}
 	
-	// TODO: Rename to 'currentSet'
 	/// The current set inside the current exercize or circuit, if `currentRestEnd` is set the workout is currently in the rest after the set.
 	var currentPart: Int {
 		get {

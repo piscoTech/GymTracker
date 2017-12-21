@@ -85,7 +85,6 @@ class ExecuteWorkoutController: NSObject {
 	private var exercizes: [Exercize]
 	/// The current exercize, rest or circuit.
 	private var curExercize: Int // TODO: Remove
-	/// TODO: Rename to 'currentSet'
 	/// The current set inside the current exercize or circuit, this identifies both the set and, if any, its subsequent rest period.
 	private var curPart: Int // TODO: Remove
 	private(set) var isLastPart = false

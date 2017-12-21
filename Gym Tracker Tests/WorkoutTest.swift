@@ -11,8 +11,8 @@ import XCTest
 
 class WorkoutTest: XCTestCase {
 	
-	var workout: Workout!
-	var e1, e2, r: Exercize!
+	private var workout: Workout!
+	private var e1, e2, r: Exercize!
     
     override func setUp() {
         super.setUp()

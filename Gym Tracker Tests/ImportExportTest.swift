@@ -11,7 +11,7 @@ import XCTest
 
 class ImportExportTest: XCTestCase {
 	
-	var importExpectation: XCTestExpectation!
+	private var importExpectation: XCTestExpectation!
 	
 	override func setUp() {
         super.setUp()
