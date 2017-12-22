@@ -27,7 +27,7 @@ class WorkoutIteratorTests: XCTestCase {
 		var s = dataManager.newSet(for: e)
 		s.set(reps: 10)
 		s.set(weight: 0)
-		s.set(rest: 90)
+		s.set(rest: 0)
 		s = dataManager.newSet(for: e)
 		s.set(reps: 5)
 		s.set(weight: 8)
@@ -106,7 +106,7 @@ class WorkoutIteratorTests: XCTestCase {
 					XCTFail("Unexpected nil")
 				}
 				
-				XCTAssertEqual(s1.rest, step1.rest)
+				XCTAssertNil(step1.rest)
 				
 				if let next = step1.nextUpInfo?.string {
 					if let namePos = next.range(of: e.next!.name!) {
@@ -117,6 +117,9 @@ class WorkoutIteratorTests: XCTestCase {
 				} else {
 					XCTFail("Unexpected nil")
 				}
+				
+				XCTAssertFalse(step1.isRest)
+				XCTAssertEqual(step1.set, s1)
 				
 				if let details1 = step1 as? WorkoutExercizeStep {
 					XCTAssertEqual(details1.reps.reps, Int(s1.reps))
@@ -168,6 +171,9 @@ class WorkoutIteratorTests: XCTestCase {
 				} else {
 					XCTFail("Unexpected nil")
 				}
+				
+				XCTAssertFalse(step2.isRest)
+				XCTAssertEqual(step2.set, s2)
 				
 				if let details2 = step2 as? WorkoutExercizeStep {
 					XCTAssertEqual(details2.reps.reps, Int(s2.reps))
@@ -231,6 +237,9 @@ class WorkoutIteratorTests: XCTestCase {
 					XCTFail("Unexpected nil")
 				}
 				
+				XCTAssertFalse(step3.isRest)
+				XCTAssertEqual(step3.set, s1)
+				
 				if let details3 = step3 as? WorkoutExercizeStep {
 					XCTAssertEqual(details3.reps.reps, Int(s1.reps))
 					XCTAssertEqual(details3.reps.weight, s1.weight)
@@ -276,6 +285,9 @@ class WorkoutIteratorTests: XCTestCase {
 					XCTFail("Unexpected nil")
 				}
 				
+				XCTAssertFalse(step4.isRest)
+				XCTAssertEqual(step4.set, s2)
+				
 				if let details4 = step4 as? WorkoutExercizeStep {
 					XCTAssertEqual(details4.reps.reps, Int(s2.reps))
 					XCTAssertEqual(details4.reps.weight, s2.weight)
@@ -316,6 +328,9 @@ class WorkoutIteratorTests: XCTestCase {
 					XCTFail("Unexpected nil")
 				}
 				
+				XCTAssertTrue(step5.isRest)
+				XCTAssertNil(step5.set)
+				
 				XCTAssertTrue(step5 is WorkoutRestStep)
 				if let next5 = step5.nextUp as? WorkoutStepNextSet {
 					XCTAssertEqual(next5.exercizeName, e.next!.name!)
@@ -346,6 +361,9 @@ class WorkoutIteratorTests: XCTestCase {
 				XCTAssertNil(step6.rest)
 				XCTAssertNil(step6.nextUpInfo)
 				
+				XCTAssertFalse(step6.isRest)
+				XCTAssertEqual(step6.set, s1)
+				
 				if let details6 = step6 as? WorkoutExercizeStep {
 					XCTAssertEqual(details6.reps.reps, Int(s1.reps))
 					XCTAssertEqual(details6.reps.weight, s1.weight)
@@ -367,7 +385,9 @@ class WorkoutIteratorTests: XCTestCase {
 	
 	func testCircuitWorkout() {
 //		ow.makeCircuit(exercize: ow[0]!, isCircuit: true)
-//		ow.enableCircuitRestPeriods(for: ow[1]!, enable: true)
+//		ow.enableCircuitRestPeriods(for: ow[0]!, enable: true)
+		
+		// TODO: Test for nil rest instead of 0
 		
 		XCTFail()
 	}

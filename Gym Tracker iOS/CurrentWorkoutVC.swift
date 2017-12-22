@@ -127,16 +127,16 @@ class CurrentWorkoutViewController: UIViewController {
 		currentSetInfo.isHidden = hidden
 	}
 	
-	func setCurrentSetText(_ text: String) {
-		currentSetInfoLbl.text = text
+	func setCurrentSetText(_ text: NSAttributedString) {
+		currentSetInfoLbl.attributedText = text
 	}
 	
 	func setOtherSetsViewHidden(_ hidden: Bool) {
 		otherSetsLbl.isHidden = hidden
 	}
 	
-	func setOtherSetsText(_ text: String) {
-		otherSetsLbl.text = text
+	func setOtherSetsText(_ text: NSAttributedString) {
+		otherSetsLbl.attributedText = text
 	}
 	
 	func setSetDoneButtonHidden(_ hidden: Bool) {
@@ -222,16 +222,18 @@ class CurrentWorkoutViewController: UIViewController {
 	}
 	
 	func disableGlobalActions() {
-		cancelBtn.isEnabled = false
-		endNowBtn.isEnabled = false
+		DispatchQueue.main.async {
+			self.cancelBtn.isEnabled = false
+			self.endNowBtn.isEnabled = false
+		}
 	}
 	
 	func setNextUpTextHidden(_ hidden: Bool) {
 		nextUpInfo.isHidden = hidden
 	}
 	
-	func setNextUpText(_ text: String) {
-		nextUpLbl.text = text
+	func setNextUpText(_ text: NSAttributedString) {
+		nextUpLbl.attributedText = text
 	}
 	
 	private var updateWeightData: UpdateWeightData?

@@ -239,6 +239,7 @@ class WCObject: Equatable {
 	func cancelAndDisableEdit()
 	func enableEdit()
 	
+	// TODO: Make date optional, if nil means we are in a set (no current rest as date represent the start of the currente rest)
 	@available(watchOS, unavailable)
 	func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date)
 	@available(watchOS, unavailable)

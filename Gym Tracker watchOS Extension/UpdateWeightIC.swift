@@ -15,7 +15,6 @@ class UpdateWeightInterfaceController: WKInterfaceController {
 	private var set: RepsSet!
 	
 	private var sum = 0.0
-	private var doSave = true
 	
 	@IBOutlet weak var base: WKInterfaceLabel!
 	@IBOutlet weak var plus: WKInterfaceLabel!
@@ -34,8 +33,7 @@ class UpdateWeightInterfaceController: WKInterfaceController {
 		
 		self.delegate = data.workoutController
 		self.set = data.set
-		self.sum = data.sum
-		self.doSave = data.saveAddWeight
+		self.sum = delegate.weightChange(for: set)
 		
 		base.setText(set.weight.toString())
 		updateView()
@@ -72,13 +70,13 @@ class UpdateWeightInterfaceController: WKInterfaceController {
 		if sum != 0 {
 			// Avoid unnecessary saves
 			set.set(weight: sum + set.weight)
-			if appDelegate.dataManager.persistChangesForObjects([set], andDeleteObjects: []) && doSave {
-				delegate.setAddWeight(sum)
+			if appDelegate.dataManager.persistChangesForObjects([set], andDeleteObjects: []) {
+				delegate.setWeightChange(sum, for: set)
 			} else {
 				appDelegate.dataManager.discardAllChanges()
 			}
 		} else {
-			delegate.setAddWeight(sum)
+			delegate.setWeightChange(sum, for: set)
 		}
 		
 		self.dismiss()

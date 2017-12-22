@@ -11,8 +11,8 @@ import HealthKit
 
 struct ExecuteWorkoutData {
 	
-	// FIXME: Make an OrganizedWorkout
-	let workout: Workout
+	let workout: OrganizedWorkout
+	// TODO: Make a boolean and let the controller fetch all required data
 	let resumeData: (start: Date, curExercize: Int, curPart: Int)?
 	
 }
@@ -21,8 +21,6 @@ struct UpdateWeightData {
 	
 	let workoutController: ExecuteWorkoutController
 	let set: RepsSet
-	let sum: Double
-	let saveAddWeight: Bool
 	
 }
 
@@ -37,9 +35,9 @@ protocol ExecuteWorkoutControllerDelegate: AnyObject {
 	func setCurrentExercizeViewHidden(_ hidden: Bool)
 	func setExercizeName(_ name: String)
 	func setCurrentSetViewHidden(_ hidden: Bool)
-	func setCurrentSetText(_ text: String)
+	func setCurrentSetText(_ text: NSAttributedString)
 	func setOtherSetsViewHidden(_ hidden: Bool)
-	func setOtherSetsText(_ text: String)
+	func setOtherSetsText(_ text: NSAttributedString)
 	func setSetDoneButtonHidden(_ hidden: Bool)
 	
 	func startRestTimer(to date: Date)
@@ -53,7 +51,7 @@ protocol ExecuteWorkoutControllerDelegate: AnyObject {
 	func disableGlobalActions()
 	
 	func setNextUpTextHidden(_ hidden: Bool)
-	func setNextUpText(_ text: String)
+	func setNextUpText(_ text: NSAttributedString)
 	
 	func notifyEndRest()
 	func endNotifyEndRest()
@@ -78,41 +76,38 @@ class ExecuteWorkoutController: NSObject {
 	private let activityType = HKWorkoutActivityType.traditionalStrengthTraining
 	private let isIndoor = true
 	
-	private var restoring: Bool
-	private var workout: Workout
-	fileprivate var start: Date!
-	fileprivate var end: Date!
-	private var exercizes: [Exercize]
-	/// The current exercize, rest or circuit.
-	private var curExercize: Int // TODO: Remove
-	/// The current set inside the current exercize or circuit, this identifies both the set and, if any, its subsequent rest period.
-	private var curPart: Int // TODO: Remove
+	private var workout: OrganizedWorkout
+	fileprivate var start: Date! = nil
+	fileprivate var end: Date! = nil
+	private var workoutIterator: WorkoutIterator
+	private var currentStep: WorkoutStep?
+	/// If the current part is the last set in the entire workout, used to correctly display notifications.
 	private(set) var isLastPart = false
-	private(set) var isRestMode: Bool
-	private var restTimer: Timer? {
+	/// If the current part is a rest period.
+	private(set) var isRestMode = false
+	private var restTimer: Timer? = nil {
 		didSet {
 			DispatchQueue.main.async {
 				oldValue?.invalidate()
 			}
 		}
 	}
-	private var addWeight: Double
 	private var restEndDate: Date?
 	
 	#if os(watchOS)
 	private var session: HKWorkoutSession!
 	#endif
-	private var heartQuery: HKAnchoredObjectQuery!
-	private var invalidateBPM: Timer! {
+	private var heartQuery: HKAnchoredObjectQuery! = nil
+	private var invalidateBPM: Timer! = nil {
 		didSet {
 			DispatchQueue.main.async {
 				oldValue?.invalidate()
 			}
 		}
 	}
-	fileprivate var workoutEvents: [HKWorkoutEvent]
-	fileprivate var hasTerminationError: Bool
-	private var terminateAndSave: Bool
+	fileprivate var workoutEvents: [HKWorkoutEvent] = []
+	fileprivate var hasTerminationError = false
+	private var terminateAndSave = true
 	private(set) var isCompleted = false
 	
 	private weak var view: ExecuteWorkoutControllerDelegate!
@@ -129,45 +124,32 @@ class ExecuteWorkoutController: NSObject {
 		view.setWorkoutDoneViewHidden(true)
 		view.setNextUpTextHidden(true)
 		
-		restoring = false
-		start = nil
-		end = nil
-		curExercize = 0
-		curPart = 0
-		isRestMode = false
-		restTimer = nil
-		addWeight = 0
-		
-		heartQuery = nil
-		invalidateBPM = nil
-		workoutEvents = []
-		hasTerminationError = false
-		terminateAndSave = true
-		
 		workout = data.workout
-		exercizes = workout.exercizeList
-		appDelegate.dataManager.setRunningWorkout(workout, fromSource: source)
+		appDelegate.dataManager.setRunningWorkout(workout.raw, fromSource: source)
 		
-		if let (date, exercize, part) = data.resumeData {
-			restoring = true
-			start = date
-			curPart = part
-			curExercize = exercize
-			
-			for _ in 0 ..< exercize {
-				guard exercizes.count > 0 else {
-					break
-				}
-				
-				exercizes.remove(at: 0)
-			}
-			
-			appDelegate.dataManager.preferences.currentExercize = exercize
-			appDelegate.dataManager.preferences.currentPart = part
-		} else {
-			appDelegate.dataManager.preferences.currentExercize = 0
-			appDelegate.dataManager.preferences.currentPart = 0
-		}
+//		if let (date, exercize, part) = data.resumeData {
+//			restoring = true
+//			start = date
+//			curPart = part
+//			curExercize = exercize
+//
+//			for _ in 0 ..< exercize {
+//				guard exercizes.count > 0 else {
+//					break
+//				}
+//
+//				exercizes.remove(at: 0)
+//			}
+//
+//			appDelegate.dataManager.preferences.currentExercize = exercize
+//			appDelegate.dataManager.preferences.currentPart = part
+//		} else {
+//			appDelegate.dataManager.preferences.currentExercize = 0
+//			appDelegate.dataManager.preferences.currentPart = 0
+//		}
+		// TODO: Check if need to resume
+		workoutIterator = WorkoutIterator(workout)
+		currentStep = workoutIterator.next()
 		
 		super.init()
 		
@@ -205,6 +187,8 @@ class ExecuteWorkoutController: NSObject {
 	
 	@available(watchOS, unavailable)
 	init?(mirrorWorkoutForViewController viewController: ExecuteWorkoutControllerDelegate) {
+		// FIXME: Implement me
+		return nil
 		guard let workout = appDelegate.dataManager.preferences.runningWorkout?.getObject(fromDataManager: appDelegate.dataManager) as? Workout else {
 			return nil
 		}
@@ -219,24 +203,6 @@ class ExecuteWorkoutController: NSObject {
 		view.setRestViewHidden(true)
 		view.setWorkoutDoneViewHidden(true)
 		view.setNextUpTextHidden(true)
-		
-		restoring = false
-		start = nil
-		end = nil
-		curExercize = 0
-		curPart = 0
-		isRestMode = false
-		restTimer = nil
-		addWeight = 0
-		
-		heartQuery = nil
-		invalidateBPM = nil
-		workoutEvents = []
-		hasTerminationError = false
-		terminateAndSave = true
-		
-		self.workout = workout
-		exercizes = workout.exercizeList
 		
 		super.init()
 		
@@ -333,42 +299,33 @@ class ExecuteWorkoutController: NSObject {
 			return nil
 		}
 		
-		guard let curEx = exercizes.first else {
+		guard let curStep = currentStep else {
 			endWorkout()
 			return nil
 		}
 		
-		var set: RepsSet?
-		
-		if curEx.isRest {
-			exercizes.remove(at: 0)
-			curPart = 0
-			
-			appDelegate.dataManager.preferences.currentExercize += 1
-			appDelegate.dataManager.preferences.currentPart = curPart
-		} else {
-			if curPart % 2 == 0 {
-				set = curEx[Int32(curPart / 2)]
+		let set: RepsSet?
+		if self.isRestMode {
+			set = nil
+			currentStep = workoutIterator.next()
+			isRestMode = currentStep?.isRest ?? false
+		} else { // Must be a set
+			set = curStep.set
+			if curStep.rest != nil {
+				isRestMode = true
+			} else {
+				currentStep = workoutIterator.next()
+				isRestMode = currentStep?.isRest ?? false
 			}
-			
-			let maxPart = 2 * curEx.sets.count - 1
-			curPart += 1
-			if curPart >= maxPart {
-				exercizes.remove(at: 0)
-				curPart = 0
-				
-				appDelegate.dataManager.preferences.currentExercize += 1
-			}
-			
-			appDelegate.dataManager.preferences.currentPart = curPart
 		}
 		
+		// TODO: Persiste iterator status and rest status
 		appDelegate.dataManager.sendWorkoutStatusUpdate()
 		return set
 	}
 	
 	private func displayStep(withTime time: Date? = nil) {
-		guard let curEx = exercizes.first else {
+		guard let curStep = currentStep else {
 			if isMirroring {
 				view.exitWorkoutTracking()
 			} else {
@@ -378,82 +335,38 @@ class ExecuteWorkoutController: NSObject {
 			return
 		}
 		
-		isLastPart = isLastPart || (exercizes.count == 1 && curPart == 2 * curEx.sets.count - 2)
+		isLastPart = curStep.nextUpInfo == nil
+		let setRest: TimeInterval?
 		
-		var setRest: TimeInterval?
-		
-		if curEx.isRest {
-			setRest = curEx.rest
+		if curStep.isRest {
+			setRest = curStep.rest
 			view.setCurrentExercizeViewHidden(true)
 		} else {
 			view.setCurrentExercizeViewHidden(false)
+			view.setExercizeName(curStep.exercizeName ?? "")
 			
-			let setN = curPart / 2
-			guard let set = curEx[Int32(setN)] else {
-				if !isMirroring {
-					nextStep()
-				}
-				
-				return
-			}
-			
-			if curPart == 0 {
-				// Reset add weight for new exercize
-				addWeight = 0
-			}
-			
-			let setInfoText = {
-				guard let (ex, _, other) = self.currentSetInfo else {
-					return
-				}
-				
-				self.view.setExercizeName(ex)
-				if let other = other {
-					self.view.setOtherSetsText(other)
-					self.view.setOtherSetsViewHidden(false)
-				} else {
-					self.view.setOtherSetsViewHidden(true)
-				}
-			}
-			
-			if curPart % 2 == 0 {
-				setRest = nil
-				view.setCurrentSetText(set.description)
-				
-				setInfoText()
-				
-				view.setCurrentSetViewHidden(false)
-				// Hide end button if mirroring
-				view.setSetDoneButtonHidden(isMirroring)
-			} else {
-				setRest = set.rest
-				
-				if restoring {
-					setInfoText()
-					
-					restoring = false
-				}
-				
+			if isRestMode {
+				setRest = curStep.rest
 				view.setCurrentSetViewHidden(true)
 				view.setSetDoneButtonHidden(true)
+			} else {
+				setRest = nil
+				view.setCurrentSetViewHidden(false)
+				view.setCurrentSetText(curStep.currentReps ?? NSAttributedString())
+				view.setSetDoneButtonHidden(isMirroring)
+			}
+			
+			if let oth = curStep.otherPartsInfo {
+				view.setOtherSetsText(oth)
+				view.setOtherSetsViewHidden(false)
+			} else {
+				view.setOtherSetsViewHidden(true)
 			}
 		}
 		
 		if let restTime = setRest {
-			guard restTime > 0 else {
-				// A rest time of 0:00 is allowed between sets, jump to next set
-				if !isMirroring {
-					nextStep()
-				}
-				
-				return
-			}
-			
 			let now = Date()
-			var endTime = appDelegate.dataManager.preferences.currentRestEnd ?? (time ?? now).addingTimeInterval(restTime)
-			if endTime < now {
-				endTime = now
-			}
+			let endTime = max(appDelegate.dataManager.preferences.currentRestEnd ?? (time ?? now).addingTimeInterval(restTime), now)
 			let endsIn = endTime.timeIntervalSince(now)
 			appDelegate.dataManager.preferences.currentRestEnd = endTime
 			self.restEndDate = endTime
@@ -483,21 +396,10 @@ class ExecuteWorkoutController: NSObject {
 		if !isMirroring {
 			view.notifyExercizeChange(isRest: setRest != nil)
 		}
-		isRestMode = setRest != nil
 		
-		if exercizes.count >= 2 {
-			let txt: String
-			let nextEx = exercizes[1]
-			if nextEx.isRest {
-				txt = nextEx.rest.getDuration(hideHours: true) //+ nextRestTxt
-			} else {
-				let nextWeight = nextEx[0]?.weight ?? 0
-				txt = nextEx.name! + (nextWeight > 0 ? ", \(nextWeight.toString())kg" : "")
-			}
-			view.setNextUpText(nextTxt + txt)
-		} else {
-			view.setNextUpText(nextTxt + nextEndTxt)
-		}
+		let nextUp = NSMutableAttributedString(string: nextTxt)
+		nextUp.append(curStep.nextUpInfo ?? NSAttributedString(string: nextEndTxt))
+		view.setNextUpText(nextUp)
 	}
 	
 	private func saveWorkout() {
@@ -572,6 +474,8 @@ class ExecuteWorkoutController: NSObject {
 	
 	@available(watchOS, unavailable)
 	func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date) {
+		// FIXME: Implement me
+		fatalError("Reimplementation in progress")
 		guard isMirroring else {
 			return
 		}
@@ -581,22 +485,24 @@ class ExecuteWorkoutController: NSObject {
 			workoutSessionStarted()
 		}
 		
-		for _ in 0 ..< min(exercizes.count, exercize - curExercize) {
-			_ = exercizes.remove(at: 0)
-		}
-		
-		curExercize = exercize
-		curPart = part
-		
-		appDelegate.dataManager.preferences.currentExercize = curExercize
-		appDelegate.dataManager.preferences.currentPart = curPart
-		
-		self.restoring = true
+//		for _ in 0 ..< min(exercizes.count, exercize - curExercize) {
+//			_ = exercizes.remove(at: 0)
+//		}
+//
+//		curExercize = exercize
+//		curPart = part
+//
+//		appDelegate.dataManager.preferences.currentExercize = curExercize
+//		appDelegate.dataManager.preferences.currentPart = curPart
+//
+//		self.restoring = true
 		displayStep(withTime: date)
 	}
 	
 	@available(watchOS, unavailable)
 	func mirroredWorkoutHasEnded() {
+		// FIXME: Implement me
+		fatalError("Reimplementation in progress")
 		guard isMirroring else {
 			return
 		}
@@ -628,18 +534,21 @@ class ExecuteWorkoutController: NSObject {
 		}
 		
 		if let set = prepareNextStep() {
-			// The next part has already been prepared so the current part is 0 only if the exercize has changed
-			view.askUpdateWeight(with: UpdateWeightData(workoutController: self, set: set, sum: addWeight, saveAddWeight: curPart != 0))
+			view.askUpdateWeight(with: UpdateWeightData(workoutController: self, set: set))
 		}
 		displayStep()
 	}
 	
-	func setAddWeight(_ add: Double) {
+	func weightChange(for s: RepsSet) -> Double {
+		return workoutIterator.weightChange(for: s.exercize)
+	}
+	
+	func setWeightChange(_ change: Double, for: RepsSet) {
 		guard !isMirroring else {
 			return
 		}
 		
-		addWeight = add
+		// TODO: Forward to WorkoutIterator
 	}
 	
 	func endWorkout() {
@@ -671,41 +580,26 @@ class ExecuteWorkoutController: NSObject {
 		view.exitWorkoutTracking()
 	}
 	
-	// MARK: - Information Gathering
+	// MARK: - Notification Information Gathering
 	
 	var currentRestTime: (duration: TimeInterval, endTime: Date)? {
-		guard let curEx = exercizes.first, let end = self.restEndDate else {
+		guard isRestMode, let rest = currentStep?.rest, let end = self.restEndDate else {
 			return nil
 		}
 		
-		if curEx.isRest {
-			return (curEx.rest, end)
-		} else {
-			guard let set = curEx[Int32(curPart / 2)], curPart % 2 == 1 else {
-				return nil
-			}
-			
-			return (set.rest, end)
-		}
+		return (rest, end)
 	}
 	
 	var currentSetInfo: (exercize: String, setInfo: String, otherSetsInfo: String?)? {
-		let setN = curPart / 2
-		guard let curEx = exercizes.first, !curEx.isRest, let set = curEx[Int32(setN)] else {
+		guard !(currentStep?.isRest ?? true), let e = currentStep?.exercizeName, let s = currentStep?.currentReps else {
 			return nil
 		}
 		
-		var other: String?
-		let otherSet = Array(curEx.setList.suffix(from: setN + 1))
-		if otherSet.count > 0 {
-			other = "\(otherSet.count) other: " + otherSet.map { $0.description }.joined(separator: ", ")
-		}
-		
-		return (curEx.name ?? "", set.description, other)
+		return (e, s.string, currentStep?.otherPartsInfo?.string)
 	}
 	
-	var currentIsRestExercize: Bool {
-		return exercizes.first?.isRest ?? true
+	var currentIsRestPeriod: Bool {
+		return currentStep?.isRest ?? false
 	}
 	
 }

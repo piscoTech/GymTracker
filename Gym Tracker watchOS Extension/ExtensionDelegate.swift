@@ -24,7 +24,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
 		if let src = dataManager.preferences.runningWorkoutSource, src == .watch,
 			let workoutID = dataManager.preferences.runningWorkout {
 			if let workout = workoutID.getObject(fromDataManager: dataManager) as? Workout {
-				let data = ExecuteWorkoutData(workout: workout, resumeData: (dataManager.preferences.currentStart,
+				let data = ExecuteWorkoutData(workout: OrganizedWorkout(workout), resumeData: (dataManager.preferences.currentStart,
 																			 dataManager.preferences.currentExercize,
 																			 dataManager.preferences.currentPart))
 				self.startWorkout(with: data)
@@ -50,7 +50,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
 			return
 		}
 		
-		WKInterfaceController.reloadRootControllers(withNames: ["executeWorkout"], contexts: [ExecuteWorkoutData(workout: workout, resumeData: nil)])
+		self.startWorkout(with: ExecuteWorkoutData(workout: OrganizedWorkout(workout), resumeData: nil))
 	}
 
     func handle(_ backgroundTasks: Set<WKRefreshBackgroundTask>) {
@@ -71,7 +71,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
                 // Be sure to complete the URL session task once you’re done.
                 urlSessionTask.setTaskCompleted()
             default:
-                // make sure to complete unhandled task types
+                // Make sure to complete unhandled task types
                 task.setTaskCompleted()
             }
         }

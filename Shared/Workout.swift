@@ -42,7 +42,7 @@ class Workout: DataObject {
 		let pred = NSPredicate(format: "id == %@", id)
 		req.predicate = pred
 		
-		return (dataManager.executeFetchRequest(req) ?? []).first
+		return dataManager.executeFetchRequest(req)?.first
 	}
 	
 	var isValid: Bool {

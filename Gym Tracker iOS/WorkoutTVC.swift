@@ -92,7 +92,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 			return
 		}
 		
-		appDelegate.startWorkout(workout.raw)
+		appDelegate.startWorkout(workout)
 	}
 	
 	func updateView() {

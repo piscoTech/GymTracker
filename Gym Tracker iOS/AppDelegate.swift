@@ -249,8 +249,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 extension AppDelegate: ExecuteWorkoutControllerDelegate {
 	
-	// FIXME: Accept a OrganizedWorkout
-	func startWorkout(_ workout: Workout) {
+	func startWorkout(_ workout: OrganizedWorkout) {
 		guard workoutController == nil else {
 			return
 		}
@@ -268,7 +267,7 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 				if !success {
 					displayError()
 				} else {
-					if !self.dataManager.requestStarting(workout) {
+					if !self.dataManager.requestStarting(workout.raw) {
 						displayError()
 					}
 				}
@@ -278,7 +277,7 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 		}
 	}
 	
-	fileprivate func startLocalWorkout(_ workout: Workout? = nil) {
+	fileprivate func startLocalWorkout(_ workout: OrganizedWorkout? = nil) {
 		guard workoutController == nil, workout == nil || dataManager.preferences.runningWorkout == nil else {
 			return
 		}
@@ -293,9 +292,9 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 				return
 			}
 			
-			data = ExecuteWorkoutData(workout: w, resumeData: (dataManager.preferences.currentStart,
-															   dataManager.preferences.currentExercize,
-															   dataManager.preferences.currentPart))
+			data = ExecuteWorkoutData(workout: OrganizedWorkout(w), resumeData: (dataManager.preferences.currentStart,
+																				 dataManager.preferences.currentExercize,
+																				 dataManager.preferences.currentPart))
 		}
 		
 		workoutController = ExecuteWorkoutController(data: data, viewController: self, source: .phone)
@@ -329,7 +328,7 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 		currentWorkout.setCurrentSetViewHidden(hidden)
 	}
 	
-	func setCurrentSetText(_ text: String) {
+	func setCurrentSetText(_ text: NSAttributedString) {
 		currentWorkout.setCurrentSetText(text)
 	}
 	
@@ -337,7 +336,7 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 		currentWorkout.setOtherSetsViewHidden(hidden)
 	}
 	
-	func setOtherSetsText(_ text: String) {
+	func setOtherSetsText(_ text: NSAttributedString) {
 		currentWorkout.setOtherSetsText(text)
 	}
 	
@@ -381,7 +380,7 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 		currentWorkout.setNextUpTextHidden(hidden)
 	}
 	
-	func setNextUpText(_ text: String) {
+	func setNextUpText(_ text: NSAttributedString) {
 		currentWorkout.setNextUpText(text)
 	}
 	
@@ -424,7 +423,7 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 				let restEndTrigger = UNTimeIntervalNotificationTrigger(timeInterval: max(endTime, notifyNowDelay), repeats: false)
 				let restEndContent = UNMutableNotificationContent()
 				restEndContent.title = NSLocalizedString("REST_OVER_TITLE", comment: "Rest over")
-				restEndContent.body = NSLocalizedString("REST_\((workoutController?.currentIsRestExercize ?? true) ? "EXERCIZE" : "SET")_OVER_BODY", comment: "Next Exercize")
+				restEndContent.body = NSLocalizedString("REST_\((workoutController?.currentIsRestPeriod ?? true) ? "EXERCIZE" : "SET")_OVER_BODY", comment: "Next Exercize")
 				restEndContent.sound = UNNotificationSound(named: "rest_end_notification.caf")
 				restEndContent.categoryIdentifier = endRestNotificationCategory
 				

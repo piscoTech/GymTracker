@@ -17,7 +17,6 @@ class UpdateWeightViewController: UIViewController {
 	private var set: RepsSet!
 	
 	private var sum = 0.0
-	private var doSave = true
 	
 	@IBOutlet weak var base: UILabel!
 	@IBOutlet weak var plus: UILabel!
@@ -45,8 +44,7 @@ class UpdateWeightViewController: UIViewController {
 		
 		self.delegate = data.workoutController
 		self.set = data.set
-		self.sum = data.sum
-		self.doSave = data.saveAddWeight
+		self.sum = delegate.weightChange(for: set)
 		
 		base.text = set.weight.toString()
 		updateView()
@@ -78,13 +76,13 @@ class UpdateWeightViewController: UIViewController {
 		if sum != 0 {
 			// Avoid unnecessary saves
 			set.set(weight: sum + set.weight)
-			if appDelegate.dataManager.persistChangesForObjects([set], andDeleteObjects: []) && doSave {
-				delegate.setAddWeight(sum)
+			if appDelegate.dataManager.persistChangesForObjects([set], andDeleteObjects: []) {
+				delegate.setWeightChange(sum, for: set)
 			} else {
 				appDelegate.dataManager.discardAllChanges()
 			}
 		} else {
-			delegate.setAddWeight(sum)
+			delegate.setWeightChange(sum, for: set)
 		}
 		
 		self.dismiss(animated: true)

@@ -99,16 +99,16 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutCo
 		currentSetGrp.setHidden(hidden)
 	}
 	
-	func setCurrentSetText(_ text: String) {
-		setRepWeightLbl.setText(text)
+	func setCurrentSetText(_ text: NSAttributedString) {
+		setRepWeightLbl.setAttributedText(text)
 	}
 	
 	func setOtherSetsViewHidden(_ hidden: Bool) {
 		otherSetsLbl.setHidden(hidden)
 	}
 	
-	func setOtherSetsText(_ text: String) {
-		otherSetsLbl.setText(text)
+	func setOtherSetsText(_ text: NSAttributedString) {
+		otherSetsLbl.setAttributedText(text)
 	}
 	
 	func setSetDoneButtonHidden(_ hidden: Bool) {
@@ -145,15 +145,17 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutCo
 	}
 	
 	func disableGlobalActions() {
-		clearAllMenuItems()
+		DispatchQueue.main.async {
+			self.clearAllMenuItems()
+		}
 	}
 	
 	func setNextUpTextHidden(_ hidden: Bool) {
 		nextUpLbl.setHidden(hidden)
 	}
 	
-	func setNextUpText(_ text: String) {
-		nextUpLbl.setText(text)
+	func setNextUpText(_ text: NSAttributedString) {
+		nextUpLbl.setAttributedText(text)
 	}
 	
 	func notifyEndRest() {
