@@ -392,7 +392,70 @@ class WorkoutIteratorTests: XCTestCase {
 		XCTFail()
 	}
 	
-	func testContinueFromSaved() {
+	func testSimpleWorkoutSaveLoadState() {
+		var iter = WorkoutIterator(workout, using: dataManager.preferences)
+		_ = iter.next()
+		_ = iter.next()
+		iter.persistState()
+
+		XCTAssertEqual(dataManager.preferences.currentExercize, 0)
+		XCTAssertEqual(dataManager.preferences.currentPart, 1)
+		
+		iter = WorkoutIterator(workout, using: dataManager.preferences)
+		iter.loadPersistedState()
+		if let step2 = iter.next() {
+			let e = workout[0]!
+			let s2 = e[1]!
+			XCTAssertEqual(step2.exercizeName, e.name)
+			XCTAssertNil(step2.rest)
+			XCTAssertFalse(step2.isRest)
+			XCTAssertEqual(step2.set, s2)
+			
+			if let details2 = step2 as? WorkoutExercizeStep {
+				XCTAssertEqual(details2.reps.reps, Int(s2.reps))
+				XCTAssertEqual(details2.reps.weight, s2.weight)
+				
+				XCTAssertEqual(details2.otherWeights, [])
+			} else {
+				XCTFail("Invalid class found")
+			}
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		_ = iter.next()
+		iter.persistState()
+		
+		XCTAssertEqual(dataManager.preferences.currentExercize, 1)
+		XCTAssertEqual(dataManager.preferences.currentPart, 0)
+		
+		iter = WorkoutIterator(workout, using: dataManager.preferences)
+		iter.loadPersistedState()
+		if let step3 = iter.next() {
+			let e = workout[1]!
+			let s1 = e[0]!
+			XCTAssertEqual(step3.exercizeName, e.name)
+			XCTAssertEqual(s1.rest, step3.rest)
+			XCTAssertFalse(step3.isRest)
+			XCTAssertEqual(step3.set, s1)
+			
+			if let details3 = step3 as? WorkoutExercizeStep {
+				XCTAssertEqual(details3.reps.reps, Int(s1.reps))
+				XCTAssertEqual(details3.reps.weight, s1.weight)
+				
+				XCTAssertEqual(details3.otherWeights.count, 1)
+			} else {
+				XCTFail("Invalid class found")
+			}
+		} else {
+			XCTFail("Unexpected nil")
+		}
+	}
+	
+	func testCircuitWorkoutSaveLoadState() {
+//		ow.makeCircuit(exercize: ow[0]!, isCircuit: true)
+//		ow.enableCircuitRestPeriods(for: ow[0]!, enable: true)
+		
+		// TODO: save state at the last set of circuit, restore then check values in preferences and run test for first step from other test case
 		XCTFail()
 	}
 	

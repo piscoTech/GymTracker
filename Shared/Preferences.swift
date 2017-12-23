@@ -66,7 +66,7 @@ class Preferences {
 		if use == .application {
 			local = KeyValueStore(userDefaults: UserDefaults.standard)
 		} else {
-			local = KeyValueStore(userDefaults: UserDefaults())
+			local = KeyValueStore(userDefaults: UserDefaults(suiteName: "GymTrackerTests")!)
 		}
 		
 		print("\(use) Preferences initialized")

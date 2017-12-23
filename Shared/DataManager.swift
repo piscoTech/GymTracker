@@ -241,7 +241,7 @@ class WCObject: Equatable {
 	
 	// TODO: Make date optional, if nil means we are in a set (no current rest as date represent the start of the currente rest)
 	@available(watchOS, unavailable)
-	func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date)
+	func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date?)
 	@available(watchOS, unavailable)
 	func mirroredWorkoutHasEnded()
 	
@@ -442,8 +442,8 @@ class DataManager {
 		wcInterface.sendWorkoutStartDate()
 	}
 	
-	func sendWorkoutStatusUpdate() {
-		wcInterface.sendWorkoutStatusUpdate()
+	func sendWorkoutStatusUpdate(restStart date: Date?) {
+		wcInterface.sendWorkoutStatusUpdate(restStart: date)
 	}
 
 	// MARK: - Synchronization methods
@@ -895,12 +895,12 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 				dataManager.preferences.currentStart = curStart
 			}
 			
-			if let currentProgress = userInfo[currentWorkoutProgress] as? [Any], currentProgress.count == 3,
-				let curExercize = currentProgress[0] as? Int, let curPart = currentProgress[1] as? Int, let time = currentProgress[2] as? Date,
-				dataManager.preferences.runningWorkout != nil {
-				
-				dataManager.delegate?.updateMirroredWorkout(withCurrentExercize: curExercize, part: curPart, andTime: time)
-				
+			if let currentProgress = userInfo[currentWorkoutProgress] as? [Any], currentProgress.count == 2 || currentProgress.count == 3,
+				let curExercize = currentProgress[0] as? Int, let curPart = currentProgress[1] as? Int, dataManager.preferences.runningWorkout != nil {
+				let date = currentProgress.count == 3 ? currentProgress[2] as? Date : nil
+				if currentProgress.count == 2 || date != nil {
+					dataManager.delegate?.updateMirroredWorkout(withCurrentExercize: curExercize, part: curPart, andTime: date)
+				}
 			}
 		#endif
 		
@@ -959,16 +959,19 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 		sess.transferUserInfo([currentWorkoutStartDate: dataManager.preferences.currentStart])
 	}
 	
-	fileprivate func sendWorkoutStatusUpdate() {
+	fileprivate func sendWorkoutStatusUpdate(restStart date: Date?) {
 		guard iswatchOS, dataManager.preferences.runningWorkout != nil, canComunicate, let sess = self.session else {
 			return
 		}
 		
-		sess.transferUserInfo([currentWorkoutProgress: [
+		var info: [Any] = [
 			dataManager.preferences.currentExercize,
-			dataManager.preferences.currentPart,
-			Date()
-		]])
+			dataManager.preferences.currentPart
+		]
+		if let d = date {
+			info.append(d)
+		}
+		sess.transferUserInfo([currentWorkoutProgress: info])
 	}
 	
 	// MARK: - Watch initail setup & Remote workou start

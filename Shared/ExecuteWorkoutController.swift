@@ -12,8 +12,7 @@ import HealthKit
 struct ExecuteWorkoutData {
 	
 	let workout: OrganizedWorkout
-	// TODO: Make a boolean and let the controller fetch all required data
-	let resumeData: (start: Date, curExercize: Int, curPart: Int)?
+	let resume: Bool
 	
 }
 
@@ -83,8 +82,12 @@ class ExecuteWorkoutController: NSObject {
 	private var currentStep: WorkoutStep?
 	/// If the current part is the last set in the entire workout, used to correctly display notifications.
 	private(set) var isLastPart = false
-	/// If the current part is a rest period.
-	private(set) var isRestMode = false
+	/// If the current part is a rest.
+	var isRestMode: Bool {
+		return restStart != nil
+	}
+	/// The start time of teh current rest.
+	private var restStart: Date?
 	private var restTimer: Timer? = nil {
 		didSet {
 			DispatchQueue.main.async {
@@ -116,44 +119,28 @@ class ExecuteWorkoutController: NSObject {
 		self.source = source
 		self.isMirroring = false
 		self.view = viewController
+		self.workout = data.workout
 		
-		view.setWorkoutTitle("")
+		view.setWorkoutTitle(workout.name)
 		view.setBPM(noHeart)
 		view.setCurrentExercizeViewHidden(true)
 		view.setRestViewHidden(true)
 		view.setWorkoutDoneViewHidden(true)
 		view.setNextUpTextHidden(true)
 		
-		workout = data.workout
 		appDelegate.dataManager.setRunningWorkout(workout.raw, fromSource: source)
-		
-//		if let (date, exercize, part) = data.resumeData {
-//			restoring = true
-//			start = date
-//			curPart = part
-//			curExercize = exercize
-//
-//			for _ in 0 ..< exercize {
-//				guard exercizes.count > 0 else {
-//					break
-//				}
-//
-//				exercizes.remove(at: 0)
-//			}
-//
-//			appDelegate.dataManager.preferences.currentExercize = exercize
-//			appDelegate.dataManager.preferences.currentPart = part
-//		} else {
-//			appDelegate.dataManager.preferences.currentExercize = 0
-//			appDelegate.dataManager.preferences.currentPart = 0
-//		}
-		// TODO: Check if need to resume
 		workoutIterator = WorkoutIterator(workout)
+		
+		if data.resume {
+			start = appDelegate.dataManager.preferences.currentStart
+			workoutIterator.loadPersistedState()
+			restStart = appDelegate.dataManager.preferences.currentRestEnd != nil ? Date() : nil
+		}
+		
 		currentStep = workoutIterator.next()
+		workoutIterator.persistState()
 		
 		super.init()
-		
-		view.setWorkoutTitle(workout.name)
 		
 		DispatchQueue.main.async {
 			self.view.workoutHasStarted()
@@ -189,15 +176,19 @@ class ExecuteWorkoutController: NSObject {
 	init?(mirrorWorkoutForViewController viewController: ExecuteWorkoutControllerDelegate) {
 		// FIXME: Implement me
 		return nil
-		guard let workout = appDelegate.dataManager.preferences.runningWorkout?.getObject(fromDataManager: appDelegate.dataManager) as? Workout else {
+		guard let w = appDelegate.dataManager.preferences.runningWorkout?.getObject(fromDataManager: appDelegate.dataManager) as? Workout else {
 			return nil
 		}
 		
 		self.source = .watch
 		self.isMirroring = true
 		self.view = viewController
+		self.workout = OrganizedWorkout(w)
 		
-		view.setWorkoutTitle("")
+		workoutIterator = WorkoutIterator(workout)
+		currentStep = workoutIterator.next()
+		
+		view.setWorkoutTitle(workout.name)
 		view.setBPM(noHeart)
 		view.setCurrentExercizeViewHidden(true)
 		view.setRestViewHidden(true)
@@ -205,8 +196,6 @@ class ExecuteWorkoutController: NSObject {
 		view.setNextUpTextHidden(true)
 		
 		super.init()
-		
-		view.setWorkoutTitle(workout.name)
 		
 		DispatchQueue.main.async {
 			self.view.workoutHasStarted()
@@ -246,7 +235,7 @@ class ExecuteWorkoutController: NSObject {
 			self.view.startTimer(at: self.start)
 			self.view.setNextUpTextHidden(false)
 			
-			appDelegate.dataManager.sendWorkoutStatusUpdate()
+			appDelegate.dataManager.sendWorkoutStatusUpdate(restStart: self.restStart)
 			self.displayStep()
 		}
 	}
@@ -308,23 +297,23 @@ class ExecuteWorkoutController: NSObject {
 		if self.isRestMode {
 			set = nil
 			currentStep = workoutIterator.next()
-			isRestMode = currentStep?.isRest ?? false
+			restStart = (currentStep?.isRest ?? false) ? Date() : nil
 		} else { // Must be a set
 			set = curStep.set
 			if curStep.rest != nil {
-				isRestMode = true
+				restStart = Date()
 			} else {
 				currentStep = workoutIterator.next()
-				isRestMode = currentStep?.isRest ?? false
+				restStart = (currentStep?.isRest ?? false) ? Date() : nil
 			}
 		}
 		
-		// TODO: Persiste iterator status and rest status
-		appDelegate.dataManager.sendWorkoutStatusUpdate()
+		workoutIterator.persistState()
+		appDelegate.dataManager.sendWorkoutStatusUpdate(restStart: restStart)
 		return set
 	}
 	
-	private func displayStep(withTime time: Date? = nil) {
+	private func displayStep(isRefresh: Bool = false) {
 		guard let curStep = currentStep else {
 			if isMirroring {
 				view.exitWorkoutTracking()
@@ -365,11 +354,12 @@ class ExecuteWorkoutController: NSObject {
 		}
 		
 		if let restTime = setRest {
-			let now = Date()
-			let endTime = max(appDelegate.dataManager.preferences.currentRestEnd ?? (time ?? now).addingTimeInterval(restTime), now)
-			let endsIn = endTime.timeIntervalSince(now)
-			appDelegate.dataManager.preferences.currentRestEnd = endTime
+			let start = restStart ?? Date()
+			let endTime = max(appDelegate.dataManager.preferences.currentRestEnd ?? start.addingTimeInterval(restTime), start)
+			let endsIn = endTime.timeIntervalSince(start)
+			self.restStart = start
 			self.restEndDate = endTime
+			appDelegate.dataManager.preferences.currentRestEnd = endTime
 			
 			view.startRestTimer(to: endTime)
 			view.setRestViewHidden(false)
@@ -379,7 +369,7 @@ class ExecuteWorkoutController: NSObject {
 			DispatchQueue.main.async {
 				self.restTimer = Timer.scheduledTimer(withTimeInterval: endsIn, repeats: false) { _ in
 					self.view.stopRestTimer()
-					if !self.isMirroring {
+					if !isRefresh && !self.isMirroring {
 						self.view.notifyEndRest()
 					}
 				}
@@ -393,7 +383,7 @@ class ExecuteWorkoutController: NSObject {
 			view.setRestViewHidden(true)
 		}
 		
-		if !isMirroring {
+		if !isRefresh && !isMirroring {
 			view.notifyExercizeChange(isRest: setRest != nil)
 		}
 		
@@ -473,7 +463,7 @@ class ExecuteWorkoutController: NSObject {
 	// MARK: - Workout Actions
 	
 	@available(watchOS, unavailable)
-	func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date) {
+	func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date?) {
 		// FIXME: Implement me
 		fatalError("Reimplementation in progress")
 		guard isMirroring else {
@@ -485,6 +475,7 @@ class ExecuteWorkoutController: NSObject {
 			workoutSessionStarted()
 		}
 		
+		restStart = date
 //		for _ in 0 ..< min(exercizes.count, exercize - curExercize) {
 //			_ = exercizes.remove(at: 0)
 //		}
@@ -496,7 +487,7 @@ class ExecuteWorkoutController: NSObject {
 //		appDelegate.dataManager.preferences.currentPart = curPart
 //
 //		self.restoring = true
-		displayStep(withTime: date)
+		displayStep()
 	}
 	
 	@available(watchOS, unavailable)
@@ -525,7 +516,6 @@ class ExecuteWorkoutController: NSObject {
 		restTimer = nil
 		
 		nextStep()
-		// TODO: Save `nil` in preferences for current rest end
 	}
 	
 	func endSet() {
@@ -549,6 +539,9 @@ class ExecuteWorkoutController: NSObject {
 		}
 		
 		// TODO: Forward to WorkoutIterator
+		// TODO: Uncomment next lines after implementation
+//		currentStep?.updateWeightChange(for: workoutIterator)
+//		displayStep(isRefresh: true)
 	}
 	
 	func endWorkout() {

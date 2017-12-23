@@ -24,9 +24,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
 		if let src = dataManager.preferences.runningWorkoutSource, src == .watch,
 			let workoutID = dataManager.preferences.runningWorkout {
 			if let workout = workoutID.getObject(fromDataManager: dataManager) as? Workout {
-				let data = ExecuteWorkoutData(workout: OrganizedWorkout(workout), resumeData: (dataManager.preferences.currentStart,
-																			 dataManager.preferences.currentExercize,
-																			 dataManager.preferences.currentPart))
+				let data = ExecuteWorkoutData(workout: OrganizedWorkout(workout), resume: true)
 				self.startWorkout(with: data)
 			}
 		}
@@ -50,7 +48,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
 			return
 		}
 		
-		self.startWorkout(with: ExecuteWorkoutData(workout: OrganizedWorkout(workout), resumeData: nil))
+		self.startWorkout(with: ExecuteWorkoutData(workout: OrganizedWorkout(workout), resume: false))
 	}
 
     func handle(_ backgroundTasks: Set<WKRefreshBackgroundTask>) {

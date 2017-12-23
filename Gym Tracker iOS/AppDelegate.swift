@@ -65,7 +65,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		if dataManager.preferences.runningWorkout != nil, let src = dataManager.preferences.runningWorkoutSource {
 			if src == .watch {
-				self.updateMirroredWorkout(withCurrentExercize: dataManager.preferences.currentExercize, part: dataManager.preferences.currentPart, andTime: Date())
+				self.updateMirroredWorkout(withCurrentExercize: dataManager.preferences.currentExercize,
+										   part: dataManager.preferences.currentPart,
+										   andTime: dataManager.preferences.currentRestEnd != nil ? Date() : nil)
 			} else {
 				self.startLocalWorkout()
 			}
@@ -284,7 +286,7 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 		
 		let data: ExecuteWorkoutData
 		if let w = workout {
-			data = ExecuteWorkoutData(workout: w, resumeData: nil)
+			data = ExecuteWorkoutData(workout: w, resume: false)
 		} else {
 			guard let wID = dataManager.preferences.runningWorkout,
 				let w = wID.getObject(fromDataManager: dataManager) as? Workout,
@@ -292,9 +294,7 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 				return
 			}
 			
-			data = ExecuteWorkoutData(workout: OrganizedWorkout(w), resumeData: (dataManager.preferences.currentStart,
-																				 dataManager.preferences.currentExercize,
-																				 dataManager.preferences.currentPart))
+			data = ExecuteWorkoutData(workout: OrganizedWorkout(w), resume: true)
 		}
 		
 		workoutController = ExecuteWorkoutController(data: data, viewController: self, source: .phone)
@@ -536,7 +536,7 @@ extension AppDelegate: DataManagerDelegate {
 		}
 	}
 	
-	func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date) {
+	func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date?) {
 		guard dataManager.preferences.runningWorkout != nil else {
 			return
 		}

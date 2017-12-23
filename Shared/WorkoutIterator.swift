@@ -93,6 +93,10 @@ class WorkoutStep {
 		self.set = set
 	}
 	
+	func updateWeightChange(for iterator: WorkoutIterator) {
+		fatalError("Not implemented")
+	}
+	
 }
 
 class WorkoutSetStep: WorkoutStep {
@@ -220,9 +224,12 @@ class WorkoutIterator: IteratorProtocol {
 	private var curExercize = 0
 	/// The current part, i.e. set, inside the current exercize or circuit, this identifies both the set and, if any, its subsequent rest period.
 	private var curPart = 0
+	
+	private let preferences: Preferences
 
-	init(_ w: OrganizedWorkout) {
+	init(_ w: OrganizedWorkout, using preferences: Preferences? = nil) {
 		workout = w
+		self.preferences = preferences ?? appDelegate.dataManager.preferences
 		guard w.validityStatus.global else {
 			exercizes = []
 			return
@@ -247,8 +254,43 @@ class WorkoutIterator: IteratorProtocol {
 		exercizes = exGroups
 	}
 	
+	// MARK: - Manage cache of weight changes
+	
 	func weightChange(for e: Exercize) -> Double {
 		return 0
+	}
+	
+	// MARK: - Manage steps
+	
+	/// Save the state of the iterator so that after reloading it the first call to `next()` will give the same result as the last one before saving.
+	func persistState() {
+		var e = curExercize
+		var p = curPart - 1
+		if p < 0 {
+			if e > 0 {
+				e -= 1
+				p = exercizes[e].count * exercizes[e][0].sets.count - 1
+			} else {
+				p = 0
+			}
+		}
+		
+		preferences.currentExercize = e
+		preferences.currentPart = p
+		// TODO: Also save weight change cache
+	}
+	
+	func loadPersistedState() {
+		curExercize = preferences.currentExercize
+		curPart = preferences.currentPart
+		
+		if curExercize < exercizes.count { // The saved status is mid workout
+			if curPart >= exercizes[curExercize].count * exercizes[curExercize][0].sets.count { // Current part exceeds the limit, jump to next exercize
+				curExercize += 1
+			}
+		}
+		
+		// TODO: Also load weight change cache
 	}
 	
 	func next() -> WorkoutStep? {

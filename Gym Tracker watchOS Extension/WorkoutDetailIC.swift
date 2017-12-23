@@ -100,7 +100,7 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 			return
 		}
 		
-		appDelegate.startWorkout(with: ExecuteWorkoutData(workout: workout, resumeData: nil))
+		appDelegate.startWorkout(with: ExecuteWorkoutData(workout: workout, resume: false))
 	}
 
 }
