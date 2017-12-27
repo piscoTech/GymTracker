@@ -174,8 +174,6 @@ class ExecuteWorkoutController: NSObject {
 	
 	@available(watchOS, unavailable)
 	init?(mirrorWorkoutForViewController viewController: ExecuteWorkoutControllerDelegate) {
-		// FIXME: Implement me
-		return nil
 		guard let w = appDelegate.dataManager.preferences.runningWorkout?.getObject(fromDataManager: appDelegate.dataManager) as? Workout else {
 			return nil
 		}
@@ -323,6 +321,7 @@ class ExecuteWorkoutController: NSObject {
 			
 			return
 		}
+		let doNotify = !isRefresh && !self.isMirroring
 		
 		isLastPart = curStep.nextUpInfo == nil
 		let setRest: TimeInterval?
@@ -369,7 +368,7 @@ class ExecuteWorkoutController: NSObject {
 			DispatchQueue.main.async {
 				self.restTimer = Timer.scheduledTimer(withTimeInterval: endsIn, repeats: false) { _ in
 					self.view.stopRestTimer()
-					if !isRefresh && !self.isMirroring {
+					if doNotify {
 						self.view.notifyEndRest()
 					}
 				}
@@ -383,7 +382,7 @@ class ExecuteWorkoutController: NSObject {
 			view.setRestViewHidden(true)
 		}
 		
-		if !isRefresh && !isMirroring {
+		if doNotify {
 			view.notifyExercizeChange(isRest: setRest != nil)
 		}
 		
@@ -464,8 +463,6 @@ class ExecuteWorkoutController: NSObject {
 	
 	@available(watchOS, unavailable)
 	func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date?) {
-		// FIXME: Implement me
-		fatalError("Reimplementation in progress")
 		guard isMirroring else {
 			return
 		}
@@ -475,25 +472,18 @@ class ExecuteWorkoutController: NSObject {
 			workoutSessionStarted()
 		}
 		
-		restStart = date
-//		for _ in 0 ..< min(exercizes.count, exercize - curExercize) {
-//			_ = exercizes.remove(at: 0)
-//		}
-//
-//		curExercize = exercize
-//		curPart = part
-//
-//		appDelegate.dataManager.preferences.currentExercize = curExercize
-//		appDelegate.dataManager.preferences.currentPart = curPart
-//
-//		self.restoring = true
+		appDelegate.dataManager.preferences.currentExercize = exercize
+		appDelegate.dataManager.preferences.currentPart = part
+		self.restStart = date
+		
+		workoutIterator.loadPersistedState()
+		currentStep = workoutIterator.next()
+		
 		displayStep()
 	}
 	
 	@available(watchOS, unavailable)
 	func mirroredWorkoutHasEnded() {
-		// FIXME: Implement me
-		fatalError("Reimplementation in progress")
 		guard isMirroring else {
 			return
 		}

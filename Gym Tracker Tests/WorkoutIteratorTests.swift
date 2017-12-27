@@ -392,6 +392,50 @@ class WorkoutIteratorTests: XCTestCase {
 		XCTFail()
 	}
 	
+	func testLoadInvalidState() {
+		let iter = WorkoutIterator(workout, using: dataManager.preferences)
+		_ = iter.next()
+		
+		dataManager.preferences.currentExercize = -1
+		dataManager.preferences.currentPart = -1
+		iter.loadPersistedState()
+		if let step = iter.next() {
+			XCTAssertEqual(step.set, workout[0]![0]!)
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		
+		dataManager.preferences.currentExercize = 0
+		dataManager.preferences.currentPart = 100
+		iter.loadPersistedState()
+		if let step = iter.next() {
+			XCTAssertEqual(step.set, workout[1]![0]!)
+		} else {
+			XCTFail("Unexpected nil")
+		}
+	}
+	
+	func testResumeOnRest() {
+		var iter = WorkoutIterator(workout, using: dataManager.preferences)
+		_ = iter.next()
+		_ = iter.next() // First exercize is done
+		_ = iter.next()
+		_ = iter.next() // Second exercize is done
+		_ = iter.next() // Rest
+		iter.persistState()
+		
+		XCTAssertEqual(dataManager.preferences.currentExercize, 2)
+		XCTAssertEqual(dataManager.preferences.currentPart, 0)
+		
+		iter = WorkoutIterator(workout, using: dataManager.preferences)
+		iter.loadPersistedState()
+		if let rest = iter.next() {
+			XCTAssertTrue(rest.isRest)
+		} else {
+			XCTFail("Unexpected nil")
+		}
+	}
+	
 	func testSimpleWorkoutSaveLoadState() {
 		var iter = WorkoutIterator(workout, using: dataManager.preferences)
 		_ = iter.next()
@@ -456,10 +500,6 @@ class WorkoutIteratorTests: XCTestCase {
 //		ow.enableCircuitRestPeriods(for: ow[0]!, enable: true)
 		
 		// TODO: save state at the last set of circuit, restore then check values in preferences and run test for first step from other test case
-		XCTFail()
-	}
-	
-	func testUpdateFromReceivedStatus() {
 		XCTFail()
 	}
     

@@ -269,7 +269,8 @@ class WorkoutIterator: IteratorProtocol {
 		if p < 0 {
 			if e > 0 {
 				e -= 1
-				p = exercizes[e].count * exercizes[e][0].sets.count - 1
+				let eGroup = exercizes[e]
+				p = eGroup[0].isRest ? 0 : eGroup.count * eGroup[0].sets.count - 1
 			} else {
 				p = 0
 			}
@@ -281,12 +282,15 @@ class WorkoutIterator: IteratorProtocol {
 	}
 	
 	func loadPersistedState() {
-		curExercize = preferences.currentExercize
-		curPart = preferences.currentPart
+		curExercize = max(0, preferences.currentExercize)
+		curPart = max(0, preferences.currentPart)
 		
 		if curExercize < exercizes.count { // The saved status is mid workout
-			if curPart >= exercizes[curExercize].count * exercizes[curExercize][0].sets.count { // Current part exceeds the limit, jump to next exercize
+			let eGroup = exercizes[curExercize]
+			let maxPart = eGroup[0].isRest ? 0 : eGroup.count * eGroup[0].sets.count - 1
+			if curPart > maxPart { // Current part exceeds the limit, jump to next exercize
 				curExercize += 1
+				curPart = 0
 			}
 		}
 		
