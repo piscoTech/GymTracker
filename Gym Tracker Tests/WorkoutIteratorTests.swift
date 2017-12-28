@@ -502,5 +502,271 @@ class WorkoutIteratorTests: XCTestCase {
 		// TODO: save state at the last set of circuit, restore then check values in preferences and run test for first step from other test case
 		XCTFail()
 	}
+	
+	func testWeightChange() {
+		let e = workout[1]!
+		let w = 35.3
+		var iter = WorkoutIterator(workout, using: dataManager.preferences)
+		iter.setWeightChange(w, for: e)
+		XCTAssertEqual(w.rounded(to: 0.5), iter.weightChange(for: e))
+		iter.persistState()
+		
+		iter = WorkoutIterator(workout, using: dataManager.preferences)
+		XCTAssertEqual(0, iter.weightChange(for: e))
+		iter.loadPersistedState()
+		XCTAssertEqual(w.rounded(to: 0.5), iter.weightChange(for: e))
+	}
+	
+	func testDestroyPersistedState() {
+		let e = workout[1]!
+		var iter = WorkoutIterator(workout, using: dataManager.preferences)
+		iter.setWeightChange(99, for: e)
+		iter.persistState()
+		
+		iter = WorkoutIterator(workout, using: dataManager.preferences)
+		iter.destroyPersistedState()
+		iter.loadPersistedState()
+		XCTAssertEqual(iter.weightChange(for: e), 0)
+	}
+	
+	func testWeightChangeSimpleWorkout() {
+		let e1 = workout[0]!
+		let e2 = workout[1]!
+		let w1 = 7.5
+		let w2 = 3.0
+		let iter = WorkoutIterator(workout, using: dataManager.preferences)
+		iter.setWeightChange(w1, for: e1)
+		iter.setWeightChange(w2, for: e2)
+		
+		let s1 = e1[0]!
+		let s2 = e1[1]!
+		if let step1 = iter.next() {
+			if let curRep = step1.currentReps?.string {
+				if let curRepPos = curRep.range(of: s1.reps.description) {
+					let partial = curRep[curRepPos.upperBound...]
+					if let timesPos = partial.range(of: timesSign) {
+						XCTAssertNotNil(partial[timesPos.upperBound...].range(of: (s1.weight + w1).toString()))
+					} else {
+						XCTFail("Unexpected nil")
+					}
+				} else {
+					XCTFail("Unexpected nil")
+				}
+			} else {
+				XCTFail("Unexpected nil")
+			}
+			
+			if let othSets = step1.otherPartsInfo?.string {
+				if let countPos = othSets.range(of: "1") {
+					XCTAssertNotNil(othSets[countPos.upperBound...].range(of: (s2.weight + w1).toString()))
+				} else {
+					XCTFail("Unexpected nil")
+				}
+			} else {
+				XCTFail("Unexpected nil")
+			}
+			
+			if let next = step1.nextUpInfo?.string {
+				if let namePos = next.range(of: e2.name!) {
+					XCTAssertNotNil(next[namePos.upperBound...].range(of: (e2[0]!.weight + w2).toString()))
+				} else {
+					XCTFail("Unexpected nil")
+				}
+			} else {
+				XCTFail("Unexpected nil")
+			}
+			
+			if let details1 = step1 as? WorkoutExercizeStep {
+				XCTAssertEqual(details1.reps.weight, s1.weight)
+				XCTAssertEqual(details1.reps.change, w1)
+				
+				XCTAssertEqual(details1.otherWeights, [s2.weight])
+			} else {
+				XCTFail("Invalid class found")
+			}
+			
+			if let next1 = step1.nextUp as? WorkoutStepNextSet {
+				XCTAssertEqual(next1.weight, e2[0]!.weight)
+				XCTAssertEqual(next1.change, w2)
+			} else {
+				XCTFail("Invalid class found")
+			}
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		
+		iter.setWeightChange(0, for: e1)
+		if let step2 = iter.next() {
+			if let curRep = step2.currentReps?.string {
+				if let curRepPos = curRep.range(of: s2.reps.description) {
+					let partial = curRep[curRepPos.upperBound...]
+					if let timesPos = partial.range(of: timesSign) {
+						XCTAssertNotNil(partial[timesPos.upperBound...].range(of: s2.weight.toString()))
+					} else {
+						XCTFail("Unexpected nil")
+					}
+				} else {
+					XCTFail("Unexpected nil")
+				}
+			} else {
+				XCTFail("Unexpected nil")
+			}
+			
+			XCTAssertNil(step2.otherPartsInfo)
+			
+			if let next = step2.nextUpInfo?.string {
+				if let namePos = next.range(of: e2.name!) {
+					XCTAssertNotNil(next[namePos.upperBound...].range(of: (e2[0]!.weight + w2).toString()))
+				} else {
+					XCTFail("Unexpected nil")
+				}
+			} else {
+				XCTFail("Unexpected nil")
+			}
+			
+			XCTAssertFalse(step2.isRest)
+			XCTAssertEqual(step2.set, s2)
+			
+			if let details2 = step2 as? WorkoutExercizeStep {
+				XCTAssertEqual(details2.reps.weight, s2.weight)
+				XCTAssertEqual(details2.reps.change, 0)
+				
+				XCTAssertEqual(details2.otherWeights, [])
+			} else {
+				XCTFail("Invalid class found")
+			}
+			
+			if let next2 = step2.nextUp as? WorkoutStepNextSet {
+				XCTAssertEqual(next2.weight, e2[0]!.weight)
+				XCTAssertEqual(next2.change, w2)
+			} else {
+				XCTFail("Invalid class found")
+			}
+		} else {
+			XCTFail("Unexpected nil")
+		}
+	}
+	
+	func testWeightChangeCircuitWorkout() {
+		XCTFail()
+	}
+	
+	func testWeightChangeUpdateSimpleWorkout() {
+		let iter = WorkoutIterator(workout, using: dataManager.preferences)
+		
+		let e1 = workout[0]!
+		let e2 = workout[1]!
+		let s1 = e1[0]!
+		let s2 = e1[1]!
+		if let step = iter.next() {
+			if let curRep = step.currentReps?.string {
+				XCTAssertNotNil(curRep.range(of: s1.reps.description))
+				XCTAssertNil(curRep.range(of: timesSign))
+			} else {
+				XCTFail("Unexpected nil")
+			}
+			
+			if let othSets = step.otherPartsInfo?.string {
+				if let countPos = othSets.range(of: "1") {
+					XCTAssertNotNil(othSets[countPos.upperBound...].range(of: s2.weight.toString()))
+				} else {
+					XCTFail("Unexpected nil")
+				}
+			} else {
+				XCTFail("Unexpected nil")
+			}
+			
+			if let next = step.nextUpInfo?.string {
+				if let namePos = next.range(of: e2.name!) {
+					XCTAssertNotNil(next[namePos.upperBound...].range(of: e2[0]!.weight.toString()))
+				} else {
+					XCTFail("Unexpected nil")
+				}
+			} else {
+				XCTFail("Unexpected nil")
+			}
+			
+			if let details1 = step as? WorkoutExercizeStep {
+				XCTAssertEqual(details1.reps.weight, s1.weight)
+				XCTAssertEqual(details1.reps.change, 0)
+				
+				XCTAssertEqual(details1.otherWeights, [s2.weight])
+			} else {
+				XCTFail("Invalid class found")
+			}
+			
+			if let next1 = step.nextUp as? WorkoutStepNextSet {
+				XCTAssertEqual(next1.weight, e2[0]!.weight)
+				XCTAssertEqual(next1.change, 0)
+			} else {
+				XCTFail("Invalid class found")
+			}
+			
+			let w1 = 5.5
+			let w2 = 4.0
+			iter.setWeightChange(w1, for: e1)
+			iter.setWeightChange(w2, for: e2)
+			step.updateWeightChange()
+			
+			if let curRep = step.currentReps?.string {
+				if let curRepPos = curRep.range(of: s1.reps.description) {
+					let partial = curRep[curRepPos.upperBound...]
+					if let timesPos = partial.range(of: timesSign) {
+						XCTAssertNotNil(partial[timesPos.upperBound...].range(of: (s1.weight + w1).toString()))
+					} else {
+						XCTFail("Unexpected nil")
+					}
+				} else {
+					XCTFail("Unexpected nil")
+				}
+			} else {
+				XCTFail("Unexpected nil")
+			}
+			
+			if let othSets = step.otherPartsInfo?.string {
+				if let countPos = othSets.range(of: "1") {
+					XCTAssertNotNil(othSets[countPos.upperBound...].range(of: (s2.weight + w1).toString()))
+				} else {
+					XCTFail("Unexpected nil")
+				}
+			} else {
+				XCTFail("Unexpected nil")
+			}
+			
+			if let next = step.nextUpInfo?.string {
+				if let namePos = next.range(of: e2.name!) {
+					XCTAssertNotNil(next[namePos.upperBound...].range(of: (e2[0]!.weight + w2).toString()))
+				} else {
+					XCTFail("Unexpected nil")
+				}
+			} else {
+				XCTFail("Unexpected nil")
+			}
+			
+			if let details1 = step as? WorkoutExercizeStep {
+				XCTAssertEqual(details1.reps.weight, s1.weight)
+				XCTAssertEqual(details1.reps.change, w1)
+				
+				XCTAssertEqual(details1.otherWeights, [s2.weight])
+			} else {
+				XCTFail("Invalid class found")
+			}
+			
+			if let next1 = step.nextUp as? WorkoutStepNextSet {
+				XCTAssertEqual(next1.weight, e2[0]!.weight)
+				XCTAssertEqual(next1.change, w2)
+			} else {
+				XCTFail("Invalid class found")
+			}
+		} else {
+			XCTFail("Unexpected nil")
+		}
+	}
+	
+	func testWeightChangeUpdateCircuitWorkout() {
+		// Make first 2 ex a circuit, get first step, update weight for 2nd ex, check changes (current + next, not other set)
+		
+		XCTFail()
+	}
     
 }

@@ -24,7 +24,7 @@ struct CDRecordID: Hashable {
 	let id: String
 	
 	var hashValue: Int {
-		return (type+id).hashValue
+		return (type + id).hashValue
 	}
 	
 	init(obj: DataObject) {

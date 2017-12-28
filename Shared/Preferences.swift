@@ -29,6 +29,7 @@ enum PreferenceKeys: String, KeyValueStoreKey {
 	case currentExercize = "currentExercize"
 	case currentPart = "currentPart"
 	case currentRestEnd = "currentRestEnd"
+	case weightChangeCache = "weightChangeCache"
 	
 	case authorized = "authorized"
 	case authVersion = "authVersion"
@@ -243,6 +244,33 @@ class Preferences {
 				local.set(val, forKey: key)
 			} else {
 				local.removeObject(forKey: key)
+			}
+			local.synchronize()
+		}
+	}
+	
+	var weightChangeCache: [CDRecordID : Double] {
+		get {
+			var cache: [CDRecordID : Double] = [:]
+			for wc in local.array(forKey: PreferenceKeys.weightChangeCache) as? [[Any]] ?? [] {
+				guard wc.count == 3, let rawId = Array(wc[0...1]) as? [String], let id = CDRecordID(wcRepresentation: rawId), let w = wc[2] as? Double else {
+					continue
+				}
+				
+				cache[id] = w
+			}
+			
+			return cache
+		}
+		set {
+			if newValue.isEmpty {
+				local.removeObject(forKey: PreferenceKeys.weightChangeCache)
+			} else {
+				var cache = [[Any]]()
+				for (e, w) in newValue {
+					cache.append(e.wcRepresentation as [Any] + [w])
+				}
+				local.set(cache, forKey: PreferenceKeys.weightChangeCache)
 			}
 			local.synchronize()
 		}

@@ -270,6 +270,7 @@ class ExecuteWorkoutController: NSObject {
 		}
 		invalidateBPM = nil
 		restTimer = nil
+		workoutIterator.destroyPersistedState()
 		
 		view.endNotifyEndRest()
 	}
@@ -315,7 +316,7 @@ class ExecuteWorkoutController: NSObject {
 		guard let curStep = currentStep else {
 			if isMirroring {
 				view.exitWorkoutTracking()
-			} else {
+			} else if !isRefresh {
 				endWorkout()
 			}
 			
@@ -523,15 +524,14 @@ class ExecuteWorkoutController: NSObject {
 		return workoutIterator.weightChange(for: s.exercize)
 	}
 	
-	func setWeightChange(_ change: Double, for: RepsSet) {
+	func setWeightChange(_ change: Double, for s: RepsSet) {
 		guard !isMirroring else {
 			return
 		}
 		
-		// TODO: Forward to WorkoutIterator
-		// TODO: Uncomment next lines after implementation
-//		currentStep?.updateWeightChange(for: workoutIterator)
-//		displayStep(isRefresh: true)
+		workoutIterator.setWeightChange(change, for: s.exercize)
+		currentStep?.updateWeightChange()
+		displayStep(isRefresh: true)
 	}
 	
 	func endWorkout() {

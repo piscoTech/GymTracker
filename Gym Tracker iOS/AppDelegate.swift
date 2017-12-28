@@ -566,4 +566,3 @@ extension AppDelegate: DataManagerDelegate {
 	}
 
 }
-

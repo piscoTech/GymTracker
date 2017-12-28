@@ -1,5 +1,5 @@
 //
-//  OrganizedWorkoutTest.swift
+//  OrganizedWorkoutTests.swift
 //  Model Tests
 //
 //  Created by Marco Boschi on 16/11/2017.
@@ -9,7 +9,7 @@
 import XCTest
 @testable import Gym_Tracker
 
-class OrganizedWorkoutTest: XCTestCase {
+class OrganizedWorkoutTests: XCTestCase {
 	
 	private var workout, complexWorkout: OrganizedWorkout!
     

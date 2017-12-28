@@ -13,21 +13,38 @@ fileprivate let kg = NSAttributedString(string: "kg")
 protocol WorkoutStepNext {
 	
 	var description: NSAttributedString { get }
+	func updateWeightChange()
 	
 }
 
-struct WorkoutStepNextSet: WorkoutStepNext {
+class WorkoutStepNextSet: WorkoutStepNext {
 	
-	let description: NSAttributedString
+	private(set) var description: NSAttributedString
 	
 	let exercizeName: String
-	let weight, change: Double
+	let weight: Double
+	private(set) var change: Double
 	
-	fileprivate init(exercizeName: String, weight: Double, change: Double) {
+	private let changeProvider: () -> Double
+	
+	fileprivate init(exercizeName: String, weight: Double, change: @escaping () -> Double) {
+		self.changeProvider = change
+		
 		self.exercizeName = exercizeName
 		self.weight = weight
-		self.change = change
+		self.change = changeProvider()
 		
+		self.description = NSAttributedString()
+		
+		self.generateString()
+	}
+	
+	func updateWeightChange() {
+		change = changeProvider()
+		generateString()
+	}
+	
+	private func generateString() {
 		let d = NSMutableAttributedString(string: exercizeName)
 		
 		if let w = weight.weightDescription(withChange: change) {
@@ -36,12 +53,12 @@ struct WorkoutStepNextSet: WorkoutStepNext {
 			d.append(kg)
 		}
 		
-		description = d
+		self.description = d
 	}
 	
 }
 
-struct WorkoutStepNextRest: WorkoutStepNext {
+class WorkoutStepNextRest: WorkoutStepNext {
 	
 	let description: NSAttributedString
 	let rest: TimeInterval
@@ -52,6 +69,8 @@ struct WorkoutStepNextRest: WorkoutStepNext {
 		self.rest = rest
 		description = NSAttributedString(string: rest.getDuration(hideHours: true) + WorkoutStepNextRest.nextRestTxt)
 	}
+	
+	func updateWeightChange() {}
 	
 }
 
@@ -93,8 +112,8 @@ class WorkoutStep {
 		self.set = set
 	}
 	
-	func updateWeightChange(for iterator: WorkoutIterator) {
-		fatalError("Not implemented")
+	func updateWeightChange() {
+		nextUp?.updateWeightChange()
 	}
 	
 }
@@ -110,23 +129,39 @@ class WorkoutSetStep: WorkoutStep {
 		return repsDescription
 	}
 
-	let reps: WorkoutSetStepData
+	private(set) var reps: WorkoutSetStepData
 
 	private let exercize: String
-	private let repsDescription: NSAttributedString
+	private var repsDescription: NSAttributedString
 	
-	fileprivate init(exercizeName: String, reps: WorkoutSetStepData, rest: TimeInterval?, nextUp: WorkoutStepNext?, set: RepsSet) {
+	private let changeProvider: () -> Double
+	
+	fileprivate init(exercizeName: String, reps: Int, weight: Double, change: @escaping () -> Double, rest: TimeInterval?, nextUp: WorkoutStepNext?, set: RepsSet) {
 		self.exercize = exercizeName
-		self.reps = reps
+		self.changeProvider = change
+		self.reps = (reps, weight, change())
+		self.repsDescription = NSAttributedString()
 		
+		super.init(rest: rest, nextUp: nextUp, set: set)
+		
+		self.generateString()
+	}
+	
+	private func generateString() {
 		let repsDescription = NSMutableAttributedString(string: "\(reps.reps)")
 		if let w = reps.weight.weightDescription(withChange: reps.change) {
 			repsDescription.append(NSAttributedString(string: timesSign))
 			repsDescription.append(w)
+			repsDescription.append(kg)
 		}
 		self.repsDescription = repsDescription
+	}
+	
+	override func updateWeightChange() {
+		super.updateWeightChange()
 		
-		super.init(rest: rest, nextUp: nextUp, set: set)
+		self.reps.change = changeProvider()
+		self.generateString()
 	}
 	
 }
@@ -139,15 +174,24 @@ class WorkoutExercizeStep: WorkoutSetStep {
 	
 	let otherWeights: [Double]
 	
-	private let otherSets: NSAttributedString?
+	private var otherSets: NSAttributedString?
 	
 	static private let otherSetTxt = NSLocalizedString("OTHER_N_SET", comment: "other set")
 	static private let otherSetsTxt = NSLocalizedString("OTHER_N_SETS", comment: "other sets")
 	
-	fileprivate init(exercizeName: String, reps: WorkoutSetStepData, rest: TimeInterval?, otherWeights other: [Double], nextUp: WorkoutStepNext?, set: RepsSet) {
-		if other.count > 0 {
-			let otherSets = NSMutableAttributedString(string: "\(other.count)\(other.count > 1 ? WorkoutExercizeStep.otherSetsTxt : WorkoutExercizeStep.otherSetTxt): ")
-			otherSets.append(other.flatMap { weight -> NSAttributedString? in
+	fileprivate init(exercizeName: String, reps: Int, weight: Double, change: @escaping () -> Double, rest: TimeInterval?, otherWeights other: [Double], nextUp: WorkoutStepNext?, set: RepsSet) {
+		self.otherSets = NSAttributedString()
+		self.otherWeights = other
+		
+		super.init(exercizeName: exercizeName, reps: reps, weight: weight, change: change, rest: rest, nextUp: nextUp, set: set)
+		
+		self.generateString()
+	}
+	
+	func generateString() {
+		if otherWeights.count > 0 {
+			let otherSets = NSMutableAttributedString(string: "\(otherWeights.count)\(otherWeights.count > 1 ? WorkoutExercizeStep.otherSetsTxt : WorkoutExercizeStep.otherSetTxt): ")
+			otherSets.append(otherWeights.flatMap { weight -> NSAttributedString? in
 				guard let w = weight.weightDescription(withChange: reps.change) else {
 					return nil
 				}
@@ -162,9 +206,12 @@ class WorkoutExercizeStep: WorkoutSetStep {
 		} else {
 			self.otherSets = nil
 		}
-		self.otherWeights = other
+	}
+	
+	override func updateWeightChange() {
+		super.updateWeightChange()
 		
-		super.init(exercizeName: exercizeName, reps: reps, rest: rest, nextUp: nextUp, set: set)
+		self.generateString()
 	}
 	
 }
@@ -184,11 +231,11 @@ class WorkoutCircuitStep: WorkoutSetStep {
 	static private let exercize = NSLocalizedString("EXERCIZE", comment: "exercize")
 	static private let round = NSLocalizedString("ROUND", comment: "round")
 
-	fileprivate init(exercizeName: String, reps: WorkoutSetStepData, rest: TimeInterval?, circuitCompletion: WorkoutCircuitStepData, nextUp: WorkoutStepNext?, set: RepsSet) {
+	fileprivate init(exercizeName: String, reps: Int, weight: Double, change: @escaping () -> Double, rest: TimeInterval?, circuitCompletion: WorkoutCircuitStepData, nextUp: WorkoutStepNext?, set: RepsSet) {
 		self.otherParts = NSAttributedString(string: "\(WorkoutCircuitStep.exercize) \(circuitCompletion.exercize)/\(circuitCompletion.totalExercize), \(WorkoutCircuitStep.round) \(circuitCompletion.round)/\(circuitCompletion.totalRound)")
 		self.circuitCompletion = circuitCompletion
 		
-		super.init(exercizeName: exercizeName, reps: reps, rest: rest, nextUp: nextUp, set: set)
+		super.init(exercizeName: exercizeName, reps: reps, weight: weight, change: change, rest: rest, nextUp: nextUp, set: set)
 	}
 	
 }
@@ -225,6 +272,8 @@ class WorkoutIterator: IteratorProtocol {
 	/// The current part, i.e. set, inside the current exercize or circuit, this identifies both the set and, if any, its subsequent rest period.
 	private var curPart = 0
 	
+	private var weightChanges: [CDRecordID : Double] = [:]
+	
 	private let preferences: Preferences
 
 	init(_ w: OrganizedWorkout, using preferences: Preferences? = nil) {
@@ -249,6 +298,9 @@ class WorkoutIterator: IteratorProtocol {
 			
 			exGroups.append(group)
 			list.removeFirst(group.count)
+			for e in group {
+				weightChanges[e.recordID] = 0
+			}
 		}
 		
 		exercizes = exGroups
@@ -257,7 +309,17 @@ class WorkoutIterator: IteratorProtocol {
 	// MARK: - Manage cache of weight changes
 	
 	func weightChange(for e: Exercize) -> Double {
-		return 0
+		let id = e.recordID
+		precondition(weightChanges.keys.contains(id), "Exercize does not belong the the workout")
+		
+		return weightChanges[id]!
+	}
+	
+	func setWeightChange(_ w: Double, for e: Exercize) {
+		let id = e.recordID
+		precondition(weightChanges.keys.contains(id), "Exercize does not belong the the workout")
+		
+		weightChanges[id] = w.rounded(to: 0.5)
 	}
 	
 	// MARK: - Manage steps
@@ -278,7 +340,7 @@ class WorkoutIterator: IteratorProtocol {
 		
 		preferences.currentExercize = e
 		preferences.currentPart = p
-		// TODO: Also save weight change cache
+		preferences.weightChangeCache = weightChanges
 	}
 	
 	func loadPersistedState() {
@@ -294,7 +356,14 @@ class WorkoutIterator: IteratorProtocol {
 			}
 		}
 		
-		// TODO: Also load weight change cache
+		let cache = preferences.weightChangeCache
+		for (e, w) in weightChanges {
+			weightChanges[e] = cache[e]?.rounded(to: 0.5) ?? w
+		}
+	}
+	
+	func destroyPersistedState() {
+		preferences.weightChangeCache = [:]
 	}
 	
 	func next() -> WorkoutStep? {
@@ -306,7 +375,7 @@ class WorkoutIterator: IteratorProtocol {
 			if e.isRest {
 				return WorkoutStepNextRest(rest: e.rest)
 			} else {
-				return WorkoutStepNextSet(exercizeName: e.name ?? "", weight: e[Int32(set)]?.weight ?? 0, change: self.weightChange(for: e))
+				return WorkoutStepNextSet(exercizeName: e.name ?? "", weight: e[Int32(set)]?.weight ?? 0, change: { self.weightChange(for: e) } )
 			}
 		}
 		
@@ -325,7 +394,6 @@ class WorkoutIterator: IteratorProtocol {
 				let isLast = curPart == e.sets.count - 1
 				var next: WorkoutStepNext?
 				
-				let reps = WorkoutSetStep.WorkoutSetStepData(reps: Int(s.reps), s.weight, weightChange(for: e))
 				let (globalRest, lastRest) = workout.restStatus(for: e) ?? (false, false)
 				let rest = (isLast && lastRest) || (!isLast && globalRest) ? s.rest : nil
 				let others = e.setList[(curPart + 1)...].map { $0.weight }
@@ -339,7 +407,8 @@ class WorkoutIterator: IteratorProtocol {
 				} else {
 					curPart += 1
 				}
-				return WorkoutExercizeStep(exercizeName: e.name ?? "", reps: reps, rest: (rest ?? 0) > 0 ? rest : nil, otherWeights: others, nextUp: next, set: s)
+				return WorkoutExercizeStep(exercizeName: e.name ?? "", reps: Int(s.reps), weight: s.weight, change: { self.weightChange(for: e) },
+										   rest: (rest ?? 0) > 0 ? rest : nil, otherWeights: others, nextUp: next, set: s)
 			}
 		}
 	}
