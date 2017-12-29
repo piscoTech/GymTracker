@@ -19,3 +19,5 @@ let applicationDocumentsDirectory: URL = {
 }()
 
 let timesSign = "×"
+let minusSign = "−"
+let plusSign = "+"

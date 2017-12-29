@@ -80,6 +80,54 @@ class WorkoutIteratorTests: XCTestCase {
 		XCTAssertEqual(count, 6)
 	}
 	
+	func testOtherSetsNoWeight() {
+		let w = dataManager.newWorkout()
+		let ow = OrganizedWorkout(w)
+		ow.name = "Workout"
+		
+		let e = dataManager.newExercize(for: w)
+		e.set(name: "E")
+		var s = dataManager.newSet(for: e)
+		s.set(reps: 10)
+		s.set(weight: 0)
+		s.set(rest: 30)
+		s = dataManager.newSet(for: e)
+		s.set(reps: 10)
+		s.set(weight: 0)
+		s.set(rest: 30)
+		s = dataManager.newSet(for: e)
+		s.set(reps: 10)
+		s.set(weight: 0)
+		s.set(rest: 30)
+		
+		let iter = WorkoutIterator(ow)
+		if let s1 = iter.next() {
+			if let othSets = s1.otherPartsInfo?.string {
+				assert(string: othSets, containsInOrder: ["2", "0", "0"])
+			} else {
+				XCTFail("Unexpected nil")
+			}
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		
+		if let s2 = iter.next() {
+			if let othSets = s2.otherPartsInfo?.string {
+				assert(string: othSets, containsInOrder: ["1", "0"])
+			} else {
+				XCTFail("Unexpected nil")
+			}
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		
+		if let s3 = iter.next() {
+			XCTAssertNil(s3.otherPartsInfo)
+		} else {
+			XCTFail("Unexpected nil")
+		}
+	}
+	
     func testSimpleWorkout() {
 		let iter = WorkoutIterator(workout)
 		do { // First exercize
@@ -90,18 +138,13 @@ class WorkoutIteratorTests: XCTestCase {
 			if let step1 = iter.next() {
 				XCTAssertEqual(step1.exercizeName, e.name)
 				if let curRep = step1.currentReps?.string {
-					XCTAssertNotNil(curRep.range(of: s1.reps.description))
-					XCTAssertNil(curRep.range(of: timesSign))
+					assert(string: curRep, containsInOrder: [s1.reps.description], afterNotContains: timesSign)
 				} else {
 					XCTFail("Unexpected nil")
 				}
 				
 				if let othSets = step1.otherPartsInfo?.string {
-					if let countPos = othSets.range(of: "1") {
-						XCTAssertNotNil(othSets[countPos.upperBound...].range(of: s2.weight.toString()))
-					} else {
-						XCTFail("Unexpected nil")
-					}
+					assert(string: othSets, containsInOrder: ["1", s2.weight.toString()])
 				} else {
 					XCTFail("Unexpected nil")
 				}
@@ -109,11 +152,7 @@ class WorkoutIteratorTests: XCTestCase {
 				XCTAssertNil(step1.rest)
 				
 				if let next = step1.nextUpInfo?.string {
-					if let namePos = next.range(of: e.next!.name!) {
-						XCTAssertNotNil(next[namePos.upperBound...].range(of: e.next![0]!.weight.toString()))
-					} else {
-						XCTFail("Unexpected nil")
-					}
+					assert(string: next, containsInOrder: [e.next!.name!, e.next![0]!.weight.toString()])
 				} else {
 					XCTFail("Unexpected nil")
 				}
@@ -145,16 +184,7 @@ class WorkoutIteratorTests: XCTestCase {
 			if let step2 = iter.next() {
 				XCTAssertEqual(step2.exercizeName, e.name)
 				if let curRep = step2.currentReps?.string {
-					if let curRepPos = curRep.range(of: s2.reps.description) {
-						let partial = curRep[curRepPos.upperBound...]
-						if let timesPos = partial.range(of: timesSign) {
-							XCTAssertNotNil(partial[timesPos.upperBound...].range(of: s2.weight.toString()))
-						} else {
-							XCTFail("Unexpected nil")
-						}
-					} else {
-						XCTFail("Unexpected nil")
-					}
+					assert(string: curRep, containsInOrder: [s2.reps.description, timesSign, s2.weight.toString()])
 				} else {
 					XCTFail("Unexpected nil")
 				}
@@ -163,11 +193,7 @@ class WorkoutIteratorTests: XCTestCase {
 				XCTAssertNil(step2.rest)
 				
 				if let next = step2.nextUpInfo?.string {
-					if let namePos = next.range(of: e.next!.name!) {
-						XCTAssertNotNil(next[namePos.upperBound...].range(of: e.next![0]!.weight.toString()))
-					} else {
-						XCTFail("Unexpected nil")
-					}
+					assert(string: next, containsInOrder: [e.next!.name!, e.next![0]!.weight.toString()])
 				} else {
 					XCTFail("Unexpected nil")
 				}
@@ -205,26 +231,13 @@ class WorkoutIteratorTests: XCTestCase {
 			if let step3 = iter.next() {
 				XCTAssertEqual(step3.exercizeName, e.name)
 				if let curRep = step3.currentReps?.string {
-					if let curRepPos = curRep.range(of: s1.reps.description) {
-						let partial = curRep[curRepPos.upperBound...]
-						if let timesPos = partial.range(of: timesSign) {
-							XCTAssertNotNil(partial[timesPos.upperBound...].range(of: s1.weight.toString()))
-						} else {
-							XCTFail("Unexpected nil")
-						}
-					} else {
-						XCTFail("Unexpected nil")
-					}
+					assert(string: curRep, containsInOrder: [s1.reps.description, timesSign, s1.weight.toString()])
 				} else {
 					XCTFail("Unexpected nil")
 				}
 				
 				if let othSets = step3.otherPartsInfo?.string {
-					if let countPos = othSets.range(of: "1") {
-						XCTAssertNotNil(othSets[countPos.upperBound...].range(of: s2.weight.toString()))
-					} else {
-						XCTFail("Unexpected nil")
-					}
+					assert(string: othSets, containsInOrder: ["1", s2.weight.toString()])
 				} else {
 					XCTFail("Unexpected nil")
 				}
@@ -232,7 +245,7 @@ class WorkoutIteratorTests: XCTestCase {
 				XCTAssertEqual(s1.rest, step3.rest)
 				
 				if let next = step3.nextUpInfo?.string {
-					XCTAssertNotNil(next.range(of: e.next!.rest.getDuration(hideHours: true)))
+					assert(string: next, containsInOrder: [e.next!.rest.getDuration(hideHours: true)])
 				} else {
 					XCTFail("Unexpected nil")
 				}
@@ -262,16 +275,7 @@ class WorkoutIteratorTests: XCTestCase {
 			if let step4 = iter.next() {
 				XCTAssertEqual(step4.exercizeName, e.name)
 				if let curRep = step4.currentReps?.string {
-					if let curRepPos = curRep.range(of: s2.reps.description) {
-						let partial = curRep[curRepPos.upperBound...]
-						if let timesPos = partial.range(of: timesSign) {
-							XCTAssertNotNil(partial[timesPos.upperBound...].range(of: s2.weight.toString()))
-						} else {
-							XCTFail("Unexpected nil")
-						}
-					} else {
-						XCTFail("Unexpected nil")
-					}
+					assert(string: curRep, containsInOrder: [s2.reps.description, timesSign, s2.weight.toString()])
 				} else {
 					XCTFail("Unexpected nil")
 				}
@@ -280,7 +284,7 @@ class WorkoutIteratorTests: XCTestCase {
 				XCTAssertNil(step4.rest)
 				
 				if let next = step4.nextUpInfo?.string {
-					XCTAssertNotNil(next.range(of: e.next!.rest.getDuration(hideHours: true)))
+					assert(string: next, containsInOrder: [e.next!.rest.getDuration(hideHours: true)])
 				} else {
 					XCTFail("Unexpected nil")
 				}
@@ -319,11 +323,7 @@ class WorkoutIteratorTests: XCTestCase {
 				XCTAssertEqual(step5.rest, e.rest)
 				
 				if let next = step5.nextUpInfo?.string {
-					if let namePos = next.range(of: e.next!.name!) {
-						XCTAssertNil(next[namePos.upperBound...].range(of: e.next![0]!.weight.toString()))
-					} else {
-						XCTFail("Unexpected nil")
-					}
+					assert(string: next, containsInOrder: [e.next!.name!], afterNotContains: e.next![0]!.weight.toString())
 				} else {
 					XCTFail("Unexpected nil")
 				}
@@ -351,8 +351,7 @@ class WorkoutIteratorTests: XCTestCase {
 			if let step6 = iter.next() {
 				XCTAssertEqual(step6.exercizeName, e.name)
 				if let curRep = step6.currentReps?.string {
-					XCTAssertNotNil(curRep.range(of: s1.reps.description))
-					XCTAssertNil(curRep.range(of: timesSign))
+					assert(string: curRep, containsInOrder: [s1.reps.description], afterNotContains: timesSign)
 				} else {
 					XCTFail("Unexpected nil")
 				}
@@ -529,11 +528,36 @@ class WorkoutIteratorTests: XCTestCase {
 		XCTAssertEqual(iter.weightChange(for: e), 0)
 	}
 	
+	func testWeightDescriptionLimits() {
+		XCTAssertNil(0.0.weightDescription(withChange: 0))
+		XCTAssertNil(0.0.weightDescription(withChange: -1))
+		if let desc = 0.0.weightDescription(withChange: 3)?.string {
+			assert(string: desc, containsInOrder: ["0", plusSign, "3"])
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		
+		if let desc = 10.0.weightDescription(withChange: -10)?.string {
+			assert(string: desc, containsInOrder: ["10", minusSign, "10"])
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		
+		if let desc = 10.0.weightDescription(withChange: -20)?.string {
+			assert(string: desc, containsInOrder: ["10", minusSign, "10"])
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		
+		XCTAssertEqual("0", 0.0.weightDescriptionEvenForZero(withChange: 0).string)
+		XCTAssertEqual("0", 0.0.weightDescriptionEvenForZero(withChange: -1).string)
+	}
+	
 	func testWeightChangeSimpleWorkout() {
 		let e1 = workout[0]!
 		let e2 = workout[1]!
 		let w1 = 7.5
-		let w2 = 3.0
+		let w2 = -6.0
 		let iter = WorkoutIterator(workout, using: dataManager.preferences)
 		iter.setWeightChange(w1, for: e1)
 		iter.setWeightChange(w2, for: e2)
@@ -542,36 +566,19 @@ class WorkoutIteratorTests: XCTestCase {
 		let s2 = e1[1]!
 		if let step1 = iter.next() {
 			if let curRep = step1.currentReps?.string {
-				if let curRepPos = curRep.range(of: s1.reps.description) {
-					let partial = curRep[curRepPos.upperBound...]
-					if let timesPos = partial.range(of: timesSign) {
-						XCTAssertNotNil(partial[timesPos.upperBound...].range(of: (s1.weight + w1).toString()))
-					} else {
-						XCTFail("Unexpected nil")
-					}
-				} else {
-					XCTFail("Unexpected nil")
-				}
+				assert(string: curRep, containsInOrder: [s1.reps.description, timesSign, s1.weight.toString(), plusSign, w1.toString()])
 			} else {
 				XCTFail("Unexpected nil")
 			}
 			
 			if let othSets = step1.otherPartsInfo?.string {
-				if let countPos = othSets.range(of: "1") {
-					XCTAssertNotNil(othSets[countPos.upperBound...].range(of: (s2.weight + w1).toString()))
-				} else {
-					XCTFail("Unexpected nil")
-				}
+				assert(string: othSets, containsInOrder: ["1", s2.weight.toString(), plusSign, w1.toString()])
 			} else {
 				XCTFail("Unexpected nil")
 			}
 			
 			if let next = step1.nextUpInfo?.string {
-				if let namePos = next.range(of: e2.name!) {
-					XCTAssertNotNil(next[namePos.upperBound...].range(of: (e2[0]!.weight + w2).toString()))
-				} else {
-					XCTFail("Unexpected nil")
-				}
+				assert(string: next, containsInOrder: [e2.name!, e2[0]!.weight.toString(), minusSign, min(abs(w2), e2[0]!.weight).toString()])
 			} else {
 				XCTFail("Unexpected nil")
 			}
@@ -598,16 +605,7 @@ class WorkoutIteratorTests: XCTestCase {
 		iter.setWeightChange(0, for: e1)
 		if let step2 = iter.next() {
 			if let curRep = step2.currentReps?.string {
-				if let curRepPos = curRep.range(of: s2.reps.description) {
-					let partial = curRep[curRepPos.upperBound...]
-					if let timesPos = partial.range(of: timesSign) {
-						XCTAssertNotNil(partial[timesPos.upperBound...].range(of: s2.weight.toString()))
-					} else {
-						XCTFail("Unexpected nil")
-					}
-				} else {
-					XCTFail("Unexpected nil")
-				}
+				assert(string: curRep, containsInOrder: [s2.reps.description, timesSign, s2.weight.toString()])
 			} else {
 				XCTFail("Unexpected nil")
 			}
@@ -615,11 +613,7 @@ class WorkoutIteratorTests: XCTestCase {
 			XCTAssertNil(step2.otherPartsInfo)
 			
 			if let next = step2.nextUpInfo?.string {
-				if let namePos = next.range(of: e2.name!) {
-					XCTAssertNotNil(next[namePos.upperBound...].range(of: (e2[0]!.weight + w2).toString()))
-				} else {
-					XCTFail("Unexpected nil")
-				}
+				assert(string: next, containsInOrder: [e2.name!, e2[0]!.weight.toString(), minusSign, min(abs(w2), e2[0]!.weight).toString()])
 			} else {
 				XCTFail("Unexpected nil")
 			}
@@ -645,6 +639,24 @@ class WorkoutIteratorTests: XCTestCase {
 		} else {
 			XCTFail("Unexpected nil")
 		}
+		
+		if let step3 = iter.next() {
+			let s1 = e2[0]!
+			let s2 = e2[1]!
+			if let curRep = step3.currentReps?.string {
+				assert(string: curRep, containsInOrder: [s1.reps.description, timesSign, s1.weight.toString(), minusSign, min(abs(w2), s1.weight).toString()])
+			} else {
+				XCTFail("Unexpected nil")
+			}
+			
+			if let othSets = step3.otherPartsInfo?.string {
+				assert(string: othSets, containsInOrder: ["1", s2.weight.toString(), minusSign, min(abs(w2), s2.weight).toString()])
+			} else {
+				XCTFail("Unexpected nil")
+			}
+		} else {
+			XCTFail("Unexpected nil")
+		}
 	}
 	
 	func testWeightChangeCircuitWorkout() {
@@ -660,28 +672,19 @@ class WorkoutIteratorTests: XCTestCase {
 		let s2 = e1[1]!
 		if let step = iter.next() {
 			if let curRep = step.currentReps?.string {
-				XCTAssertNotNil(curRep.range(of: s1.reps.description))
-				XCTAssertNil(curRep.range(of: timesSign))
+				assert(string: curRep, containsInOrder: [s1.reps.description], afterNotContains: timesSign)
 			} else {
 				XCTFail("Unexpected nil")
 			}
 			
 			if let othSets = step.otherPartsInfo?.string {
-				if let countPos = othSets.range(of: "1") {
-					XCTAssertNotNil(othSets[countPos.upperBound...].range(of: s2.weight.toString()))
-				} else {
-					XCTFail("Unexpected nil")
-				}
+				assert(string: othSets, containsInOrder: ["1", s2.weight.toString()])
 			} else {
 				XCTFail("Unexpected nil")
 			}
 			
 			if let next = step.nextUpInfo?.string {
-				if let namePos = next.range(of: e2.name!) {
-					XCTAssertNotNil(next[namePos.upperBound...].range(of: e2[0]!.weight.toString()))
-				} else {
-					XCTFail("Unexpected nil")
-				}
+				assert(string: next, containsInOrder: [e2.name!, e2[0]!.weight.toString()])
 			} else {
 				XCTFail("Unexpected nil")
 			}
@@ -702,43 +705,26 @@ class WorkoutIteratorTests: XCTestCase {
 				XCTFail("Invalid class found")
 			}
 			
-			let w1 = 5.5
+			let w1 = -5.5
 			let w2 = 4.0
 			iter.setWeightChange(w1, for: e1)
 			iter.setWeightChange(w2, for: e2)
 			step.updateWeightChange()
 			
 			if let curRep = step.currentReps?.string {
-				if let curRepPos = curRep.range(of: s1.reps.description) {
-					let partial = curRep[curRepPos.upperBound...]
-					if let timesPos = partial.range(of: timesSign) {
-						XCTAssertNotNil(partial[timesPos.upperBound...].range(of: (s1.weight + w1).toString()))
-					} else {
-						XCTFail("Unexpected nil")
-					}
-				} else {
-					XCTFail("Unexpected nil")
-				}
+				assert(string: curRep, containsInOrder: [s1.reps.description], afterNotContains: timesSign)
 			} else {
 				XCTFail("Unexpected nil")
 			}
 			
 			if let othSets = step.otherPartsInfo?.string {
-				if let countPos = othSets.range(of: "1") {
-					XCTAssertNotNil(othSets[countPos.upperBound...].range(of: (s2.weight + w1).toString()))
-				} else {
-					XCTFail("Unexpected nil")
-				}
+				assert(string: othSets, containsInOrder: ["1", s2.weight.toString(), minusSign, abs(w1).toString()])
 			} else {
 				XCTFail("Unexpected nil")
 			}
 			
 			if let next = step.nextUpInfo?.string {
-				if let namePos = next.range(of: e2.name!) {
-					XCTAssertNotNil(next[namePos.upperBound...].range(of: (e2[0]!.weight + w2).toString()))
-				} else {
-					XCTFail("Unexpected nil")
-				}
+				assert(string: next, containsInOrder: [e2.name!, e2[0]!.weight.toString(), plusSign, w2.toString()])
 			} else {
 				XCTFail("Unexpected nil")
 			}
@@ -767,6 +753,25 @@ class WorkoutIteratorTests: XCTestCase {
 		// Make first 2 ex a circuit, get first step, update weight for 2nd ex, check changes (current + next, not other set)
 		
 		XCTFail()
+	}
+	
+	private func assert(string: String, containsInOrder others: [String], afterNotContains notContains: String? = nil, _ message: @autoclosure () -> String = "", file: StaticString = #file, line: UInt = #line) {
+		var partial: String = string
+		var i = 0
+		for s in others {
+			if let range = partial.range(of: s) {
+				partial = String(partial[range.upperBound...])
+			} else {
+				XCTFail("\"\(string)\" does not contain other strings in specified order, \(i) string found out of \(others.count) - \(message())", file: file, line: line)
+				return
+			}
+			
+			i += 1
+		}
+		
+		if let exclude = notContains {
+			XCTAssertNil(partial.range(of: exclude), "\"\(string)\" contains other strings in specified order but excluded string found - \(message())", file: file, line: line)
+		}
 	}
     
 }

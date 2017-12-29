@@ -263,6 +263,7 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 				let displayError = {
 					DispatchQueue.main.async {
 						self.currentWorkout.present(UIAlertController(simpleAlert: NSLocalizedString("WORKOUT_START_ERR", comment: "Err"), message: NSLocalizedString("WORKOUT_START_ERR_WATCH", comment: "Err watch")), animated: true)
+						// FIXME: Fix #6 by starting a local workout after alert is closed (also fix in DataManager)
 					}
 				}
 				

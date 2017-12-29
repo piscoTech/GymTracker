@@ -405,6 +405,7 @@ class DataManager {
 	
 	@available(watchOS, unavailable)
 	var shouldStartWorkoutOnWatch: Bool {
+		// FIXME: Fix #6 by also checking that the watch is reachable (also fix in AppDelegate iOS)
 		return use == .application && wcInterface.hasCounterPart && wcInterface.canComunicate
 	}
 	
@@ -1033,6 +1034,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 			return false
 		}
 		
+		// FIXME: Fix #6 by also specifing a reply handler, then pass success/error status to caller using a callback function (also fix in AppDelegate iOS)
 		session.sendMessage([remoteWorkoutStartKey: workout.recordID.wcRepresentation], replyHandler: nil, errorHandler: nil)
 		return true
 	}
@@ -1046,11 +1048,11 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 	}
 	
 	fileprivate func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
-		if let wData = message[remoteWorkoutStartKey] as? [String], iswatchOS, let wID = CDRecordID(wcRepresentation: wData), let workout = wID.getObject(fromDataManager: dataManager) as? Workout {
-			#if os(watchOS)
+		#if os(watchOS)
+			if let wData = message[remoteWorkoutStartKey] as? [String], let wID = CDRecordID(wcRepresentation: wData), let workout = wID.getObject(fromDataManager: dataManager) as? Workout {
 				dataManager.delegate?.remoteWorkoutStart(workout)
-			#endif
-		}
+			}
+		#endif
 	}
 	
 }

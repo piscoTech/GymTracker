@@ -191,11 +191,8 @@ class WorkoutExercizeStep: WorkoutSetStep {
 	func generateString() {
 		if otherWeights.count > 0 {
 			let otherSets = NSMutableAttributedString(string: "\(otherWeights.count)\(otherWeights.count > 1 ? WorkoutExercizeStep.otherSetsTxt : WorkoutExercizeStep.otherSetTxt): ")
-			otherSets.append(otherWeights.flatMap { weight -> NSAttributedString? in
-				guard let w = weight.weightDescription(withChange: reps.change) else {
-					return nil
-				}
-				
+			otherSets.append(otherWeights.map { weight -> NSAttributedString in
+				let w = weight.weightDescriptionEvenForZero(withChange: reps.change)
 				let res = NSMutableAttributedString(attributedString: w)
 				res.append(kg)
 				
