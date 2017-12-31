@@ -215,7 +215,7 @@ class WorkoutExercizeStep: WorkoutSetStep {
 
 class WorkoutCircuitStep: WorkoutSetStep {
 
-	typealias WorkoutCircuitStepData = (exercize: Int, totalExercize: Int, round: Int, totalRound: Int)
+	typealias WorkoutCircuitStepData = (exercize: Int, totalExercizes: Int, round: Int, totalRounds: Int)
 	
 	override var otherPartsInfo: NSAttributedString? {
 		return otherParts
@@ -229,7 +229,7 @@ class WorkoutCircuitStep: WorkoutSetStep {
 	static private let round = NSLocalizedString("ROUND", comment: "round")
 
 	fileprivate init(exercizeName: String, reps: Int, weight: Double, change: @escaping () -> Double, rest: TimeInterval?, circuitCompletion: WorkoutCircuitStepData, nextUp: WorkoutStepNext?, set: RepsSet) {
-		self.otherParts = NSAttributedString(string: "\(WorkoutCircuitStep.exercize) \(circuitCompletion.exercize)/\(circuitCompletion.totalExercize), \(WorkoutCircuitStep.round) \(circuitCompletion.round)/\(circuitCompletion.totalRound)")
+		self.otherParts = NSAttributedString(string: "\(WorkoutCircuitStep.exercize) \(circuitCompletion.exercize)/\(circuitCompletion.totalExercizes), \(WorkoutCircuitStep.round) \(circuitCompletion.round)/\(circuitCompletion.totalRounds)")
 		self.circuitCompletion = circuitCompletion
 		
 		super.init(exercizeName: exercizeName, reps: reps, weight: weight, change: change, rest: rest, nextUp: nextUp, set: set)
@@ -384,7 +384,36 @@ class WorkoutIterator: IteratorProtocol {
 			return WorkoutRestStep(rest: curGroup[0].rest, nextUp: prepareNext(with: exercizes[curExercize][0]))
 		} else { // Set
 			if curGroup.count > 1 { // Circuit
-				return nil
+				let eT = curGroup.count
+				let eC = curPart % eT
+				let rC = curPart / eT
+				let e = curGroup[eC]
+				let s = e[Int32(rC)]!
+				let rT = e.sets.count
+				var next: WorkoutStepNext?
+				
+				let isLastRound = rC + 1 == rT
+				let isLast: Bool
+				if eC + 1 == eT && isLastRound {
+					isLast = true
+					curPart = 0
+					curExercize += 1
+				} else {
+					isLast = false
+					curPart += 1
+				}
+				let (globalRest, lastRest) = workout.restStatus(for: e) ?? (false, false)
+				let rest = (isLast && lastRest) || (!isLast && globalRest) ? s.rest : nil
+				if !isLast {
+					let nE = curPart % eT
+					let nR = curPart / eT
+					next = prepareNext(with: curGroup[nE], set: nR)
+				} else if curExercize < exercizes.count {
+					next = prepareNext(with: exercizes[curExercize][0])
+				}
+				
+				return WorkoutCircuitStep(exercizeName: e.name ?? "", reps: Int(s.reps), weight: s.weight, change: { self.weightChange(for: e) },
+										  rest: (rest ?? 0) > 0 ? rest : nil, circuitCompletion: (eC + 1, eT, rC + 1, rT), nextUp: next, set: s)
 			} else { // Single exercize
 				let e = curGroup[0]
 				let s = e[Int32(curPart)]!
