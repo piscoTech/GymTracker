@@ -641,6 +641,14 @@ class DataManager {
 			}
 		}
 	}
+	
+	func readICloudDocument(_ path: URL, action: @escaping (URL) -> Void) {
+		DispatchQueue.background.async {
+			self.fileCoordinator.coordinate(readingItemAt: path, options: .withoutChanges, error: nil) { readingPath in
+				action(readingPath)
+			}
+		}
+	}
 
 }
 

@@ -160,28 +160,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		DispatchQueue.main.async {
 			if let url = self.tryImport {
-				// FIXME: Call here workoutList.exitDetailAndCreation(), fixes #2
 				if ".\(url.pathExtension)" == self.dataManager.importExportManager.fileExtension {
 					if self.canEdit {
-						let loading = UIAlertController.getModalLoading()
-						self.tabController.present(loading, animated: true) {
-							self.dataManager.importExportManager.import(url, isRestoring: false, performCallback: { _, _, proceed in
-								if let proceed = proceed {
-									proceed()
-								} else {
-									loading.dismiss(animated: true) {
-										let alert = UIAlertController(simpleAlert: NSLocalizedString("IMPORT_FAIL", comment: "Fail"), message: NSLocalizedString("WRKT_INVALID", comment: "Invalid file"))
-										self.tabController.present(alert, animated: true)
+						self.workoutList.exitDetailAndCreation {
+							let loading = UIAlertController.getModalLoading()
+							self.tabController.present(loading, animated: true) {
+								self.dataManager.importExportManager.import(url, isRestoring: false, performCallback: { _, _, proceed in
+									if let proceed = proceed {
+										proceed()
+									} else {
+										loading.dismiss(animated: true) {
+											let alert = UIAlertController(simpleAlert: NSLocalizedString("IMPORT_FAIL", comment: "Fail"), message: NSLocalizedString("WRKT_INVALID", comment: "Invalid file"))
+											self.tabController.present(alert, animated: true)
+										}
 									}
-								}
-							}) { wrkt in
-								let success = wrkt != nil
-								if success {
-									appDelegate.workoutList.refreshData()
-								}
-								
-								loading.dismiss(animated: true) {
-									self.tabController.present(UIAlertController(simpleAlert: NSLocalizedString(success ? "IMPORT_SUCCESS" : "IMPORT_FAIL", comment: "err/ok"), message: nil), animated: true)
+								}) { wrkt in
+									let success: Bool
+									let msg: String?
+									if let wrkt = wrkt {
+										success = true
+										appDelegate.workoutList.refreshData()
+										msg = "\(wrkt.count) " + NSLocalizedString("WORKOUT\(wrkt.count > 1 ? "S" : "")", comment: "How many").lowercased()
+									} else {
+										success = false
+										msg = nil
+									}
+									
+									loading.dismiss(animated: true) {
+										self.tabController.present(UIAlertController(simpleAlert: NSLocalizedString(success ? "IMPORT_SUCCESS" : "IMPORT_FAIL", comment: "err/ok"), message: msg), animated: true)
+									}
 								}
 							}
 						}

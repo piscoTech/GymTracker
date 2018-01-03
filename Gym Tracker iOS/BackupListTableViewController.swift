@@ -120,44 +120,52 @@ class BackupListTableViewController: UITableViewController {
 				self.loading = UIAlertController.getModalLoading()
 				appDelegate.workoutList.exitDetailAndCreation {
 					self.present(self.loading!, animated: true) {
-						appDelegate.dataManager.importExportManager.import(self.backups[row.row].path, isRestoring: true, performCallback: { success, count, proceed in
-							let confirm = {
-								let alert: UIAlertController
-								if let count = count, let proceed = proceed {
-									alert = UIAlertController(title: NSLocalizedString("RESTORE_CONFIRM", comment: "err"), message: "\(count)" + NSLocalizedString("RESTORE_CONFIRM_TXT\(count > 1 ? "_MANY" : "")", comment: "err"), preferredStyle: .alert)
-									alert.addAction(UIAlertAction(title: NSLocalizedString("CANCEL", comment: "Cancel"), style: .cancel, handler: nil))
-									alert.addAction(UIAlertAction(title: NSLocalizedString("RESTORE_CONFIRM_BTN", comment: "Restore"), style: .default) { _ in
-										self.loading = UIAlertController.getModalLoading()
-										self.present(self.loading!, animated: true)
-										proceed()
-									})
-								} else {
-									alert = UIAlertController(simpleAlert: NSLocalizedString("RESTORE_FAIL", comment: "err"), message: NSLocalizedString("WRKT_INVALID", comment: "err"))
+						appDelegate.dataManager.readICloudDocument(self.backups[row.row].path) { url in
+							appDelegate.dataManager.importExportManager.import(url, isRestoring: true, performCallback: { success, count, proceed in
+								let confirm = {
+									let alert: UIAlertController
+									if let count = count, let proceed = proceed {
+										alert = UIAlertController(title: NSLocalizedString("RESTORE_CONFIRM", comment: "err"), message: "\(count)" + NSLocalizedString("RESTORE_CONFIRM_TXT\(count > 1 ? "_MANY" : "")", comment: "How many"), preferredStyle: .alert)
+										alert.addAction(UIAlertAction(title: NSLocalizedString("CANCEL", comment: "Cancel"), style: .cancel, handler: nil))
+										alert.addAction(UIAlertAction(title: NSLocalizedString("RESTORE_CONFIRM_BTN", comment: "Restore"), style: .default) { _ in
+											self.loading = UIAlertController.getModalLoading()
+											self.present(self.loading!, animated: true)
+											proceed()
+										})
+									} else {
+										alert = UIAlertController(simpleAlert: NSLocalizedString("RESTORE_FAIL", comment: "err"), message: NSLocalizedString("WRKT_INVALID", comment: "err"))
+									}
+									
+									self.present(alert, animated: true)
 								}
 								
-								self.present(alert, animated: true)
+								if let load = self.loading {
+									load.dismiss(animated: true, completion: confirm)
+								} else {
+									confirm()
+								}
+							}) { wrkt in
+								let success: Bool
+								let msg: String?
+								if let wrkt = wrkt {
+									success = true
+									appDelegate.workoutList.refreshData()
+									msg = "\(wrkt.count) " + NSLocalizedString("WORKOUT\(wrkt.count > 1 ? "S" : "")", comment: "How many").lowercased()
+								} else {
+									success = false
+									msg = nil
+								}
+								let error = {
+									self.present(UIAlertController(simpleAlert: NSLocalizedString(success ? "RESTORE_SUCCESS" : "RESTORE_FAIL", comment: "err/ok"), message: msg), animated: true)
+								}
+								
+								if let load = self.loading {
+									load.dismiss(animated: true, completion: error)
+								} else {
+									error()
+								}
+								self.loading = nil
 							}
-							
-							if let load = self.loading {
-								load.dismiss(animated: true, completion: confirm)
-							} else {
-								confirm()
-							}
-						}) { wrkt in
-							let success = wrkt != nil
-							if success {
-								appDelegate.workoutList.refreshData()
-							}
-							let error = {
-								self.present(UIAlertController(simpleAlert: NSLocalizedString(success ? "RESTORE_SUCCESS" : "RESTORE_FAIL", comment: "err/ok"), message: nil), animated: true)
-							}
-							
-							if let load = self.loading {
-								load.dismiss(animated: true, completion: error)
-							} else {
-								error()
-							}
-							self.loading = nil
 						}
 					}
 				}

@@ -196,40 +196,44 @@ class ImportExportBackupManager: NSObject {
 		}
 	}
 	
-	func `import`(_ file: URL, isRestoring restore: Bool, performCallback: (Bool, Int?, (() -> ())?) -> Void, callback: @escaping ([Workout]?) -> Void) {
+	func `import`(_ file: URL, isRestoring restore: Bool, performCallback: @escaping (Bool, Int?, (() -> ())?) -> Void, callback: @escaping ([Workout]?) -> Void) {
 		if let xsd = Bundle.main.url(forResource: "workout", withExtension: "xsd"),
 			let workouts = file.loadAsXML(validatingWithXSD: xsd)?.children, workouts.count > 0 {
-			performCallback(true, workouts.count) {
-				DispatchQueue.main.async {
-					var saveWorkouts = [Workout]()
-					var saveOthers = [DataObject]()
-					var delete = restore ? Workout.getList(fromDataManager: self.dataManager) : []
-					
-					for wData in workouts {
-						let (w, success) = Workout.import(fromXML: wData, withDataManager: self.dataManager)
+			DispatchQueue.main.async {
+				performCallback(true, workouts.count) {
+					DispatchQueue.main.async {
+						var saveWorkouts = [Workout]()
+						var saveOthers = [DataObject]()
+						var delete = restore ? Workout.getList(fromDataManager: self.dataManager) : []
 						
-						if let w = w {
-							let ow = OrganizedWorkout(w)
-							ow.purgeInvalidSettings()
-                            if success, ow.validityStatus.global {
-								saveWorkouts.append(w)
-								saveOthers += w.exercizes.map { [$0 as DataObject] + Array($0.sets) as [DataObject] }.reduce([]) { $0 + $1 }
-							} else {
-								delete.append(w)
+						for wData in workouts {
+							let (w, success) = Workout.import(fromXML: wData, withDataManager: self.dataManager)
+							
+							if let w = w {
+								let ow = OrganizedWorkout(w)
+								ow.purgeInvalidSettings()
+								if success, ow.validityStatus.global {
+									saveWorkouts.append(w)
+									saveOthers += w.exercizes.map { [$0 as DataObject] + Array($0.sets) as [DataObject] }.reduce([]) { $0 + $1 }
+								} else {
+									delete.append(w)
+								}
 							}
 						}
-					}
-					
-					if self.dataManager.persistChangesForObjects(saveWorkouts + saveOthers, andDeleteObjects: delete) {
-						callback(saveWorkouts)
-					} else {
-						self.dataManager.discardAllChanges()
-						callback(nil)
+						
+						if self.dataManager.persistChangesForObjects(saveWorkouts + saveOthers, andDeleteObjects: delete) {
+							callback(saveWorkouts)
+						} else {
+							self.dataManager.discardAllChanges()
+							callback(nil)
+						}
 					}
 				}
 			}
 		} else {
-			performCallback(false, nil, nil)
+			DispatchQueue.main.async {
+				performCallback(false, nil, nil)
+			}
 		}
 	}
 	
