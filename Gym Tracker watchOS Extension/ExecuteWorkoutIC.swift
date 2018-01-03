@@ -53,9 +53,7 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutCo
 		addMenuItem(with: .decline, title: NSLocalizedString("CANCEL", comment: "cancel"), action: #selector(cancelWorkout))
 		addMenuItem(with: .accept, title: NSLocalizedString("WORKOUT_END_BUTTON", comment: "End"), action: #selector(endWorkout))
 		
-		DispatchQueue.main.async {
-			self.workoutController = ExecuteWorkoutController(data: data, viewController: self, source: .watch)
-		}
+		self.workoutController = ExecuteWorkoutController(data: data, viewController: self, source: .watch)
     }
 
     override func willActivate() {

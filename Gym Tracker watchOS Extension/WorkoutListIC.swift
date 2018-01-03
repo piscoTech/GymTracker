@@ -100,7 +100,7 @@ class WorkoutListInterfaceController: WKInterfaceController {
 			return nil
 		}
 		
-		return WorkoutDetailData(listController: self, workout: workouts[rowIndex])
+		return WorkoutDetailData(listController: self, workout: OrganizedWorkout(workouts[rowIndex]))
 	}
 	
 	func setEnable(_ flag: Bool) {

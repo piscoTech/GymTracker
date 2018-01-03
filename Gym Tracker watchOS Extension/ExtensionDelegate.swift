@@ -80,7 +80,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
 	}
 	
 	func startWorkout(with data: ExecuteWorkoutData) {
-		WKInterfaceController.reloadRootControllers(withNames: ["executeWorkout"], contexts: [data])
+		WKInterfaceController.reloadRootControllers(withNames: ["executeWorkout", "workoutDetail"], contexts: [data, WorkoutDetailData(listController: nil, workout: data.workout)])
 	}
 	
 	// MARK: - Data Manager Delegate

@@ -11,8 +11,8 @@ import Foundation
 
 struct WorkoutDetailData {
 	
-	let listController: WorkoutListInterfaceController
-	let workout: Workout
+	let listController: WorkoutListInterfaceController?
+	let workout: OrganizedWorkout
 	
 }
 
@@ -24,21 +24,23 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 	@IBOutlet weak var startBtn: WKInterfaceButton!
 	
 	private var workout: OrganizedWorkout!
-	private var delegate: WorkoutListInterfaceController!
+	private var delegate: WorkoutListInterfaceController?
 
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
         
         // Configure interface objects here.
 		guard let data = context as? WorkoutDetailData else {
-			self.pop()
-			
-			return
+			fatalError("Inconsistent loading")
 		}
 		
-		workout = OrganizedWorkout(data.workout)
+		workout = data.workout
 		delegate = data.listController
-		delegate.workoutDetail = self
+		delegate?.workoutDetail = self
+		if delegate == nil {
+			startBtn.setEnabled(false)
+			startBtn.setHidden(true)
+		}
 		
 		reloadData(checkExistence: false)
 		updateButton()
@@ -47,7 +49,10 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 	func reloadData(checkExistence: Bool = true) {
 		if checkExistence {
 			guard workout.raw.stillExists(inDataManager: appDelegate.dataManager), !workout.archived else {
-				self.pop()
+				if delegate != nil {
+					// If delegate is not set this is displayed as a page during a workout, so just do nothing
+					self.pop()
+				}
 				
 				return
 			}
@@ -92,11 +97,11 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
     }
 	
 	func updateButton() {
-		startBtn.setEnabled(delegate.canEdit)
+		startBtn.setEnabled(delegate?.canEdit ?? false)
 	}
 	
 	@IBAction func startWorkout() {
-		guard delegate.canEdit, appDelegate.dataManager.preferences.runningWorkout == nil else {
+		guard delegate?.canEdit ?? false, appDelegate.dataManager.preferences.runningWorkout == nil else {
 			return
 		}
 		

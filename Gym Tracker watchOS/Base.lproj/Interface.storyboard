@@ -64,7 +64,7 @@
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="117" y="134"/>
+            <point key="canvasLocation" x="161" y="134"/>
         </scene>
         <!--executeWorkout-->
         <scene sceneID="qoi-zA-dIP">
@@ -180,7 +180,7 @@
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="117" y="513"/>
+            <point key="canvasLocation" x="162" y="513"/>
         </scene>
         <!--updateWeight-->
         <scene sceneID="u0t-wj-7YZ">
@@ -267,7 +267,7 @@
         <!--Workout-->
         <scene sceneID="Zdc-Zm-5g9">
             <objects>
-                <controller title="Workout" spacing="10" id="Vf8-6c-cLe" customClass="WorkoutDetailInterfaceController" customModule="Gym_Tracker_watchOS_Extension">
+                <controller identifier="workoutDetail" title="Workout" spacing="10" id="Vf8-6c-cLe" customClass="WorkoutDetailInterfaceController" customModule="Gym_Tracker_watchOS_Extension">
                     <items>
                         <label alignment="left" text="Label" numberOfLines="0" id="tMk-Q8-GRJ">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
@@ -345,7 +345,7 @@
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="457" y="144"/>
+            <point key="canvasLocation" x="457" y="134"/>
         </scene>
     </scenes>
     <color key="tintColor" red="0.75686274509803919" green="0.92156862745098034" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
