@@ -269,16 +269,23 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 			healthStore.startWatchApp(with: HKWorkoutConfiguration()) { success, _ in
 				let displayError = {
 					DispatchQueue.main.async {
-						self.currentWorkout.present(UIAlertController(simpleAlert: NSLocalizedString("WORKOUT_START_ERR", comment: "Err"), message: NSLocalizedString("WORKOUT_START_ERR_WATCH", comment: "Err watch")), animated: true)
-						// FIXME: Fix #6 by starting a local workout after alert is closed (also fix in DataManager)
+						let alert = UIAlertController(simpleAlert: NSLocalizedString("WORKOUT_START_ERR", comment: "Err"),
+													  message: NSLocalizedString("WORKOUT_START_ERR_WATCH", comment: "Err watch")) {
+														self.startLocalWorkout(workout)
+						}
+						self.currentWorkout.present(alert, animated: true)
 					}
 				}
 				
 				if !success {
 					displayError()
 				} else {
-					if !self.dataManager.requestStarting(workout.raw) {
-						displayError()
+					DispatchQueue.background.asyncAfter(delay: 1) {
+						self.dataManager.requestStarting(workout.raw) { success in
+							if !success {
+								displayError()
+							}
+						}
 					}
 				}
 			}

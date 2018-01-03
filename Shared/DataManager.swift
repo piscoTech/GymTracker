@@ -239,7 +239,6 @@ class WCObject: Equatable {
 	func cancelAndDisableEdit()
 	func enableEdit()
 	
-	// TODO: Make date optional, if nil means we are in a set (no current rest as date represent the start of the currente rest)
 	@available(watchOS, unavailable)
 	func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date?)
 	@available(watchOS, unavailable)
@@ -405,7 +404,6 @@ class DataManager {
 	
 	@available(watchOS, unavailable)
 	var shouldStartWorkoutOnWatch: Bool {
-		// FIXME: Fix #6 by also checking that the watch is reachable (also fix in AppDelegate iOS)
 		return use == .application && wcInterface.hasCounterPart && wcInterface.canComunicate
 	}
 	
@@ -430,12 +428,11 @@ class DataManager {
 	}
 	
 	@available(watchOS, unavailable)
-	func requestStarting(_ workout: Workout) -> Bool {
+	func requestStarting(_ workout: Workout, completion: @escaping (Bool) -> Void) {
 		#if os(iOS)
-			return wcInterface.requestStarting(workout)
-		#endif
-		#if os(watchOS)
-			return false
+			wcInterface.requestStarting(workout, completion: completion)
+		#elseif os(watchOS)
+			completion(false)
 		#endif
 	}
 	
@@ -1037,14 +1034,17 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 	}
 	
 	@available(watchOS, unavailable)
-	func requestStarting(_ workout: Workout) -> Bool {
+	func requestStarting(_ workout: Workout, completion: @escaping (Bool) -> Void) {
 		guard canComunicate && session.isReachable else {
-			return false
+			completion(false)
+			return
 		}
 		
-		// FIXME: Fix #6 by also specifing a reply handler, then pass success/error status to caller using a callback function (also fix in AppDelegate iOS)
-		session.sendMessage([remoteWorkoutStartKey: workout.recordID.wcRepresentation], replyHandler: nil, errorHandler: nil)
-		return true
+		DispatchQueue.main.async {
+			self.session.sendMessage([self.remoteWorkoutStartKey: workout.recordID.wcRepresentation],
+									 replyHandler: { completion($0[self.remoteWorkoutStartKey] as? Bool ?? false) },
+									 errorHandler: { _ in completion(false) })
+		}
 	}
 	
 	fileprivate func session(_ session: WCSession, didReceiveMessage message: [String : Any], replyHandler: @escaping ([String : Any]) -> Void) {
@@ -1053,12 +1053,11 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 			
 			replyHandler([dataIncomingKey: true])
 		}
-	}
 	
-	fileprivate func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
 		#if os(watchOS)
 			if let wData = message[remoteWorkoutStartKey] as? [String], let wID = CDRecordID(wcRepresentation: wData), let workout = wID.getObject(fromDataManager: dataManager) as? Workout {
 				dataManager.delegate?.remoteWorkoutStart(workout)
+				replyHandler([remoteWorkoutStartKey: true])
 			}
 		#endif
 	}
