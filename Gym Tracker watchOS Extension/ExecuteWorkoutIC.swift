@@ -9,6 +9,7 @@
 import WatchKit
 import HealthKit
 import Foundation
+import AVFoundation
 
 class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutControllerDelegate {
 	
@@ -158,7 +159,9 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutCo
 	
 	func notifyEndRest() {
 		let sound = WKHapticType.stop
+		
 		DispatchQueue.main.async {
+			try? AVAudioSession.sharedInstance().setActive(true)
 			WKInterfaceDevice.current().play(sound)
 			self.restTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
 				WKInterfaceDevice.current().play(sound)
@@ -169,6 +172,9 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutCo
 	
 	func endNotifyEndRest() {
 		DispatchQueue.main.async {
+			RunLoop.main.add(Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { _ in
+				try? AVAudioSession.sharedInstance().setActive(false)
+			}, forMode: .commonModes)
 			self.restTimer = nil
 		}
 	}

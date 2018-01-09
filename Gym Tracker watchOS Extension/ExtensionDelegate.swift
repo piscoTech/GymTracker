@@ -8,6 +8,7 @@
 
 import WatchKit
 import HealthKit
+import AVFoundation
 
 class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
 	
@@ -21,11 +22,14 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
 		
 		dataManager = DataManager(for: .application)
 		dataManager.delegate = self
+		
+		try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, with: .duckOthers)
+		
 		if let src = dataManager.preferences.runningWorkoutSource, src == .watch,
 			let workoutID = dataManager.preferences.runningWorkout {
 			if let workout = workoutID.getObject(fromDataManager: dataManager) as? Workout {
 				let data = ExecuteWorkoutData(workout: OrganizedWorkout(workout), resume: true)
-				self.startWorkout(with: data)
+				self.startWorkout(with: data, reloadNow: true)
 			}
 		}
     }
@@ -76,11 +80,19 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
     }
 	
 	func restoreDefaultState() {
-		WKInterfaceController.reloadRootControllers(withNames: ["workoutList"], contexts: nil)
+		DispatchQueue.main.async {
+			WKInterfaceController.reloadRootControllers(withNames: ["workoutList"], contexts: nil)
+		}
 	}
 	
-	func startWorkout(with data: ExecuteWorkoutData) {
-		WKInterfaceController.reloadRootControllers(withNames: ["executeWorkout", "workoutDetail"], contexts: [data, WorkoutDetailData(listController: nil, workout: data.workout)])
+	func startWorkout(with data: ExecuteWorkoutData, reloadNow: Bool = false) {
+		let r = { WKInterfaceController.reloadRootControllers(withNames: ["executeWorkout", "workoutDetail"], contexts: [data, WorkoutDetailData(listController: nil, workout: data.workout)]) }
+		
+		if reloadNow {
+			r()
+		} else {
+			DispatchQueue.main.async(execute: r)
+		}
 	}
 	
 	// MARK: - Data Manager Delegate

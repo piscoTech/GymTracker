@@ -63,6 +63,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		tabController.delegate = tabController
 		tabController.loadNeededControllers()
 		
+		try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, with: .duckOthers)
+		
 		if dataManager.preferences.runningWorkout != nil, let src = dataManager.preferences.runningWorkoutSource {
 			if src == .watch {
 				self.updateMirroredWorkout(withCurrentExercize: dataManager.preferences.currentExercize,
@@ -400,7 +402,9 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 	}
 	
 	func notifyEndRest() {
+		try? AVAudioSession.sharedInstance().setActive(true)
 		workoutAudio?.play()
+		
 		DispatchQueue.main.async {
 			self.workoutRestTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
 				self.workoutAudio?.play()
@@ -410,6 +414,10 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 	}
 	
 	func endNotifyEndRest() {
+		workoutAudio?.stop()
+		workoutAudio?.currentTime = 0
+		try? AVAudioSession.sharedInstance().setActive(false)
+		
 		DispatchQueue.main.async {
 			self.workoutRestTimer = nil
 		}

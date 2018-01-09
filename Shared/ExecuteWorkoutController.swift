@@ -81,7 +81,9 @@ class ExecuteWorkoutController: NSObject {
 	private var workoutIterator: WorkoutIterator
 	private var currentStep: WorkoutStep?
 	/// If the current part is the last set in the entire workout, used to correctly display notifications.
-	private(set) var isLastPart = false
+	var isLastPart: Bool {
+		return currentStep?.isLast ?? false
+	}
 	/// If the current part is a rest.
 	var isRestMode: Bool {
 		return restStart != nil
@@ -324,7 +326,6 @@ class ExecuteWorkoutController: NSObject {
 		}
 		let doNotify = !isRefresh && !self.isMirroring
 		
-		isLastPart = curStep.nextUpInfo == nil
 		let setRest: TimeInterval?
 		
 		if curStep.isRest {
@@ -366,14 +367,14 @@ class ExecuteWorkoutController: NSObject {
 			// Hide end rest button if mirroring
 			view.setRestEndButtonHidden(isMirroring)
 			
-			DispatchQueue.main.async {
-				self.restTimer = Timer.scheduledTimer(withTimeInterval: endsIn, repeats: false) { _ in
-					self.view.stopRestTimer()
-					if doNotify {
+			if doNotify {
+				DispatchQueue.main.async {
+					self.restTimer = Timer.scheduledTimer(withTimeInterval: endsIn, repeats: false) { _ in
+						self.view.stopRestTimer()
 						self.view.notifyEndRest()
 					}
+					RunLoop.main.add(self.restTimer!, forMode: .commonModes)
 				}
-				RunLoop.main.add(self.restTimer!, forMode: .commonModes)
 			}
 		} else {
 			appDelegate.dataManager.preferences.currentRestEnd = nil

@@ -463,6 +463,11 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 			return
 		}
 		
+		if let rest = editRest {
+			//Simulate tap on rest row to hide picker
+			self.tableView(tableView, didSelectRowAt: IndexPath(row: rest, section: 1))
+		}
+		
 		tableView.beginUpdates()
 		if workout.isEmpty {
 			tableView.deleteRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
