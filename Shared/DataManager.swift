@@ -806,7 +806,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 		
 		DispatchQueue.main.async {
 			//Prepend pending transfer to new ones
-			let changedObjects = self.dataManager.preferences.transferLocal.flatMap { $0.getObject(fromDataManager: self.dataManager) } + data
+			let changedObjects = self.dataManager.preferences.transferLocal.compactMap { $0.getObject(fromDataManager: self.dataManager) } + data
 			let deletedIDs = self.dataManager.preferences.deleteLocal + delete
 			
 			guard changedObjects.count != 0 || deletedIDs.count != 0 else {
@@ -820,7 +820,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 				return
 			}
 			
-			let changedData = changedObjects.flatMap { (cdObj) -> [String: Any]? in
+			let changedData = changedObjects.compactMap { (cdObj) -> [String: Any]? in
 				let wcObj = cdObj.wcObject
 				if markAsInitial {
 					wcObj?.setAsInitialData()
