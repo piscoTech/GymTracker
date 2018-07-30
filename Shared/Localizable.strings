@@ -96,3 +96,4 @@
 "NOTIF_END_SET" = "I'm done";
 "NOTIF_END_SET_WEIGHT" = "I'm done, update weight";
 "NOTIF_END_WORKOUT" = "I'm done! End workout";
+"NOTIF_INTERACTIVE_WEIGHT_IN_APP" = "Update weight in app";

@@ -871,7 +871,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 				
 				sess.transferUserInfo(userInfoTransfer.userInfo)
 			}
-			RunLoop.main.add(timer, forMode: .commonModes)
+			RunLoop.main.add(timer, forMode: .common)
 		}
 	}
 
@@ -928,7 +928,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 					let timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
 						self.persistPendingChanges()
 					}
-					RunLoop.main.add(timer, forMode: .commonModes)
+					RunLoop.main.add(timer, forMode: .common)
 				}
 			} else {
 				self.dataManager.preferences.saveRemote = []
@@ -948,7 +948,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 					let timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
 						self.persistPendingChanges()
 					}
-					RunLoop.main.add(timer, forMode: .commonModes)
+					RunLoop.main.add(timer, forMode: .common)
 				}
 			} else {
 				self.dataManager.preferences.saveRemote = []
@@ -1001,7 +1001,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 				let timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
 					_ = self.askPhoneForData()
 				}
-				RunLoop.main.add(timer, forMode: .commonModes)
+				RunLoop.main.add(timer, forMode: .common)
 			}
 			
 			session.sendMessage([askDataKey: true], replyHandler: { reply in

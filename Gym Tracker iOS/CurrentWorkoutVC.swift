@@ -93,7 +93,7 @@ class CurrentWorkoutViewController: UIViewController {
 			self.timerUpdater = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
 				update()
 			}
-			RunLoop.main.add(self.timerUpdater!, forMode: .commonModes)
+			RunLoop.main.add(self.timerUpdater!, forMode: .common)
 		}
 		update()
 	}
@@ -167,7 +167,7 @@ class CurrentWorkoutViewController: UIViewController {
 			self.restTimerUpdater = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
 				update()
 			}
-			RunLoop.main.add(self.restTimerUpdater!, forMode: .commonModes)
+			RunLoop.main.add(self.restTimerUpdater!, forMode: .common)
 		}
 		update()
 	}
@@ -261,7 +261,7 @@ class CurrentWorkoutViewController: UIViewController {
 		alert.addAction(UIAlertAction(title: NSLocalizedString("YES", comment: "Yes"), style: .default) { _ in
 			self.workoutController?.endWorkout()
 			})
-		alert.addAction(UIAlertAction(title: NSLocalizedString("NO", comment: "No"), style: UIAlertActionStyle.cancel, handler: nil))
+		alert.addAction(UIAlertAction(title: NSLocalizedString("NO", comment: "No"), style: .cancel, handler: nil))
 		
 		self.present(alert, animated: true)
 	}
@@ -271,7 +271,7 @@ class CurrentWorkoutViewController: UIViewController {
 		alert.addAction(UIAlertAction(title: NSLocalizedString("YES", comment: "Yes"), style: .destructive) { _ in
 			self.workoutController?.cancelWorkout()
 		})
-		alert.addAction(UIAlertAction(title: NSLocalizedString("NO", comment: "No"), style: UIAlertActionStyle.cancel, handler: nil))
+		alert.addAction(UIAlertAction(title: NSLocalizedString("NO", comment: "No"), style: .cancel, handler: nil))
 		
 		self.present(alert, animated: true)
 	}

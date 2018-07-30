@@ -166,7 +166,7 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutCo
 			self.restTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
 				WKInterfaceDevice.current().play(sound)
 			}
-			RunLoop.main.add(self.restTimer!, forMode: .commonModes)
+			RunLoop.main.add(self.restTimer!, forMode: .common)
 		}
 	}
 	
@@ -174,7 +174,7 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutCo
 		DispatchQueue.main.async {
 			RunLoop.main.add(Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { _ in
 				try? AVAudioSession.sharedInstance().setActive(false)
-			}, forMode: .commonModes)
+			}, forMode: .common)
 			self.restTimer = nil
 		}
 	}

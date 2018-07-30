@@ -23,7 +23,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
 		dataManager = DataManager(for: .application)
 		dataManager.delegate = self
 		
-		try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, with: .duckOthers)
+		try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: .duckOthers)
 		
 		if let src = dataManager.preferences.runningWorkoutSource, src == .watch,
 			let workoutID = dataManager.preferences.runningWorkout {

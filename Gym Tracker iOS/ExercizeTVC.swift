@@ -27,7 +27,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
     override func viewDidLoad() {
         super.viewDidLoad()
 		
-		tableView.rowHeight = UITableViewAutomaticDimension
+		tableView.rowHeight = UITableView.automaticDimension
 		tableView.estimatedRowHeight = 44
 		
 		if exercize.sets.isEmpty {
@@ -40,7 +40,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 		
-		if self.isMovingFromParentViewController {
+		if self.isMovingFromParent {
 			if (exercize.name ?? "").isEmpty {
 				exercize.set(name: oldName ?? defaultName)
 			}
@@ -80,7 +80,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		if indexPath.section == 1 && setCellType(for: indexPath) == .picker {
 			return 150
 		} else if indexPath.section == 0 && indexPath.row == 0 && !editMode {
-			return UITableViewAutomaticDimension
+			return UITableView.automaticDimension
 		}
 		
 		return tableView.estimatedRowHeight
@@ -240,7 +240,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		return editMode && indexPath.section == 1 && setCellType(for: indexPath) == .reps
 	}
 	
-	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
 		guard editingStyle == .delete else {
 			return
 		}

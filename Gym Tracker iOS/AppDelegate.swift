@@ -36,34 +36,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 	}
 	
-	fileprivate let restTimeNotification = "restTimeNotificationID"
-	fileprivate let restEndNotification = "restEndNotificationID"
-	fileprivate let nextSetNotification = "nextSetNotificationID"
-	
-	fileprivate let endRestNotificationAction = "endRestNotificationActionID"
-	fileprivate let endSetNotificationAction = "endSetNotificationActionID"
-	fileprivate let endSetWeightNotificationAction = "endSetWeightNotificationActionID"
-	
-	fileprivate let endRestNowNotificationCategory = "endRestNowNotificationCategoryID"
-	fileprivate let endRestNotificationCategory = "endRestNotificationCategoryID"
-	fileprivate let endSetNotificationCategory = "endSetNotificationCategoryID"
-	fileprivate let endWorkoutNotificationCategory = "endWorkoutNotificationCategoryID"
-	
-	fileprivate let notifyNowDelay: TimeInterval = 1
-	
 	private var tryImport: URL?
 	private var launched = false
 
 	private(set) var dataManager: DataManager!
 	
-	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 		dataManager = DataManager(for: .application)
 		
-		tabController = self.window!.rootViewController as! TabBarController
+		tabController = self.window!.rootViewController as? TabBarController
 		tabController.delegate = tabController
 		tabController.loadNeededControllers()
 		
-		try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, with: .duckOthers)
+		try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: .duckOthers)
 		
 		if dataManager.preferences.runningWorkout != nil, let src = dataManager.preferences.runningWorkoutSource {
 			if src == .watch {
@@ -93,20 +78,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		let center = UNUserNotificationCenter.current()
 		center.requestAuthorization(options: [.alert, .sound]) { _, _ in }
 		do {
-			let endRestNow = UNNotificationAction(identifier: endRestNotificationAction, title: NSLocalizedString("NOTIF_END_REST_NOW", comment: "End now"))
-			let endRest = UNNotificationAction(identifier: endRestNotificationAction, title: NSLocalizedString("NOTIF_END_REST", comment: "End"))
+			let endRestNow = UNNotificationAction(identifier: GTNotification.Action.endRest.rawValue, title: NSLocalizedString("NOTIF_END_REST_NOW", comment: "End now"))
+			let endRest = UNNotificationAction(identifier: GTNotification.Action.endRest.rawValue, title: NSLocalizedString("NOTIF_END_REST", comment: "End"))
 			
-			let endSet = UNNotificationAction(identifier: endSetNotificationAction, title: NSLocalizedString("NOTIF_END_SET", comment: "Done"))
-			let endWorkout = UNNotificationAction(identifier: endSetNotificationAction, title: NSLocalizedString("NOTIF_END_WORKOUT", comment: "Done Workout"), options: .foreground)
+			let endSet = UNNotificationAction(identifier: GTNotification.Action.endSet.rawValue, title: NSLocalizedString("NOTIF_END_SET", comment: "Done"))
+			let endWorkout = UNNotificationAction(identifier: GTNotification.Action.endSet.rawValue, title: NSLocalizedString("NOTIF_END_WORKOUT", comment: "Done Workout"), options: .foreground)
 			
-			let endSetWeight = UNNotificationAction(identifier: endSetWeightNotificationAction, title: NSLocalizedString("NOTIF_END_SET_WEIGHT", comment: "Done, weight"), options: [.foreground])
+			let endSetWeight = UNNotificationAction(identifier: GTNotification.Action.endSetWeight.rawValue, title: NSLocalizedString("NOTIF_END_SET_WEIGHT", comment: "Done, weight"), options: [.foreground])
 			
-			let endRestNowCategory = UNNotificationCategory(identifier: endRestNowNotificationCategory, actions: [endRestNow], intentIdentifiers: [], options: [])
-			let endRestCategory = UNNotificationCategory(identifier: endRestNotificationCategory, actions: [endRest], intentIdentifiers: [], options: [])
-			let endSetCategory = UNNotificationCategory(identifier: endSetNotificationCategory, actions: [endSet, endSetWeight], intentIdentifiers: [], options: [])
-			let endWorkoutCategory = UNNotificationCategory(identifier: endWorkoutNotificationCategory, actions: [endWorkout, endSetWeight], intentIdentifiers: [], options: [])
+			let restStartNowCategory = UNNotificationCategory(identifier: GTNotification.Category.restStart.rawValue, actions: [endRestNow], intentIdentifiers: [], options: [])
+			let endRestCategory = UNNotificationCategory(identifier: GTNotification.Category.restEnd.rawValue, actions: [endRest], intentIdentifiers: [], options: [])
+			let endSetCategory = UNNotificationCategory(identifier: GTNotification.Category.currentSetInfo.rawValue, actions: [endSet, endSetWeight], intentIdentifiers: [], options: [])
+			let endWorkoutCategory = UNNotificationCategory(identifier: GTNotification.Category.lastSetInfo.rawValue, actions: [endWorkout, endSetWeight], intentIdentifiers: [], options: [])
 			
-			center.setNotificationCategories([endRestNowCategory, endRestCategory, endSetCategory, endWorkoutCategory])
+			center.setNotificationCategories([restStartNowCategory, endRestCategory, endSetCategory, endWorkoutCategory])
 		}
 		center.delegate = self
 		
@@ -144,7 +129,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		return true
 	}
 	
-	func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+	func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
 		if url.isFileURL {
 			tryImport = url
 			importFile()
@@ -409,7 +394,7 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 			self.workoutRestTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
 				self.workoutAudio?.play()
 			}
-			RunLoop.main.add(self.workoutRestTimer!, forMode: .commonModes)
+			RunLoop.main.add(self.workoutRestTimer!, forMode: .common)
 		}
 	}
 	
@@ -429,28 +414,28 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 		}
 		
 		var notifications = [UNNotificationRequest]()
-		let presentNow = UNTimeIntervalNotificationTrigger(timeInterval: notifyNowDelay, repeats: false)
+		let presentNow = UNTimeIntervalNotificationTrigger(timeInterval: GTNotification.immediateNotificationDelay, repeats: false)
 		if isRest {
 			if let (duration, end) = workoutController?.currentRestTime {
 				let endTime = end.timeIntervalSinceNow
-				if endTime > notifyNowDelay {
+				if endTime > GTNotification.immediateNotificationDelay {
 					let restDurationContent = UNMutableNotificationContent()
 					restDurationContent.title = NSLocalizedString("REST_TIME_TITLE", comment: "Rest time")
 					restDurationContent.body = NSLocalizedString("REST_TIME_BODY", comment: "Rest for") + duration.getDuration(hideHours: true)
 					restDurationContent.sound = nil
-					restDurationContent.categoryIdentifier = endRestNowNotificationCategory
+					restDurationContent.categoryIdentifier = GTNotification.Category.restStart.rawValue
 					
-					notifications.append(UNNotificationRequest(identifier: restTimeNotification, content: restDurationContent, trigger: presentNow))
+					notifications.append(UNNotificationRequest(identifier: GTNotification.ID.restStart.rawValue, content: restDurationContent, trigger: presentNow))
 				}
 				
-				let restEndTrigger = UNTimeIntervalNotificationTrigger(timeInterval: max(endTime, notifyNowDelay), repeats: false)
+				let restEndTrigger = UNTimeIntervalNotificationTrigger(timeInterval: max(endTime, GTNotification.immediateNotificationDelay), repeats: false)
 				let restEndContent = UNMutableNotificationContent()
 				restEndContent.title = NSLocalizedString("REST_OVER_TITLE", comment: "Rest over")
 				restEndContent.body = NSLocalizedString("REST_\((workoutController?.currentIsRestPeriod ?? true) ? "EXERCIZE" : "SET")_OVER_BODY", comment: "Next Exercize")
-				restEndContent.sound = UNNotificationSound(named: "rest_end_notification.caf")
-				restEndContent.categoryIdentifier = endRestNotificationCategory
+				restEndContent.sound = UNNotificationSound(named: UNNotificationSoundName(rawValue: "rest_end_notification.caf"))
+				restEndContent.categoryIdentifier = GTNotification.Category.restEnd.rawValue
 				
-				notifications.append(UNNotificationRequest(identifier: restEndNotification, content: restEndContent, trigger: restEndTrigger))
+				notifications.append(UNNotificationRequest(identifier: GTNotification.ID.restEnd.rawValue, content: restEndContent, trigger: restEndTrigger))
 			}
 		} else {
 			if let (ex, set, other) = workoutController?.currentSetInfo {
@@ -458,15 +443,15 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 				nextSetContent.title = ex
 				nextSetContent.body = set + NSLocalizedString("CUR_REPS_INFO", comment: "reps") + (other != nil ? "\n\(other!)" : "")
 				nextSetContent.sound = nil
-				nextSetContent.categoryIdentifier = (workoutController?.isLastPart ?? false) ? endWorkoutNotificationCategory : endSetNotificationCategory
+				nextSetContent.categoryIdentifier = ((workoutController?.isLastPart ?? false) ? GTNotification.Category.lastSetInfo : .currentSetInfo).rawValue
 				
-				notifications.append(UNNotificationRequest(identifier: nextSetNotification, content: nextSetContent, trigger: presentNow))
+				notifications.append(UNNotificationRequest(identifier: GTNotification.ID.currentSetInfo.rawValue, content: nextSetContent, trigger: presentNow))
 			}
 		}
 		
 		let center = UNUserNotificationCenter.current()
 		for n in notifications {
-			center.add(n) { _ in }
+			center.add(n)
 		}
 	}
 
@@ -524,12 +509,12 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 			if workoutController != nil {
 				tabController.selectedIndex = 1
 			}
-		case endRestNotificationAction:
+		case GTNotification.Action.endRest.rawValue:
 			workoutController?.endRest()
-		case endSetNotificationAction:
+		case GTNotification.Action.endSet.rawValue:
 			currentWorkout.skipAskUpdate = true
 			workoutController?.endSet()
-		case endSetWeightNotificationAction:
+		case GTNotification.Action.endSetWeight.rawValue:
 			currentWorkout.skipAskUpdate = false
 			workoutController?.endSet()
 		default:

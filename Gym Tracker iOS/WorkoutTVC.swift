@@ -30,7 +30,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
     override func viewDidLoad() {
         super.viewDidLoad()
 		
-		tableView.rowHeight = UITableViewAutomaticDimension
+		tableView.rowHeight = UITableView.automaticDimension
 		tableView.estimatedRowHeight = 44
 
 		// Create a new workout
@@ -131,7 +131,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		if indexPath.section == 1 && workout.count > 0 && exercizeCellType(for: indexPath) == .picker {
 			return 150
 		} else if indexPath.section == 0 && !editMode {
-			return UITableViewAutomaticDimension
+			return UITableView.automaticDimension
 		}
 		
 		return tableView.estimatedRowHeight
@@ -536,7 +536,7 @@ class WorkoutTableViewController: UITableViewController, UITextFieldDelegate, UI
 		return editMode && indexPath.section == 1 && !workout.isEmpty && exercizeCellType(for: indexPath) != .picker
 	}
 	
-	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
 		guard editingStyle == .delete else {
 			return
 		}

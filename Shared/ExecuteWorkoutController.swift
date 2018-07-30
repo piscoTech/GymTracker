@@ -222,7 +222,7 @@ class ExecuteWorkoutController: NSObject {
 						}
 					}
 					
-					RunLoop.main.add(self.invalidateBPM!, forMode: .commonModes)
+					RunLoop.main.add(self.invalidateBPM!, forMode: .common)
 					self.view.setBPM(last.quantity.doubleValue(for: heartUnit).rounded().toString())
 				}
 			}
@@ -373,7 +373,7 @@ class ExecuteWorkoutController: NSObject {
 						self.view.stopRestTimer()
 						self.view.notifyEndRest()
 					}
-					RunLoop.main.add(self.restTimer!, forMode: .commonModes)
+					RunLoop.main.add(self.restTimer!, forMode: .common)
 				}
 			}
 		} else {
