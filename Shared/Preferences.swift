@@ -38,6 +38,8 @@ enum PreferenceKeys: String, KeyValueStoreKey {
 	case lastBackup = "lastBackup"
 	
 	case weightUpdatedInNotification = "weightUpdatedInNotification"
+	case setEndedInNotificationTime = "setEndedInNotification"
+	case weightChangeFromNotification = "weightChangeFromNotification"
 	
 }
 
@@ -82,12 +84,43 @@ class Preferences {
 	
 	var weightUpdatedInNotification: Bool {
 		get {
-			return notificationData.bool(forKey: PreferenceKeys.weightUpdatedInNotification.rawValue)
+			return notificationData.bool(forKey: PreferenceKeys.weightUpdatedInNotification)
 		}
 		set {
-			notificationData.set(newValue, forKey: PreferenceKeys.weightUpdatedInNotification.rawValue)
+			notificationData.set(newValue, forKey: PreferenceKeys.weightUpdatedInNotification)
 			notificationData.synchronize()
 		}
+	}
+	
+	var setEndedInNotificationTime: Date? {
+		get {
+			return notificationData.object(forKey: PreferenceKeys.setEndedInNotificationTime) as? Date
+		}
+		set {
+			let key = PreferenceKeys.setEndedInNotificationTime
+			if let val = newValue {
+				notificationData.set(val, forKey: key)
+			} else {
+				notificationData.removeObject(forKey: key)
+			}
+			notificationData.synchronize()
+		}
+	}
+	
+	var weightChangeFromNotification: Double {
+		get {
+			return notificationData.double(forKey: PreferenceKeys.weightChangeFromNotification)
+		}
+		set {
+			notificationData.set(newValue, forKey: PreferenceKeys.weightChangeFromNotification)
+			notificationData.synchronize()
+		}
+	}
+	
+	func clearNotificationData() {
+		weightUpdatedInNotification = false
+		setEndedInNotificationTime = nil
+		weightChangeFromNotification = 0
 	}
 	
 }

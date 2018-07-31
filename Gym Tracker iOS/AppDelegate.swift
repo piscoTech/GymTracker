@@ -439,11 +439,15 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 				notifications.append(UNNotificationRequest(identifier: GTNotification.ID.restEnd.rawValue, content: restEndContent, trigger: restEndTrigger))
 			}
 		} else {
-			if let (ex, set, other) = workoutController?.currentSetInfo {
+			if let (ex, set, other) = workoutController?.currentSetInfo, let (weight, change) = workoutController?.currentSetRawInfo {
 				let nextSetContent = UNMutableNotificationContent()
 				nextSetContent.title = ex
 				nextSetContent.body = set + NSLocalizedString("CUR_REPS_INFO", comment: "reps") + (other != nil ? "\n\(other!)" : "")
 				nextSetContent.sound = nil
+				nextSetContent.userInfo = [
+					GTNotification.UserInfo.setWeight.rawValue: 	  weight,
+					GTNotification.UserInfo.setWeightChange.rawValue: change
+				]
 				nextSetContent.categoryIdentifier = ((workoutController?.isLastPart ?? false) ? GTNotification.Category.lastSetInfo : .currentSetInfo).rawValue
 				
 				notifications.append(UNNotificationRequest(identifier: GTNotification.ID.currentSetInfo.rawValue, content: nextSetContent, trigger: presentNow))
@@ -516,13 +520,16 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 			currentWorkout.skipAskUpdate = true
 			workoutController?.endSet()
 		case GTNotification.Action.endSetWeightInApp.rawValue, GTNotification.Action.endSetWeight.rawValue:
-			let updateFromNotification = dataManager.preferences.weightUpdatedInNotification
-			print("End set & Updating weight... Done in notification: \(updateFromNotification)")
-			currentWorkout.skipAskUpdate = updateFromNotification
-			workoutController?.endSet()
+			let isUpdate = dataManager.preferences.weightUpdatedInNotification
+			let endTime = dataManager.preferences.setEndedInNotificationTime
+			let weightChange = isUpdate ? dataManager.preferences.weightChangeFromNotification : nil
+			
+			workoutController?.endSet(endTime: endTime, weightChange: weightChange)
 		default:
 			break
 		}
+		
+		dataManager.preferences.clearNotificationData()
 	}
 	
 }

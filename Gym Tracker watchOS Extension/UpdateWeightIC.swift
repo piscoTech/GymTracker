@@ -67,18 +67,7 @@ class UpdateWeightInterfaceController: WKInterfaceController {
 	}
 	
 	@IBAction func done() {
-		if sum != 0 {
-			// Avoid unnecessary saves
-			set.set(weight: sum + set.weight)
-			if appDelegate.dataManager.persistChangesForObjects([set], andDeleteObjects: []) {
-				delegate.setWeightChange(sum, for: set)
-			} else {
-				appDelegate.dataManager.discardAllChanges()
-			}
-		} else {
-			delegate.setWeightChange(sum, for: set)
-		}
-		
+		delegate.setWeightChange(sum, for: set)
 		self.dismiss()
 	}
 	

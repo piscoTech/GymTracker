@@ -40,6 +40,8 @@ class CurrentWorkoutViewController: UIViewController {
 	@IBOutlet private weak var nextUpInfo: UIView!
 	@IBOutlet private weak var nextUpLbl: UILabel!
 	
+	@IBOutlet private weak var tipView: UIView!
+	
 	private var workoutController: ExecuteWorkoutController? {
 		return appDelegate.workoutController
 	}
@@ -286,6 +288,7 @@ class CurrentWorkoutViewController: UIViewController {
 		navigationItem.rightBarButtonItem = isWatch ? nil : endNowBtn
 		
 		manageFromWatchLbl.isHidden = !isWatch
+		tipView.isHidden = isWatch
 		noWorkoutLabel.isHidden = true
 		workoutInfo.isHidden = false
 	}

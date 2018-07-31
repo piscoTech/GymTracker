@@ -58,6 +58,11 @@ struct GTNotification {
 		}()
 	}
 	
+	enum UserInfo: String {
+		case setWeight = "setWeight"
+		case setWeightChange = "setWeightChange"
+	}
+	
 	static let immediateNotificationDelay: TimeInterval = 1
 	
 }

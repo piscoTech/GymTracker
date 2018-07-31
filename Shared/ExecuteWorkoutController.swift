@@ -283,8 +283,9 @@ class ExecuteWorkoutController: NSObject {
 	}
 	
 	///Moves the point of workout execution to the next step.
-	///- return: The current set, before advancing, if the current part is a set, `nil` otherwise.
-	@discardableResult private func prepareNextStep() -> RepsSet? {
+	///- parameter setEndTime: If the current step is a set followed by a rest period, pass a non-nil value to manually specify the time when that rest period has started. This is used when handling weight updates directly inside a notification (on iOS 12 and later) to consider the time spent changing the weight part of the rest period.
+	///- returns: The current set, before advancing, if the current part is a set, `nil` otherwise.
+	@discardableResult private func prepareNextStep(setEndTime: Date? = nil) -> RepsSet? {
 		guard !isMirroring else {
 			return nil
 		}
@@ -301,11 +302,12 @@ class ExecuteWorkoutController: NSObject {
 			restStart = (currentStep?.isRest ?? false) ? Date() : nil
 		} else { // Must be a set
 			set = curStep.set
+			let restStart = setEndTime ?? Date()
 			if curStep.rest != nil {
-				restStart = Date()
+				self.restStart = restStart
 			} else {
 				currentStep = workoutIterator.next()
-				restStart = (currentStep?.isRest ?? false) ? Date() : nil
+				self.restStart = (currentStep?.isRest ?? false) ? restStart : nil
 			}
 		}
 		
@@ -357,7 +359,7 @@ class ExecuteWorkoutController: NSObject {
 		if let restTime = setRest {
 			let start = restStart ?? Date()
 			let endTime = max(appDelegate.dataManager.preferences.currentRestEnd ?? start.addingTimeInterval(restTime), start)
-			let endsIn = endTime.timeIntervalSince(start)
+			let endsIn = endTime.timeIntervalSinceNow
 			self.restStart = start
 			self.restEndDate = endTime
 			appDelegate.dataManager.preferences.currentRestEnd = endTime
@@ -510,13 +512,17 @@ class ExecuteWorkoutController: NSObject {
 		nextStep()
 	}
 	
-	func endSet() {
+	func endSet(endTime: Date? = nil, weightChange: Double? = nil) {
 		guard !isMirroring, !isRestMode else {
 			return
 		}
 		
-		if let set = prepareNextStep() {
-			view.askUpdateWeight(with: UpdateWeightData(workoutController: self, set: set))
+		if let set = prepareNextStep(setEndTime: endTime) {
+			if let change = weightChange {
+				self.setWeightChange(change, for: set)
+			} else {
+				view.askUpdateWeight(with: UpdateWeightData(workoutController: self, set: set))
+			}
 		}
 		displayStep()
 	}
@@ -525,14 +531,28 @@ class ExecuteWorkoutController: NSObject {
 		return workoutIterator.weightChange(for: s.exercize)
 	}
 	
-	func setWeightChange(_ change: Double, for s: RepsSet) {
+	func setWeightChange(_ change: Double, for set: RepsSet) {
 		guard !isMirroring else {
 			return
 		}
 		
-		workoutIterator.setWeightChange(change, for: s.exercize)
-		currentStep?.updateWeightChange()
-		displayStep(isRefresh: true)
+		let success = {
+			self.workoutIterator.setWeightChange(change, for: set.exercize)
+			self.currentStep?.updateWeightChange()
+			self.displayStep(isRefresh: true)
+		}
+		
+		if change != 0 {
+			// Avoid unnecessary saves
+			set.set(weight: change + set.weight)
+			if appDelegate.dataManager.persistChangesForObjects([set], andDeleteObjects: []) {
+				success()
+			} else {
+				appDelegate.dataManager.discardAllChanges()
+			}
+		} else {
+			success()
+		}
 	}
 	
 	func endWorkout() {
@@ -580,6 +600,14 @@ class ExecuteWorkoutController: NSObject {
 		}
 		
 		return (e, s.string, currentStep?.otherPartsInfo?.string)
+	}
+	
+	var currentSetRawInfo: (weight: Double, change: Double)? {
+		guard !(currentStep?.isRest ?? true), let set = currentStep?.set else {
+			return nil
+		}
+		
+		return (set.weight, weightChange(for: set))
 	}
 	
 	var currentIsRestPeriod: Bool {
