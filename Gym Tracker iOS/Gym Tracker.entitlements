@@ -16,5 +16,9 @@
 	<array>
 		<string>iCloud.$(CFBundleIdentifier)</string>
 	</array>
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.marcoboschi.gymtracker.notificationdata</string>
+	</array>
 </dict>
 </plist>

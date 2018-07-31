@@ -84,12 +84,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			let endSet = UNNotificationAction(identifier: GTNotification.Action.endSet.rawValue, title: NSLocalizedString("NOTIF_END_SET", comment: "Done"))
 			let endWorkout = UNNotificationAction(identifier: GTNotification.Action.endSet.rawValue, title: NSLocalizedString("NOTIF_END_WORKOUT", comment: "Done Workout"), options: .foreground)
 			
-			let endSetWeight = UNNotificationAction(identifier: GTNotification.Action.endSetWeight.rawValue, title: NSLocalizedString("NOTIF_END_SET_WEIGHT", comment: "Done, weight"), options: [.foreground])
+			let endSetWeight = UNNotificationAction(identifier: GTNotification.Action.endSetWeight.rawValue, title: NSLocalizedString("NOTIF_END_SET_WEIGHT", comment: "Done, weight"), options: GTNotification.Action.genericSetWeightUpdateOptions)
+			let endWorkoutWeight = UNNotificationAction(identifier: GTNotification.Action.endSetWeight.rawValue, title: NSLocalizedString("NOTIF_END_SET_WEIGHT", comment: "Done, weight"), options: .foreground)
 			
 			let restStartNowCategory = UNNotificationCategory(identifier: GTNotification.Category.restStart.rawValue, actions: [endRestNow], intentIdentifiers: [], options: [])
 			let endRestCategory = UNNotificationCategory(identifier: GTNotification.Category.restEnd.rawValue, actions: [endRest], intentIdentifiers: [], options: [])
 			let endSetCategory = UNNotificationCategory(identifier: GTNotification.Category.currentSetInfo.rawValue, actions: [endSet, endSetWeight], intentIdentifiers: [], options: [])
-			let endWorkoutCategory = UNNotificationCategory(identifier: GTNotification.Category.lastSetInfo.rawValue, actions: [endWorkout, endSetWeight], intentIdentifiers: [], options: [])
+			let endWorkoutCategory = UNNotificationCategory(identifier: GTNotification.Category.lastSetInfo.rawValue, actions: [endWorkout, endWorkoutWeight], intentIdentifiers: [], options: [])
 			
 			center.setNotificationCategories([restStartNowCategory, endRestCategory, endSetCategory, endWorkoutCategory])
 		}
@@ -514,8 +515,10 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 		case GTNotification.Action.endSet.rawValue:
 			currentWorkout.skipAskUpdate = true
 			workoutController?.endSet()
-		case GTNotification.Action.endSetWeight.rawValue:
-			currentWorkout.skipAskUpdate = false
+		case GTNotification.Action.endSetWeightInApp.rawValue, GTNotification.Action.endSetWeight.rawValue:
+			let updateFromNotification = dataManager.preferences.weightUpdatedInNotification
+			print("End set & Updating weight... Done in notification: \(updateFromNotification)")
+			currentWorkout.skipAskUpdate = updateFromNotification
 			workoutController?.endSet()
 		default:
 			break

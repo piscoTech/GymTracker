@@ -6,7 +6,7 @@
 //  Copyright © 2018 Marco Boschi. All rights reserved.
 //
 
-import Foundation
+import UserNotifications
 
 struct GTNotification {
 	
@@ -20,6 +20,15 @@ struct GTNotification {
 		case endRest = "endRestNotificationActionID"
 		case endSet = "endSetNotificationActionID"
 		case endSetWeight = "endSetWeightNotificationActionID"
+		case endSetWeightInApp = "endSetWeightInAppNotificationActionID"
+		
+		static var genericSetWeightUpdateOptions: UNNotificationActionOptions = {
+			if #available(iOS 12.0, *) {
+				return []
+			} else {
+				return .foreground
+			}
+		}()
 	}
 	
 	enum Category: String {

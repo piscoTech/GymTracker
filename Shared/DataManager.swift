@@ -253,19 +253,6 @@ class WCObject: Equatable {
 
 class DataManager {
 	
-	enum Usage: CustomStringConvertible {
-		case application, testing
-		
-		var description: String {
-			switch self {
-			case .application:
-				return "[App]"
-			case .testing:
-				return "[Test]"
-			}
-		}
-	}
-	
 	weak var delegate: DataManagerDelegate?
 	
 	let use: Usage
