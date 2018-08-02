@@ -25,7 +25,7 @@ class SettingsViewController: UITableViewController {
 
 		appDelegate.settings = self
 		
-		appInfo = NSLocalizedString("REPORT_TEXT", comment: "Report problem") + "\n\nGym Tracker \(Bundle.main.versionDescription)\n© 2017 Marco Boschi"
+		appInfo = NSLocalizedString("REPORT_TEXT", comment: "Report problem") + "\n\nGym Tracker \(Bundle.main.versionDescription)\n© 2017-2018 Marco Boschi"
 		errNoBackup = NSLocalizedString("ERR_BACKUP_UNAVAILABLE", comment: "Cannot use becuase...")
 		backupUsageManual = NSLocalizedString("BACKUP_USAGE_MANUAL", comment: "How-to")
 		backupUsageAuto = NSLocalizedString("BACKUP_USAGE_AUTO", comment: "How-to")
