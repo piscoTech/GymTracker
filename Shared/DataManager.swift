@@ -10,22 +10,12 @@ import CoreData
 import MBLibrary
 import WatchConnectivity
 
-func == (l: CDRecordID, r: CDRecordID) -> Bool {
-	return l.hashValue == r.hashValue
-}
-
-func == (l: WCObject, r: WCObject) -> Bool {
-	return l.id == r.id
-}
-
 struct CDRecordID: Hashable {
 	
 	let type: String
 	let id: String
 	
-	var hashValue: Int {
-		return (type + id).hashValue
-	}
+	// Let the compiler automatically synthesize the requirement for `Equatable` and `Hashable` based on `type` and `id`
 	
 	init(obj: DataObject) {
 		type = obj.objectType
@@ -155,6 +145,10 @@ class DataObject: NSManagedObject {
 }
 
 class WCObject: Equatable {
+	
+	static func == (l: WCObject, r: WCObject) -> Bool {
+		return l.id == r.id
+	}
 	
 	private static let idKey = "WCObjectIdKey"
 	private let initialDataKey = "isInitialData"
