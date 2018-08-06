@@ -46,7 +46,7 @@ class Workout: DataObject {
 	}
 	
 	var isValid: Bool {
-		return name.length > 0 && hasExercizes
+		return name.count > 0 && hasExercizes
 	}
 	
 	var hasExercizes: Bool {
@@ -160,7 +160,7 @@ class Workout: DataObject {
 			return false
 		}
 		
-		guard let name = src[nameKey] as? String, name.length > 0, let archived = src[archivedKey] as? Bool else {
+		guard let name = src[nameKey] as? String, name.count > 0, let archived = src[archivedKey] as? Bool else {
 			return false
 		}
 		

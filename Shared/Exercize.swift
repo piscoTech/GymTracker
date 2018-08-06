@@ -52,7 +52,7 @@ class Exercize: DataObject {
 	}
 	
 	var isValid: Bool {
-		return isRest || name?.length ?? 0 > 0 && sets.count > 0 && sets.reduce(true) { $0 && $1.isValid }
+		return isRest || name?.count ?? 0 > 0 && sets.count > 0 && sets.reduce(true) { $0 && $1.isValid }
 	}
 	
 	var setList: [RepsSet] {
@@ -170,7 +170,7 @@ class Exercize: DataObject {
 		
 		guard let order = src[orderKey] as? Int32,
 			let isRest = src[isRestKey] as? Bool,
-			let name = src[nameKey] as? String, (isRest || name.length > 0),
+			let name = src[nameKey] as? String, (isRest || name.count > 0),
 			let rest = src[restKey] as? TimeInterval else {
 			return false
 		}

@@ -42,7 +42,7 @@ class CompletedWorkoutsTableViewController: UITableViewController {
 				let start = w.startDate
 				let dur = w.duration
 				
-				return (name?.length ?? 0 > 0 ? name : nil, start, dur)
+				return (name?.count ?? 0 > 0 ? name : nil, start, dur)
 			}
 			
 			DispatchQueue.main.async {

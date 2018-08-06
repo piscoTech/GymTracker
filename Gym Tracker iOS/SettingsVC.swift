@@ -59,10 +59,14 @@ class SettingsViewController: UITableViewController {
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		switch section {
+		case 0:
+			return 1
 		case 1:
 			return iCloudEnabled ? 2 : 1
+		case 2:
+			return 2
 		default:
-			return 1
+			fatalError("Unknown section")
 		}
 	}
 	
@@ -82,7 +86,7 @@ class SettingsViewController: UITableViewController {
 				return tableView.dequeueReusableCell(withIdentifier: "backupList", for: indexPath)
 			}
 		case 2:
-			return tableView.dequeueReusableCell(withIdentifier: "sourceCode", for: indexPath)
+			return tableView.dequeueReusableCell(withIdentifier: indexPath.row == 0 ? "sourceCode" : "contact", for: indexPath)
 		default:
 			fatalError("Unknown section")
 		}
@@ -98,7 +102,7 @@ class SettingsViewController: UITableViewController {
 		case (0, 0):
 			appDelegate.authorizeHealthAccess()
 		case (2, 0):
-			UIApplication.shared.open(URL(string: "https://github.com/piscoTech/GymTracker")!, options: [:], completionHandler: nil)
+			UIApplication.shared.open(URL(string: "https://github.com/piscoTech/GymTracker")!)
 		default:
 			break
 		}
@@ -115,6 +119,20 @@ class SettingsViewController: UITableViewController {
 		tableView.reloadSections([1], with: .automatic)
 		if sender.isOn {
 			appDelegate.dataManager.importExportManager.doBackup()
+		}
+	}
+	
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		guard let id = segue.identifier else {
+			return
+		}
+		
+		switch id {
+		case "contact":
+			let dest = (segue.destination as! UINavigationController).topViewController as! ContactMeViewController
+			dest.appName = "GymTracker"
+		default:
+			break
 		}
 	}
 	

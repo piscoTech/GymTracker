@@ -96,7 +96,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 		center.delegate = self
 		
-		do {
+		do {			
 			UITabBar.appearance().tintColor = customTint
 			DestructiveButton.appearance().tintColor = redTint
 

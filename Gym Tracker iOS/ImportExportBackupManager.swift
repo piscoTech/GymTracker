@@ -108,7 +108,7 @@ class ImportExportBackupManager: NSObject {
 	
 	func export(workout: Workout) -> URL? {
 		let name = dataManager.performCoreDataCodeAndWait { return workout.name }
-		return export(workouts: [workout], name: nameFilter.stringByReplacingMatches(in: name, options: [], range: NSRange(location: 0, length: name.length), withTemplate: "_"))
+		return export(workouts: [workout], name: nameFilter.stringByReplacingMatches(in: name, options: [], range: NSRange(location: 0, length: name.count), withTemplate: "_"))
 	}
 	
 	func export() -> URL? {
