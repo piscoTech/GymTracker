@@ -11,6 +11,7 @@ import HealthKit
 import UserNotifications
 import AVFoundation
 import MBLibrary
+import StoreKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -127,6 +128,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		dataManager.importExportManager.doBackup()
 		importFile()
 		
+		DispatchQueue.main.async {
+			self.requestReview()
+		}
+		
 		return true
 	}
 	
@@ -139,6 +144,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 		
 		return false
+	}
+	
+	private func requestReview() {
+		if #available(iOS 10.3, *) {
+			if dataManager.preferences.reviewRequestCounter >= dataManager.preferences.reviewRequestThreshold {
+				SKStoreReviewController.requestReview()
+			}
+		}
 	}
 	
 	private func importFile() {
@@ -243,6 +256,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	}
 	
 }
+
+// MARK: - Execute Workout Controller Delegate
 
 extension AppDelegate: ExecuteWorkoutControllerDelegate {
 	
@@ -486,9 +501,15 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 		center.removeAllPendingNotificationRequests()
 		
 		workoutAudio = nil
+		
+		// Review
+		dataManager.preferences.reviewRequestCounter += 1
+		requestReview()
 	}
 	
 }
+
+// MARK: - Handle Notification Actions
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
 	
@@ -533,6 +554,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 	}
 	
 }
+
+// MARK: - Workout Status Change from Apple Watch
 
 extension AppDelegate: DataManagerDelegate {
 	

@@ -32,6 +32,19 @@ extension Preferences {
 		}
 	}
 	
+	var reviewRequestThreshold: Int {
+		return 5
+	}
+	var reviewRequestCounter: Int {
+		get {
+			return local.integer(forKey: PreferenceKeys.reviewRequestCounter)
+		}
+		set {
+			local.set(newValue, forKey: PreferenceKeys.reviewRequestCounter)
+			local.synchronize()
+		}
+	}
+	
 	// MARK: - Local data not yet sent
 	
 	var transferLocal: [CDRecordID] {

@@ -41,6 +41,7 @@ enum PreferenceKeys: String, KeyValueStoreKey {
 	case setEndedInNotificationTime = "setEndedInNotification"
 	case weightChangeFromNotification = "weightChangeFromNotification"
 	
+	case reviewRequestCounter = "reviewRequestCounter"
 }
 
 enum RunningWorkoutSource: String {
