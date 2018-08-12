@@ -1333,6 +1333,37 @@
                                     </subviews>
                                 </tableViewCellContentView>
                             </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="loadMore" id="X61-ah-srN" customClass="LoadMoreCell" customModule="Gym_Tracker" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="116" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="X61-ah-srN" id="3UM-mJ-841">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" alignment="center" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="Lx1-WG-nBh">
+                                            <rect key="frame" x="137" y="6" width="101" height="32"/>
+                                            <subviews>
+                                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="etO-Ka-LJP">
+                                                    <rect key="frame" x="0.0" y="6" width="20" height="20"/>
+                                                </activityIndicatorView>
+                                                <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SMt-y8-V2l">
+                                                    <rect key="frame" x="24" y="0.0" width="77" height="32"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <state key="normal" title="Load More"/>
+                                                </button>
+                                            </subviews>
+                                        </stackView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="Lx1-WG-nBh" firstAttribute="centerY" secondItem="3UM-mJ-841" secondAttribute="centerY" id="8Zz-HF-vNP"/>
+                                        <constraint firstItem="Lx1-WG-nBh" firstAttribute="centerX" secondItem="3UM-mJ-841" secondAttribute="centerX" id="Gzw-oo-0bW"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="loadBtn" destination="SMt-y8-V2l" id="57y-Nr-HQN"/>
+                                    <outlet property="loadIndicator" destination="etO-Ka-LJP" id="GNC-qz-eH5"/>
+                                </connections>
+                            </tableViewCell>
                         </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="91X-XT-krB" id="zgn-OI-HK9"/>

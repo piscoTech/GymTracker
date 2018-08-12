@@ -116,3 +116,25 @@ class WorkoutDeleteArchiveCell: UITableViewCell {
 	@IBOutlet weak var deleteBtn: UIButton!
 	
 }
+
+class LoadMoreCell: UITableViewCell {
+	
+	@IBOutlet private weak var loadIndicator: UIActivityIndicatorView!
+	@IBOutlet private weak var loadBtn: UIButton!
+	
+	var isEnabled: Bool {
+		get {
+			return loadBtn.isEnabled
+		}
+		set {
+			loadBtn.isEnabled = newValue
+			loadIndicator.isHidden = newValue
+			if !newValue {
+				loadIndicator.startAnimating()
+			} else {
+				loadIndicator.stopAnimating()
+			}
+		}
+	}
+	
+}
