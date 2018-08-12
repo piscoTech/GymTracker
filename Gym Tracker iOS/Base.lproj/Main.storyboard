@@ -1416,16 +1416,16 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="h0h-jk-BOg">
-                                            <rect key="frame" x="23" y="0.0" width="212" height="43.5"/>
+                                            <rect key="frame" x="16" y="0.0" width="212" height="43.5"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                             <state key="normal" title="Authorize Health data access"/>
                                         </button>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="h0h-jk-BOg" firstAttribute="leading" secondItem="luH-pe-Wsq" secondAttribute="leadingMargin" constant="7" id="3pY-v1-mDk"/>
+                                        <constraint firstItem="h0h-jk-BOg" firstAttribute="leading" secondItem="luH-pe-Wsq" secondAttribute="leadingMargin" id="3pY-v1-mDk"/>
                                         <constraint firstItem="h0h-jk-BOg" firstAttribute="top" secondItem="luH-pe-Wsq" secondAttribute="top" id="5Pb-mu-FEo"/>
                                         <constraint firstAttribute="bottom" secondItem="h0h-jk-BOg" secondAttribute="bottom" id="EaW-fC-AAd"/>
-                                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="h0h-jk-BOg" secondAttribute="trailingMargin" id="qW9-y7-gJN"/>
+                                        <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="h0h-jk-BOg" secondAttribute="trailingMargin" id="qW9-y7-gJN"/>
                                     </constraints>
                                 </tableViewCellContentView>
                             </tableViewCell>
@@ -1437,25 +1437,25 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Automatic iCloud Backup" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v73-cl-bbr">
-                                            <rect key="frame" x="23" y="0.0" width="193" height="43.5"/>
+                                            <rect key="frame" x="16" y="0.0" width="193" height="43.5"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <switch opaque="NO" tag="10" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6Wk-SS-R0P">
-                                            <rect key="frame" x="303" y="6.5" width="51" height="31"/>
+                                            <rect key="frame" x="310" y="6.5" width="51" height="31"/>
                                             <connections>
                                                 <action selector="enableDisableBackups:" destination="ksa-AT-X2p" eventType="valueChanged" id="0Fo-xI-t31"/>
                                             </connections>
                                         </switch>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="v73-cl-bbr" firstAttribute="leading" secondItem="BcT-hM-Yby" secondAttribute="leadingMargin" constant="7" id="1Xh-zq-bTK"/>
+                                        <constraint firstItem="v73-cl-bbr" firstAttribute="leading" secondItem="BcT-hM-Yby" secondAttribute="leadingMargin" id="1Xh-zq-bTK"/>
                                         <constraint firstAttribute="bottom" secondItem="v73-cl-bbr" secondAttribute="bottom" id="6s3-Oi-B0D"/>
                                         <constraint firstItem="6Wk-SS-R0P" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="v73-cl-bbr" secondAttribute="trailing" constant="8" symbolic="YES" id="FZA-DZ-oiE"/>
                                         <constraint firstItem="v73-cl-bbr" firstAttribute="top" secondItem="BcT-hM-Yby" secondAttribute="top" id="Prh-Ke-ZHm"/>
                                         <constraint firstItem="6Wk-SS-R0P" firstAttribute="centerY" secondItem="BcT-hM-Yby" secondAttribute="centerY" id="WBB-eE-zMR"/>
-                                        <constraint firstItem="6Wk-SS-R0P" firstAttribute="trailing" secondItem="BcT-hM-Yby" secondAttribute="trailingMargin" constant="-7" id="l66-zi-qVY"/>
+                                        <constraint firstItem="6Wk-SS-R0P" firstAttribute="trailing" secondItem="BcT-hM-Yby" secondAttribute="trailingMargin" id="l66-zi-qVY"/>
                                     </constraints>
                                 </tableViewCellContentView>
                             </tableViewCell>

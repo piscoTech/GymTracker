@@ -11,6 +11,7 @@ import MBLibrary
 
 class SettingsViewController: UITableViewController {
 	
+	private var healthInfo: String!
 	private var appInfo: String!
 	private var errNoBackup: String!
 	private var backupUsageManual: String!
@@ -25,6 +26,7 @@ class SettingsViewController: UITableViewController {
 
 		appDelegate.settings = self
 		
+		healthInfo = NSLocalizedString("HEALTH_ACCESS_MANAGE", comment: "Health")
 		appInfo = NSLocalizedString("REPORT_TEXT", comment: "Report problem") + "\n\nGym Tracker \(Bundle.main.versionDescription)\n© 2017-2018 Marco Boschi"
 		errNoBackup = NSLocalizedString("ERR_BACKUP_UNAVAILABLE", comment: "Cannot use becuase...")
 		backupUsageManual = NSLocalizedString("BACKUP_USAGE_MANUAL", comment: "How-to")
@@ -46,6 +48,8 @@ class SettingsViewController: UITableViewController {
 	
 	override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
 		switch section {
+		case 0:
+			return healthInfo
 		case 1:
 			return iCloudEnabled ? (
 				appDelegate.dataManager.preferences.useBackups ? backupUsageAuto : backupUsageManual
