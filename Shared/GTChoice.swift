@@ -31,6 +31,17 @@ final class GTChoice: GTSetsExercize, ExercizeCollection {
 		return [workout, circuit].compactMap { $0 }.count == 1 && exercizes.count > 1 && exercizes.reduce(true) { $0 && $1.isValid }
 	}
 	
+	override var parentCollection: ExercizeCollection? {
+		return [workout, circuit].compactMap { $0 }.first
+	}
+	
+	override var setsCount: Int? {
+		let counts = exercizes.compactMap { $0.setsCount }.removingDuplicates()
+		return counts.count > 1 ? nil : counts.first
+	}
+	
+	// MARK: - Exercizes handling
+	
 	var exercizeList: [GTSimpleSetsExercize] {
 		return Array(exercizes).sorted { $0.order < $1.order }
 	}

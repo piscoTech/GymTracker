@@ -11,6 +11,6 @@ import Foundation
 import CoreData
 
 @objc(GTExercize)
-class GTExercize: GTStep {
+class GTExercize: GTPart {
 
 }

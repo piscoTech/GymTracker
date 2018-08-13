@@ -24,7 +24,7 @@ class GTSet: GTDataObject {
 	
 	@NSManaged final private(set) var rest: Double
 
-	var isValid: Bool {
+	override var isValid: Bool {
 		return rest >= 0
 	}
 	

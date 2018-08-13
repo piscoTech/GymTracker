@@ -1,5 +1,5 @@
 //
-//  GTStep.swift
+//  GTPart.swift
 //  Gym Tracker
 //
 //  Created by Marco Boschi on 13/08/2018.
@@ -10,8 +10,8 @@
 import Foundation
 import CoreData
 
-@objc(GTStep)
-class GTStep: GTDataObject {
+@objc(GTPart)
+class GTPart: GTDataObject, WorkoutLevel {
 	
 	final private let workoutKey = "workout"
 	final private let orderKey = "order"
@@ -23,8 +23,16 @@ class GTStep: GTDataObject {
 		self.workout = w
 	}
 	
-	var parent: GTDataObject {
-		fatalError("Abstarct property has not been implemented")
+	var parentCollection: ExercizeCollection? {
+		fatalError("Abstract property not implemented")
+	}
+	
+	final var previous: GTPart? {
+		return parentCollection?.part(before: self)
+	}
+	
+	final var next: GTPart? {
+		return parentCollection?.part(after: self)
 	}
 	
 	// MARK: - iOS/watchOS interface

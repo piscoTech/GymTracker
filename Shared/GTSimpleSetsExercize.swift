@@ -62,8 +62,8 @@ class GTSimpleSetsExercize: GTSetsExercize {
 		return [workout, circuit, choice].compactMap { $0 }.count == 1 && name.count > 0 && sets.count > 0 && sets.reduce(true) { $0 && $1.isValid }
 	}
 	
-	override var parent: GTDataObject {
-		return [workout, circuit, choice].compactMap { $0 }.first!
+	override var parentCollection: ExercizeCollection? {
+		return [workout, circuit, choice].compactMap { $0 }.first
 	}
 	
 	var setList: [GTSet] {
@@ -83,27 +83,33 @@ class GTSimpleSetsExercize: GTSetsExercize {
 		self.name = n.trimmingCharacters(in: .whitespacesAndNewlines)
 	}
 	
-	#error("Needs a protocol implemented by workout, circuit and choice to represent an exercize collection")
-	#error("Needs a property that give the parent collection")
-	var previous: Exercize? {
-		return workout[order - 1]
+	override var setsCount: Int? {
+		return sets.count
 	}
 	
-	var next: Exercize? {
-		return workout[order + 1]
+	// MARK: - Choice Support
+	
+	/// Whether the exercize is at some point part of a circuit.
+	var isInCircuit: Bool {
+		return self.parentHierarchy.first { $0 is GTCircuit } != nil
 	}
 	
-	#error("Move to Workout rebuilding step list given a GTSetsExercize")
-	///Make this exercize part of a circuit with the next one.
-	///
-	/// - Important: Don't call this function directly, use `OrganizedWorkout` instead.
-	func makeCircuit(_ isCircuit: Bool) {
-		guard !self.isRest else {
-			return
+	/// The position of the exercize in the circuit, `nil` outside of circuits.
+	var circuitStatus: (number: Int, total: Int)? {
+		let hierarchy = self.parentHierarchy
+		guard let cIndex = hierarchy.index(where: { $0 is GTCircuit }),
+			let c = hierarchy[cIndex] as? GTCircuit,
+			let exInCircuit = cIndex > hierarchy.startIndex
+				? hierarchy[hierarchy.index(before: cIndex)] as? GTPart
+				: self
+			else {
+				return nil
 		}
 		
-		self.isCircuit = isCircuit
+		return (Int(exInCircuit.order), c.exercizes.count)
 	}
+	
+	// MARK: - Sets handling
 	
 	///Checks all sets and remove invalid ones.
 	///- returns: A collection of removed sets.

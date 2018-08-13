@@ -11,7 +11,7 @@ import Foundation
 import CoreData
 
 @objc(GTRest)
-final class GTRest: GTStep {
+final class GTRest: GTPart {
 	
 	static let restStep: TimeInterval = 30
 	private let minRest: TimeInterval = 30
@@ -23,6 +23,10 @@ final class GTRest: GTStep {
 	private let restKey = "rest"
 		
 	@NSManaged private(set) var rest: TimeInterval
+	
+	override var parentCollection: ExercizeCollection? {
+		return workout
+	}
 	
 	func set(rest r: TimeInterval) {
 		rest = max(r, minRest).rounded(to: GTRest.restStep)

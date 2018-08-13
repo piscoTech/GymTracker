@@ -25,7 +25,7 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 	}
 	
 	@NSManaged private(set) var name: String
-	@NSManaged private(set) var steps: Set<GTStep>
+	@NSManaged private(set) var parts: Set<GTPart>
 	
 	@NSManaged var archived: Bool
 	
@@ -33,7 +33,7 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 	private let archivedKey = "archived"
 	
 	override var description: String {
-		let n = steps.filter { $0 is GTExercize }.count
+		let n = parts.filter { $0 is GTExercize }.count
 		return "\(n) " + NSLocalizedString("EXERCIZE" + (n > 1 ? "S" : ""), comment: "exercize(s)").lowercased()
 	}
 	
@@ -50,23 +50,43 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 	}
 	
 	var hasExercizes: Bool {
-		return steps.first { $0 is GTExercize } != nil
+		return parts.first { $0 is GTExercize } != nil
 	}
 	
-	var exercizeList: [GTStep] {
-		return stepList
+	var parentCollection: ExercizeCollection? {
+		return nil
 	}
 	
-	var stepList: [GTStep] {
-		return Array(steps).sorted { $0.order < $1.order }
+	// MARK: - Parts handling
+	
+	var partList: [GTPart] {
+		return Array(parts).sorted { $0.order < $1.order }
 	}
 	
-	subscript (n: Int32) -> GTStep? {
-		return steps.first { $0.order == n }
+	subscript (n: Int32) -> GTPart? {
+		return parts.first { $0.order == n }
 	}
 	
-	func removeStep(_ s: GTStep) {
-		steps.remove(s)
+	func part(after part: GTPart) -> GTPart? {
+		let list = partList
+		guard let i = list.index(of: part), i < list.endIndex else {
+			return nil
+		}
+		
+		return list.suffix(from: list.index(after: i)).first
+	}
+	
+	func part(before part: GTPart) -> GTPart? {
+		let list = partList
+		guard let i = list.index(of: part) else {
+			return nil
+		}
+		
+		return list.prefix(upTo: i).last
+	}
+	
+	func removePart(_ p: GTPart) {
+		parts.remove(p)
 		recalculateStepOrder()
 	}
 	
@@ -76,12 +96,12 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 	
 	/// Move the step at the specified index to `to` index, the old exercize at `to` index will have index `dest+1` if the exercize is being moved towards the start of the workout, `dest-1` otherwise.
 	func moveStepAt(number from: Int, to dest: Int) {
-		guard let e = self[Int32(from)], dest < steps.count else {
+		guard let e = self[Int32(from)], dest < parts.count else {
 			return
 		}
 		
 		let newIndex = dest > from ? dest + 1 : dest
-		_ = steps.map {
+		_ = parts.map {
 			if Int($0.order) >= newIndex {
 				$0.order += 1
 			}
@@ -92,20 +112,21 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 	}
 	
 	/// Removes rest period from start and end.
-	/// - returns: A collection of removed steps (rest periods) from the start, end and somewhere between exercizes.
-	func compactExercizes() -> (start: [GTStep], end: [GTStep], middle: [(e: GTStep, oldOrder: Int32)]) {
-		var s = [GTStep]()
-		var e = [GTStep]()
-		var middle = [(GTStep, Int32)]()
-		var steps = self.stepList
+	/// - returns: A collection of removed parts (rest periods) from the start, end and somewhere between exercizes.
+	func compactExercizes() -> (start: [GTPart], end: [GTPart], middle: [(e: GTPart, oldOrder: Int32)]) {
+		#error("Make recursive for each gtPart that is an ExercizeCollection, use a protocol method")
+		var s = [GTPart]()
+		var e = [GTPart]()
+		var middle = [(GTPart, Int32)]()
+		var steps = self.partList
 		
 		while let f = steps.first, f is GTRest {
-			self.removeStep(f)
+			self.removePart(f)
 			s.append(steps.removeFirst())
 		}
 		
 		while let l = steps.last, l is GTRest {
-			self.removeStep(l)
+			self.removePart(l)
 			e.append(steps.popLast()!)
 		}
 		
@@ -119,7 +140,7 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 			}
 			
 			if hasRest {
-				self.removeStep(s)
+				self.removePart(s)
 				middle.append((s, s.order))
 			} else {
 				hasRest = true
@@ -132,7 +153,7 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 	
 	private func recalculateStepOrder() {
 		var i: Int32 = 0
-		for s in stepList {
+		for s in partList {
 			s.order = i
 			i += 1
 		}

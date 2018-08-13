@@ -42,31 +42,31 @@ class GTSetsExercize: GTExercize {
 		self.hasCircuitRest = circuit != nil && r
 	}
 	
-	override var parent: GTDataObject {
-		return [workout, circuit].compactMap { $0 }.first!
+	/// The number of sets part of this exercize, or `nil` if it cannot be determined.
+	var setsCount: Int? {
+		fatalError("Abstract property not implemented")
 	}
 	
 	// MARK: - Circuit Support
 	
-	/// Whether the exercize is directly part of a circuit.
-	var isDirectlyInCircuit: Bool {
-		return circuit != nil
-	}
-	
 	/// Whether the exercize is at some point part of a circuit.
 	var isInCircuit: Bool {
-		#error("OR the parent collection is in a circuit")
-		return circuit != nil
+		return self.parentHierarchy.first { $0 is GTCircuit } != nil
 	}
 	
 	/// The position of the exercize in the circuit, `nil` outside of circuits.
 	var circuitStatus: (number: Int, total: Int)? {
-		#error("Fetch any parent circuit, not just directly connected")
-		guard let c = circuit else {
+		let hierarchy = self.parentHierarchy
+		guard let cIndex = hierarchy.index(where: { $0 is GTCircuit }),
+			let c = hierarchy[cIndex] as? GTCircuit,
+			let exInCircuit = cIndex > hierarchy.startIndex
+				? hierarchy[hierarchy.index(before: cIndex)] as? GTPart
+				: self
+			else {
 			return nil
 		}
 		
-		return (Int(self.order), c.exercizes.count)
+		return (Int(exInCircuit.order), c.exercizes.count)
 	}
 	
 	/// Whether or not the exercize has mid-sets rests, always `true` outside circuits, and wheter the last set has an explit rest, can be `true` only inside a circuit.

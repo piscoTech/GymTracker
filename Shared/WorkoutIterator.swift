@@ -78,11 +78,11 @@ class WorkoutStep {
 	
 	/// The name of the current exercize, `nil` if a rest period.
 	var exercizeName: String? {
-		fatalError("Not implemented")
+		fatalError("Abstract property not implemented")
 	}
 	/// The number of reps and weight for the current set, `nil` if a rest period.
 	var currentReps: NSAttributedString? {
-		fatalError("Not implemented")
+		fatalError("Abstract property not implemented")
 	}
 	/// Other sets weight for a normal exercize or circuit progress.
 	///
@@ -90,7 +90,7 @@ class WorkoutStep {
 	///
 	/// For a circuit looks like *Exercize 2/4, round 2/4*.
 	var otherPartsInfo: NSAttributedString? {
-		fatalError("Not implemented")
+		fatalError("Abstract property not implemented")
 	}
 	/// Rest time for the current set or rest period.
 	let rest: TimeInterval?
