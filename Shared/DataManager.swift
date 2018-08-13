@@ -17,13 +17,13 @@ struct CDRecordID: Hashable {
 	
 	// Let the compiler automatically synthesize the requirement for `Equatable` and `Hashable` based on `type` and `id`
 	
-	init(obj: DataObject) {
+	init(obj: GTDataObject) {
 		type = obj.objectType
 		id = obj.id
 	}
 	
-	init?(wcRepresentation d: [String]) {
-		guard d.count == 2 else {
+	init?(wcRepresentation data: [String]?) {
+		guard let d = data, d.count == 2 else {
 			return nil
 		}
 		
@@ -43,11 +43,11 @@ struct CDRecordID: Hashable {
 		return [type, id]
 	}
 	
-	fileprivate func getType() -> DataObject.Type? {
-		return NSClassFromString(type) as? DataObject.Type
+	fileprivate func getType() -> GTDataObject.Type? {
+		return NSClassFromString(type) as? GTDataObject.Type
 	}
 	
-	func getObject(fromDataManager dataManager: DataManager) -> DataObject? {
+	func getObject(fromDataManager dataManager: DataManager) -> GTDataObject? {
 		return getType()?.loadWithID(id, fromDataManager: dataManager)
 	}
 	
@@ -71,18 +71,18 @@ struct CDRecordID: Hashable {
 	
 }
 
-class DataObject: NSManagedObject {
+class GTDataObject: NSManagedObject {
 	
 	class var objectType: String {
-		return "DataObject"
+		fatalError("Abstarct property not implemented")
 	}
-	var objectType: String {
+	final var objectType: String {
 		return type(of: self).objectType
 	}
 	
-	@NSManaged fileprivate var id: String
-	@NSManaged fileprivate var created: Date?
-	@NSManaged fileprivate var modified: Date?
+	@NSManaged final fileprivate var id: String
+	@NSManaged final fileprivate var created: Date?
+	@NSManaged final fileprivate var modified: Date?
 	
 	fileprivate static let createdKey = "created"
 	fileprivate static let modifiedKey = "modified"
@@ -91,27 +91,31 @@ class DataObject: NSManagedObject {
 		super.init(entity: entity, insertInto: context)
 	}
 	
-	fileprivate var isNew: Bool {
+	final fileprivate var isNew: Bool {
 		precondition(modified != nil && created != nil, "\(objectType) not saved")
 		
 		return created! == modified!
 	}
 	
-	var recordID: CDRecordID {
+	final var recordID: CDRecordID {
 		return CDRecordID(obj: self)
 	}
 	
-	class func loadWithID(_ id: String, fromDataManager dataManager: DataManager) -> DataObject? {
+	class func loadWithID(_ id: String, fromDataManager dataManager: DataManager) -> GTDataObject? {
 		fatalError("Abstarct method not implemented")
 	}
 	
 	///- returns: Whether or not the object represented by this instance is still present in the database, `false` is returned even if it was impossible to determine.
-	func stillExists(inDataManager dataManager: DataManager) -> Bool {
+	final func stillExists(inDataManager dataManager: DataManager) -> Bool {
 		if let _ = recordID.getType()?.loadWithID(self.id, fromDataManager: dataManager) {
 			return true
 		} else {
 			return false
 		}
+	}
+	
+	var isValid: Bool {
+		fatalError("Abstarct property not implemented")
 	}
 	
 	var wcObject: WCObject? {
@@ -121,14 +125,14 @@ class DataObject: NSManagedObject {
 			return nil
 		}
 		
-		obj[DataObject.createdKey] = c
-		obj[DataObject.modifiedKey] = m
+		obj[GTDataObject.createdKey] = c
+		obj[GTDataObject.modifiedKey] = m
 		
 		return obj
 	}
 	
 	func mergeUpdatesFrom(_ src: WCObject, inDataManager dataManager: DataManager) -> Bool {
-		guard src.id == self.recordID, let modified = src[DataObject.modifiedKey] as? Date else {
+		guard src.id == self.recordID, let modified = src[GTDataObject.modifiedKey] as? Date else {
 			return false
 		}
 		
@@ -144,7 +148,7 @@ class DataObject: NSManagedObject {
 	
 }
 
-class WCObject: Equatable {
+final class WCObject: Equatable {
 	
 	static func == (l: WCObject, r: WCObject) -> Bool {
 		return l.id == r.id
@@ -192,11 +196,11 @@ class WCObject: Equatable {
 	}
 	
 	var created: Date? {
-		return data[DataObject.createdKey] as? Date
+		return data[GTDataObject.createdKey] as? Date
 	}
 	
 	fileprivate var isNew: Bool? {
-		guard let created = self.created, let modified = data[DataObject.modifiedKey] as? Date else {
+		guard let created = self.created, let modified = data[GTDataObject.modifiedKey] as? Date else {
 			return nil
 		}
 		
@@ -239,7 +243,7 @@ class WCObject: Equatable {
 	func mirroredWorkoutHasEnded()
 	
 	@available(iOS, unavailable)
-	func remoteWorkoutStart(_ workout: Workout)
+	func remoteWorkoutStart(_ workout: GTWorkout)
 	
 }
 
