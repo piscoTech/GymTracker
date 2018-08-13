@@ -18,6 +18,9 @@ final class GTCircuit: GTExercize, ExercizeCollection {
 	}
 	
 	@NSManaged private(set) var exercizes: Set<GTSetsExercize>
+	var parts: Set<GTPart> {
+		return exercizes
+	}
 	
 	override class func loadWithID(_ id: String, fromDataManager dataManager: DataManager) -> GTCircuit? {
 		let req = NSFetchRequest<GTCircuit>(entityName: self.objectType)
@@ -78,11 +81,37 @@ final class GTCircuit: GTExercize, ExercizeCollection {
 	var exercizeList: [GTSetsExercize] {
 		return Array(exercizes).sorted { $0.order < $1.order }
 	}
+	var partList: [GTPart] {
+		return exercizeList
+	}
 	
-	#error("Exercizes accessors")
+	subscript (n: Int32) -> GTPart? {
+		return exercizes.first { $0.order == n }
+	}
 	
-	// MARK: - iOS/watchOS interface
-
-	#error("Override from GTDataObject")
+	func part(after part: GTPart) -> GTPart? {
+		let list = exercizeList
+		guard let ex = part as? GTSetsExercize, let i = list.index(of: ex), i < list.endIndex else {
+			return nil
+		}
+		
+		return list.suffix(from: list.index(after: i)).first
+	}
+	
+	func part(before part: GTPart) -> GTPart? {
+		let list = exercizeList
+		guard let ex = part as? GTSetsExercize, let i = list.index(of: ex) else {
+			return nil
+		}
+		
+		return list.prefix(upTo: i).last
+	}
+	
+	#warning("Add exercize to end of circuit")
+	
+	func removeExercize(_ e: GTSetsExercize) {
+		exercizes.remove(e)
+		recalculatePartsOrder()
+	}
 	
 }

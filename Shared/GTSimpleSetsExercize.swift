@@ -89,24 +89,24 @@ class GTSimpleSetsExercize: GTSetsExercize {
 	
 	// MARK: - Choice Support
 	
-	/// Whether the exercize is at some point part of a circuit.
-	var isInCircuit: Bool {
-		return self.parentHierarchy.first { $0 is GTCircuit } != nil
+	/// Whether the exercize is at some point part of a choice.
+	var isInChoice: Bool {
+		return self.parentHierarchy.first { $0 is GTChoice } != nil
 	}
 	
-	/// The position of the exercize in the circuit, `nil` outside of circuits.
-	var circuitStatus: (number: Int, total: Int)? {
+	/// The position of the exercize in the choice, `nil` outside of choices.
+	var choiceStatus: (number: Int, total: Int)? {
 		let hierarchy = self.parentHierarchy
-		guard let cIndex = hierarchy.index(where: { $0 is GTCircuit }),
-			let c = hierarchy[cIndex] as? GTCircuit,
-			let exInCircuit = cIndex > hierarchy.startIndex
+		guard let cIndex = hierarchy.index(where: { $0 is GTChoice }),
+			let c = hierarchy[cIndex] as? GTChoice,
+			let exInChoice = cIndex > hierarchy.startIndex
 				? hierarchy[hierarchy.index(before: cIndex)] as? GTPart
 				: self
 			else {
 				return nil
 		}
 		
-		return (Int(exInCircuit.order), c.exercizes.count)
+		return (Int(exInChoice.order), c.exercizes.count)
 	}
 	
 	// MARK: - Sets handling

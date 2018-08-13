@@ -18,6 +18,9 @@ final class GTChoice: GTSetsExercize, ExercizeCollection {
 	}
 	
 	@NSManaged private(set) var exercizes: Set<GTSimpleSetsExercize>
+	var parts: Set<GTPart> {
+		return exercizes
+	}
 
 	override class func loadWithID(_ id: String, fromDataManager dataManager: DataManager) -> GTChoice? {
 		let req = NSFetchRequest<GTChoice>(entityName: self.objectType)
@@ -45,11 +48,41 @@ final class GTChoice: GTSetsExercize, ExercizeCollection {
 	var exercizeList: [GTSimpleSetsExercize] {
 		return Array(exercizes).sorted { $0.order < $1.order }
 	}
+	var partList: [GTPart] {
+		return exercizeList
+	}
+	
+	subscript (n: Int32) -> GTPart? {
+		return exercizes.first { $0.order == n }
+	}
+	
+	func part(after part: GTPart) -> GTPart? {
+		let list = exercizeList
+		guard let ex = part as? GTSimpleSetsExercize, let i = list.index(of: ex), i < list.endIndex else {
+			return nil
+		}
+		
+		return list.suffix(from: list.index(after: i)).first
+	}
+	
+	func part(before part: GTPart) -> GTPart? {
+		let list = exercizeList
+		guard let ex = part as? GTSimpleSetsExercize, let i = list.index(of: ex) else {
+			return nil
+		}
+		
+		return list.prefix(upTo: i).last
+	}
 
-    #error("Exercizes accessors")
+	#warning("Add exercize to end of choice")
+	
+	func removeExercize(_ e: GTSimpleSetsExercize) {
+		exercizes.remove(e)
+		recalculatePartsOrder()
+	}
 	
 	// MARK: - iOS/watchOS interface
 	
-	#error("Override from GTDataObject")
+	#error("Add attribute to save the last chosen exercize")
 
 }

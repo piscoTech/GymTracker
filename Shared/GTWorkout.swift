@@ -57,6 +57,12 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 		return nil
 	}
 	
+	var choices: [GTChoice] {
+		#error("Implement me")
+		#warning("Use me to determine for which choice to ask what to do")
+		return []
+	}
+	
 	// MARK: - Parts handling
 	
 	var partList: [GTPart] {
@@ -85,36 +91,20 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 		return list.prefix(upTo: i).last
 	}
 	
+	#warning("Add part to end of workout")
+	
 	func removePart(_ p: GTPart) {
 		parts.remove(p)
-		recalculateStepOrder()
+		recalculatePartsOrder()
 	}
 	
 	func set(name: String) {
 		self.name = name.trimmingCharacters(in: .whitespacesAndNewlines)
 	}
 	
-	/// Move the step at the specified index to `to` index, the old exercize at `to` index will have index `dest+1` if the exercize is being moved towards the start of the workout, `dest-1` otherwise.
-	func moveStepAt(number from: Int, to dest: Int) {
-		guard let e = self[Int32(from)], dest < parts.count else {
-			return
-		}
-		
-		let newIndex = dest > from ? dest + 1 : dest
-		_ = parts.map {
-			if Int($0.order) >= newIndex {
-				$0.order += 1
-			}
-		}
-		
-		e.order = Int32(newIndex)
-		recalculateStepOrder()
-	}
-	
 	/// Removes rest period from start and end.
 	/// - returns: A collection of removed parts (rest periods) from the start, end and somewhere between exercizes.
 	func compactExercizes() -> (start: [GTPart], end: [GTPart], middle: [(e: GTPart, oldOrder: Int32)]) {
-		#error("Make recursive for each gtPart that is an ExercizeCollection, use a protocol method")
 		var s = [GTPart]()
 		var e = [GTPart]()
 		var middle = [(GTPart, Int32)]()
@@ -147,16 +137,8 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 			}
 		}
 		
-		self.recalculateStepOrder()
+		recalculatePartsOrder()
 		return (s, e, middle)
-	}
-	
-	private func recalculateStepOrder() {
-		var i: Int32 = 0
-		for s in partList {
-			s.order = i
-			i += 1
-		}
 	}
 	
 	// MARK: - iOS/watchOS interface

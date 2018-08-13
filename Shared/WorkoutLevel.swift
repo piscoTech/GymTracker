@@ -31,8 +31,40 @@ extension WorkoutLevel {
 
 protocol ExercizeCollection: WorkoutLevel {
 	
+	var parts: Set<GTPart> { get }
+	var partList: [GTPart] { get }
+	
 	subscript (n: Int32) -> GTPart? { get }
 	func part(after part: GTPart) -> GTPart?
 	func part(before part: GTPart) -> GTPart?
+	
+}
+
+extension ExercizeCollection {
+	
+	/// Move the step at the specified index to `to` index, the old exercize at `to` index will have index `dest+1` if the exercize is being moved towards the start of the workout, `dest-1` otherwise.
+	func moveStepAt(number from: Int32, to dest: Int32) {
+		guard let e = self[from], dest < parts.count else {
+			return
+		}
+		
+		let newIndex = dest > from ? dest + 1 : dest
+		_ = parts.map {
+			if Int($0.order) >= newIndex {
+				$0.order += 1
+			}
+		}
+		
+		e.order = newIndex
+		recalculatePartsOrder()
+	}
+	
+	func recalculatePartsOrder() {
+		var i: Int32 = 0
+		for s in partList {
+			s.order = i
+			i += 1
+		}
+	}
 	
 }

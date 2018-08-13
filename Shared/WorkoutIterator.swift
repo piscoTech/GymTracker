@@ -265,9 +265,9 @@ class WorkoutRestStep: WorkoutStep {
 /// After creation make sure not to change the structure of workout, i.e. how exercizes and sets are ordered and arranged in circuit, after creation, weight update is fine. Any change in exercize arrangement will not be reflected, change in number of sets can result in unexpected behaviour.
 class WorkoutIterator: IteratorProtocol {
 	
-	let workout: OrganizedWorkout
+	let workout: GTWorkout
 	
-	private let exercizes: [[Exercize]]
+	private let exercizes: [[GTPart]]
 	/// The current exercize, rest or circuit.
 	private var curExercize = 0
 	/// The current part, i.e. set, inside the current exercize or circuit, this identifies both the set and, if any, its subsequent rest period.
@@ -277,48 +277,75 @@ class WorkoutIterator: IteratorProtocol {
 	
 	private let preferences: Preferences
 
-	init(_ w: OrganizedWorkout, using preferences: Preferences? = nil) {
+	init?(_ w: GTWorkout, choices: [Int32], using preferences: Preferences? = nil) {
 		workout = w
 		self.preferences = preferences ?? appDelegate.dataManager.preferences
-		guard w.validityStatus.global else {
-			exercizes = []
-			return
+		guard w.isValid else {
+			return nil
 		}
 		
-		var list = w.exercizes
-		var exGroups = [[Exercize]]()
+		var chCount: Int = 0
+		var parts = [[GTPart]]()
 		
-		while let e = list.first {
-			let group: [Exercize]
-			if let (_, t) = w.circuitStatus(for: e) {
-				// This will always be called for the first exercize in a circuit
-				group = Array(list.prefix(t))
-			} else {
-				group = [e]
-			}
-			
-			exGroups.append(group)
-			list.removeFirst(group.count)
-			for e in group {
+		for p in w.partList {
+			if p is GTRest {
+				parts.append([p])
+			} else if p is GTSimpleSetsExercize {
+				weightChanges[p.recordID] = 0
+				parts.append([p])
+			} else if let choice = p as? GTChoice {
+				guard choices.count > chCount, let e = choice[choices[chCount]] else {
+					return nil
+				}
+				chCount += 1
 				weightChanges[e.recordID] = 0
+				parts.append([e])
+			} else if let circuit = p as? GTCircuit {
+				do {
+					let group = try circuit.exercizeList.map { e -> GTPart in
+						if let choice = e as? GTChoice {
+							guard choices.count > chCount, let e = choice[choices[chCount]] else {
+								throw NSError()
+							}
+							chCount += 1
+							weightChanges[e.recordID] = 0
+							return e
+						} else if e is GTSimpleSetsExercize {
+							weightChanges[e.recordID] = 0
+							return e
+						}
+						
+						throw NSError()
+					}
+					parts.append(group)
+				} catch _ {
+					return nil
+				}
+			} else {
+				return nil
 			}
 		}
+
+		guard chCount == choices.count else {
+			return nil
+		}
 		
-		exercizes = exGroups
+		#warning("Save choice list to preferences")
+		exercizes = parts
 	}
 	
 	// MARK: - Manage cache of weight changes
 	
-	func weightChange(for e: Exercize) -> Double {
+	func weightChange(for e: GTSimpleSetsExercize) -> Double {
 		let id = e.recordID
-		precondition(weightChanges.keys.contains(id), "Exercize does not belong the the workout")
+		precondition(weightChanges.keys.contains(id), "Exercize does not belong to the workout")
 		
 		return weightChanges[id]!
 	}
 	
-	func setWeightChange(_ w: Double, for e: Exercize) {
+	func setWeightChange(_ w: Double, for e: GTSimpleSetsExercize) {
 		let id = e.recordID
-		precondition(weightChanges.keys.contains(id), "Exercize does not belong the the workout")
+		precondition(weightChanges.keys.contains(id), "Exercize does not belong to the workout")
 		
 		weightChanges[id] = w.rounded(to: 0.5)
 	}
@@ -333,7 +360,11 @@ class WorkoutIterator: IteratorProtocol {
 			if e > 0 {
 				e -= 1
 				let eGroup = exercizes[e]
-				p = eGroup[0].isRest ? 0 : eGroup.count * eGroup[0].sets.count - 1
+				if let se = eGroup.first as? GTSimpleSetsExercize {
+					p = eGroup.count * se.sets.count - 1
+				} else {
+					p = 0
+				}
 			} else {
 				p = 0
 			}
@@ -350,7 +381,12 @@ class WorkoutIterator: IteratorProtocol {
 		
 		if curExercize < exercizes.count { // The saved status is mid workout
 			let eGroup = exercizes[curExercize]
-			let maxPart = eGroup[0].isRest ? 0 : eGroup.count * eGroup[0].sets.count - 1
+			let maxPart: Int
+			if let se = eGroup.first as? GTSimpleSetsExercize {
+				maxPart = eGroup.count * se.sets.count - 1
+			} else {
+				maxPart = 0
+			}
 			if curPart > maxPart { // Current part exceeds the limit, jump to next exercize
 				curExercize += 1
 				curPart = 0
@@ -381,11 +417,11 @@ class WorkoutIterator: IteratorProtocol {
 		}
 		
 		let curGroup = exercizes[curExercize]
-		if curGroup[0].isRest { // Rest period
+		if let rest = curGroup.first as? GTRest { // Rest period
 			curExercize += 1
 			curPart = 0
 			// Here we assume the workout is valid and unused data is purged, i.e. after a rest there is always another exercize
-			return WorkoutRestStep(rest: curGroup[0].rest, nextUp: prepareNext(with: exercizes[curExercize][0]))
+			return WorkoutRestStep(rest: rest.rest, nextUp: prepareNext(with: exercizes[curExercize][0]))
 		} else { // Set
 			if curGroup.count > 1 { // Circuit
 				let eT = curGroup.count
