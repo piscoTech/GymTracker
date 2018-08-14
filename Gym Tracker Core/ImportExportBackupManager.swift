@@ -106,16 +106,16 @@ class ImportExportBackupManager: NSObject {
 	
 	// MARK: - Export
 	
-	func export(workout: Workout) -> URL? {
+	func export(workout: GTWorkout) -> URL? {
 		let name = dataManager.performCoreDataCodeAndWait { return workout.name }
 		return export(workouts: [workout], name: nameFilter.stringByReplacingMatches(in: name, options: [], range: NSRange(location: 0, length: name.count), withTemplate: "_"))
 	}
 	
 	func export() -> URL? {
-		return export(workouts: Workout.getList(fromDataManager: dataManager), name: Date().getWorkoutExportName())
+		return export(workouts: GTWorkout.getList(fromDataManager: dataManager), name: Date().getWorkoutExportName())
 	}
 	
-	private func export(workouts: [Workout], name: String) -> URL? {
+	private func export(workouts: [GTWorkout], name: String) -> URL? {
 		let res: String = dataManager.performCoreDataCodeAndWait {
 			var xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><\(ImportExportBackupManager.workoutsTag)>"
 			xml += workouts.map { $0.export() }.joined()
@@ -196,33 +196,33 @@ class ImportExportBackupManager: NSObject {
 		}
 	}
 	
-	func `import`(_ file: URL, isRestoring restore: Bool, performCallback: @escaping (Bool, Int?, (() -> ())?) -> Void, callback: @escaping ([Workout]?) -> Void) {
+	func `import`(_ file: URL, isRestoring restore: Bool, performCallback: @escaping (Bool, Int?, (() -> ())?) -> Void, callback: @escaping ([GTWorkout]?) -> Void) {
 		if let xsd = Bundle.main.url(forResource: "workout", withExtension: "xsd"),
 			let workouts = file.loadAsXML(validatingWithXSD: xsd)?.children, workouts.count > 0 {
 			DispatchQueue.main.async {
 				performCallback(true, workouts.count) {
 					DispatchQueue.main.async {
-						var saveWorkouts = [Workout]()
-						var saveOthers = [DataObject]()
-						var delete = restore ? Workout.getList(fromDataManager: self.dataManager) : []
+						var save = [GTDataObject]()
+						var delete: [GTDataObject] = restore ? GTWorkout.getList(fromDataManager: self.dataManager) : []
 						
 						for wData in workouts {
-							let (w, success) = Workout.import(fromXML: wData, withDataManager: self.dataManager)
-							
-							if let w = w {
-								let ow = OrganizedWorkout(w)
-								ow.purgeInvalidSettings()
-								if success, ow.validityStatus.global {
-									saveWorkouts.append(w)
-									saveOthers += w.exercizes.map { [$0 as DataObject] + Array($0.sets) as [DataObject] }.reduce([]) { $0 + $1 }
+							do {
+								let w = try GTWorkout.import(fromXML: wData, withDataManager: self.dataManager)
+								
+								if w.isValid {
+									save.append(contentsOf: w.subtreeNodeList)
 								} else {
 									delete.append(w)
 								}
-							}
+							} catch GTDataImportError.failure(let obj) {
+								if let o = obj {
+									delete.append(o)
+								}
+							} catch _ {}
 						}
 						
-						if self.dataManager.persistChangesForObjects(saveWorkouts + saveOthers, andDeleteObjects: delete) {
-							callback(saveWorkouts)
+						if self.dataManager.persistChangesForObjects(save, andDeleteObjects: delete) {
+							callback(save.compactMap { $0 as? GTWorkout })
 						} else {
 							self.dataManager.discardAllChanges()
 							callback(nil)

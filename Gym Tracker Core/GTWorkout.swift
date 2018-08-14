@@ -24,13 +24,13 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 		return list
 	}
 	
+	private let nameKey = "name"
+	private let archivedKey = "archived"
+	
 	@NSManaged private(set) var name: String
 	@NSManaged private(set) var parts: Set<GTPart>
 	
 	@NSManaged var archived: Bool
-	
-	private let nameKey = "name"
-	private let archivedKey = "archived"
 	
 	override var description: String {
 		let n = parts.filter { $0 is GTExercize }.count
@@ -68,7 +68,16 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 		return Array(parts).sorted { $0.order < $1.order }
 	}
 	
-	#warning("Add part to end of workout")
+	func canHandle(part: GTPart.Type) -> Bool {
+		return true
+	}
+	
+	func add(parts: GTPart...) {
+		for p in parts {
+			p.order = Int32(self.parts.count)
+			p.set(workout: self)
+		}
+	}
 	
 	func remove(part p: GTPart) {
 		parts.remove(p)

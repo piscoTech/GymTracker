@@ -42,6 +42,10 @@ protocol ExercizeCollection: WorkoutLevel {
 
 extension ExercizeCollection {
 	
+	func canHandle(part: GTPart) -> Bool {
+		return canHandle(part: type(of: part))
+	}
+	
 	subscript (n: Int32) -> GTPart? {
 		return parts.first { $0.order == n }
 	}

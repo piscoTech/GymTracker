@@ -288,6 +288,8 @@ class DataManager: NSObject {
 		wcInterface = WatchConnectivityInterface(for: use)
 		self.use = use
 		
+		super.init()
+		
 		wcInterface.dataManager = self
 		importExportManager = ImportExportBackupManager(dataManager: self)
 

@@ -186,11 +186,12 @@ class ExecuteWorkoutController: NSObject {
 	}
 	
 	@available(watchOS, unavailable)
-	init?(mirrorWorkoutForViewController viewController: ExecuteWorkoutControllerDelegate) {
-		guard let w = dataManager.preferences.runningWorkout?.getObject(fromDataManager: appDelegate.dataManager) as? GTWorkout else {
+	init?(mirrorWorkoutForViewController viewController: ExecuteWorkoutControllerDelegate, dataManager: DataManager) {
+		guard let w = dataManager.preferences.runningWorkout?.getObject(fromDataManager: dataManager) as? GTWorkout else {
 			return nil
 		}
 		
+		self.dataManager = dataManager
 		self.source = .watch
 		self.isMirroring = true
 		self.view = viewController
@@ -247,7 +248,7 @@ class ExecuteWorkoutController: NSObject {
 			self.view.startTimer(at: self.start)
 			self.view.setNextUpTextHidden(false)
 			
-			dataManager.sendWorkoutStatusUpdate(restStart: self.restStart)
+			self.dataManager.sendWorkoutStatusUpdate(restStart: self.restStart)
 			self.displayStep()
 		}
 	}
@@ -484,12 +485,12 @@ class ExecuteWorkoutController: NSObject {
 		}
 		
 		if self.start == nil {
-			start = appDelegate.dataManager.preferences.currentStart
+			start = dataManager.preferences.currentStart
 			workoutSessionStarted()
 		}
 		
-		appDelegate.dataManager.preferences.currentExercize = exercize
-		appDelegate.dataManager.preferences.currentPart = part
+		dataManager.preferences.currentExercize = exercize
+		dataManager.preferences.currentPart = part
 		self.restStart = date
 		
 		workoutIterator.loadPersistedState()
@@ -557,10 +558,10 @@ class ExecuteWorkoutController: NSObject {
 		if change != 0 {
 			// Avoid unnecessary saves
 			set.set(secondaryInfo: change + set.secondaryInfo)
-			if appDelegate.dataManager.persistChangesForObjects([set], andDeleteObjects: []) {
+			if dataManager.persistChangesForObjects([set], andDeleteObjects: []) {
 				success()
 			} else {
-				appDelegate.dataManager.discardAllChanges()
+				dataManager.discardAllChanges()
 			}
 		} else {
 			success()
@@ -592,7 +593,7 @@ class ExecuteWorkoutController: NSObject {
 		self.terminateAndSave = false
 		endWorkoutSession()
 		terminate()
-		appDelegate.dataManager.setRunningWorkout(nil, fromSource: source)
+		dataManager.setRunningWorkout(nil, fromSource: source)
 		view.exitWorkoutTracking()
 	}
 	

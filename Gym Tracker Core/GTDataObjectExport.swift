@@ -1,5 +1,5 @@
 //
-//  GTDataModelExport.swift
+//  GTDataObjectExport.swift
 //  Gym Tracker iOS
 //
 //  Created by Marco Boschi on 14/08/2018.

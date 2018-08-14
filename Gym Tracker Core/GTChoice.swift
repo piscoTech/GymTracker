@@ -17,6 +17,12 @@ final class GTChoice: GTSetsExercize, ExercizeCollection {
 		return "GTChoice"
 	}
 	
+	private let lastChosenKey = "lastChosen"
+	
+	/// The index of the last chosen exercize.
+	///
+	/// A negative value represent no choice, a value grater than the last index is equivalent to `0`.
+	@NSManaged var lastChosen: Int32
 	@NSManaged private(set) var exercizes: Set<GTSimpleSetsExercize>
 	var parts: Set<GTPart> {
 		return exercizes
@@ -52,15 +58,56 @@ final class GTChoice: GTSetsExercize, ExercizeCollection {
 		return exercizeList
 	}
 
-	#warning("Add exercize to end of choice")
+	func canHandle(part: GTPart.Type) -> Bool {
+		return part is GTSimpleSetsExercize.Type
+	}
 	
-	func removeExercize(_ e: GTSimpleSetsExercize) {
+	func add(parts: GTPart...) {
+		for p in parts {
+			guard let e = p as? GTSimpleSetsExercize else {
+				fatalError("Circuit cannot handle a \(type(of: p))")
+			}
+			
+			e.order = Int32(self.exercizes.count)
+			e.set(choice: self)
+		}
+	}
+	
+	func remove(part p: GTPart) {
+		guard let e = p as? GTSimpleSetsExercize else {
+			fatalError("Choice cannot handle a \(type(of: p))")
+		}
+		
 		exercizes.remove(e)
 		recalculatePartsOrder()
 	}
 	
 	// MARK: - iOS/watchOS interface
 	
-	#error("Add attribute to save the last chosen exercize")
+	override var wcObject: WCObject? {
+		guard let obj = super.wcObject else {
+			return nil
+		}
+		
+		obj[lastChosenKey] = lastChosen
+		
+		// Exercizes themselves contain a reference to the choice
+		
+		return obj
+	}
+	
+	override func mergeUpdatesFrom(_ src: WCObject, inDataManager dataManager: DataManager) -> Bool {
+		guard super.mergeUpdatesFrom(src, inDataManager: dataManager) else {
+			return false
+		}
+		
+		guard let lastChosen = src[lastChosenKey] as? Int32 else {
+			return false
+		}
+		
+		self.lastChosen = lastChosen
+		
+		return true
+	}
 
 }

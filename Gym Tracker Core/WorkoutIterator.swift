@@ -262,7 +262,7 @@ class WorkoutIterator: IteratorProtocol {
 	/// The current part, i.e. set, inside the current exercize or circuit, this identifies both the set and, if any, its subsequent rest period.
 	private var curPart = 0
 	
-	private var secondaryInfoChanges: [CDRecordID : Double] = [:]
+	private var secondaryInfoChanges: [CDRecordID : Double]
 	
 	private let preferences: Preferences
 
@@ -280,14 +280,12 @@ class WorkoutIterator: IteratorProtocol {
 			if p is GTRest {
 				parts.append([p])
 			} else if p is GTSimpleSetsExercize {
-				secondaryInfoChanges[p.recordID] = 0
 				parts.append([p])
 			} else if let choice = p as? GTChoice {
 				guard choices.count > chCount, let e = choice[choices[chCount]] else {
 					return nil
 				}
 				chCount += 1
-				secondaryInfoChanges[e.recordID] = 0
 				parts.append([e])
 			} else if let circuit = p as? GTCircuit {
 				do {
@@ -297,10 +295,8 @@ class WorkoutIterator: IteratorProtocol {
 								throw NSError()
 							}
 							chCount += 1
-							secondaryInfoChanges[e.recordID] = 0
 							return e
 						} else if e is GTSimpleSetsExercize {
-							secondaryInfoChanges[e.recordID] = 0
 							return e
 						}
 						
@@ -321,6 +317,8 @@ class WorkoutIterator: IteratorProtocol {
 		
 		#warning("Save choice list to preferences")
 		exercizes = parts
+		let realEx = exercizes.joined().compactMap { ($0 as? GTExercize)?.recordID }
+		secondaryInfoChanges = Dictionary(uniqueKeysWithValues: zip(realEx, [Double](repeating: 0, count: realEx.count)))
 	}
 	
 	// MARK: - Manage cache of secondary info changes

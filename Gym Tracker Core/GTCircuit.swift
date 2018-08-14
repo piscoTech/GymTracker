@@ -85,10 +85,27 @@ final class GTCircuit: GTExercize, ExercizeCollection {
 		return exercizeList
 	}
 	
-	#warning("Add exercize to end of circuit")
+	func canHandle(part: GTPart.Type) -> Bool {
+		return part is GTSetsExercize.Type
+	}
 	
-	func removeExercize(_ e: GTSetsExercize) {
-		exercizes.remove(e)
+	func add(parts: GTPart...) {
+		for p in parts {
+			guard let se = p as? GTSetsExercize else {
+				fatalError("Circuit cannot handle a \(type(of: p))")
+			}
+			
+			se.order = Int32(self.exercizes.count)
+			se.set(circuit: self)
+		}
+	}
+	
+	func remove(part p: GTPart) {
+		guard let se = p as? GTSetsExercize else {
+			fatalError("Circuit cannot handle a \(type(of: p))")
+		}
+		
+		exercizes.remove(se)
 		recalculatePartsOrder()
 	}
 	
