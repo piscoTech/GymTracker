@@ -261,7 +261,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 extension AppDelegate: ExecuteWorkoutControllerDelegate {
 	
-	func startWorkout(_ workout: OrganizedWorkout) {
+	func startWorkout(_ workout: GTWorkout) {
 		guard workoutController == nil else {
 			return
 		}
@@ -297,7 +297,7 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 		}
 	}
 	
-	fileprivate func startLocalWorkout(_ workout: OrganizedWorkout? = nil) {
+	fileprivate func startLocalWorkout(_ workout: GTWorkout? = nil) {
 		guard workoutController == nil, workout == nil || dataManager.preferences.runningWorkout == nil else {
 			return
 		}
@@ -307,12 +307,12 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 			data = ExecuteWorkoutData(workout: w, resume: false)
 		} else {
 			guard let wID = dataManager.preferences.runningWorkout,
-				let w = wID.getObject(fromDataManager: dataManager) as? Workout,
+				let w = wID.getObject(fromDataManager: dataManager) as? GTWorkout,
 				let src = dataManager.preferences.runningWorkoutSource, src == .phone else {
 				return
 			}
 			
-			data = ExecuteWorkoutData(workout: OrganizedWorkout(w), resume: true)
+			data = ExecuteWorkoutData(workout: w, resume: true)
 		}
 		
 		workoutController = ExecuteWorkoutController(data: data, viewController: self, source: .phone)
@@ -558,7 +558,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 // MARK: - Workout Status Change from Apple Watch
 
 extension AppDelegate: DataManagerDelegate {
-	
+	#warning("Add back Apple Watch app, the one in build/Debug-watchos and the two depending targets")
 	func refreshData() {
 		DispatchQueue.main.async {
 			self.workoutList.refreshData()

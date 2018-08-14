@@ -39,11 +39,11 @@ final class GTRepsSet: GTSet {
 		return super.isValid && reps > 0 && weight >= 0
 	}
 	
-	func set(reps n: Int32) {
-		reps = max(n, 0)
+	override func set(mainInfo n: Int) {
+		reps = max(Int32(n), 0)
 	}
 	
-	func set(weight w: Double) {
+	override func set(secondaryInfo w: Double) {
 		weight = max(w, 0).rounded(to: 0.5)
 	}
 	
@@ -64,6 +64,8 @@ final class GTRepsSet: GTSet {
 			repsDescription.append(w)
 			repsDescription.append(secondaryInfoLabel)
 		}
+		
+		return repsDescription
 	}
 	
 	override var secondaryInfo: Double {

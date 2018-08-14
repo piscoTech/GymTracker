@@ -27,16 +27,6 @@ class GTPart: GTDataObject, WorkoutLevel {
 		fatalError("Abstract property not implemented")
 	}
 	
-	#warning("Remove if used only in tests")
-	final var previous: GTPart? {
-		return parentCollection?.part(before: self)
-	}
-	
-	#warning("Remove if used only in tests")
-	final var next: GTPart? {
-		return parentCollection?.part(after: self)
-	}
-	
 	// MARK: - iOS/watchOS interface
 	
 	override var wcObject: WCObject? {

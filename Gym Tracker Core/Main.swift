@@ -20,3 +20,10 @@ let applicationDocumentsDirectory: URL = {
 let timesSign = "×"
 let minusSign = "−"
 let plusSign = "+"
+
+/// Returns a localized string from the GymTrackerCore framework bundle.
+public func GTLocalizedString(_ key: String, comment: String) -> String {
+	// Use any class from the framework included in all targets
+	let bundle = Bundle(for: DataManager.self)
+	return NSLocalizedString(key, tableName: nil, bundle: bundle, value: "", comment: comment)
+}

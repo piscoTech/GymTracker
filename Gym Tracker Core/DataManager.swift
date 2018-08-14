@@ -118,6 +118,7 @@ class GTDataObject: NSManagedObject {
 		fatalError("Abstarct property not implemented")
 	}
 	
+	/// The list of all more specific components of the workout that are linked by the receiver and the receiver itself.
 	var subtreeNodeList: [GTDataObject] {
 		fatalError("Abstarct property not implemented")
 	}
@@ -253,17 +254,33 @@ final class WCObject: Equatable {
 
 // MARK: - Data Manager
 
-class DataManager {
+@objc
+class DataManager: NSObject {
+	
+	enum Usage: CustomStringConvertible {
+		case application, testing
+		
+		var description: String {
+			switch self {
+			case .application:
+				return "[App]"
+			case .testing:
+				return "[Test]"
+			}
+		}
+	}
 	
 	weak var delegate: DataManagerDelegate?
 	
 	let use: Usage
 	let preferences: Preferences
-	#if os(iOS)
 	private(set) var importExportManager: ImportExportBackupManager!
-	#endif
 	private let localData: CoreDataStack
 	private let wcInterface: WatchConnectivityInterface
+	
+	override private init() {
+		fatalError("Not supported")
+	}
 	
 	init(for use: Usage) {
 		preferences = Preferences(for: use)
@@ -272,9 +289,7 @@ class DataManager {
 		self.use = use
 		
 		wcInterface.dataManager = self
-		#if os(iOS)
-			importExportManager = ImportExportBackupManager(dataManager: self)
-		#endif
+		importExportManager = ImportExportBackupManager(dataManager: self)
 
 		print("\(use) Data Manager initialized")
 		

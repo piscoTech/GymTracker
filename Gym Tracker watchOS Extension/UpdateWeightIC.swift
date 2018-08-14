@@ -25,7 +25,7 @@ class UpdateWeightInterfaceController: WKInterfaceController {
         super.awake(withContext: context)
         
 		// Configure interface objects here.
-		guard let data = context as? UpdateWeightData else {
+		guard let data = context as? UpdateSecondaryInfoData else {
 			self.dismiss()
 			
 			return

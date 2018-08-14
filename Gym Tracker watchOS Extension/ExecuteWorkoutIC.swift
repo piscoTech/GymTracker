@@ -183,7 +183,7 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutCo
 		WKInterfaceDevice.current().play(.click)
 	}
 	
-	func askUpdateWeight(with data: UpdateWeightData) {
+	func askUpdateWeight(with data: UpdateSecondaryInfoData) {
 		presentController(withName: "updateWeight", context: data)
 	}
 	

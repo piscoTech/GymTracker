@@ -48,6 +48,14 @@ class GTSet: GTDataObject {
 		fatalError("Abstract property not implemented")
 	}
 	
+	func set(mainInfo n: Int) {
+		fatalError("Abstract method not implemented")
+	}
+	
+	func set(secondaryInfo s: Double) {
+		fatalError("Abstract method not implemented")
+	}
+	
 	// MARK: - iOS/watchOS interface
 	
 	override var wcObject: WCObject? {

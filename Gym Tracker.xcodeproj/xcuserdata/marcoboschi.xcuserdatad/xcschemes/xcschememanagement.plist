@@ -4,6 +4,11 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>Gym Tracker Core.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
+		</dict>
 		<key>Gym Tracker Notifications.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -23,6 +28,11 @@
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
 		<key>7A4539C21E75CFC200AD0215</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>7AB69FB5212335620053E259</key>
 		<dict>
 			<key>primary</key>
 			<true/>

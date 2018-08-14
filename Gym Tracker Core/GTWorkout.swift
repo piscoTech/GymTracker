@@ -58,9 +58,8 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 	}
 	
 	var choices: [GTChoice] {
-		#error("Implement me")
 		#warning("Use me to determine for which choice to ask what to do")
-		return []
+		return self.subtreeNodeList.compactMap { $0 as? GTChoice }
 	}
 	
 	// MARK: - Parts handling
