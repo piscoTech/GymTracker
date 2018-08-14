@@ -51,28 +51,6 @@ final class GTChoice: GTSetsExercize, ExercizeCollection {
 	var partList: [GTPart] {
 		return exercizeList
 	}
-	
-	subscript (n: Int32) -> GTPart? {
-		return exercizes.first { $0.order == n }
-	}
-	
-	func part(after part: GTPart) -> GTPart? {
-		let list = exercizeList
-		guard let ex = part as? GTSimpleSetsExercize, let i = list.index(of: ex), i < list.endIndex else {
-			return nil
-		}
-		
-		return list.suffix(from: list.index(after: i)).first
-	}
-	
-	func part(before part: GTPart) -> GTPart? {
-		let list = exercizeList
-		guard let ex = part as? GTSimpleSetsExercize, let i = list.index(of: ex) else {
-			return nil
-		}
-		
-		return list.prefix(upTo: i).last
-	}
 
 	#warning("Add exercize to end of choice")
 	

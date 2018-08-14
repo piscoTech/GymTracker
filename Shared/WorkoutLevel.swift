@@ -34,13 +34,17 @@ protocol ExercizeCollection: WorkoutLevel {
 	var parts: Set<GTPart> { get }
 	var partList: [GTPart] { get }
 	
-	subscript (n: Int32) -> GTPart? { get }
-	func part(after part: GTPart) -> GTPart?
-	func part(before part: GTPart) -> GTPart?
+	func canHandle(part: GTPart.Type) -> Bool
+	func add(parts: GTPart...)
+	func remove(part: GTPart)
 	
 }
 
 extension ExercizeCollection {
+	
+	subscript (n: Int32) -> GTPart? {
+		return parts.first { $0.order == n }
+	}
 	
 	/// Move the step at the specified index to `to` index, the old exercize at `to` index will have index `dest+1` if the exercize is being moved towards the start of the workout, `dest-1` otherwise.
 	func moveStepAt(number from: Int32, to dest: Int32) {

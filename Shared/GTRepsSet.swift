@@ -47,6 +47,33 @@ final class GTRepsSet: GTSet {
 		weight = max(w, 0).rounded(to: 0.5)
 	}
 	
+	// MARK: - Standard accessors
+	
+	override var mainInfo: Int {
+		return Int(reps)
+	}
+	
+	private static let respLabel = NSAttributedString(string: NSLocalizedString("CUR_REPS_INFO", comment: "reps"))
+	private static let timesSignLabel = NSAttributedString(string: timesSign)
+	private static let kgLabel = NSAttributedString(string: "kg")
+	
+	override func mainInfoDescription(with change: Double) -> NSAttributedString {
+		let repsDescription = NSMutableAttributedString(string: "\(reps)")
+		if let w = weight.secondaryInfoDescription(withChange: change) {
+			repsDescription.append(GTRepsSet.timesSignLabel)
+			repsDescription.append(w)
+			repsDescription.append(secondaryInfoLabel)
+		}
+	}
+	
+	override var secondaryInfo: Double {
+		return weight
+	}
+	
+	override var secondaryInfoLabel: NSAttributedString {
+		return GTRepsSet.kgLabel
+	}
+	
 	// MARK: - iOS/watchOS interface
 	
 	override var wcObject: WCObject? {

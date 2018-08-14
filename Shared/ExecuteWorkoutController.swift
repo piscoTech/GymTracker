@@ -11,7 +11,7 @@ import HealthKit
 
 struct ExecuteWorkoutData {
 	
-	let workout: OrganizedWorkout
+	let workout: GTWorkout
 	let resume: Bool
 	
 }
@@ -19,7 +19,7 @@ struct ExecuteWorkoutData {
 struct UpdateWeightData {
 	
 	let workoutController: ExecuteWorkoutController
-	let set: RepsSet
+	let set: GTSet
 	
 }
 
@@ -75,7 +75,7 @@ class ExecuteWorkoutController: NSObject {
 	private let activityType = HKWorkoutActivityType.traditionalStrengthTraining
 	private let isIndoor = true
 	
-	private var workout: OrganizedWorkout
+	private var workout: GTWorkout
 	fileprivate var start: Date! = nil
 	fileprivate var end: Date! = nil
 	private var workoutIterator: WorkoutIterator
@@ -130,7 +130,7 @@ class ExecuteWorkoutController: NSObject {
 		view.setWorkoutDoneViewHidden(true)
 		view.setNextUpTextHidden(true)
 		
-		appDelegate.dataManager.setRunningWorkout(workout.raw, fromSource: source)
+		appDelegate.dataManager.setRunningWorkout(workout, fromSource: source)
 		workoutIterator = WorkoutIterator(workout)
 		
 		if data.resume {

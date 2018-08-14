@@ -32,6 +32,22 @@ class GTSet: GTDataObject {
 		rest = max(r, minRest).rounded(to: GTRest.restStep)
 	}
 	
+	var mainInfo: Int {
+		fatalError("Abstract property not implemented")
+	}
+	
+	func mainInfoDescription(with change: Double) -> NSAttributedString {
+		fatalError("Abstract method not implemented")
+	}
+	
+	var secondaryInfo: Double {
+		fatalError("Abstract property not implemented")
+	}
+	
+	var secondaryInfoLabel: NSAttributedString {
+		fatalError("Abstract property not implemented")
+	}
+	
 	// MARK: - iOS/watchOS interface
 	
 	override var wcObject: WCObject? {

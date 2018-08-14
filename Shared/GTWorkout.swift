@@ -69,31 +69,9 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 		return Array(parts).sorted { $0.order < $1.order }
 	}
 	
-	subscript (n: Int32) -> GTPart? {
-		return parts.first { $0.order == n }
-	}
-	
-	func part(after part: GTPart) -> GTPart? {
-		let list = partList
-		guard let i = list.index(of: part), i < list.endIndex else {
-			return nil
-		}
-		
-		return list.suffix(from: list.index(after: i)).first
-	}
-	
-	func part(before part: GTPart) -> GTPart? {
-		let list = partList
-		guard let i = list.index(of: part) else {
-			return nil
-		}
-		
-		return list.prefix(upTo: i).last
-	}
-	
 	#warning("Add part to end of workout")
 	
-	func removePart(_ p: GTPart) {
+	func remove(part p: GTPart) {
 		parts.remove(p)
 		recalculatePartsOrder()
 	}
@@ -111,12 +89,12 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 		var steps = self.partList
 		
 		while let f = steps.first, f is GTRest {
-			self.removePart(f)
+			self.remove(part: f)
 			s.append(steps.removeFirst())
 		}
 		
 		while let l = steps.last, l is GTRest {
-			self.removePart(l)
+			self.remove(part: l)
 			e.append(steps.popLast()!)
 		}
 		
@@ -130,7 +108,7 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 			}
 			
 			if hasRest {
-				self.removePart(s)
+				self.remove(part: s)
 				middle.append((s, s.order))
 			} else {
 				hasRest = true

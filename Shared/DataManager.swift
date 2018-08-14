@@ -118,6 +118,10 @@ class GTDataObject: NSManagedObject {
 		fatalError("Abstarct property not implemented")
 	}
 	
+	var subtreeNodeList: [GTDataObject] {
+		fatalError("Abstarct property not implemented")
+	}
+	
 	var wcObject: WCObject? {
 		let obj = WCObject(id: self.recordID)
 		
@@ -301,7 +305,7 @@ class DataManager {
 		return res
 	}
 	
-	private func newObjectFor<T: DataObject>(_ obj: T.Type) -> T {
+	private func newObjectFor<T: GTDataObject>(_ obj: T.Type) -> T {
 		let context = localData.managedObjectContext
 		var newObj: T!
 		context.performAndWait {
@@ -316,7 +320,7 @@ class DataManager {
 		return newObj
 	}
 	
-	private func newObjectFor(_ src: WCObject) -> DataObject? {
+	private func newObjectFor(_ src: WCObject) -> GTDataObject? {
 		guard let created = src.created, let type = src.id.getType() else {
 			return nil
 		}
@@ -328,21 +332,40 @@ class DataManager {
 		return obj
 	}
 	
-	func newWorkout() -> Workout {
-		return newObjectFor(Workout.self)
+	func newWorkout() -> GTWorkout {
+		return newObjectFor(GTWorkout.self)
 	}
 	
-	func newExercize(for workout: Workout) -> Exercize {
-		let newE = newObjectFor(Exercize.self)
-		newE.order = Int32(workout.exercizes.count)
-		newE.workout = workout
+	func newCircuit(for collection: ExercizeCollection) -> GTCircuit {
+		precondition(collection.canHandle(part: GTCircuit.self), "Given collection cannot handle circuits")
 		
-		return newE
+		let newPart = newObjectFor(GTCircuit.self)
+		collection.add(parts: newPart)
+		
+		return newPart
+	}
+	
+	func newChoice(for collection: ExercizeCollection) -> GTChoice {
+		precondition(collection.canHandle(part: GTChoice.self), "Given collection cannot handle choices")
+		
+		let newPart = newObjectFor(GTChoice.self)
+		collection.add(parts: newPart)
+		
+		return newPart
+	}
+	
+	func newExercize(for collection: ExercizeCollection) -> GTSimpleSetsExercize {
+		precondition(collection.canHandle(part: GTSimpleSetsExercize.self), "Given collection cannot handle exercizes")
+		
+		let newPart = newObjectFor(GTSimpleSetsExercize.self)
+		collection.add(parts: newPart)
+		
+		return newPart
 	}
 	
 	
-	func newSet(for exercize: Exercize) -> RepsSet {
-		let newS = newObjectFor(RepsSet.self)
+	func newSet(for exercize: GTSimpleSetsExercize) -> GTRepsSet {
+		let newS = newObjectFor(GTRepsSet.self)
 		newS.order = Int32(exercize.sets.count)
 		newS.exercize = exercize
 		
@@ -353,7 +376,7 @@ class DataManager {
 		localData.managedObjectContext.rollback()
 	}
 	
-	func persistChangesForObjects(_ data: [DataObject], andDeleteObjects delete: [DataObject]) -> Bool {
+	func persistChangesForObjects(_ data: [GTDataObject], andDeleteObjects delete: [GTDataObject]) -> Bool {
 		let context = localData.managedObjectContext
 		let removedIDs = delete.map { (r) -> CDRecordID in
 			let id = r.recordID
@@ -392,7 +415,7 @@ class DataManager {
 		return use == .application && wcInterface.hasCounterPart && wcInterface.canComunicate
 	}
 	
-	func setRunningWorkout(_ w: Workout?, fromSource s: RunningWorkoutSource) {
+	func setRunningWorkout(_ w: GTWorkout?, fromSource s: RunningWorkoutSource) {
 		// Can set workout only for current platform, the phone can set also for the watch
 		guard use == .application, s.isCurrentPlatform() || s == .watch else {
 			return
@@ -413,7 +436,7 @@ class DataManager {
 	}
 	
 	@available(watchOS, unavailable)
-	func requestStarting(_ workout: Workout, completion: @escaping (Bool) -> Void) {
+	func requestStarting(_ workout: GTWorkout, completion: @escaping (Bool) -> Void) {
 		#if os(iOS)
 			wcInterface.requestStarting(workout, completion: completion)
 		#elseif os(watchOS)
@@ -445,8 +468,7 @@ class DataManager {
 			self.preferences.saveRemote = []
 			self.preferences.deleteRemote = []
 			
-			let data = Workout.getList(fromDataManager: self).flatMap { [$0 as DataObject]
-				+ $0.exercizes.map { [$0 as DataObject] + Array($0.sets) as [DataObject] }.reduce([]) { $0 + $1 } }
+			let data = GTWorkout.getList(fromDataManager: self).flatMap { $0.subtreeNodeList }
 			self.wcInterface.sendUpdateForChangedObjects(data, andDeleted: [], markAsInitial: true)
 			
 			self.preferences.initialSyncDone = true
@@ -472,7 +494,7 @@ class DataManager {
 		
 		// Save changes
 		var res = true
-		let order: [DataObject.Type] = [Workout.self, Exercize.self, RepsSet.self]
+		let order: [GTDataObject.Type] = [GTWorkout.self, GTCircuit.self, GTChoice.self, GTSimpleSetsExercize.self, GTRepsSet.self]
 		var pendingSave = changes
 		for type in order {
 			for obj in pendingSave {
@@ -480,7 +502,7 @@ class DataManager {
 					continue
 				}
 				
-				let cdObj: DataObject
+				let cdObj: GTDataObject
 				if let tmp = obj.id.getObject(fromDataManager: self) {
 					cdObj = tmp
 				} else if obj.isNew ?? false || obj.isInitialData {
@@ -525,7 +547,7 @@ class DataManager {
 		var res = false
 		let context = localData.managedObjectContext
 		context.performAndWait {
-			for w in Workout.getList(fromDataManager: self) {
+			for w in GTWorkout.getList(fromDataManager: self) {
 				context.delete(w)
 			}
 			
@@ -784,7 +806,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 	private let currentWorkoutStartDate = "curWorkoutStartDate"
 	private let currentWorkoutProgress = "curWorkoutProgress"
 	
-	fileprivate func sendUpdateForChangedObjects(_ data: [DataObject], andDeleted delete: [CDRecordID], markAsInitial: Bool = false) {
+	fileprivate func sendUpdateForChangedObjects(_ data: [GTDataObject], andDeleted delete: [CDRecordID], markAsInitial: Bool = false) {
 		guard let sess = session, hasCounterPart else {
 			return
 		}
@@ -1019,7 +1041,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 	}
 	
 	@available(watchOS, unavailable)
-	func requestStarting(_ workout: Workout, completion: @escaping (Bool) -> Void) {
+	func requestStarting(_ workout: GTWorkout, completion: @escaping (Bool) -> Void) {
 		guard canComunicate && session.isReachable else {
 			completion(false)
 			return
@@ -1040,7 +1062,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 		}
 	
 		#if os(watchOS)
-			if let wData = message[remoteWorkoutStartKey] as? [String], let wID = CDRecordID(wcRepresentation: wData), let workout = wID.getObject(fromDataManager: dataManager) as? Workout {
+			if let wID = CDRecordID(wcRepresentation: message[remoteWorkoutStartKey] as? [String]), let workout = wID.getObject(fromDataManager: dataManager) as? GTWorkout {
 				dataManager.delegate?.remoteWorkoutStart(workout)
 				replyHandler([remoteWorkoutStartKey: true])
 			}
