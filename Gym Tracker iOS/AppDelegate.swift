@@ -558,7 +558,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 // MARK: - Workout Status Change from Apple Watch
 
 extension AppDelegate: DataManagerDelegate {
-	#warning("Add back Apple Watch app, the one in build/Debug-watchos and the two depending targets")
+	
 	func refreshData() {
 		DispatchQueue.main.async {
 			self.workoutList.refreshData()

@@ -8,7 +8,6 @@
 
 import Foundation
 import CoreData
-import MBLibrary
 
 @objc(GTRepsSet)
 final class GTRepsSet: GTSet {

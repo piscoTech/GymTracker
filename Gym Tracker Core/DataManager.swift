@@ -7,8 +7,8 @@
 //
 
 import CoreData
-import MBLibrary
 import WatchConnectivity
+import MBLibrary
 
 struct CDRecordID: Hashable {
 	
@@ -255,12 +255,12 @@ final class WCObject: Equatable {
 // MARK: - Data Manager
 
 @objc
-class DataManager: NSObject {
+public class DataManager: NSObject {
 	
-	enum Usage: CustomStringConvertible {
+	public enum Usage: CustomStringConvertible {
 		case application, testing
 		
-		var description: String {
+		public var description: String {
 			switch self {
 			case .application:
 				return "[App]"
@@ -274,7 +274,9 @@ class DataManager: NSObject {
 	
 	let use: Usage
 	let preferences: Preferences
+	#if os(iOS)
 	private(set) var importExportManager: ImportExportBackupManager!
+	#endif
 	private let localData: CoreDataStack
 	private let wcInterface: WatchConnectivityInterface
 	
@@ -291,7 +293,9 @@ class DataManager: NSObject {
 		super.init()
 		
 		wcInterface.dataManager = self
-		importExportManager = ImportExportBackupManager(dataManager: self)
+		#if os(iOS)
+			importExportManager = ImportExportBackupManager(dataManager: self)
+		#endif
 
 		print("\(use) Data Manager initialized")
 		
@@ -351,6 +355,15 @@ class DataManager: NSObject {
 	
 	func newWorkout() -> GTWorkout {
 		return newObjectFor(GTWorkout.self)
+	}
+	
+	func newRest(for collection: ExercizeCollection) -> GTRest {
+		precondition(collection.canHandle(part: GTRest.self), "Given collection cannot handle circuits")
+		
+		let newPart = newObjectFor(GTRest.self)
+		collection.add(parts: newPart)
+		
+		return newPart
 	}
 	
 	func newCircuit(for collection: ExercizeCollection) -> GTCircuit {

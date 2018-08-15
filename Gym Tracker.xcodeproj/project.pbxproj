@@ -22,10 +22,42 @@
 		7A4DF0171E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4DF0161E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift */; };
 		7A5346B51E86B16400AC5638 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A5346B41E86B16400AC5638 /* HealthKit.framework */; };
 		7A5346BB1E86BA7000AC5638 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A5346BA1E86BA7000AC5638 /* HealthKit.framework */; };
+		7A568AF121241B7100116EB5 /* Gym_Tracker_Core_watchOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A568AEF21241B7100116EB5 /* Gym_Tracker_Core_watchOS.h */; };
+		7A568AF221241C0B00116EB5 /* MBLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7ACE8B681E76CF720011F839 /* MBLibrary.framework */; };
+		7A568AF521241C2000116EB5 /* MBLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7ACE8B6C1E76CF720011F839 /* MBLibrary.framework */; };
+		7A568AF621241C5C00116EB5 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB72FEA1EB0DB2800091E0D /* Date.swift */; };
+		7A568AF721241C5C00116EB5 /* Double.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A24C65C1FE6FF320015C3CD /* Double.swift */; };
+		7A568AFA21241C5C00116EB5 /* WorkoutIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A18D4DF1FE28C97009CD58C /* WorkoutIterator.swift */; };
+		7A568AFB21241C5C00116EB5 /* WorkoutLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB94422212195A200603CA3 /* WorkoutLevel.swift */; };
+		7A568AFC21241C5C00116EB5 /* GTWorkout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADC03BF1E78A187005BDC25 /* GTWorkout.swift */; };
+		7A568AFD21241C5C00116EB5 /* GTPart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB943FB212174A500603CA3 /* GTPart.swift */; };
+		7A568AFE21241C5C00116EB5 /* GTRest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB943F8212174A500603CA3 /* GTRest.swift */; };
+		7A568AFF21241C5C00116EB5 /* GTExercize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB94401212174A500603CA3 /* GTExercize.swift */; };
+		7A568B0021241C5C00116EB5 /* GTCircuit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB94403212174A500603CA3 /* GTCircuit.swift */; };
+		7A568B0121241C5C00116EB5 /* GTSetsExercize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB943FD212174A500603CA3 /* GTSetsExercize.swift */; };
+		7A568B0221241C5C00116EB5 /* GTChoice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB9441D2121901800603CA3 /* GTChoice.swift */; };
+		7A568B0321241C5C00116EB5 /* GTSimpleSetsExercize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADC03BA1E78A187005BDC25 /* GTSimpleSetsExercize.swift */; };
+		7A568B0421241C5C00116EB5 /* GTSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB943FF212174A500603CA3 /* GTSet.swift */; };
+		7A568B0521241C5C00116EB5 /* GTRepsSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADC03BE1E78A187005BDC25 /* GTRepsSet.swift */; };
+		7A568B0A21241C5C00116EB5 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADC03B91E78A187005BDC25 /* DataManager.swift */; };
+		7A568B0B21241C5C00116EB5 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFF5387210F67EF003AE6DC /* Notification.swift */; };
+		7A568B0C21241C5C00116EB5 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE10A421E7D6F1000A64CF7 /* Preferences.swift */; };
+		7A568B0D21241C5C00116EB5 /* ExecuteWorkoutController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADC07D61E98CEB20047E0C2 /* ExecuteWorkoutController.swift */; };
+		7A568B0E21241C5C00116EB5 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7A5A47F01E78A3CF00ABCF46 /* Localizable.strings */; };
+		7A568B0F21241C5C00116EB5 /* Main iOS & watchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADC03BD1E78A187005BDC25 /* Main iOS & watchOS.swift */; };
+		7A568B1021241C5C00116EB5 /* Main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A2E103F1FBDD4C2004767D7 /* Main.swift */; };
+		7A568B1121241C5F00116EB5 /* GymTracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7ADC03BB1E78A187005BDC25 /* GymTracker.xcdatamodeld */; };
+		7A568B1621241D5C00116EB5 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFF5387210F67EF003AE6DC /* Notification.swift */; };
+		7A568B1721241DE900116EB5 /* GymTrackerCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AB69FB6212335620053E259 /* GymTrackerCore.framework */; };
+		7A568B1A21241EC000116EB5 /* GymTrackerCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AB69FB6212335620053E259 /* GymTrackerCore.framework */; };
+		7A568B2021241FE900116EB5 /* GymTrackerCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AB69FB6212335620053E259 /* GymTrackerCore.framework */; };
+		7A568B2121241FE900116EB5 /* GymTrackerCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7AB69FB6212335620053E259 /* GymTrackerCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		7A568B242124212D00116EB5 /* GymTrackerCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A568AE621241AB200116EB5 /* GymTrackerCore.framework */; };
+		7A568B252124212D00116EB5 /* GymTrackerCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7A568AE621241AB200116EB5 /* GymTrackerCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7A5D2B711E8422DB008EED4C /* WorkoutDetailIC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A5D2B701E8422DB008EED4C /* WorkoutDetailIC.swift */; };
 		7A6E083D1E98E94C003BB048 /* CurrentWorkoutVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A6E083C1E98E94C003BB048 /* CurrentWorkoutVC.swift */; };
 		7A95D0BC1E94228D00998D70 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A95D0BB1E94228D00998D70 /* TabBarController.swift */; };
-		7AB69FC52123367F0053E259 /* Gym_Tracker_Core.h in Headers */ = {isa = PBXBuildFile; fileRef = 7AB69FC32123367E0053E259 /* Gym_Tracker_Core.h */; };
+		7AB69FC52123367F0053E259 /* Gym_Tracker_Core_iOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 7AB69FC32123367E0053E259 /* Gym_Tracker_Core_iOS.h */; };
 		7AB69FD3212336E50053E259 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB72FEA1EB0DB2800091E0D /* Date.swift */; };
 		7AB69FD4212336E50053E259 /* Double.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A24C65C1FE6FF320015C3CD /* Double.swift */; };
 		7AB69FD5212336E50053E259 /* WorkoutIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A18D4DF1FE28C97009CD58C /* WorkoutIterator.swift */; };
@@ -95,12 +127,47 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		7AB69FF3212338780053E259 /* PBXContainerItemProxy */ = {
+		7A34F0A2212413B700F62ACC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7ACE8B601E76CF710011F839 /* MBLibrary.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 7A584FA41D3E241C000C739B;
+			remoteInfo = "MBLibrary iOS";
+		};
+		7A568AF321241C1600116EB5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7ACE8B601E76CF710011F839 /* MBLibrary.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 7A0064FD1D3EB02B0089297D;
+			remoteInfo = "MBLibrary watchOS";
+		};
+		7A568B1821241E1400116EB5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7A4539BB1E75CFC200AD0215 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 7AB69FB5212335620053E259;
-			remoteInfo = "Gym Tracker Core";
+			remoteInfo = "Gym Tracker Core iOS";
+		};
+		7A568B1C21241F3B00116EB5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7A4539BB1E75CFC200AD0215 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7AB69FB5212335620053E259;
+			remoteInfo = "Gym Tracker Core iOS";
+		};
+		7A568B2221241FE900116EB5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7A4539BB1E75CFC200AD0215 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7AB69FB5212335620053E259;
+			remoteInfo = "Gym Tracker Core iOS";
+		};
+		7A568B262124212D00116EB5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7A4539BB1E75CFC200AD0215 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7A568AE521241AB200116EB5;
+			remoteInfo = "Gym Tracker Core watchOS";
 		};
 		7AC705F2210F3A1D003E4DF4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -185,6 +252,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				7A568B2121241FE900116EB5 /* GymTrackerCore.framework in Embed Frameworks */,
 				7ACE8B701E76D0D00011F839 /* MBLibrary.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -218,6 +286,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				7A568B252124212D00116EB5 /* GymTrackerCore.framework in Embed Frameworks */,
 				7ACF6DBA1E803B0300579B67 /* MBLibrary.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -250,13 +319,18 @@
 		7A5346B41E86B16400AC5638 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS3.1.sdk/System/Library/Frameworks/HealthKit.framework; sourceTree = DEVELOPER_DIR; };
 		7A5346B91E86BA6F00AC5638 /* Gym Tracker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Gym Tracker.entitlements"; sourceTree = "<group>"; };
 		7A5346BA1E86BA7000AC5638 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
+		7A568AD72124183C00116EB5 /* Gym_Tracker_Core_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gym_Tracker_Core_Tests.swift; sourceTree = "<group>"; };
+		7A568AD92124183C00116EB5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7A568AE621241AB200116EB5 /* GymTrackerCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GymTrackerCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7A568AEE21241B7100116EB5 /* Info watchOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info watchOS.plist"; sourceTree = "<group>"; };
+		7A568AEF21241B7100116EB5 /* Gym_Tracker_Core_watchOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Gym_Tracker_Core_watchOS.h; sourceTree = "<group>"; };
 		7A5A47F01E78A3CF00ABCF46 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		7A5D2B701E8422DB008EED4C /* WorkoutDetailIC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkoutDetailIC.swift; sourceTree = "<group>"; };
 		7A6E083C1E98E94C003BB048 /* CurrentWorkoutVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentWorkoutVC.swift; sourceTree = "<group>"; };
 		7A95D0BB1E94228D00998D70 /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
-		7AB69FB6212335620053E259 /* Gym Tracker Core.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = "Gym Tracker Core.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
-		7AB69FC32123367E0053E259 /* Gym_Tracker_Core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Gym_Tracker_Core.h; sourceTree = "<group>"; };
-		7AB69FC42123367F0053E259 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7AB69FB6212335620053E259 /* GymTrackerCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GymTrackerCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7AB69FC32123367E0053E259 /* Gym_Tracker_Core_iOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Gym_Tracker_Core_iOS.h; sourceTree = "<group>"; };
+		7AB69FC42123367F0053E259 /* Info iOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info iOS.plist"; sourceTree = "<group>"; };
 		7AB6A00121233D590053E259 /* workout.xsd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = workout.xsd; sourceTree = "<group>"; };
 		7AB6A00221233D590053E259 /* ImportExportBackupManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportExportBackupManager.swift; sourceTree = "<group>"; };
 		7AB6A00521233DCD0053E259 /* WorkoutIterator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutIterator.swift; sourceTree = "<group>"; };
@@ -325,6 +399,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A568B1A21241EC000116EB5 /* GymTrackerCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -334,9 +409,18 @@
 			files = (
 				7A1305991EAB567300D29048 /* libxml2.2.tbd in Frameworks */,
 				7A13059A1EAB567300D29048 /* libxml2.tbd in Frameworks */,
+				7A568B2021241FE900116EB5 /* GymTrackerCore.framework in Frameworks */,
 				7AC388F51EA21B3200EB9571 /* UserNotifications.framework in Frameworks */,
 				7ACE8B6F1E76D0D00011F839 /* MBLibrary.framework in Frameworks */,
 				7A5346BB1E86BA7000AC5638 /* HealthKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7A568AE321241AB200116EB5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7A568AF521241C2000116EB5 /* MBLibrary.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -344,6 +428,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A568AF221241C0B00116EB5 /* MBLibrary.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -351,6 +436,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A568B1721241DE900116EB5 /* GymTrackerCore.framework in Frameworks */,
 				7AC705EA210F3A1D003E4DF4 /* UserNotificationsUI.framework in Frameworks */,
 				7AC705E8210F3A1D003E4DF4 /* UserNotifications.framework in Frameworks */,
 			);
@@ -362,6 +448,7 @@
 			files = (
 				7ACF6DB91E803B0300579B67 /* MBLibrary.framework in Frameworks */,
 				7A5346B51E86B16400AC5638 /* HealthKit.framework in Frameworks */,
+				7A568B242124212D00116EB5 /* GymTrackerCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -418,6 +505,7 @@
 				7AC705EB210F3A1D003E4DF4 /* Gym Tracker Notifications */,
 				7ACF6D821E802FD200579B67 /* Gym Tracker watchOS */,
 				7ACF6D911E802FD200579B67 /* Gym Tracker watchOS Extension */,
+				7A568AD62124183C00116EB5 /* Gym Tracker Core Tests */,
 				7A4539C41E75CFC200AD0215 /* Products */,
 				7A5346B31E86B16400AC5638 /* Frameworks */,
 			);
@@ -432,7 +520,8 @@
 				7ACF6D8D1E802FD200579B67 /* Gym Tracker watchOS Extension.appex */,
 				7A2E10221FBDCC6F004767D7 /* Gym Tracker Tests.xctest */,
 				7AC705E7210F3A1D003E4DF4 /* Gym Tracker Notifications.appex */,
-				7AB69FB6212335620053E259 /* Gym Tracker Core.framework */,
+				7AB69FB6212335620053E259 /* GymTrackerCore.framework */,
+				7A568AE621241AB200116EB5 /* GymTrackerCore.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -458,6 +547,15 @@
 				7AC705E9210F3A1D003E4DF4 /* UserNotificationsUI.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		7A568AD62124183C00116EB5 /* Gym Tracker Core Tests */ = {
+			isa = PBXGroup;
+			children = (
+				7A568AD72124183C00116EB5 /* Gym_Tracker_Core_Tests.swift */,
+				7A568AD92124183C00116EB5 /* Info.plist */,
+			);
+			path = "Gym Tracker Core Tests";
 			sourceTree = "<group>";
 		};
 		7A5A47F51E78A3EA00ABCF46 /* Supporting Files */ = {
@@ -492,8 +590,10 @@
 		7AB69FC2212336660053E259 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				7AB69FC32123367E0053E259 /* Gym_Tracker_Core.h */,
-				7AB69FC42123367F0053E259 /* Info.plist */,
+				7AB69FC32123367E0053E259 /* Gym_Tracker_Core_iOS.h */,
+				7A568AEF21241B7100116EB5 /* Gym_Tracker_Core_watchOS.h */,
+				7AB69FC42123367F0053E259 /* Info iOS.plist */,
+				7A568AEE21241B7100116EB5 /* Info watchOS.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -735,11 +835,19 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		7A568AE121241AB200116EB5 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7A568AF121241B7100116EB5 /* Gym_Tracker_Core_watchOS.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7AB69FB1212335620053E259 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7AB69FC52123367F0053E259 /* Gym_Tracker_Core.h in Headers */,
+				7AB69FC52123367F0053E259 /* Gym_Tracker_Core_iOS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -757,7 +865,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				7AB69FF4212338780053E259 /* PBXTargetDependency */,
+				7A568B1D21241F3B00116EB5 /* PBXTargetDependency */,
 			);
 			name = "Gym Tracker Tests";
 			productName = "Model Tests";
@@ -781,15 +889,35 @@
 				7ACE8B721E76D0D00011F839 /* PBXTargetDependency */,
 				7ACF6D9A1E802FD200579B67 /* PBXTargetDependency */,
 				7AC705F3210F3A1D003E4DF4 /* PBXTargetDependency */,
+				7A568B2321241FE900116EB5 /* PBXTargetDependency */,
 			);
 			name = "Gym Tracker iOS";
 			productName = "Gym Tracker";
 			productReference = 7A4539C31E75CFC200AD0215 /* Gym Tracker.app */;
 			productType = "com.apple.product-type.application";
 		};
-		7AB69FB5212335620053E259 /* Gym Tracker Core */ = {
+		7A568AE521241AB200116EB5 /* Gym Tracker Core watchOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7AB69FBF212335620053E259 /* Build configuration list for PBXNativeTarget "Gym Tracker Core" */;
+			buildConfigurationList = 7A568AEB21241AB200116EB5 /* Build configuration list for PBXNativeTarget "Gym Tracker Core watchOS" */;
+			buildPhases = (
+				7A568AE121241AB200116EB5 /* Headers */,
+				7A568AE221241AB200116EB5 /* Sources */,
+				7A568AE321241AB200116EB5 /* Frameworks */,
+				7A568AE421241AB200116EB5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7A568AF421241C1600116EB5 /* PBXTargetDependency */,
+			);
+			name = "Gym Tracker Core watchOS";
+			productName = "Gym Tracker Core watchOS";
+			productReference = 7A568AE621241AB200116EB5 /* GymTrackerCore.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		7AB69FB5212335620053E259 /* Gym Tracker Core iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7AB69FBF212335620053E259 /* Build configuration list for PBXNativeTarget "Gym Tracker Core iOS" */;
 			buildPhases = (
 				7AB69FB1212335620053E259 /* Headers */,
 				7AB69FB2212335620053E259 /* Sources */,
@@ -799,10 +927,11 @@
 			buildRules = (
 			);
 			dependencies = (
+				7A34F0A3212413B700F62ACC /* PBXTargetDependency */,
 			);
-			name = "Gym Tracker Core";
+			name = "Gym Tracker Core iOS";
 			productName = "Gym Tracker Core";
-			productReference = 7AB69FB6212335620053E259 /* Gym Tracker Core.framework */;
+			productReference = 7AB69FB6212335620053E259 /* GymTrackerCore.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		7AC705E6210F3A1D003E4DF4 /* Gym Tracker Notifications */ = {
@@ -816,6 +945,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				7A568B1921241E1400116EB5 /* PBXTargetDependency */,
 			);
 			name = "Gym Tracker Notifications";
 			productName = "Gym Tracker Notifications";
@@ -852,6 +982,7 @@
 			);
 			dependencies = (
 				7ACF6DBC1E803B0300579B67 /* PBXTargetDependency */,
+				7A568B272124212D00116EB5 /* PBXTargetDependency */,
 			);
 			name = "Gym Tracker watchOS Extension";
 			productName = "Gym Tracker watchOS Extension";
@@ -890,6 +1021,11 @@
 								enabled = 1;
 							};
 						};
+					};
+					7A568AE521241AB200116EB5 = {
+						CreatedOnToolsVersion = 10.0;
+						DevelopmentTeam = C8D57YLUAC;
+						ProvisioningStyle = Automatic;
 					};
 					7AB69FB5212335620053E259 = {
 						CreatedOnToolsVersion = 10.0;
@@ -946,7 +1082,8 @@
 			);
 			projectRoot = "";
 			targets = (
-				7AB69FB5212335620053E259 /* Gym Tracker Core */,
+				7AB69FB5212335620053E259 /* Gym Tracker Core iOS */,
+				7A568AE521241AB200116EB5 /* Gym Tracker Core watchOS */,
 				7A2E10211FBDCC6F004767D7 /* Gym Tracker Tests */,
 				7A4539C21E75CFC200AD0215 /* Gym Tracker iOS */,
 				7AC705E6210F3A1D003E4DF4 /* Gym Tracker Notifications */,
@@ -1007,6 +1144,14 @@
 				7ABC3F2D1EA6A8DF008A3FCF /* rest_end.caf in Resources */,
 				7AB69FE2212337410053E259 /* Assets.xcassets in Resources */,
 				7ABC3F2C1EA6A8DF008A3FCF /* rest_end_notification.caf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7A568AE421241AB200116EB5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7A568B0E21241C5C00116EB5 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1080,6 +1225,34 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7A568AE221241AB200116EB5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7A568B1121241C5F00116EB5 /* GymTracker.xcdatamodeld in Sources */,
+				7A568B0D21241C5C00116EB5 /* ExecuteWorkoutController.swift in Sources */,
+				7A568AFE21241C5C00116EB5 /* GTRest.swift in Sources */,
+				7A568B0A21241C5C00116EB5 /* DataManager.swift in Sources */,
+				7A568B0121241C5C00116EB5 /* GTSetsExercize.swift in Sources */,
+				7A568B0321241C5C00116EB5 /* GTSimpleSetsExercize.swift in Sources */,
+				7A568AF721241C5C00116EB5 /* Double.swift in Sources */,
+				7A568AFA21241C5C00116EB5 /* WorkoutIterator.swift in Sources */,
+				7A568AFC21241C5C00116EB5 /* GTWorkout.swift in Sources */,
+				7A568B0021241C5C00116EB5 /* GTCircuit.swift in Sources */,
+				7A568B0521241C5C00116EB5 /* GTRepsSet.swift in Sources */,
+				7A568B0421241C5C00116EB5 /* GTSet.swift in Sources */,
+				7A568AFD21241C5C00116EB5 /* GTPart.swift in Sources */,
+				7A568B0221241C5C00116EB5 /* GTChoice.swift in Sources */,
+				7A568AF621241C5C00116EB5 /* Date.swift in Sources */,
+				7A568B0F21241C5C00116EB5 /* Main iOS & watchOS.swift in Sources */,
+				7A568B0B21241C5C00116EB5 /* Notification.swift in Sources */,
+				7A568B1021241C5C00116EB5 /* Main.swift in Sources */,
+				7A568B0C21241C5C00116EB5 /* Preferences.swift in Sources */,
+				7A568AFF21241C5C00116EB5 /* GTExercize.swift in Sources */,
+				7A568AFB21241C5C00116EB5 /* WorkoutLevel.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7AB69FB2212335620053E259 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1119,6 +1292,7 @@
 			files = (
 				7AC705ED210F3A1D003E4DF4 /* NotificationViewController.swift in Sources */,
 				7ADD77BF2110562C008CDC00 /* DataManager.swift in Sources */,
+				7A568B1621241D5C00116EB5 /* Notification.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1141,10 +1315,35 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		7AB69FF4212338780053E259 /* PBXTargetDependency */ = {
+		7A34F0A3212413B700F62ACC /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 7AB69FB5212335620053E259 /* Gym Tracker Core */;
-			targetProxy = 7AB69FF3212338780053E259 /* PBXContainerItemProxy */;
+			name = "MBLibrary iOS";
+			targetProxy = 7A34F0A2212413B700F62ACC /* PBXContainerItemProxy */;
+		};
+		7A568AF421241C1600116EB5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "MBLibrary watchOS";
+			targetProxy = 7A568AF321241C1600116EB5 /* PBXContainerItemProxy */;
+		};
+		7A568B1921241E1400116EB5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7AB69FB5212335620053E259 /* Gym Tracker Core iOS */;
+			targetProxy = 7A568B1821241E1400116EB5 /* PBXContainerItemProxy */;
+		};
+		7A568B1D21241F3B00116EB5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7AB69FB5212335620053E259 /* Gym Tracker Core iOS */;
+			targetProxy = 7A568B1C21241F3B00116EB5 /* PBXContainerItemProxy */;
+		};
+		7A568B2321241FE900116EB5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7AB69FB5212335620053E259 /* Gym Tracker Core iOS */;
+			targetProxy = 7A568B2221241FE900116EB5 /* PBXContainerItemProxy */;
+		};
+		7A568B272124212D00116EB5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7A568AE521241AB200116EB5 /* Gym Tracker Core watchOS */;
+			targetProxy = 7A568B262124212D00116EB5 /* PBXContainerItemProxy */;
 		};
 		7AC705F3210F3A1D003E4DF4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1224,6 +1423,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "Marco-Boschi.ios.Gym-Tracker.Model-Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1245,6 +1445,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "Marco-Boschi.ios.Gym-Tracker.Model-Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1303,6 +1504,7 @@
 				HEALTH_READ_DATA = "Monitor heart rate during workout and read data for creating a workout.";
 				HEALTH_WRITE_DATA = "Save completed gym workout.";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1359,6 +1561,7 @@
 				HEALTH_READ_DATA = "Monitor heart rate during workout and read data for creating a workout.";
 				HEALTH_WRITE_DATA = "Save completed gym workout.";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -1399,9 +1602,10 @@
 			};
 			name = Release;
 		};
-		7AB69FBB212335620053E259 /* Debug */ = {
+		7A568AEC21241AB200116EB5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_ENABLE_OBJC_WEAK = YES;
@@ -1415,15 +1619,88 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "Gym Tracker Core/Info.plist";
+				INFOPLIST_FILE = "Gym Tracker Core/Info watchOS.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "Marco-Boschi.watchos.$(APP_NAME_IDENTIFIER).core";
+				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME)";
+				PRODUCT_NAME = GymTrackerCore;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(SWIFT_MODULE_NAME)-watchOS-Swift.h";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = 4;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		7A568AED21241AB200116EB5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = C8D57YLUAC;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = "Gym Tracker Core/Info watchOS.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "Marco-Boschi.watchos.$(APP_NAME_IDENTIFIER).core";
+				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME)";
+				PRODUCT_NAME = GymTrackerCore;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(SWIFT_MODULE_NAME)-watchOS-Swift.h";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = 4;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		7AB69FBB212335620053E259 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = C8D57YLUAC;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = "Gym Tracker Core/Info iOS.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "Marco-Boschi.ios.$(APP_NAME_IDENTIFIER).core";
-				PRODUCT_MODULE_NAME = GymTrackerCore;
-				PRODUCT_NAME = "$(APP_NAME) Core";
+				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME)";
+				PRODUCT_NAME = GymTrackerCore;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(SWIFT_MODULE_NAME)-iOS-Swift.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1434,6 +1711,7 @@
 		7AB69FBC212335620053E259 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_ENABLE_OBJC_WEAK = YES;
@@ -1447,14 +1725,16 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "Gym Tracker Core/Info.plist";
+				INFOPLIST_FILE = "Gym Tracker Core/Info iOS.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "Marco-Boschi.ios.$(APP_NAME_IDENTIFIER).core";
-				PRODUCT_MODULE_NAME = GymTrackerCore;
-				PRODUCT_NAME = "$(APP_NAME) Core";
+				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME)";
+				PRODUCT_NAME = GymTrackerCore;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(SWIFT_MODULE_NAME)-iOS-Swift.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1607,7 +1887,16 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7AB69FBF212335620053E259 /* Build configuration list for PBXNativeTarget "Gym Tracker Core" */ = {
+		7A568AEB21241AB200116EB5 /* Build configuration list for PBXNativeTarget "Gym Tracker Core watchOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7A568AEC21241AB200116EB5 /* Debug */,
+				7A568AED21241AB200116EB5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7AB69FBF212335620053E259 /* Build configuration list for PBXNativeTarget "Gym Tracker Core iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7AB69FBB212335620053E259 /* Debug */,

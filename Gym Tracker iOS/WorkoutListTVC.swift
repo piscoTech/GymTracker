@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import GymTrackerCore
 
 class WorkoutListTableViewController: UITableViewController {
 	

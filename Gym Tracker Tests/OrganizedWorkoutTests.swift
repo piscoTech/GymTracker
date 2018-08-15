@@ -7,64 +7,61 @@
 //
 
 import XCTest
-@testable import Gym_Tracker
+@testable import GymTrackerCore
 
 class OrganizedWorkoutTests: XCTestCase {
 	
-	private var workout, complexWorkout: OrganizedWorkout!
+	private var workout, complexWorkout: GTWorkout!
     
     override func setUp() {
         super.setUp()
 		
 		var raw = dataManager.newWorkout()
 		
-		let newExercize = { () -> Exercize in
-			let e = dataManager.newExercize(for: raw)
+		let newExercize = { (collection: ExercizeCollection?) -> GTSimpleSetsExercize in
+			let e = dataManager.newExercize(for: collection ?? raw)
 			e.set(name: "Exercize")
 			
 			return e
 		}
-		let newRest = {
-			let r = dataManager.newExercize(for: raw)
+		let newRest = { () -> GTRest in
+			let r = dataManager.newRest(for: raw)
 			r.set(rest: 30)
+			
+			return r
 		}
 		
-		_ = newExercize()
-		newRest() // 1
-		_ = newExercize()
-		_ = newExercize() // 3
-		_ = newExercize()
-		newRest() // 5
-		let e6 = newExercize()
-		let e7 = newExercize() // 7
-		_ = newExercize()
-		newRest() // 9
-		_ = newExercize()
-		newRest() // 11
-		_ = newExercize()
-		_ = newExercize() // 13
-		_ = newExercize()
+		_ = newExercize(nil)
+		_ = newRest() // 1
+		_ = newExercize(nil)
+		_ = newExercize(nil) // 3
+		_ = newExercize(nil)
+		_ = newRest() // 5
+		let c1 = dataManager.newCircuit(for: raw)
+		let e6 = newExercize(c1)
+		let e7 = newExercize(c1) // 7
+		_ = newExercize(c1)
+		_ = newRest() // 9
+		_ = newExercize(nil)
+		_ = newRest() // 11
+		_ = newExercize(nil)
+		_ = newExercize(nil) // 13
+		_ = newExercize(nil)
 		
-		workout = OrganizedWorkout(raw)
-		e6.makeCircuit(true)
+		workout = raw
 		e6.enableCircuitRest(true)
-		e7.makeCircuit(true)
 		e7.enableCircuitRest(true)
-		workout[8]?.enableCircuitRest(true)
+		(workout[8] as? GTSetsExercize)?.enableCircuitRest(true)
 		
 		raw = dataManager.newWorkout()
-		let c0 = newExercize()
-		_ = newExercize() // 1
-		_ = newExercize()
-		let c3 = newExercize() // 3
-		let c4 = newExercize()
-		_ = newExercize() // 5
-		
-		complexWorkout = OrganizedWorkout(raw)
-		c0.makeCircuit(true)
-		c3.makeCircuit(true)
-		c4.makeCircuit(true)
-		// 0,1 and 3,4,5 are a circuit
+		let c2 = dataManager.newCircuit(for: raw)
+		_ = newExercize(c2)
+		_ = newExercize(c2) // 1
+		_ = newExercize(nil)
+		let c3 = dataManager.newCircuit(for: raw)
+		_ = newExercize(c3) // 3
+		_ = newExercize(c3)
+		_ = newExercize(c3) // 5
     }
     
     override func tearDown() {
@@ -73,35 +70,6 @@ class OrganizedWorkoutTests: XCTestCase {
 		
         super.tearDown()
     }
-	
-	func testPurgeInvalidSettingsSingle() {
-		let w = dataManager.newWorkout()
-		let ow = OrganizedWorkout(w)
-		var e = dataManager.newExercize(for: w)
-		e.set(name: "E")
-		e.makeCircuit(true)
-		e.enableCircuitRest(true)
-		e = dataManager.newExercize(for: w)
-		e.set(rest: 30)
-		e = dataManager.newExercize(for: w)
-		e.set(name: "E")
-		e.makeCircuit(true)
-		e.enableCircuitRest(true)
-		
-		ow.purgeInvalidSettings()
-		XCTAssertFalse(ow.isCircuit(ow[0]!))
-		XCTAssertFalse(ow[0]!.isCircuit)
-		XCTAssertFalse(ow[0]!.hasCircuitRest)
-		XCTAssertFalse(ow[0]!.isRest)
-		XCTAssertFalse(ow.isCircuit(ow[1]!))
-		XCTAssertFalse(ow[1]!.isCircuit)
-		XCTAssertFalse(ow[1]!.hasCircuitRest)
-		XCTAssertTrue(ow[1]!.isRest)
-		XCTAssertFalse(ow.isCircuit(ow[2]!))
-		XCTAssertFalse(ow[2]!.isCircuit)
-		XCTAssertFalse(ow[2]!.hasCircuitRest)
-		XCTAssertFalse(ow[2]!.isRest)
-	}
 	
 	func testPurgeInvalidSettingsCircuit() {
 		let w = dataManager.newWorkout()

@@ -14,6 +14,6 @@ FOUNDATION_EXPORT double Gym_Tracker_CoreVersionNumber;
 //! Project version string for Gym_Tracker_Core.
 FOUNDATION_EXPORT const unsigned char Gym_Tracker_CoreVersionString[];
 
-// In this header, you should import all the public headers of your framework using statements like #import <Gym_Tracker_Core/PublicHeader.h>
+// In this header, you should import all the public headers of your framework using statements like #import <Gym_Tracker_Core_iOS/PublicHeader.h>
 
 

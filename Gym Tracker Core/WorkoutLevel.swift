@@ -50,8 +50,8 @@ extension ExercizeCollection {
 		return parts.first { $0.order == n }
 	}
 	
-	/// Move the step at the specified index to `to` index, the old exercize at `to` index will have index `dest+1` if the exercize is being moved towards the start of the workout, `dest-1` otherwise.
-	func moveStepAt(number from: Int32, to dest: Int32) {
+	/// Move the part at the specified index to `to` index, the old exercize at `to` index will have index `dest+1` if the part is being moved towards the start of the collection, `dest-1` otherwise.
+	func movePartAt(number from: Int32, to dest: Int32) {
 		guard let e = self[from], dest < parts.count else {
 			return
 		}

@@ -9,6 +9,7 @@
 import UIKit
 import UserNotifications
 import UserNotificationsUI
+import GymTrackerCore
 import MBLibrary
 
 typealias NotificationCompletion = (UNNotificationContentExtensionResponseOption) -> Void

@@ -170,7 +170,7 @@ class ExecuteWorkoutController: NSObject {
 				session.delegate = self
 				healthStore.start(session)
 			} catch {
-				appDelegate.dataManager.setRunningWorkout(nil, fromSource: source)
+				dataManager.setRunningWorkout(nil, fromSource: source)
 				
 				view.setWorkoutDoneText(NSLocalizedString("WORKOUT_START_ERR", comment: "Err starting"))
 				view.setWorkoutDoneViewHidden(false)

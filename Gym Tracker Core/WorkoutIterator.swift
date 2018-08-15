@@ -6,7 +6,7 @@
 //  Copyright © 2017 Marco Boschi. All rights reserved.
 //
 
-import MBLibrary
+import Foundation
 
 protocol WorkoutStepNext {
 	
@@ -74,7 +74,7 @@ class WorkoutStepNextRest: WorkoutStepNext {
 	
 }
 
-class WorkoutStep {
+public class WorkoutStep {
 	
 	/// The name of the current exercize, `nil` if a rest period.
 	var exercizeName: String? {
@@ -252,7 +252,7 @@ class WorkoutRestStep: WorkoutStep {
 /// Before creation make sure that the workout is valid and every settings is valid by calling `purgeInvalidSettings()`.
 ///
 /// After creation make sure not to change the structure of workout, i.e. how exercizes and sets are ordered and arranged in circuit, after creation, weight update is fine. Any change in exercize arrangement will not be reflected, change in number of sets can result in unexpected behaviour.
-class WorkoutIterator: IteratorProtocol {
+public class WorkoutIterator: IteratorProtocol {
 	
 	let workout: GTWorkout
 	
@@ -390,7 +390,7 @@ class WorkoutIterator: IteratorProtocol {
 		preferences.weightChangeCache = [:]
 	}
 	
-	func next() -> WorkoutStep? {
+	public func next() -> WorkoutStep? {
 		guard exercizes.count > curExercize else {
 			return nil
 		}

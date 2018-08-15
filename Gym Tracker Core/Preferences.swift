@@ -62,13 +62,13 @@ enum RunningWorkoutSource: String {
 
 // MARK: -
 
-class Preferences {
+public class Preferences {
 	
 	let use: DataManager.Usage
 	let local: KeyValueStore
 	let notificationData: KeyValueStore
 
-	init(for use: DataManager.Usage) {
+	public init(for use: DataManager.Usage) {
 		self.use = use
 		
 		if use == .application {
@@ -84,7 +84,7 @@ class Preferences {
 	
 	// MARK: - Notification Data
 	
-	var weightUpdatedInNotification: Bool {
+	public var weightUpdatedInNotification: Bool {
 		get {
 			return notificationData.bool(forKey: PreferenceKeys.weightUpdatedInNotification)
 		}
@@ -94,7 +94,7 @@ class Preferences {
 		}
 	}
 	
-	var setEndedInNotificationTime: Date? {
+	public var setEndedInNotificationTime: Date? {
 		get {
 			return notificationData.object(forKey: PreferenceKeys.setEndedInNotificationTime) as? Date
 		}
@@ -109,7 +109,8 @@ class Preferences {
 		}
 	}
 	
-	var weightChangeFromNotification: Double {
+	#warning("Rename me")
+	public var weightChangeFromNotification: Double {
 		get {
 			return notificationData.double(forKey: PreferenceKeys.weightChangeFromNotification)
 		}
@@ -119,7 +120,7 @@ class Preferences {
 		}
 	}
 	
-	func clearNotificationData() {
+	public func clearNotificationData() {
 		weightUpdatedInNotification = false
 		setEndedInNotificationTime = nil
 		weightChangeFromNotification = 0

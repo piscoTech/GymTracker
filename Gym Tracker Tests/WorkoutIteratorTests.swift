@@ -8,7 +8,7 @@
 
 import XCTest
 import MBLibrary
-@testable import Gym_Tracker
+@testable import GymTrackerCore
 
 class WorkoutIteratorTests: XCTestCase {
 	

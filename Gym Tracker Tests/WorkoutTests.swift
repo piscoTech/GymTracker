@@ -7,12 +7,13 @@
 //
 
 import XCTest
-@testable import Gym_Tracker
+@testable import GymTrackerCore
 
 class WorkoutTests: XCTestCase {
 	
-	private var workout: Workout!
-	private var e1, e2, r: Exercize!
+	private var workout: GTWorkout!
+	private var e1, e2: GTSimpleSetsExercize!
+	private var r: GTRest!
     
     override func setUp() {
         super.setUp()
@@ -21,7 +22,7 @@ class WorkoutTests: XCTestCase {
 		e1 = dataManager.newExercize(for: workout)
 		e1.set(name: "Exercize")
 		
-		r = dataManager.newExercize(for: workout)
+		r = dataManager.newRest(for: workout)
 		r.set(rest: 30)
 		
 		e2 = dataManager.newExercize(for: workout)
@@ -36,73 +37,68 @@ class WorkoutTests: XCTestCase {
     }
     
     func testCreation() {
-		XCTAssertEqual(workout.exercizes.count, 3, "Not the expected number of exercizes")
+		XCTAssertEqual(workout.parts.count, 3, "Not the expected number of exercizes")
 		
 		let first = workout[0]
 		XCTAssertNotNil(first, "Missing exercize")
 		XCTAssertEqual(first, e1)
-		XCTAssertFalse(e1.isRest, "This should be an exercize")
 		
 		let r = workout[1]
 		XCTAssertNotNil(r, "Missing rest period")
 		XCTAssertEqual(r, self.r)
-		XCTAssertTrue(r!.isRest, "This should be a rest period")
 		
 		let last = workout[2]
 		XCTAssertNotNil(last, "Missing exercize")
 		XCTAssertEqual(last, e2)
-		XCTAssertFalse(e2.isRest, "This should be an exercize")
     }
 	
 	func testReorderBefore() {
-		workout.moveExercizeAt(number: 2, to: 1)
-		XCTAssertEqual(workout.exercizes.count, 3, "Some exercizes disappeared")
+		workout.movePartAt(number: 2, to: 1)
+		XCTAssertEqual(workout.parts.count, 3, "Some exercizes disappeared")
 		XCTAssertEqual(workout[0], e1)
 		XCTAssertEqual(workout[1], e2)
 		XCTAssertEqual(workout[2], r)
 	}
 	
 	func testReorderAfter() {
-		workout.moveExercizeAt(number: 0, to: 1)
-		XCTAssertEqual(workout.exercizes.count, 3, "Some exercizes disappeared")
+		workout.movePartAt(number: 0, to: 1)
+		XCTAssertEqual(workout.parts.count, 3, "Some exercizes disappeared")
 		XCTAssertEqual(workout[1], e1)
 		XCTAssertEqual(workout[2], e2)
 		XCTAssertEqual(workout[0], r)
 	}
 	
 	func testCompactSimpleEnd() {
-		workout.moveExercizeAt(number: 2, to: 1)
+		workout.movePartAt(number: 2, to: 1)
 		let (s, e, m) = workout.compactExercizes()
 		XCTAssertTrue(s.isEmpty)
 		XCTAssertTrue(m.isEmpty)
-		XCTAssertFalse(e.isEmpty, "Rest not removed")
-		
-		XCTAssertEqual(workout.exercizes.count, 2)
-		XCTAssertEqual(e.first, r)
+		XCTAssertEqual(e.count, 1, "Rest not removed")
+		XCTAssertEqual(e.first, r, "Removed part is not the rest period")
+		XCTAssertEqual(workout.parts.count, 2)
 	}
 	
 	func testCompactSimpleStart() {
-		workout.moveExercizeAt(number: 0, to: 1)
+		workout.movePartAt(number: 0, to: 1)
 		let (s, e, m) = workout.compactExercizes()
 		XCTAssertTrue(e.isEmpty)
 		XCTAssertTrue(m.isEmpty)
-		XCTAssertFalse(s.isEmpty, "Rest not removed")
-		
-		XCTAssertEqual(workout.exercizes.count, 2)
-		XCTAssertEqual(s.first, r)
+		XCTAssertEqual(s.count, 1, "Rest not removed")
+		XCTAssertEqual(s.first, r, "Removed part is not the rest period")
+		XCTAssertEqual(workout.parts.count, 2)
 	}
 	
 	func testCompactSimpleMiddle() {
-		let r2 = dataManager.newExercize(for: workout)
+		let r2 = dataManager.newRest(for: workout)
 		r2.set(rest: 30)
-		workout.moveExercizeAt(number: 3, to: 1)
+		workout.movePartAt(number: 3, to: 1)
 		
 		let (s, e, m) = workout.compactExercizes()
 		XCTAssertTrue(s.isEmpty)
 		XCTAssertTrue(e.isEmpty)
-		XCTAssertFalse(m.isEmpty, "Rest not removed")
+		XCTAssertEqual(m.count, 1, "Rest not removed")
 		
-		XCTAssertEqual(workout.exercizes.count, 3)
+		XCTAssertEqual(workout.parts.count, 3)
 		let (removed, order) = m.first!
 		XCTAssertEqual(removed, r)
 		XCTAssertEqual(order, 2)

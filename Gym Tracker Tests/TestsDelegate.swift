@@ -7,6 +7,6 @@
 //
 
 import Foundation
-@testable import Gym_Tracker
+@testable import GymTrackerCore
 
 let dataManager = DataManager(for: .testing)
