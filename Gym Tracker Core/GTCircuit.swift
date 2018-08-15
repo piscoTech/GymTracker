@@ -18,9 +18,6 @@ final class GTCircuit: GTExercize, ExercizeCollection {
 	}
 	
 	@NSManaged private(set) var exercizes: Set<GTSetsExercize>
-	var parts: Set<GTPart> {
-		return exercizes
-	}
 	
 	override class func loadWithID(_ id: String, fromDataManager dataManager: DataManager) -> GTCircuit? {
 		let req = NSFetchRequest<GTCircuit>(entityName: self.objectType)
@@ -34,7 +31,7 @@ final class GTCircuit: GTExercize, ExercizeCollection {
 		return validityStatus.global
 	}
 	
-	override var parentCollection: ExercizeCollection? {
+	override var parentLevel: CompositeWorkoutLevel? {
 		return workout
 	}
 	
@@ -81,30 +78,15 @@ final class GTCircuit: GTExercize, ExercizeCollection {
 	var exercizeList: [GTSetsExercize] {
 		return Array(exercizes).sorted { $0.order < $1.order }
 	}
-	var partList: [GTPart] {
-		return exercizeList
-	}
 	
-	func canHandle(part: GTPart.Type) -> Bool {
-		return part is GTSetsExercize.Type
-	}
-	
-	func add(parts: GTPart...) {
-		for p in parts {
-			guard let se = p as? GTSetsExercize else {
-				fatalError("Circuit cannot handle a \(type(of: p))")
-			}
-			
+	func add(parts: GTSetsExercize...) {
+		for se in parts {
 			se.order = Int32(self.exercizes.count)
 			se.set(circuit: self)
 		}
 	}
 	
-	func remove(part p: GTPart) {
-		guard let se = p as? GTSetsExercize else {
-			fatalError("Circuit cannot handle a \(type(of: p))")
-		}
-		
+	func remove(part se: GTSetsExercize) {
 		exercizes.remove(se)
 		recalculatePartsOrder()
 	}

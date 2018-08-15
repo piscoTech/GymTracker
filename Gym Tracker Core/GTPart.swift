@@ -24,7 +24,7 @@ class GTPart: GTDataObject, WorkoutLevel {
 		#warning("Call recalculatePartsOrder() on old value, and test")
 	}
 	
-	var parentCollection: ExercizeCollection? {
+	var parentLevel: CompositeWorkoutLevel? {
 		fatalError("Abstract property not implemented")
 	}
 	

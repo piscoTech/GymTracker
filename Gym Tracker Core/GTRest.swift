@@ -24,7 +24,7 @@ final class GTRest: GTPart {
 		
 	@NSManaged private(set) var rest: TimeInterval
 	
-	override var parentCollection: ExercizeCollection? {
+	override var parentLevel: CompositeWorkoutLevel? {
 		return workout
 	}
 	

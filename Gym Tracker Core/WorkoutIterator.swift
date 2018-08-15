@@ -20,9 +20,9 @@ class WorkoutStepNextSet: WorkoutStepNext {
 	private(set) var description: NSAttributedString
 	
 	let exercizeName: String
-	let addInfo: Double
+	let secondaryInfo: Double
 	private(set) var change: Double
-	let addInfoLabel: NSAttributedString
+	let secondaryInfoLabel: NSAttributedString
 	
 	private let changeProvider: () -> Double
 	
@@ -30,9 +30,9 @@ class WorkoutStepNextSet: WorkoutStepNext {
 		self.changeProvider = change
 		
 		self.exercizeName = exercizeName
-		self.addInfo = addInfo
+		self.secondaryInfo = addInfo
 		self.change = changeProvider()
-		self.addInfoLabel = addInfoLabel
+		self.secondaryInfoLabel = addInfoLabel
 		
 		self.description = NSAttributedString()
 		
@@ -47,10 +47,10 @@ class WorkoutStepNextSet: WorkoutStepNext {
 	private func generateString() {
 		let d = NSMutableAttributedString(string: exercizeName)
 		
-		if let w = addInfo.secondaryInfoDescription(withChange: change) {
+		if let w = secondaryInfo.secondaryInfoDescription(withChange: change) {
 			d.append(NSAttributedString(string: ", "))
 			d.append(w)
-			d.append(addInfoLabel)
+			d.append(secondaryInfoLabel)
 		}
 		
 		self.description = d
@@ -276,7 +276,7 @@ public class WorkoutIterator: IteratorProtocol {
 		var chCount: Int = 0
 		var parts = [[GTPart]]()
 		
-		for p in w.partList {
+		for p in w.exercizeList {
 			if p is GTRest {
 				parts.append([p])
 			} else if p is GTSimpleSetsExercize {

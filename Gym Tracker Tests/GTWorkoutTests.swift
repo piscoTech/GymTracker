@@ -19,13 +19,16 @@ class WorkoutTests: XCTestCase {
         super.setUp()
 		
 		workout = dataManager.newWorkout()
-		e1 = dataManager.newExercize(for: workout)
+		e1 = dataManager.newExercize()
+		workout.add(parts: e1)
 		e1.set(name: "Exercize")
 		
-		r = dataManager.newRest(for: workout)
+		r = dataManager.newRest()
+		workout.add(parts: r)
 		r.set(rest: 30)
 		
-		e2 = dataManager.newExercize(for: workout)
+		e2 = dataManager.newExercize()
+		workout.add(parts: e2)
 		e2.set(name: "Exercize")
     }
     
@@ -37,7 +40,7 @@ class WorkoutTests: XCTestCase {
     }
     
     func testCreation() {
-		XCTAssertEqual(workout.parts.count, 3, "Not the expected number of exercizes")
+		XCTAssertEqual(workout.exercizes.count, 3, "Not the expected number of exercizes")
 		
 		let first = workout[0]
 		XCTAssertNotNil(first, "Missing exercize")
@@ -54,7 +57,7 @@ class WorkoutTests: XCTestCase {
 	
 	func testReorderBefore() {
 		workout.movePartAt(number: 2, to: 1)
-		XCTAssertEqual(workout.parts.count, 3, "Some exercizes disappeared")
+		XCTAssertEqual(workout.exercizes.count, 3, "Some exercizes disappeared")
 		XCTAssertEqual(workout[0], e1)
 		XCTAssertEqual(workout[1], e2)
 		XCTAssertEqual(workout[2], r)
@@ -62,7 +65,7 @@ class WorkoutTests: XCTestCase {
 	
 	func testReorderAfter() {
 		workout.movePartAt(number: 0, to: 1)
-		XCTAssertEqual(workout.parts.count, 3, "Some exercizes disappeared")
+		XCTAssertEqual(workout.exercizes.count, 3, "Some exercizes disappeared")
 		XCTAssertEqual(workout[1], e1)
 		XCTAssertEqual(workout[2], e2)
 		XCTAssertEqual(workout[0], r)
@@ -75,7 +78,7 @@ class WorkoutTests: XCTestCase {
 		XCTAssertTrue(m.isEmpty)
 		XCTAssertEqual(e.count, 1, "Rest not removed")
 		XCTAssertEqual(e.first, r, "Removed part is not the rest period")
-		XCTAssertEqual(workout.parts.count, 2)
+		XCTAssertEqual(workout.exercizes.count, 2)
 	}
 	
 	func testCompactSimpleStart() {
@@ -85,11 +88,12 @@ class WorkoutTests: XCTestCase {
 		XCTAssertTrue(m.isEmpty)
 		XCTAssertEqual(s.count, 1, "Rest not removed")
 		XCTAssertEqual(s.first, r, "Removed part is not the rest period")
-		XCTAssertEqual(workout.parts.count, 2)
+		XCTAssertEqual(workout.exercizes.count, 2)
 	}
 	
 	func testCompactSimpleMiddle() {
-		let r2 = dataManager.newRest(for: workout)
+		let r2 = dataManager.newRest()
+		workout.add(parts: r2)
 		r2.set(rest: 30)
 		workout.movePartAt(number: 3, to: 1)
 		
@@ -98,7 +102,7 @@ class WorkoutTests: XCTestCase {
 		XCTAssertTrue(e.isEmpty)
 		XCTAssertEqual(m.count, 1, "Rest not removed")
 		
-		XCTAssertEqual(workout.parts.count, 3)
+		XCTAssertEqual(workout.exercizes.count, 3)
 		let (removed, order) = m.first!
 		XCTAssertEqual(removed, r)
 		XCTAssertEqual(order, 2)

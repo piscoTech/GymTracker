@@ -357,42 +357,21 @@ public class DataManager: NSObject {
 		return newObjectFor(GTWorkout.self)
 	}
 	
-	func newRest(for collection: ExercizeCollection) -> GTRest {
-		precondition(collection.canHandle(part: GTRest.self), "Given collection cannot handle circuits")
-		
-		let newPart = newObjectFor(GTRest.self)
-		collection.add(parts: newPart)
-		
-		return newPart
+	func newRest() -> GTRest {
+		return newObjectFor(GTRest.self)
 	}
 	
-	func newCircuit(for collection: ExercizeCollection) -> GTCircuit {
-		precondition(collection.canHandle(part: GTCircuit.self), "Given collection cannot handle circuits")
-		
-		let newPart = newObjectFor(GTCircuit.self)
-		collection.add(parts: newPart)
-		
-		return newPart
+	func newCircuit() -> GTCircuit {
+		return newObjectFor(GTCircuit.self)
 	}
 	
-	func newChoice(for collection: ExercizeCollection) -> GTChoice {
-		precondition(collection.canHandle(part: GTChoice.self), "Given collection cannot handle choices")
-		
-		let newPart = newObjectFor(GTChoice.self)
-		collection.add(parts: newPart)
-		
-		return newPart
+	func newChoice() -> GTChoice {
+		return newObjectFor(GTChoice.self)
 	}
 	
-	func newExercize(for collection: ExercizeCollection) -> GTSimpleSetsExercize {
-		precondition(collection.canHandle(part: GTSimpleSetsExercize.self), "Given collection cannot handle exercizes")
-		
-		let newPart = newObjectFor(GTSimpleSetsExercize.self)
-		collection.add(parts: newPart)
-		
-		return newPart
+	func newExercize() -> GTSimpleSetsExercize {
+		return newObjectFor(GTSimpleSetsExercize.self)
 	}
-	
 	
 	func newSet(for exercize: GTSimpleSetsExercize) -> GTRepsSet {
 		let newS = newObjectFor(GTRepsSet.self)

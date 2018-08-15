@@ -64,7 +64,7 @@ class GTSimpleSetsExercize: GTSetsExercize {
 		return [workout, circuit, choice].compactMap { $0 }.count == 1 && name.count > 0 && sets.count > 0 && sets.reduce(true) { $0 && $1.isValid }
 	}
 	
-	override var parentCollection: ExercizeCollection? {
+	override var parentLevel: CompositeWorkoutLevel? {
 		return [workout, circuit, choice].compactMap { $0 }.first
 	}
 	

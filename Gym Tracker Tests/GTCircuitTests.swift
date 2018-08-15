@@ -9,7 +9,7 @@
 import XCTest
 @testable import GymTrackerCore
 
-class OrganizedWorkoutTests: XCTestCase {
+class GTCircuitTests: XCTestCase {
 	
 	private var workout, complexWorkout: GTWorkout!
 	
@@ -20,38 +20,34 @@ class OrganizedWorkoutTests: XCTestCase {
 		
 		var raw = dataManager.newWorkout()
 		
-		let newExercize = { (collection: ExercizeCollection?) -> GTSimpleSetsExercize in
-			let e = dataManager.newExercize(for: collection ?? raw)
+		let nE = { () -> GTSimpleSetsExercize in
+			let e = dataManager.newExercize()
 			e.set(name: "Exercize")
-			
 			return e
 		}
-		let newRest = { () -> GTRest in
-			let r = dataManager.newRest(for: raw)
+
+		let nR = { () -> GTRest in
+			let r = dataManager.newRest()
 			r.set(rest: 30)
 			
 			return r
 		}
 		
-		_ = newExercize(nil)
-		_ = newRest() // 1
-		_ = newExercize(nil)
-		_ = newExercize(nil) // 3
-		_ = newExercize(nil)
-		_ = newRest() // 5
-		let c1 = dataManager.newCircuit(for: raw) // 6
+		raw.add(parts: nE(), nR(), nE(), nE(), nE(), nR())
+		let c1 = dataManager.newCircuit() // 6
+		raw.add(parts: c1)
 		let e6, e7: GTSimpleSetsExercize
 		do {
-			e6 = newExercize(c1)
-			e7 = newExercize(c1)
-			_ = newExercize(c1)
+			e6 = nE()
+			e7 = nE()
+			c1.add(parts: e6, e7, nE())
 		}
-		_ = newRest() // 7
-		_ = newExercize(nil)
-		_ = newRest() // 9
-		_ = newExercize(nil)
-		_ = newExercize(nil) // 11
-		_ = newExercize(nil)
+		_ = nR() // 7
+		_ = nE()
+		_ = nR() // 9
+		_ = nE()
+		_ = nE() // 11
+		_ = nE()
 		
 		workout = raw
 		e6.enableCircuitRest(true)
@@ -59,18 +55,11 @@ class OrganizedWorkoutTests: XCTestCase {
 		(workout[8] as? GTSetsExercize)?.enableCircuitRest(true)
 		
 		raw = dataManager.newWorkout()
-		let c2 = dataManager.newCircuit(for: raw) // 0
-		do {
-			_ = newExercize(c2)
-			_ = newExercize(c2)
-		}
-		_ = newExercize(nil) // 1
-		let c3 = dataManager.newCircuit(for: raw) //2
-		do {
-			_ = newExercize(c3)
-			_ = newExercize(c3)
-			_ = newExercize(c3)
-		}
+		let c2 = dataManager.newCircuit() // 0
+		c2.add(parts: nE(), nE())
+		let c3 = dataManager.newCircuit() //2
+		c3.add(parts: nE(), nE(), nE())
+		raw.add(parts: c2, nE(), c3)
 	}
     
     override func tearDown() {

@@ -24,9 +24,6 @@ final class GTChoice: GTSetsExercize, ExercizeCollection {
 	/// A negative value represent no choice, a value grater than the last index is equivalent to `0`.
 	@NSManaged var lastChosen: Int32
 	@NSManaged private(set) var exercizes: Set<GTSimpleSetsExercize>
-	var parts: Set<GTPart> {
-		return exercizes
-	}
 
 	override class func loadWithID(_ id: String, fromDataManager dataManager: DataManager) -> GTChoice? {
 		let req = NSFetchRequest<GTChoice>(entityName: self.objectType)
@@ -40,7 +37,7 @@ final class GTChoice: GTSetsExercize, ExercizeCollection {
 		return [workout, circuit].compactMap { $0 }.count == 1 && exercizes.count > 1 && exercizes.reduce(true) { $0 && $1.isValid }
 	}
 	
-	override var parentCollection: ExercizeCollection? {
+	override var parentLevel: CompositeWorkoutLevel? {
 		return [workout, circuit].compactMap { $0 }.first
 	}
 	
@@ -61,30 +58,15 @@ final class GTChoice: GTSetsExercize, ExercizeCollection {
 	var exercizeList: [GTSimpleSetsExercize] {
 		return Array(exercizes).sorted { $0.order < $1.order }
 	}
-	var partList: [GTPart] {
-		return exercizeList
-	}
-
-	func canHandle(part: GTPart.Type) -> Bool {
-		return part is GTSimpleSetsExercize.Type
-	}
 	
-	func add(parts: GTPart...) {
-		for p in parts {
-			guard let e = p as? GTSimpleSetsExercize else {
-				fatalError("Circuit cannot handle a \(type(of: p))")
-			}
-			
+	func add(parts: GTSimpleSetsExercize...) {
+		for e in parts {
 			e.order = Int32(self.exercizes.count)
 			e.set(choice: self)
 		}
 	}
 	
-	func remove(part p: GTPart) {
-		guard let e = p as? GTSimpleSetsExercize else {
-			fatalError("Choice cannot handle a \(type(of: p))")
-		}
-		
+	func remove(part e: GTSimpleSetsExercize) {
 		exercizes.remove(e)
 		recalculatePartsOrder()
 	}

@@ -29,6 +29,9 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 	
 	@NSManaged private(set) var name: String
 	@NSManaged private(set) var parts: Set<GTPart>
+	var exercizes: Set<GTPart> {
+		return parts
+	}
 	
 	@NSManaged var archived: Bool
 	
@@ -53,7 +56,7 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 		return parts.first { $0 is GTExercize } != nil
 	}
 	
-	var parentCollection: ExercizeCollection? {
+	var parentLevel: CompositeWorkoutLevel? {
 		return nil
 	}
 	
@@ -64,8 +67,8 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 	
 	// MARK: - Parts handling
 	
-	var partList: [GTPart] {
-		return Array(parts).sorted { $0.order < $1.order }
+	var exercizeList: [GTPart] {
+		return Array(exercizes).sorted { $0.order < $1.order }
 	}
 	
 	func canHandle(part: GTPart.Type) -> Bool {
@@ -94,7 +97,7 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 		var s = [GTPart]()
 		var e = [GTPart]()
 		var middle = [(GTPart, Int32)]()
-		var steps = self.partList
+		var steps = self.exercizeList
 		
 		while let f = steps.first, f is GTRest {
 			self.remove(part: f)
