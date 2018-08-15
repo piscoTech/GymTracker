@@ -1,5 +1,5 @@
 //
-//  WorkoutTests.swift
+//  GTWorkoutTests.swift
 //  Model Tests
 //
 //  Created by Marco Boschi on 16/11/2017.

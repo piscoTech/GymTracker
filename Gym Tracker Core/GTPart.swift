@@ -21,6 +21,7 @@ class GTPart: GTDataObject, WorkoutLevel {
 	
 	func set(workout w: GTWorkout?) {
 		self.workout = w
+		#warning("Call recalculatePartsOrder() on old value, and test")
 	}
 	
 	var parentCollection: ExercizeCollection? {

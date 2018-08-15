@@ -44,6 +44,13 @@ final class GTChoice: GTSetsExercize, ExercizeCollection {
 		return [workout, circuit].compactMap { $0 }.first
 	}
 	
+	///Enables rest periods in circuits for this exercize.
+	///
+	///Regardless on what is passed circuit rest will always be disabled, set circuit rest in each individual exercize.
+	override func enableCircuitRest(_ r: Bool) {
+		super.enableCircuitRest(false)
+	}
+	
 	override var setsCount: Int? {
 		let counts = exercizes.compactMap { $0.setsCount }.removingDuplicates()
 		return counts.count > 1 ? nil : counts.first

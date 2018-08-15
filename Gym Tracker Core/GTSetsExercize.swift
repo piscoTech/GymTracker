@@ -29,9 +29,10 @@ class GTSetsExercize: GTExercize {
 	
 	func set(circuit c: GTCircuit?) {
 		self.circuit = c
+		#warning("Call recalculatePartsOrder() on old value, and test")
 		
 		if c == nil {
-			hasCircuitRest = false
+			enableCircuitRest(false)
 		} else {
 			set(workout: nil)
 		}

@@ -12,50 +12,49 @@ import MBLibrary
 
 class WorkoutIteratorTests: XCTestCase {
 	
-	private var workout: OrganizedWorkout!
+	private var workout: GTWorkout!
     
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
 		
 		let w = dataManager.newWorkout()
-		let ow = OrganizedWorkout(w)
-		ow.name = "Workout"
+		w.set(name: "Workout")
 		
 		var e = dataManager.newExercize(for: w)
 		e.set(name: "Exercize 1")
 		var s = dataManager.newSet(for: e)
-		s.set(reps: 10)
-		s.set(weight: 0)
+		s.set(mainInfo: 10)
+		s.set(secondaryInfo: 0)
 		s.set(rest: 0)
 		s = dataManager.newSet(for: e)
-		s.set(reps: 5)
-		s.set(weight: 8)
+		s.set(mainInfo: 5)
+		s.set(secondaryInfo: 8)
 		s.set(rest: 90)
 		
 		e = dataManager.newExercize(for: w)
 		e.set(name: "Exercize 2")
 		s = dataManager.newSet(for: e)
-		s.set(reps: 12)
-		s.set(weight: 4)
+		s.set(mainInfo: 12)
+		s.set(secondaryInfo: 4)
 		s.set(rest: 60)
 		s = dataManager.newSet(for: e)
-		s.set(reps: 10)
-		s.set(weight: 6)
+		s.set(mainInfo: 10)
+		s.set(secondaryInfo: 6)
 		s.set(rest: 60)
 		
-		e = dataManager.newExercize(for: w)
+		let r = dataManager.newRest(for: w)
 		let rest = 4 * 60.0
-		e.set(rest: rest)
+		r.set(rest: rest)
 		
 		e = dataManager.newExercize(for: w)
 		e.set(name: "Exercize 3")
 		s = dataManager.newSet(for: e)
-		s.set(reps: 15)
-		s.set(weight: 0)
+		s.set(mainInfo: 15)
+		s.set(secondaryInfo: 0)
 		s.set(rest: 60)
 		
-		self.workout = ow
+		self.workout = w
     }
     
     override func tearDown() {
@@ -66,13 +65,15 @@ class WorkoutIteratorTests: XCTestCase {
     }
 	
 	func testInvalidWorkout() {
-		let iter = WorkoutIterator(OrganizedWorkout(dataManager.newWorkout()))
-		XCTAssertNil(iter.next())
+		let iter = WorkoutIterator(dataManager.newWorkout(), choices: [], using: dataManager.preferences)
+		XCTAssertNil(iter)
 	}
 	
 	func testStepCount() {
 		var count = 0
-		let iter = WorkoutIterator(workout)
+		guard let iter = WorkoutIterator(workout, choices: [], using: dataManager.preferences) else {
+			XCTFail("Invalid workout")
+		}
 		while let _ = iter.next() {
 			count += 1
 		}
@@ -82,25 +83,26 @@ class WorkoutIteratorTests: XCTestCase {
 	
 	func testOtherSetsNoWeightIsLastFlag() {
 		let w = dataManager.newWorkout()
-		let ow = OrganizedWorkout(w)
-		ow.name = "Workout"
+		w.set(name: "Workout")
 		
 		let e = dataManager.newExercize(for: w)
 		e.set(name: "E")
 		var s = dataManager.newSet(for: e)
-		s.set(reps: 10)
-		s.set(weight: 0)
+		s.set(mainInfo: 10)
+		s.set(secondaryInfo: 0)
 		s.set(rest: 30)
 		s = dataManager.newSet(for: e)
-		s.set(reps: 10)
-		s.set(weight: 0)
+		s.set(mainInfo: 10)
+		s.set(secondaryInfo: 0)
 		s.set(rest: 30)
 		s = dataManager.newSet(for: e)
-		s.set(reps: 10)
-		s.set(weight: 0)
+		s.set(mainInfo: 10)
+		s.set(secondaryInfo: 0)
 		s.set(rest: 30)
 		
-		let iter = WorkoutIterator(ow)
+		guard let iter = WorkoutIterator(w, choices: [], using: dataManager.preferences) else {
+			XCTFail("Invalid workout")
+		}
 		if let s1 = iter.next() {
 			if let othSets = s1.otherPartsInfo?.string {
 				assert(string: othSets, containsInOrder: ["2", "0", "0"])
@@ -132,22 +134,24 @@ class WorkoutIteratorTests: XCTestCase {
 	}
 	
     func testSimpleWorkout() {
-		let iter = WorkoutIterator(workout)
+		guard let iter = WorkoutIterator(workout, choices: [], using: dataManager.preferences) else {
+			XCTFail("Invalid workout")
+		}
 		do { // First exercize
-			let e = workout[0]!
+			let e = workout[0] as! GTSimpleSetsExercize
 			let s1 = e[0]!
 			let s2 = e[1]!
 			
 			if let step1 = iter.next() {
 				XCTAssertEqual(step1.exercizeName, e.name)
-				if let curRep = step1.currentReps?.string {
-					assert(string: curRep, containsInOrder: [s1.reps.description], thenNotContains: timesSign)
+				if let curRep = step1.currentInfo?.string {
+					assert(string: curRep, containsInOrder: [s1.mainInfo.description], thenNotContains: timesSign)
 				} else {
 					XCTFail("Unexpected nil")
 				}
 				
 				if let othSets = step1.otherPartsInfo?.string {
-					assert(string: othSets, containsInOrder: ["1", s2.weight.toString()])
+					assert(string: othSets, containsInOrder: ["1", s2.secondaryInfo.toString()])
 				} else {
 					XCTFail("Unexpected nil")
 				}
@@ -396,13 +400,13 @@ class WorkoutIteratorTests: XCTestCase {
 		let e2 = workout[1]!
 		
 		let s5 = dataManager.newSet(for: e1)
-		s5.set(reps: 8)
-		s5.set(weight: 8)
+		s5.set(mainInfo: 8)
+		s5.set(secondaryInfo: 8)
 		s5.set(rest: 90)
 		
 		let s6 = dataManager.newSet(for: e2)
-		s6.set(reps: 10)
-		s6.set(weight: 11)
+		s6.set(mainInfo: 10)
+		s6.set(secondaryInfo: 11)
 		s6.set(rest: 60)
 		
 		workout.makeCircuit(exercize: e1, isCircuit: true)
@@ -791,13 +795,13 @@ class WorkoutIteratorTests: XCTestCase {
 		let e2 = workout[1]!
 		
 		let s5 = dataManager.newSet(for: e1)
-		s5.set(reps: 8)
-		s5.set(weight: 8)
+		s5.set(mainInfo: 8)
+		s5.set(secondaryInfo: 8)
 		s5.set(rest: 90)
 		
 		let s6 = dataManager.newSet(for: e2)
-		s6.set(reps: 10)
-		s6.set(weight: 11)
+		s6.set(mainInfo: 10)
+		s6.set(secondaryInfo: 11)
 		s6.set(rest: 60)
 		
 		workout.makeCircuit(exercize: e1, isCircuit: true)
