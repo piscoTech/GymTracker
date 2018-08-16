@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7A1305991EAB567300D29048 /* libxml2.2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A1305971EAB567300D29048 /* libxml2.2.tbd */; };
-		7A13059A1EAB567300D29048 /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A1305981EAB567300D29048 /* libxml2.tbd */; };
 		7A1CF9521FDD8BBF009C572C /* GTWorkoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A2E102F1FBDCCC3004767D7 /* GTWorkoutTests.swift */; };
 		7A1CF9531FDD8BBF009C572C /* GTCircuitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A2E10431FBDDDBA004767D7 /* GTCircuitTests.swift */; };
 		7A1CF9541FDD8BBF009C572C /* ImportExportTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A1CF9361FDD4CD6009C572C /* ImportExportTest.swift */; };
@@ -23,7 +21,6 @@
 		7A45113C1FDDD4510065282A /* invalidCircuitSets.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7A45113B1FDDD4500065282A /* invalidCircuitSets.xml */; };
 		7A4DC7A01FDDC9AB00BC60FE /* invalidCircuitRest.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7A4DC79F1FDDC9AB00BC60FE /* invalidCircuitRest.xml */; };
 		7A4DF0171E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4DF0161E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift */; };
-		7A5346B51E86B16400AC5638 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A5346B41E86B16400AC5638 /* HealthKit.framework */; };
 		7A5346BB1E86BA7000AC5638 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A5346BA1E86BA7000AC5638 /* HealthKit.framework */; };
 		7A568AF121241B7100116EB5 /* Gym_Tracker_Core_watchOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A568AEF21241B7100116EB5 /* Gym_Tracker_Core_watchOS.h */; };
 		7A568AF221241C0B00116EB5 /* MBLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7ACE8B681E76CF720011F839 /* MBLibrary.framework */; };
@@ -57,6 +54,7 @@
 		7A568B2121241FE900116EB5 /* GymTrackerCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7AB69FB6212335620053E259 /* GymTrackerCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7A568B242124212D00116EB5 /* GymTrackerCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A568AE621241AB200116EB5 /* GymTrackerCore.framework */; };
 		7A568B252124212D00116EB5 /* GymTrackerCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7A568AE621241AB200116EB5 /* GymTrackerCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		7A581B2F2126114800FD0CCE /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A581B2E2126114800FD0CCE /* HealthKit.framework */; };
 		7A5D2B711E8422DB008EED4C /* WorkoutDetailIC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A5D2B701E8422DB008EED4C /* WorkoutDetailIC.swift */; };
 		7A6E083D1E98E94C003BB048 /* CurrentWorkoutVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A6E083C1E98E94C003BB048 /* CurrentWorkoutVC.swift */; };
 		7A8E60A92125B53B00935344 /* GTRestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A8E60A82125B53B00935344 /* GTRestTests.swift */; };
@@ -299,8 +297,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		7A1305971EAB567300D29048 /* libxml2.2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.2.tbd; path = usr/lib/libxml2.2.tbd; sourceTree = SDKROOT; };
-		7A1305981EAB567300D29048 /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
 		7A16CDD91FE03227008141D6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7A18D4DF1FE28C97009CD58C /* WorkoutIterator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutIterator.swift; sourceTree = "<group>"; };
 		7A1CF9361FDD4CD6009C572C /* ImportExportTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportExportTest.swift; sourceTree = "<group>"; };
@@ -323,7 +319,6 @@
 		7A4DC79F1FDDC9AB00BC60FE /* invalidCircuitRest.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = invalidCircuitRest.xml; sourceTree = "<group>"; };
 		7A4DF0161E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompletedWorkoutsTVC.swift; sourceTree = "<group>"; };
 		7A5346B21E86B16400AC5638 /* Gym Tracker watchOS Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Gym Tracker watchOS Extension.entitlements"; sourceTree = "<group>"; };
-		7A5346B41E86B16400AC5638 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS3.1.sdk/System/Library/Frameworks/HealthKit.framework; sourceTree = DEVELOPER_DIR; };
 		7A5346B91E86BA6F00AC5638 /* Gym Tracker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Gym Tracker.entitlements"; sourceTree = "<group>"; };
 		7A5346BA1E86BA7000AC5638 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		7A568AD72124183C00116EB5 /* Gym_Tracker_Core_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gym_Tracker_Core_Tests.swift; sourceTree = "<group>"; };
@@ -331,6 +326,7 @@
 		7A568AE621241AB200116EB5 /* GymTrackerCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GymTrackerCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A568AEE21241B7100116EB5 /* Info watchOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info watchOS.plist"; sourceTree = "<group>"; };
 		7A568AEF21241B7100116EB5 /* Gym_Tracker_Core_watchOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Gym_Tracker_Core_watchOS.h; sourceTree = "<group>"; };
+		7A581B2E2126114800FD0CCE /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS5.0.sdk/System/Library/Frameworks/HealthKit.framework; sourceTree = DEVELOPER_DIR; };
 		7A5A47F01E78A3CF00ABCF46 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		7A5D2B701E8422DB008EED4C /* WorkoutDetailIC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkoutDetailIC.swift; sourceTree = "<group>"; };
 		7A6E083C1E98E94C003BB048 /* CurrentWorkoutVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentWorkoutVC.swift; sourceTree = "<group>"; };
@@ -415,8 +411,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7A1305991EAB567300D29048 /* libxml2.2.tbd in Frameworks */,
-				7A13059A1EAB567300D29048 /* libxml2.tbd in Frameworks */,
 				7A568B2021241FE900116EB5 /* GymTrackerCore.framework in Frameworks */,
 				7AC388F51EA21B3200EB9571 /* UserNotifications.framework in Frameworks */,
 				7ACE8B6F1E76D0D00011F839 /* MBLibrary.framework in Frameworks */,
@@ -454,8 +448,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A581B2F2126114800FD0CCE /* HealthKit.framework in Frameworks */,
 				7ACF6DB91E803B0300579B67 /* MBLibrary.framework in Frameworks */,
-				7A5346B51E86B16400AC5638 /* HealthKit.framework in Frameworks */,
 				7A568B242124212D00116EB5 /* GymTrackerCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -551,11 +545,9 @@
 		7A5346B31E86B16400AC5638 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				7A1305971EAB567300D29048 /* libxml2.2.tbd */,
-				7A1305981EAB567300D29048 /* libxml2.tbd */,
+				7A581B2E2126114800FD0CCE /* HealthKit.framework */,
 				7AC388F41EA21B3200EB9571 /* UserNotifications.framework */,
 				7A5346BA1E86BA7000AC5638 /* HealthKit.framework */,
-				7A5346B41E86B16400AC5638 /* HealthKit.framework */,
 				7AC705E9210F3A1D003E4DF4 /* UserNotificationsUI.framework */,
 			);
 			name = Frameworks;
