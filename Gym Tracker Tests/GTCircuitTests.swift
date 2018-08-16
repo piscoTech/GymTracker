@@ -78,9 +78,8 @@ class GTCircuitTests: XCTestCase {
 		_ = dataManager.newSet(for: e8)
 		_ = dataManager.newSet(for: e8)
 		
-		var (g, l) = c1.validityStatus
-		XCTAssertFalse(g)
-		XCTAssertEqual(l, [1])
+		XCTAssertFalse(c1.isValid)
+		XCTAssertEqual(c1.exercizesError, [1])
 
 		let c2 = complexWorkout[0] as! GTCircuit
 		let c3 = complexWorkout[2] as! GTCircuit
@@ -95,12 +94,10 @@ class GTCircuitTests: XCTestCase {
 		_ = dataManager.newSet(for: e1)
 		_ = dataManager.newSet(for: e1)
 		
-		(g, l) = c2.validityStatus
-		XCTAssertFalse(g)
-		XCTAssertEqual(l, [1])
-		(g, l) = c3.validityStatus
-		XCTAssertFalse(g)
-		XCTAssertEqual(l, [])
+		XCTAssertFalse(c2.isValid)
+		XCTAssertEqual(c2.exercizesError, [1])
+		XCTAssertFalse(c3.isValid)
+		XCTAssertEqual(c3.exercizesError, [])
 		
 		_ = dataManager.newSet(for: e0)
 		_ = dataManager.newSet(for: e3)
@@ -109,12 +106,10 @@ class GTCircuitTests: XCTestCase {
 		_ = dataManager.newSet(for: e5)
 		_ = dataManager.newSet(for: e5)
 	
-		(g, l) = c2.validityStatus
-		XCTAssertTrue(g)
-		XCTAssertEqual(l, [])
-		(g, l) = c3.validityStatus
-		XCTAssertFalse(g)
-		XCTAssertEqual(l, [0])
+		XCTAssertTrue(c2.isValid)
+		XCTAssertEqual(c2.exercizesError, [])
+		XCTAssertFalse(c3.isValid)
+		XCTAssertEqual(c3.exercizesError, [0])
 	}
 	
 	func testIsCircuit() {
@@ -123,9 +118,9 @@ class GTCircuitTests: XCTestCase {
 		XCTAssertFalse((workout[12] as! GTSimpleSetsExercize).isInCircuit)
 		
 		let c1 = workout[6] as! GTCircuit
-		XCTAssertTrue((c1[0] as! GTSimpleSetsExercize).isInCircuit)
-		XCTAssertTrue((c1[1] as! GTSimpleSetsExercize).isInCircuit)
-		XCTAssertTrue((c1[2] as! GTSimpleSetsExercize).isInCircuit)
+		XCTAssertTrue(c1[0]!.isInCircuit)
+		XCTAssertTrue(c1[1]!.isInCircuit)
+		XCTAssertTrue(c1[2]!.isInCircuit)
 	}
 	
 	func testCircuitStatus() {
@@ -133,21 +128,21 @@ class GTCircuitTests: XCTestCase {
 		XCTAssertNil((workout[4] as! GTSimpleSetsExercize).circuitStatus)
 		
 		let c1 = workout[6] as! GTCircuit
-		if let (n, t) = (c1[0] as! GTSimpleSetsExercize).circuitStatus {
+		if let (n, t) = c1[0]!.circuitStatus {
 			XCTAssertEqual(n, 1)
 			XCTAssertEqual(t, 3)
 		} else {
 			XCTFail("Unexpected nil")
 		}
 		
-		if let (n, t) = (c1[1] as! GTSimpleSetsExercize).circuitStatus  {
+		if let (n, t) = c1[1]!.circuitStatus  {
 			XCTAssertEqual(n, 2)
 			XCTAssertEqual(t, 3)
 		} else {
 			XCTFail("Unexpected nil")
 		}
 		
-		if let (n, t) = (c1[2] as! GTSimpleSetsExercize).circuitStatus  {
+		if let (n, t) = c1[2]!.circuitStatus  {
 			XCTAssertEqual(n, 3)
 			XCTAssertEqual(t, 3)
 		} else {
@@ -160,22 +155,22 @@ class GTCircuitTests: XCTestCase {
 	func testEnableRestPeriod() {
 		let c1 = workout[6] as! GTCircuit
 		
-		XCTAssertTrue((c1[0] as! GTSimpleSetsExercize).hasCircuitRest)
-		XCTAssertTrue((c1[1] as! GTSimpleSetsExercize).hasCircuitRest)
-		XCTAssertTrue((c1[2] as! GTSimpleSetsExercize).hasCircuitRest)
+		XCTAssertTrue(c1[0]!.hasCircuitRest)
+		XCTAssertTrue(c1[1]!.hasCircuitRest)
+		XCTAssertTrue(c1[2]!.hasCircuitRest)
 		
 		XCTAssertFalse((workout[0] as! GTSimpleSetsExercize).hasCircuitRest)
 		
 		(workout[0] as! GTSimpleSetsExercize).enableCircuitRest(true)
-		(c1[1] as! GTSimpleSetsExercize).enableCircuitRest(false)
-		(c1[2] as! GTSimpleSetsExercize).enableCircuitRest(false)
+		c1[1]!.enableCircuitRest(false)
+		c1[2]!.enableCircuitRest(false)
 		
-		XCTAssertFalse((c1[1] as! GTSimpleSetsExercize).hasCircuitRest)
-		XCTAssertFalse((c1[2] as! GTSimpleSetsExercize).hasCircuitRest)
+		XCTAssertFalse(c1[1]!.hasCircuitRest)
+		XCTAssertFalse(c1[2]!.hasCircuitRest)
 		XCTAssertFalse((workout[0] as! GTSimpleSetsExercize).hasCircuitRest)
 		
-		(c1[2] as! GTSimpleSetsExercize).enableCircuitRest(true)
-		XCTAssertTrue((c1[2] as! GTSimpleSetsExercize).hasCircuitRest)
+		c1[2]!.enableCircuitRest(true)
+		XCTAssertTrue(c1[2]!.hasCircuitRest)
 		
 		#warning("Test also on a choice (should remain false)")
 	}
@@ -210,6 +205,10 @@ class GTCircuitTests: XCTestCase {
 		(g, l) = c2[1]!.restStatus
 		XCTAssertFalse(g)
 		XCTAssertFalse(l)
+	}
+
+	func testSubtree() {
+		XCTFail()
 	}
     
 }

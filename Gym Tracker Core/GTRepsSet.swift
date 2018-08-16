@@ -19,11 +19,11 @@ final class GTRepsSet: GTSet {
 	private let repsKey = "reps"
 	private let weightKey = "weight"
 	
-	@NSManaged private(set) var reps: Int32
-	@NSManaged private(set) var weight: Double
+	@NSManaged private var reps: Int32
+	@NSManaged private var weight: Double
 	
 	override var description: String {
-		return "\(reps)x\(weight.toString())kg"
+		return "\(reps)\(timesSign)\(weight.toString())kg"
 	}
 	
 	override class func loadWithID(_ id: String, fromDataManager dataManager: DataManager) -> GTRepsSet? {

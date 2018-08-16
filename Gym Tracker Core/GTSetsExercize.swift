@@ -27,6 +27,9 @@ class GTSetsExercize: GTExercize {
 		}
 	}
 	
+	/// Make the exercize a part of the given circuit.
+	///
+	/// Unless when passing `nil`, don't call this method directly but rather call `add(parts:_)` on the circuit.
 	func set(circuit c: GTCircuit?) {
 		let old = self.circuit
 		
@@ -43,7 +46,7 @@ class GTSetsExercize: GTExercize {
 	
 	///Enables rest periods in circuits for this exercize.
 	func enableCircuitRest(_ r: Bool) {
-		self.hasCircuitRest = circuit != nil && r
+		self.hasCircuitRest = isInCircuit && r
 	}
 	
 	/// The number of sets part of this exercize, or `nil` if it cannot be determined.

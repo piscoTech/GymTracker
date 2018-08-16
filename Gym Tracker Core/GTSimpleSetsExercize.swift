@@ -50,12 +50,14 @@ class GTSimpleSetsExercize: GTSetsExercize {
 		}
 	}
 	
+	/// Make the exercize a part of the given choice.
+	///
+	/// Unless when passing `nil`, don't call this method directly but rather call `add(parts:_)` on the choice.
 	func set(choice c: GTChoice?) {
 		let old = self.choice
 		
 		self.choice = c
 		old?.recalculatePartsOrder()
-		#warning("Call recalculatePartsOrder() on old value, and test")
 		
 		if c != nil {
 			set(workout: nil)
@@ -111,7 +113,7 @@ class GTSimpleSetsExercize: GTSetsExercize {
 				return nil
 		}
 		
-		return (Int(exInChoice.order), c.exercizes.count)
+		return (Int(exInChoice.order) + 1, c.exercizes.count)
 	}
 	
 	// MARK: - Sets handling

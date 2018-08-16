@@ -34,7 +34,7 @@ final class GTChoice: GTSetsExercize, ExercizeCollection {
 	}
 	
 	override var isValid: Bool {
-		return [workout, circuit].compactMap { $0 }.count == 1 && exercizes.count > 1 && exercizes.reduce(true) { $0 && $1.isValid }
+		return [workout, circuit].compactMap { $0 }.count == 1 && exercizes.count > 1 && exercizes.reduce(true) { $0 && $1.isValid } && inCircuitExercizesError?.isEmpty ?? true
 	}
 	
 	override var parentLevel: CompositeWorkoutLevel? {
@@ -51,6 +51,17 @@ final class GTChoice: GTSetsExercize, ExercizeCollection {
 	override var setsCount: Int? {
 		let counts = exercizes.compactMap { $0.setsCount }.removingDuplicates()
 		return counts.count > 1 ? nil : counts.first
+	}
+	
+	/// Whether or not the exercizes of this choice are valid inside the parent circuit or `nil` if none.
+	///
+	/// An exercize has its index in `exercizeList` included if it has not the same number of sets as the most frequent sets count in the circuit.
+	var inCircuitExercizesError: [Int]? {
+		guard isInCircuit else {
+			return nil
+		}
+		
+		return GTCircuit.invalidIndices(for: exercizeList.map { $0.setsCount })
 	}
 	
 	// MARK: - Exercizes handling

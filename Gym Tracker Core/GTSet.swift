@@ -22,7 +22,7 @@ class GTSet: GTDataObject {
     @NSManaged final var exercize: GTSimpleSetsExercize
 	@NSManaged final var order: Int32
 	
-	@NSManaged final private(set) var rest: Double
+	@NSManaged final private(set) var rest: TimeInterval
 
 	override var isValid: Bool {
 		return rest >= 0

@@ -107,5 +107,9 @@ class WorkoutTests: XCTestCase {
 		XCTAssertEqual(removed, r)
 		XCTAssertEqual(order, 2)
 	}
+	
+	func testSubtree() {
+		XCTFail()
+	}
     
 }
