@@ -70,7 +70,7 @@ final class GTCircuit: GTExercize, ExercizeCollection {
 			circuitError.append(contentsOf: (zip(counts, 0 ..< counts.count).filter { $0.0 == nil || $0.0 != mode }.map { $0.1 }))
 		}
 		
-		return (global && !circuitError.isEmpty, circuitError)
+		return (global && circuitError.isEmpty, circuitError)
 	}
 	
 	// MARK: - Exercizes handling

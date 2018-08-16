@@ -51,7 +51,10 @@ class GTSimpleSetsExercize: GTSetsExercize {
 	}
 	
 	func set(choice c: GTChoice?) {
+		let old = self.choice
+		
 		self.choice = c
+		old?.recalculatePartsOrder()
 		#warning("Call recalculatePartsOrder() on old value, and test")
 		
 		if c != nil {

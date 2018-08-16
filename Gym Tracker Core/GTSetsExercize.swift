@@ -28,7 +28,10 @@ class GTSetsExercize: GTExercize {
 	}
 	
 	func set(circuit c: GTCircuit?) {
+		let old = self.circuit
+		
 		self.circuit = c
+		old?.recalculatePartsOrder()
 		#warning("Call recalculatePartsOrder() on old value, and test")
 		
 		if c == nil {
@@ -67,7 +70,7 @@ class GTSetsExercize: GTExercize {
 			return nil
 		}
 		
-		return (Int(exInCircuit.order), c.exercizes.count)
+		return (Int(exInCircuit.order) + 1, c.exercizes.count)
 	}
 	
 	/// Whether or not the exercize has mid-sets rests, always `true` outside circuits, and wheter the last set has an explit rest, can be `true` only inside a circuit.

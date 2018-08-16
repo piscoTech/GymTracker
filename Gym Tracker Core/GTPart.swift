@@ -20,7 +20,10 @@ class GTPart: GTDataObject, WorkoutLevel {
     @NSManaged final var order: Int32
 	
 	func set(workout w: GTWorkout?) {
+		let old = self.workout
+		
 		self.workout = w
+		old?.recalculatePartsOrder()
 		#warning("Call recalculatePartsOrder() on old value, and test")
 	}
 	
