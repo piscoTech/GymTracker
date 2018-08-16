@@ -20,7 +20,7 @@
         <attribute name="weight" attributeType="Double" minValueString="0" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
     </entity>
     <entity name="GTRest" representedClassName="GTRest" parentEntity="GTPart" syncable="YES">
-        <attribute name="rest" attributeType="Double" minValueString="0" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="rest" attributeType="Double" minValueString="30" defaultValueString="30" usesScalarValueType="YES" syncable="YES"/>
     </entity>
     <entity name="GTSet" representedClassName="GTSet" isAbstract="YES" syncable="YES">
         <attribute name="created" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>

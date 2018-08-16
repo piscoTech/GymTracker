@@ -14,7 +14,7 @@ import CoreData
 final class GTRest: GTPart {
 	
 	static let restStep: TimeInterval = 30
-	private let minRest: TimeInterval = 30
+	static let minRest: TimeInterval = 30
 	
 	override class var objectType: String {
 		return "GTRest"
@@ -29,11 +29,15 @@ final class GTRest: GTPart {
 	}
 	
 	func set(rest r: TimeInterval) {
-		rest = max(r, minRest).rounded(to: GTRest.restStep)
+		rest = max(r, GTRest.minRest).rounded(to: GTRest.restStep)
 	}
 	
 	override var isValid: Bool {
-		return rest >= minRest && workout != nil
+		return rest >= GTRest.minRest && workout != nil
+	}
+	
+	override var subtreeNodeList: Set<GTDataObject> {
+		return [self]
 	}
 	
 	// MARK: - iOS/watchOS interface

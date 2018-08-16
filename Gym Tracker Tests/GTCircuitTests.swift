@@ -11,66 +11,65 @@ import XCTest
 
 class GTCircuitTests: XCTestCase {
 	
-	private var workout, complexWorkout: GTWorkout!
+	private var circuit, choice: GTCircuit!
 	
-	#warning("Include also some choices")
+	private func newValidExercize() -> GTSimpleSetsExercize {
+		let e = dataManager.newExercize()
+		e.set(name: "Exercize")
+		_ = dataManager.newSet(for: e)
+		
+		return e
+	}
 	
     override func setUp() {
         super.setUp()
-		
-		var raw = dataManager.newWorkout()
 		
 		let nE = { () -> GTSimpleSetsExercize in
 			let e = dataManager.newExercize()
 			e.set(name: "Exercize")
 			return e
 		}
-
-		let nR = { () -> GTRest in
-			let r = dataManager.newRest()
-			r.set(rest: 30)
-			
-			return r
-		}
 		
-		raw.add(parts: nE(), nR(), nE(), nE(), nE(), nR())
-		let c1 = dataManager.newCircuit() // 6
-		raw.add(parts: c1)
-		let e6, e7: GTSimpleSetsExercize
+		circuit = dataManager.newCircuit()
 		do {
-			e6 = nE()
-			e7 = nE()
-			c1.add(parts: e6, e7, nE())
+			let e6 = nE()
+			let e7 = nE()
+			let e8 = nE()
+			
+			circuit.add(parts: e6, e7, e8)
+			e6.enableCircuitRest(true)
+			e7.enableCircuitRest(true)
+			e8.enableCircuitRest(true)
 		}
-		raw.add(parts: nR(), nE(), nR(), nE(), nE(), nE())
 		
-		workout = raw
-		e6.enableCircuitRest(true)
-		e7.enableCircuitRest(true)
-		c1[2]?.enableCircuitRest(true)
-		
-		raw = dataManager.newWorkout()
-		let c2 = dataManager.newCircuit() // 0
-		c2.add(parts: nE(), nE())
-		let c3 = dataManager.newCircuit() //2
-		c3.add(parts: nE(), nE(), nE())
-		raw.add(parts: c2, nE(), c3)
-		
-		complexWorkout = raw
+		choice = dataManager.newCircuit()
+		do {
+			let e1 = nE()
+			let e2 = nE()
+			let e3 = nE()
+			let e4 = nE()
+			let ch = dataManager.newChoice()
+			
+			choice.add(parts: e1, e2, ch)
+			ch.add(parts: e3, e4)
+			e1.enableCircuitRest(true)
+			e4.enableCircuitRest(true)
+		}
 	}
     
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
 		dataManager.discardAllChanges()
 		
-        super.tearDown()
+		super.tearDown()
     }
 	
-	func testCircuitValidity() {
-		let c1 = workout[6] as! GTCircuit
-		let e6 = c1[0] as! GTSimpleSetsExercize
-		let e7 = c1[1] as! GTSimpleSetsExercize
-		let e8 = c1[2] as! GTSimpleSetsExercize
+	func testIsValidParent() {
+		XCTAssertFalse(circuit.isValid)
+		
+		let e6 = circuit[0] as! GTSimpleSetsExercize
+		let e7 = circuit[1] as! GTSimpleSetsExercize
+		let e8 = circuit[2] as! GTSimpleSetsExercize
 		
 		_ = dataManager.newSet(for: e6)
 		_ = dataManager.newSet(for: e6)
@@ -78,137 +77,121 @@ class GTCircuitTests: XCTestCase {
 		_ = dataManager.newSet(for: e8)
 		_ = dataManager.newSet(for: e8)
 		
-		XCTAssertFalse(c1.isValid)
-		XCTAssertEqual(c1.exercizesError, [1])
+		XCTAssertFalse(circuit.isValid)
+		XCTAssertEqual(circuit.exercizesError, [1])
+		
+		_ = dataManager.newSet(for: e7)
+		
+		XCTAssertFalse(circuit.isValid)
+		XCTAssertEqual(circuit.exercizesError, [])
+		
+		let w = dataManager.newWorkout()
+		w.add(parts: circuit)
+		XCTAssertTrue(circuit.isValid)
+		XCTAssertEqual(circuit.exercizesError, [])
+		XCTAssertEqual(circuit.parentLevel as? GTWorkout, w)
 
-		let c2 = complexWorkout[0] as! GTCircuit
-		let c3 = complexWorkout[2] as! GTCircuit
+		let e1 = choice[0] as! GTSimpleSetsExercize
+		let e2 = choice[1] as! GTSimpleSetsExercize
+		let ch = choice[2] as! GTChoice
+		let e3 = ch[0]!
+		let e4 = ch[1]!
 		
-		let e0 = c2[0] as! GTSimpleSetsExercize
-		let e1 = c2[1] as! GTSimpleSetsExercize
-		let e3 = c3[0] as! GTSimpleSetsExercize
-		let e4 = c3[1] as! GTSimpleSetsExercize
-		let e5 = c3[2] as! GTSimpleSetsExercize
-		
-		_ = dataManager.newSet(for: e0)
 		_ = dataManager.newSet(for: e1)
-		_ = dataManager.newSet(for: e1)
-		
-		XCTAssertFalse(c2.isValid)
-		XCTAssertEqual(c2.exercizesError, [1])
-		XCTAssertFalse(c3.isValid)
-		XCTAssertEqual(c3.exercizesError, [])
-		
-		_ = dataManager.newSet(for: e0)
+		_ = dataManager.newSet(for: e2)
 		_ = dataManager.newSet(for: e3)
 		_ = dataManager.newSet(for: e4)
 		_ = dataManager.newSet(for: e4)
-		_ = dataManager.newSet(for: e5)
-		_ = dataManager.newSet(for: e5)
-	
-		XCTAssertTrue(c2.isValid)
-		XCTAssertEqual(c2.exercizesError, [])
-		XCTAssertFalse(c3.isValid)
-		XCTAssertEqual(c3.exercizesError, [0])
+		
+		XCTAssertFalse(choice.isValid)
+		XCTAssertEqual(choice.exercizesError, [2])
+		
+		w.add(parts: choice)
+		_ = dataManager.newSet(for: e1)
+		_ = dataManager.newSet(for: e2)
+		_ = dataManager.newSet(for: e3)
+		
+		XCTAssertTrue(choice.isValid)
+		XCTAssertEqual(choice.exercizesError, [])
 	}
 	
-	func testIsCircuit() {
-		XCTAssertFalse((workout[0] as! GTSimpleSetsExercize).isInCircuit)
-		XCTAssertFalse((workout[4] as! GTSimpleSetsExercize).isInCircuit)
-		XCTAssertFalse((workout[12] as! GTSimpleSetsExercize).isInCircuit)
+	func testExList() {
+		let c = dataManager.newCircuit()
+		XCTAssertEqual(c.exercizeList, [])
 		
-		let c1 = workout[6] as! GTCircuit
-		XCTAssertTrue(c1[0]!.isInCircuit)
-		XCTAssertTrue(c1[1]!.isInCircuit)
-		XCTAssertTrue(c1[2]!.isInCircuit)
+		let e1 = newValidExercize()
+		let e2 = newValidExercize()
+		c.add(parts: e2, e1)
+		
+		XCTAssertEqual(c.exercizeList, [e2, e1])
+		XCTAssertEqual(e1.order, 1)
+		XCTAssertEqual(e2.order, 0)
+		
+		c.add(parts: e2)
+		XCTAssertEqual(c.exercizeList, [e1, e2])
+		XCTAssertEqual(e1.order, 0)
+		XCTAssertEqual(e2.order, 1)
 	}
 	
-	func testCircuitStatus() {
-		XCTAssertNil((workout[0] as! GTSimpleSetsExercize).circuitStatus)
-		XCTAssertNil((workout[4] as! GTSimpleSetsExercize).circuitStatus)
+	func testSetSubscript() {
+		let c = dataManager.newCircuit()
+		XCTAssertNil(c[-1])
+		XCTAssertNil(c[0])
+		XCTAssertNil(c[1])
 		
-		let c1 = workout[6] as! GTCircuit
-		if let (n, t) = c1[0]!.circuitStatus {
-			XCTAssertEqual(n, 1)
-			XCTAssertEqual(t, 3)
-		} else {
-			XCTFail("Unexpected nil")
-		}
+		let e1 = newValidExercize()
+		let e2 = newValidExercize()
+		c.add(parts: e2, e1)
 		
-		if let (n, t) = c1[1]!.circuitStatus  {
-			XCTAssertEqual(n, 2)
-			XCTAssertEqual(t, 3)
-		} else {
-			XCTFail("Unexpected nil")
-		}
-		
-		if let (n, t) = c1[2]!.circuitStatus  {
-			XCTAssertEqual(n, 3)
-			XCTAssertEqual(t, 3)
-		} else {
-			XCTFail("Unexpected nil")
-		}
-
-		XCTAssertNil((workout[12] as! GTSimpleSetsExercize).circuitStatus)
+		XCTAssertNil(c[-1])
+		XCTAssertEqual(c[0], e2)
+		XCTAssertEqual(c[1], e1)
+		XCTAssertNil(c[2])
 	}
 	
-	func testEnableRestPeriod() {
-		let c1 = workout[6] as! GTCircuit
+	func testMove() {
+		let c = dataManager.newCircuit()
+		let e1 = newValidExercize()
+		let e2 = newValidExercize()
+		c.add(parts: e2, e1)
 		
-		XCTAssertTrue(c1[0]!.hasCircuitRest)
-		XCTAssertTrue(c1[1]!.hasCircuitRest)
-		XCTAssertTrue(c1[2]!.hasCircuitRest)
+		XCTAssertEqual(e1.order, 1)
+		XCTAssertEqual(e2.order, 0)
 		
-		XCTAssertFalse((workout[0] as! GTSimpleSetsExercize).hasCircuitRest)
+		c.movePartAt(number: 0, to: 1)
 		
-		(workout[0] as! GTSimpleSetsExercize).enableCircuitRest(true)
-		c1[1]!.enableCircuitRest(false)
-		c1[2]!.enableCircuitRest(false)
+		XCTAssertEqual(e1.order, 0)
+		XCTAssertEqual(e2.order, 1)
 		
-		XCTAssertFalse(c1[1]!.hasCircuitRest)
-		XCTAssertFalse(c1[2]!.hasCircuitRest)
-		XCTAssertFalse((workout[0] as! GTSimpleSetsExercize).hasCircuitRest)
+		c.movePartAt(number: 1, to: 0)
 		
-		c1[2]!.enableCircuitRest(true)
-		XCTAssertTrue(c1[2]!.hasCircuitRest)
-		
-		#warning("Test also on a choice (should remain false)")
+		XCTAssertEqual(e1.order, 1)
+		XCTAssertEqual(e2.order, 0)
 	}
 	
-	func testRemoveExercize() {
-		#warning("Cellection level checks")
-	}
-	
-	func testRestStatus() {
-		var (g, l) = (workout[0] as! GTSimpleSetsExercize).restStatus
-		XCTAssertTrue(g)
-		XCTAssertFalse(l)
+	func testRemovePart() {
+		let c = dataManager.newCircuit()
+		let e1 = newValidExercize()
+		let e2 = newValidExercize()
+		c.add(parts: e2, e1)
 		
-		let c1 = workout[6] as! GTCircuit
-		(g, l) = c1[0]!.restStatus
-		XCTAssertTrue(g)
-		XCTAssertTrue(l)
+		XCTAssertEqual(c.exercizes.count, 2)
 		
-		(g, l) = c1[1]!.restStatus
-		XCTAssertTrue(g)
-		XCTAssertTrue(l)
-		
-		(g, l) = c1[2]!.restStatus
-		XCTAssertTrue(g)
-		XCTAssertFalse(l)
-		
-		let c2 = complexWorkout[0] as! GTCircuit
-		(g, l) = c2[0]!.restStatus
-		XCTAssertFalse(g)
-		XCTAssertFalse(l)
-		
-		(g, l) = c2[1]!.restStatus
-		XCTAssertFalse(g)
-		XCTAssertFalse(l)
+		c.remove(part: e2)
+		XCTAssertEqual(c.exercizes.count, 1)
+		XCTAssertEqual(c[0], e1)
 	}
 
 	func testSubtree() {
-		XCTFail()
+		let e1 = choice[0] as! GTSimpleSetsExercize
+		let e2 = choice[1] as! GTSimpleSetsExercize
+		let ch = choice[2] as! GTChoice
+		let e3 = ch[0]!
+		let e4 = ch[1]!
+		
+		let sets = Set(arrayLiteral: dataManager.newSet(for: e1), dataManager.newSet(for: e2), dataManager.newSet(for: e3), dataManager.newSet(for: e4), dataManager.newSet(for: e4), dataManager.newSet(for: e1), dataManager.newSet(for: e2), dataManager.newSet(for: e3))
+		
+		XCTAssertEqual(choice.subtreeNodeList, Set(arrayLiteral: ch, e1, e2, e3, e4, choice).union(sets))
 	}
     
 }

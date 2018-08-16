@@ -35,6 +35,10 @@ final class GTCircuit: GTExercize, ExercizeCollection {
 		return workout
 	}
 	
+	override var subtreeNodeList: Set<GTDataObject> {
+		return Set(exercizes.flatMap { $0.subtreeNodeList } + [self])
+	}
+	
 	/// Whether or not the exercizes of this circuit are valid inside of it.
 	///
 	/// An exercize has its index in `exercizeList` included if it has not the same number of sets as the most frequent sets count in the circuit.

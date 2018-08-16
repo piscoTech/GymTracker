@@ -14,11 +14,16 @@ class GTSimpleRepsExercizeTests: XCTestCase {
 	private var e: GTSimpleSetsExercize!
 
     override func setUp() {
+		super.setUp()
+		
         e = dataManager.newExercize()
     }
 
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
+		dataManager.discardAllChanges()
+		
+		super.tearDown()
     }
 
     func testIsValidParent() {
@@ -146,6 +151,50 @@ class GTSimpleRepsExercizeTests: XCTestCase {
 		e.enableCircuitRest(true)
 		XCTAssertTrue(e.hasCircuitRest)
 	}
+
+	func testRestStatus() {
+		var (g, l) = e.restStatus
+		XCTAssertTrue(g)
+		XCTAssertFalse(l)
+		
+		let c = dataManager.newCircuit()
+		c.add(parts: e)
+		(g, l) = e.restStatus
+		XCTAssertFalse(g)
+		XCTAssertFalse(l)
+		e.enableCircuitRest(true)
+		(g, l) = e.restStatus
+		XCTAssertTrue(g)
+		XCTAssertFalse(l)
+		let e2 = dataManager.newExercize()
+		c.add(parts: e2)
+		e2.enableCircuitRest(true)
+		(g, l) = e.restStatus
+		XCTAssertTrue(g)
+		XCTAssertTrue(l)
+		(g, l) = e2.restStatus
+		XCTAssertTrue(g)
+		XCTAssertFalse(l)
+		
+		let ch = dataManager.newChoice()
+		ch.add(parts: e)
+		c.add(parts: ch)
+		(g, l) = e.restStatus
+		XCTAssertFalse(g)
+		XCTAssertFalse(l)
+		e.enableCircuitRest(true)
+		(g, l) = e.restStatus
+		XCTAssertTrue(g)
+		XCTAssertFalse(l)
+		ch.add(parts: dataManager.newExercize())
+		(g, l) = e.restStatus
+		XCTAssertTrue(g)
+		XCTAssertFalse(l)
+		c.add(parts: dataManager.newExercize())
+		(g, l) = e.restStatus
+		XCTAssertTrue(g)
+		XCTAssertTrue(l)
+	}
 	
 	func testRemoveSet() {
 		let s1 = dataManager.newSet(for: e)
@@ -173,7 +222,10 @@ class GTSimpleRepsExercizeTests: XCTestCase {
 	}
 	
 	func testSubtree() {
-		XCTFail()
+		let s1 = dataManager.newSet(for: e)
+		let s2 = dataManager.newSet(for: e)
+		
+		XCTAssertEqual(e.subtreeNodeList, [e, s1, s2])
 	}
 
 }

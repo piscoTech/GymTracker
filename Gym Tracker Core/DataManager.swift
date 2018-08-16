@@ -118,8 +118,8 @@ class GTDataObject: NSManagedObject {
 		fatalError("Abstarct property not implemented")
 	}
 	
-	/// The list of all more specific components of the workout that are linked by the receiver and the receiver itself.
-	var subtreeNodeList: [GTDataObject] {
+	/// The list of all more specific components of the workout that are linked by the receiver, and the receiver itself.
+	var subtreeNodeList: Set<GTDataObject> {
 		fatalError("Abstarct property not implemented")
 	}
 	
@@ -381,7 +381,7 @@ public class DataManager: NSObject {
 		return newS
 	}
 	
-	func discardAllChanges() {
+	public func discardAllChanges() {
 		localData.managedObjectContext.rollback()
 	}
 	

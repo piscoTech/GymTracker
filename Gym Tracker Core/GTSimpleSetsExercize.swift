@@ -94,6 +94,10 @@ class GTSimpleSetsExercize: GTSetsExercize {
 		return sets.count
 	}
 	
+	override var subtreeNodeList: Set<GTDataObject> {
+		return (sets as Set<GTDataObject>).union([self])
+	}
+	
 	// MARK: - Choice Support
 	
 	/// Whether the exercize is at some point part of a choice.

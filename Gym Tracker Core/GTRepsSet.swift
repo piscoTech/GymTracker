@@ -46,6 +46,10 @@ final class GTRepsSet: GTSet {
 		weight = max(w, 0).rounded(to: 0.5)
 	}
 	
+	override var subtreeNodeList: Set<GTDataObject> {
+		return [self]
+	}
+	
 	// MARK: - Standard accessors
 	
 	override var mainInfo: Int {

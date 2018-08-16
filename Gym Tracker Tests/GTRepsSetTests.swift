@@ -15,12 +15,17 @@ class GTRepsSetTests: XCTestCase {
 	private var s: GTRepsSet!
 
     override func setUp() {
+		super.setUp()
+		
         e = dataManager.newExercize()
 		s = dataManager.newSet(for: e)
     }
 
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
+		dataManager.discardAllChanges()
+		
+		super.tearDown()
     }
 
     func testIsValid() {
@@ -80,7 +85,7 @@ class GTRepsSetTests: XCTestCase {
 	}
 
 	func testSubtree() {
-		XCTFail()
+		XCTAssertEqual(s.subtreeNodeList, [s])
 	}
 
 }

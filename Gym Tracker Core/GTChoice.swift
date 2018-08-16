@@ -53,6 +53,10 @@ final class GTChoice: GTSetsExercize, ExercizeCollection {
 		return counts.count > 1 ? nil : counts.first
 	}
 	
+	override var subtreeNodeList: Set<GTDataObject> {
+		return Set(exercizes.flatMap { $0.subtreeNodeList } + [self])
+	}
+	
 	/// Whether or not the exercizes of this choice are valid inside the parent circuit or `nil` if none.
 	///
 	/// An exercize has its index in `exercizeList` included if it has not the same number of sets as the most frequent sets count in the circuit.

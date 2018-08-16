@@ -14,6 +14,8 @@ class GTChoiceTests: XCTestCase {
 	private var ch: GTChoice!
 	
     override func setUp() {
+		super.setUp()
+		
         ch = dataManager.newChoice()
     }
 	
@@ -27,6 +29,9 @@ class GTChoiceTests: XCTestCase {
 
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
+		dataManager.discardAllChanges()
+		
+		super.tearDown()
     }
 
 	func testIsValidParent() {
@@ -132,6 +137,25 @@ class GTChoiceTests: XCTestCase {
 		XCTAssertEqual(e2.order, 1)
 	}
 	
+	func testMove() {
+		let e1 = newValidExercize()
+		let e2 = newValidExercize()
+		ch.add(parts: e2, e1)
+		
+		XCTAssertEqual(e1.order, 1)
+		XCTAssertEqual(e2.order, 0)
+		
+		ch.movePartAt(number: 0, to: 1)
+		
+		XCTAssertEqual(e1.order, 0)
+		XCTAssertEqual(e2.order, 1)
+		
+		ch.movePartAt(number: 1, to: 0)
+		
+		XCTAssertEqual(e1.order, 1)
+		XCTAssertEqual(e2.order, 0)
+	}
+	
 	func testSetSubscript() {
 		XCTAssertNil(ch[-1])
 		XCTAssertNil(ch[0])
@@ -160,7 +184,11 @@ class GTChoiceTests: XCTestCase {
 	}
 	
 	func testSubtree() {
-		XCTFail()
+		let e1 = newValidExercize()
+		let e2 = newValidExercize()
+		ch.add(parts: e2, e1)
+		
+		XCTAssertEqual(ch.subtreeNodeList, Set(arrayLiteral: ch, e1, e2).union(e1.sets.union(e2.sets)))
 	}
 
 }

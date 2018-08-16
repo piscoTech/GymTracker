@@ -67,7 +67,7 @@ extension ExercizeCollection {
 	}
 	
 	func recalculatePartsOrder() {
-		#warning("Make recursive (optional by argument)")
+		#warning("Make recursive (optional by argument) (NOT SURE)")
 		var i: Int32 = 0
 		for s in exercizeList {
 			s.order = i
