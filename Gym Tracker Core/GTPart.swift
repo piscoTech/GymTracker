@@ -27,7 +27,6 @@ class GTPart: GTDataObject, WorkoutLevel {
 		
 		self.workout = w
 		old?.recalculatePartsOrder()
-		#warning("Call recalculatePartsOrder() on old value, and test")
 	}
 	
 	var parentLevel: CompositeWorkoutLevel? {

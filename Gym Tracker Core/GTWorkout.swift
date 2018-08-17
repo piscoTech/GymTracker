@@ -49,6 +49,10 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 	}
 	
 	override var isValid: Bool {
+		return isSubtreeValid
+	}
+	
+	override var isSubtreeValid: Bool {
 		return name.count > 0 && hasExercizes && parts.reduce(true) { $0 && $1.isValid }
 	}
 	
@@ -61,6 +65,12 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 	
 	override var subtreeNodeList: Set<GTDataObject> {
 		return Set(parts.flatMap { $0.subtreeNodeList } + [self])
+	}
+	
+	override func purgeInvalidSettings() {
+		for p in parts {
+			p.purgeInvalidSettings()
+		}
 	}
 	
 	var choices: [GTChoice] {

@@ -35,8 +35,14 @@ final class GTRepsSet: GTSet {
 	}
 	
 	override var isValid: Bool {
-		return super.isValid && reps > 0 && weight >= 0
+		return super.isValid && isSubtreeValid
 	}
+	
+	override var isSubtreeValid: Bool {
+		return super.isSubtreeValid && reps > 0 && weight >= 0
+	}
+	
+	override func purgeInvalidSettings() {}
 	
 	override func set(mainInfo n: Int) {
 		reps = max(Int32(n), 0)

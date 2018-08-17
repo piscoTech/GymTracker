@@ -19,6 +19,8 @@ class GTSetsExercize: GTExercize {
     @NSManaged private(set) var hasCircuitRest: Bool
 	@NSManaged private(set) var circuit: GTCircuit?
 	
+	private var forcingRest = false
+	
 	override func set(workout w: GTWorkout?) {
 		super.set(workout: w)
 		
@@ -35,23 +37,35 @@ class GTSetsExercize: GTExercize {
 		
 		self.circuit = c
 		old?.recalculatePartsOrder()
-		#warning("Call recalculatePartsOrder() on old value, and test")
 		
 		if c == nil {
-			enableCircuitRest(false)
+			if !forcingRest {
+				enableCircuitRest(false)
+			}
 		} else {
 			set(workout: nil)
 		}
 	}
 	
-	///Enables rest periods in circuits for this exercize.
+	/// Enables rest periods in circuits for this exercize only if part of a circuit.
 	func enableCircuitRest(_ r: Bool) {
 		self.hasCircuitRest = isInCircuit && r
+	}
+	
+	/// Enables rest periods in circuits for this exercize regardless of membership of a circuit or not.
+	internal func forceEnableCircuitRest(_ r: Bool) {
+		forcingRest = true
+		self.hasCircuitRest = r
 	}
 	
 	/// The number of sets part of this exercize, or `nil` if it cannot be determined.
 	var setsCount: Int? {
 		fatalError("Abstract property not implemented")
+	}
+	
+	override func purgeInvalidSettings() {
+		forcingRest = false
+		enableCircuitRest(hasCircuitRest)
 	}
 	
 	// MARK: - Circuit Support

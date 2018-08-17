@@ -34,7 +34,11 @@ final class GTChoice: GTSetsExercize, ExercizeCollection {
 	}
 	
 	override var isValid: Bool {
-		return [workout, circuit].compactMap { $0 }.count == 1 && exercizes.count > 1 && exercizes.reduce(true) { $0 && $1.isValid } && inCircuitExercizesError?.isEmpty ?? true
+		return [workout, circuit].compactMap { $0 }.count == 1 && isSubtreeValid
+	}
+	
+	override var isSubtreeValid: Bool {
+		return exercizes.count > 1 && exercizes.reduce(true) { $0 && $1.isValid } && inCircuitExercizesError?.isEmpty ?? true
 	}
 	
 	override var parentLevel: CompositeWorkoutLevel? {
@@ -48,6 +52,13 @@ final class GTChoice: GTSetsExercize, ExercizeCollection {
 		super.enableCircuitRest(false)
 	}
 	
+	/// Enables rest periods in circuits for this exercize regardless of membership of a circuit or not.
+	///
+	///Regardless on what is passed circuit rest will always be disabled, set circuit rest in each individual exercize.
+	override func forceEnableCircuitRest(_ r: Bool) {
+		super.forceEnableCircuitRest(false)
+	}
+	
 	override var setsCount: Int? {
 		let counts = exercizes.compactMap { $0.setsCount }.removingDuplicates()
 		return counts.count > 1 ? nil : counts.first
@@ -55,6 +66,14 @@ final class GTChoice: GTSetsExercize, ExercizeCollection {
 	
 	override var subtreeNodeList: Set<GTDataObject> {
 		return Set(exercizes.flatMap { $0.subtreeNodeList } + [self])
+	}
+	
+	override func purgeInvalidSettings() {
+		super.purgeInvalidSettings()
+		
+		for e in exercizes {
+			e.purgeInvalidSettings()
+		}
 	}
 	
 	/// Whether or not the exercizes of this choice are valid inside the parent circuit or `nil` if none.

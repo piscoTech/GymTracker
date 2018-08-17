@@ -66,7 +66,19 @@ class GTSimpleSetsExercize: GTSetsExercize {
 	}
 	
 	override var isValid: Bool {
-		return [workout, circuit, choice].compactMap { $0 }.count == 1 && name.count > 0 && sets.count > 0 && sets.reduce(true) { $0 && $1.isValid }
+		return [workout, circuit, choice].compactMap { $0 }.count == 1 && isSubtreeValid
+	}
+	
+	override var isSubtreeValid: Bool {
+		return name.count > 0 && sets.count > 0 && sets.reduce(true) { $0 && $1.isValid }
+	}
+	
+	override func purgeInvalidSettings() {
+		super.purgeInvalidSettings()
+		
+		for s in sets {
+			s.purgeInvalidSettings()
+		}
 	}
 	
 	override var parentLevel: CompositeWorkoutLevel? {
@@ -126,6 +138,11 @@ class GTSimpleSetsExercize: GTSetsExercize {
 	///- returns: A collection of removed sets.
 	func compactSets() -> [GTSet] {
 		return recalculateSetOrder(filterInvalid: true)
+	}
+	
+	internal func add(set: GTSet) {
+		set.order = Int32(sets.count)
+		set.exercize = self
 	}
 	
 	func removeSet(_ s: GTSet) {

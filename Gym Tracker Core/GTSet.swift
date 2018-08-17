@@ -25,6 +25,11 @@ class GTSet: GTDataObject {
 	@NSManaged final private(set) var rest: TimeInterval
 
 	override var isValid: Bool {
+		// A low-level CoreData access is needed to check validity
+		return isSubtreeValid && self.value(forKey: "exercize") is GTSimpleSetsExercize
+	}
+	
+	override var isSubtreeValid: Bool {
 		return rest >= 0
 	}
 	

@@ -25,16 +25,6 @@ class ImportExportBackupManager: NSObject {
 	static let exercizesTag = "exercizes"
 	
 	static let restTag = "rest"
-	static let exercizeTag = "exercize"
-	static let exercizeNameTag = "name"
-	static let exercizeIsCircuit = "iscircuit"
-	static let exercizeHasCircuitRest = "hascircuitrest"
-	static let setsTag = "sets"
-	
-	static let setTag = "set"
-	static let setRestTag = "rest"
-	static let setWeightTag = "weight"
-	static let setRepsTag = "reps"
 	
 	private let nameFilter = try! NSRegularExpression(pattern: "[^a-z0-9]+", options: .caseInsensitive)
 	private var query: NSMetadataQuery?
@@ -207,6 +197,7 @@ class ImportExportBackupManager: NSObject {
 						for wData in workouts {
 							do {
 								let w = try GTWorkout.import(fromXML: wData, withDataManager: self.dataManager)
+								#warning("Call .purgeInvalidSettings() and test")
 								
 								if w.isValid {
 									save.append(contentsOf: w.subtreeNodeList)
@@ -214,9 +205,7 @@ class ImportExportBackupManager: NSObject {
 									delete.append(w)
 								}
 							} catch GTDataImportError.failure(let obj) {
-								if let o = obj {
-									delete.append(o)
-								}
+								delete.append(contentsOf: obj)
 							} catch _ {}
 						}
 						

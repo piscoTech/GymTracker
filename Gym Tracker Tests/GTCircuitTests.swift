@@ -66,6 +66,7 @@ class GTCircuitTests: XCTestCase {
 	
 	func testIsValidParent() {
 		XCTAssertFalse(circuit.isValid)
+		XCTAssertFalse(circuit.isSubtreeValid)
 		
 		let e6 = circuit[0] as! GTSimpleSetsExercize
 		let e7 = circuit[1] as! GTSimpleSetsExercize
@@ -77,16 +78,19 @@ class GTCircuitTests: XCTestCase {
 		_ = dataManager.newSet(for: e8)
 		_ = dataManager.newSet(for: e8)
 		
+		XCTAssertFalse(circuit.isSubtreeValid)
 		XCTAssertFalse(circuit.isValid)
 		XCTAssertEqual(circuit.exercizesError, [1])
 		
 		_ = dataManager.newSet(for: e7)
 		
+		XCTAssertTrue(circuit.isSubtreeValid)
 		XCTAssertFalse(circuit.isValid)
 		XCTAssertEqual(circuit.exercizesError, [])
 		
 		let w = dataManager.newWorkout()
 		w.add(parts: circuit)
+		XCTAssertTrue(circuit.isSubtreeValid)
 		XCTAssertTrue(circuit.isValid)
 		XCTAssertEqual(circuit.exercizesError, [])
 		XCTAssertEqual(circuit.parentLevel as? GTWorkout, w)
@@ -103,6 +107,7 @@ class GTCircuitTests: XCTestCase {
 		_ = dataManager.newSet(for: e4)
 		_ = dataManager.newSet(for: e4)
 		
+		XCTAssertFalse(choice.isSubtreeValid)
 		XCTAssertFalse(choice.isValid)
 		XCTAssertEqual(choice.exercizesError, [2])
 		
@@ -111,8 +116,35 @@ class GTCircuitTests: XCTestCase {
 		_ = dataManager.newSet(for: e2)
 		_ = dataManager.newSet(for: e3)
 		
+		XCTAssertTrue(circuit.isSubtreeValid)
 		XCTAssertTrue(choice.isValid)
 		XCTAssertEqual(choice.exercizesError, [])
+	}
+	
+	func testReorderParent() {
+		let w = dataManager.newWorkout()
+		w.add(parts: circuit, dataManager.newExercize())
+		
+		let w2 = dataManager.newWorkout()
+		w2.add(parts: circuit)
+		
+		XCTAssertNotEqual(w[0], circuit)
+		XCTAssertEqual(w[0]?.order, 0)
+		XCTAssertEqual(w.exercizes.count, 1)
+	}
+	
+	func testPurgeSetting() {
+		let e = dataManager.newExercize()
+		XCTAssertFalse(e.hasCircuitRest)
+		e.forceEnableCircuitRest(true)
+		XCTAssertTrue(e.hasCircuitRest)
+		circuit.purgeInvalidSettings()
+		XCTAssertTrue(e.hasCircuitRest)
+		
+		circuit.add(parts: e)
+		XCTAssertTrue(e.hasCircuitRest)
+		circuit.purgeInvalidSettings()
+		XCTAssertTrue(e.hasCircuitRest)
 	}
 	
 	func testExList() {

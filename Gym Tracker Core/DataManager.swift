@@ -118,8 +118,16 @@ class GTDataObject: NSManagedObject {
 		fatalError("Abstarct property not implemented")
 	}
 	
+	internal var isSubtreeValid: Bool {
+		fatalError("Abstarct property not implemented")
+	}
+	
 	/// The list of all more specific components of the workout that are linked by the receiver, and the receiver itself.
 	var subtreeNodeList: Set<GTDataObject> {
+		fatalError("Abstarct property not implemented")
+	}
+	
+	func purgeInvalidSettings() {
 		fatalError("Abstarct property not implemented")
 	}
 	
@@ -373,8 +381,12 @@ public class DataManager: NSObject {
 		return newObjectFor(GTSimpleSetsExercize.self)
 	}
 	
+	internal func newSet() -> GTRepsSet {
+		return newObjectFor(GTRepsSet.self)
+	}
+	
 	func newSet(for exercize: GTSimpleSetsExercize) -> GTRepsSet {
-		let newS = newObjectFor(GTRepsSet.self)
+		let newS = newSet()
 		newS.order = Int32(exercize.sets.count)
 		newS.exercize = exercize
 		

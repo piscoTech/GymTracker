@@ -10,7 +10,7 @@ import Foundation
 import MBLibrary
 
 enum GTDataImportError: Error {
-	case failure(GTDataObject?)
+	case failure(Set<GTDataObject>)
 }
 
 extension GTDataObject {
@@ -21,8 +21,20 @@ extension GTDataObject {
 	
 	///Read XML data and create the corresponding `GTDataObject`, this method assumes that data is valid according to `workout.xsd`.
 	///- returns: The created `GTDataObject`.
-	///- throws: Throws `GTDataImportErrorWhether.failure` in case of failure, if the error contains a `GTDataObject` it must be deleted.
+	///- throws: Throws `GTDataImportErrorWhether.failure` in case of failure, if the error contains `GTDataObject`s they must be deleted.
 	@objc class func `import`(fromXML xml: XMLNode, withDataManager dataManager: DataManager) throws -> GTDataObject {
-		fatalError("Abstract method not implemented")
+		let type: GTDataObject.Type
+		switch xml.name {
+		case GTRepsSet.setTag:
+			type = GTRepsSet.self
+		case GTSimpleSetsExercize.exercizeTag:
+			type = GTSimpleSetsExercize.self
+		case GTChoice.choiceTag:
+			type = GTChoice.self
+		default:
+			throw GTDataImportError.failure([])
+		}
+		
+		return try type.import(fromXML: xml, withDataManager: dataManager)
 	}
 }

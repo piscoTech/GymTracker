@@ -48,15 +48,36 @@ class WorkoutTests: XCTestCase {
     }
 	
 	func testIsValid() {
+		XCTAssertFalse(workout.isSubtreeValid)
 		XCTAssertFalse(workout.isValid)
 		
 		_ = dataManager.newSet(for: e1)
 		_ = dataManager.newSet(for: e2)
 		
+		XCTAssertFalse(workout.isSubtreeValid)
 		XCTAssertFalse(workout.isValid)
 		workout.set(name: "Workt")
 		
+		XCTAssertTrue(workout.isSubtreeValid)
 		XCTAssertTrue(workout.isValid)
+	}
+	
+	func testPurgeSetting() {
+		let e = workout[2] as! GTSimpleSetsExercize
+		XCTAssertFalse(e.hasCircuitRest)
+		e.forceEnableCircuitRest(true)
+		XCTAssertTrue(e.hasCircuitRest)
+		workout.purgeInvalidSettings()
+		XCTAssertFalse(e.hasCircuitRest)
+		
+		let c = dataManager.newCircuit()
+		c.add(parts: e)
+		workout.add(parts: c)
+		XCTAssertFalse(e.hasCircuitRest)
+		e.forceEnableCircuitRest(true)
+		XCTAssertTrue(e.hasCircuitRest)
+		workout.purgeInvalidSettings()
+		XCTAssertTrue(e.hasCircuitRest)
 	}
 	
 	func testParent() {

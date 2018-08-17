@@ -144,7 +144,11 @@ class ImportExportTest: XCTestCase {
 //		wait(for: [importExpectation], timeout: 5)
 	}
 	
-	#warning("Add test for v2.0")
+	func testImportVersion_2_0() {
+		// 8 workouts
+		// workout index 6 has two circuit (both 2 ex), positions 8 and 11
+		#warning("Check that circuit in one of them is fine")
+	}
 	
 	func testPurgeInvalidCircuitRest() {
 		#warning("Add back")

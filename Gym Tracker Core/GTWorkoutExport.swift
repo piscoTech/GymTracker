@@ -24,7 +24,7 @@ extension GTWorkout {
 	}
 	
 	override class func `import`(fromXML xml: XMLNode, withDataManager dataManager: DataManager) throws -> GTWorkout {
-		throw GTDataImportError.failure(nil)
+		throw GTDataImportError.failure([])
 		#warning("Implement me")
 //		// Check that the exercize list in XML does not contain rest period at the start or end, nor two or more consecutive rest
 //		guard let exercizes = xml.children.first(where: { $0.name == ImportExportBackupManager.exercizesTag })?.children,

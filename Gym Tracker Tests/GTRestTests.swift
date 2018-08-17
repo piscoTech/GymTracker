@@ -25,11 +25,30 @@ class GTRestTests: XCTestCase {
 	
 	func testIsValidParent() {
 		let r = dataManager.newRest()
+		XCTAssertTrue(r.isSubtreeValid)
 		XCTAssertFalse(r.isValid)
 		
 		let w = dataManager.newWorkout()
 		w.add(parts: r)
+		XCTAssertTrue(r.isSubtreeValid)
 		XCTAssertTrue(r.isValid)
+	}
+	
+	func testReorderParent() {
+		let r = dataManager.newRest()
+		let w = dataManager.newWorkout()
+		w.add(parts: r, dataManager.newExercize())
+		
+		let w2 = dataManager.newWorkout()
+		w2.add(parts: r)
+		
+		XCTAssertNotEqual(w[0], r)
+		XCTAssertEqual(w[0]?.order, 0)
+		XCTAssertEqual(w.exercizes.count, 1)
+	}
+
+	func testPurgeSetting() {
+		dataManager.newRest().purgeInvalidSettings()
 	}
 	
 	func testSetRest() {

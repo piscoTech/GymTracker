@@ -33,12 +33,18 @@ final class GTRest: GTPart {
 	}
 	
 	override var isValid: Bool {
-		return rest >= GTRest.minRest && workout != nil
+		return workout != nil && isSubtreeValid
+	}
+	
+	override var isSubtreeValid: Bool {
+		return rest >= GTRest.minRest
 	}
 	
 	override var subtreeNodeList: Set<GTDataObject> {
 		return [self]
 	}
+	
+	override func purgeInvalidSettings() {}
 	
 	// MARK: - iOS/watchOS interface
 	

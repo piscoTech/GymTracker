@@ -7,6 +7,7 @@
 //
 
 import XCTest
+@testable import MBLibrary
 @testable import GymTrackerCore
 
 class GTRepsSetTests: XCTestCase {
@@ -29,15 +30,30 @@ class GTRepsSetTests: XCTestCase {
     }
 
     func testIsValid() {
+		XCTAssertTrue(s.isSubtreeValid)
 		XCTAssertTrue(s.isValid)
 		
         s.set(mainInfo: 0)
 		s.set(secondaryInfo: 0)
+		XCTAssertFalse(s.isSubtreeValid)
 		XCTAssertFalse(s.isValid)
 		
 		s.set(mainInfo: 10)
+		XCTAssertTrue(s.isSubtreeValid)
 		XCTAssertTrue(s.isValid)
+		
+		let set = dataManager.newSet()
+		XCTAssertTrue(set.isSubtreeValid)
+		XCTAssertFalse(set.isValid)
+		
+		e.add(set: set)
+		XCTAssertTrue(set.isSubtreeValid)
+		XCTAssertTrue(set.isValid)
     }
+
+	func testPurgeSetting() {
+		s.purgeInvalidSettings()
+	}
 	
 	func testSetReps() {
 		s.set(mainInfo: 0)
@@ -86,6 +102,81 @@ class GTRepsSetTests: XCTestCase {
 
 	func testSubtree() {
 		XCTAssertEqual(s.subtreeNodeList, [s])
+	}
+	
+	func testExport() {
+		s.set(mainInfo: 5)
+		s.set(secondaryInfo: 7.5)
+		s.set(rest: 30)
+		
+		let xml = s.export()
+		assert(string: xml, containsInOrder: [GTRepsSet.setTag, GTRepsSet.repsTag, s.mainInfo.description, "</", GTRepsSet.repsTag, GTRepsSet.weightTag, s.secondaryInfo.description ,"</", GTRepsSet.weightTag, GTRepsSet.restTag, Int(s.rest).description, "</", GTRepsSet.restTag, "</", GTRepsSet.setTag])
+	}
+	
+	static let validXml: XMLNode = validXML(reps: 5)
+	
+	static func validXML(reps r: Int) -> XMLNode {
+		let xml = XMLNode(name: GTRepsSet.setTag)
+		let reps = XMLNode(name: GTRepsSet.repsTag)
+		reps.set(content: r.description)
+		let w = XMLNode(name: GTRepsSet.weightTag)
+		w.set(content: "10")
+		let rest = XMLNode(name: GTRepsSet.restTag)
+		rest.set(content: "30")
+		xml.add(child: reps)
+		xml.add(child: w)
+		xml.add(child: rest)
+		
+		return xml
+	}
+	
+	func testImport() {
+		do {
+			_ = try GTRepsSet.import(fromXML: XMLNode(name: ""), withDataManager: dataManager)
+			XCTFail()
+		} catch GTDataImportError.failure(let o) {
+			XCTAssertEqual(o, [])
+		} catch _ {
+			XCTFail()
+		}
+		
+		do {
+			let xml = XMLNode(name: GTRepsSet.setTag)
+			let reps = XMLNode(name: GTRepsSet.repsTag)
+			reps.set(content: "0")
+			let w = XMLNode(name: GTRepsSet.weightTag)
+			w.set(content: "10")
+			let rest = XMLNode(name: GTRepsSet.restTag)
+			rest.set(content: "30")
+			xml.add(child: reps)
+			xml.add(child: w)
+			xml.add(child: rest)
+			_ = try GTRepsSet.import(fromXML: xml, withDataManager: dataManager)
+			XCTFail()
+		} catch GTDataImportError.failure(let o) {
+			XCTAssertEqual(o.count, 1)
+			XCTAssertTrue(o.first is GTRepsSet)
+		} catch _ {
+			XCTFail()
+		}
+		
+		do {
+			let s = try GTRepsSet.import(fromXML: GTRepsSetTests.validXml, withDataManager: dataManager)
+			XCTAssertTrue(s.isSubtreeValid)
+			
+			XCTAssertEqual(s.mainInfo, 5)
+			XCTAssertEqual(s.secondaryInfo, 10)
+			XCTAssertEqual(s.rest, 30)
+		} catch _ {
+			XCTFail()
+		}
+		
+		do {
+			let o = try GTDataObject.import(fromXML: GTRepsSetTests.validXml, withDataManager: dataManager)
+			XCTAssertTrue(o is GTRepsSet)
+		} catch _ {
+			XCTFail()
+		}
 	}
 
 }
