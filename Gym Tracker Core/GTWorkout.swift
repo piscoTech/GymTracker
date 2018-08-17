@@ -49,30 +49,29 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 	}
 	
 	override var isValid: Bool {
-		return name.count > 0 && hasExercizes
+		return name.count > 0 && hasExercizes && parts.reduce(true) { $0 && $1.isValid }
 	}
 	
 	var hasExercizes: Bool {
+		#warning("Consider removing and incorporating in isValid")
 		return parts.first { $0 is GTExercize } != nil
 	}
 	
-	var parentLevel: CompositeWorkoutLevel? {
-		return nil
+	let parentLevel: CompositeWorkoutLevel? = nil
+	
+	override var subtreeNodeList: Set<GTDataObject> {
+		return Set(parts.flatMap { $0.subtreeNodeList } + [self])
 	}
 	
 	var choices: [GTChoice] {
 		#warning("Use me to determine for which choice to ask what to do")
-		return self.subtreeNodeList.compactMap { $0 as? GTChoice }
+		return exercizeList.flatMap { ($0 as? GTCircuit)?.exercizeList.compactMap { $0 as? GTChoice } ?? [$0 as? GTChoice].compactMap { $0 } }
 	}
 	
 	// MARK: - Parts handling
 	
 	var exercizeList: [GTPart] {
 		return Array(exercizes).sorted { $0.order < $1.order }
-	}
-	
-	func canHandle(part: GTPart.Type) -> Bool {
-		return true
 	}
 	
 	func add(parts: GTPart...) {

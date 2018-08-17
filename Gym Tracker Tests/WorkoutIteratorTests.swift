@@ -13,10 +13,10 @@ import MBLibrary
 class WorkoutIteratorTests: XCTestCase {
 	
 	private var workout: GTWorkout!
-    
-    override func setUp() {
-        super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+	
+	override func setUp() {
+		super.setUp()
+		// Put setup code here. This method is called before the invocation of each test method in the class.
 		
 		let w = dataManager.newWorkout()
 		w.set(name: "Workout")
@@ -59,14 +59,35 @@ class WorkoutIteratorTests: XCTestCase {
 		s.set(rest: 60)
 		
 		self.workout = w
-    }
-    
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+	}
+	
+	@discardableResult private func choicify() -> GTChoice {
+		let ch = dataManager.newChoice()
+		workout.add(parts: ch)
+		
+		ch.add(parts: workout[0] as! GTSimpleSetsExercize, workout[1] as! GTSimpleSetsExercize)
+		workout.movePartAt(number: ch.order, to: 0)
+		
+		return ch
+	}
+	
+	override func tearDown() {
+		// Put teardown code here. This method is called after the invocation of each test method in the class.
 		dataManager.discardAllChanges()
 		
 		super.tearDown()
-    }
+	}
+	
+	func testChoicesValidity() {
+		XCTAssertNotNil(WorkoutIterator(workout, choices: [], using: dataManager.preferences))
+		
+		choicify()
+		XCTAssertNil(WorkoutIterator(workout, choices: [], using: dataManager.preferences))
+		XCTAssertNotNil(WorkoutIterator(workout, choices: [1], using: dataManager.preferences))
+		XCTAssertNotNil(WorkoutIterator(workout, choices: [0], using: dataManager.preferences))
+		XCTAssertNil(WorkoutIterator(workout, choices: [-1], using: dataManager.preferences))
+		XCTAssertNil(WorkoutIterator(workout, choices: [2], using: dataManager.preferences))
+	}
 	
 	func testInvalidWorkout() {
 		let iter = WorkoutIterator(dataManager.newWorkout(), choices: [], using: dataManager.preferences)
@@ -140,7 +161,7 @@ class WorkoutIteratorTests: XCTestCase {
 		}
 	}
 	
-    func testSimpleWorkout() {
+	func testSimpleWorkout() {
 		guard let iter = WorkoutIterator(workout, choices: [], using: dataManager.preferences) else {
 			XCTFail("Invalid workout")
 			return
@@ -401,7 +422,7 @@ class WorkoutIteratorTests: XCTestCase {
 		}
 		
 		XCTAssertNil(iter.next())
-    }
+	}
 	
 	func testCircuitWorkout() {
 		let e1 = workout[0] as! GTSimpleSetsExercize
@@ -942,7 +963,7 @@ class WorkoutIteratorTests: XCTestCase {
 		_ = iter.next()
 		_ = iter.next()
 		iter.persistState()
-
+		
 		XCTAssertEqual(dataManager.preferences.currentExercize, 0)
 		XCTAssertEqual(dataManager.preferences.currentPart, 1)
 		
@@ -1005,7 +1026,7 @@ class WorkoutIteratorTests: XCTestCase {
 		workout.movePartAt(number: c.order, to: 0)
 		c.add(parts: e1, e2)
 		e1.enableCircuitRest(true)
-
+		
 		guard let iter = WorkoutIterator(workout, choices: [], using: dataManager.preferences) else {
 			XCTFail("Invalid workout")
 			return
@@ -1525,6 +1546,358 @@ class WorkoutIteratorTests: XCTestCase {
 		}
 	}
 	
+	func testChoices() {
+		choicify()
+		guard let iter = WorkoutIterator(workout, choices: [0], using: dataManager.preferences) else {
+			XCTFail("Invalid workout")
+			return
+		}
+		do { // First exercize
+			let e = (workout[0] as! GTChoice)[0]!
+			let n = workout[1] as! GTRest
+			let s1 = e[0]!
+			let s2 = e[1]!
+			
+			if let step1 = iter.next() {
+				XCTAssertEqual(step1.exercizeName, e.name)
+				if let curRep = step1.currentInfo?.string {
+					assert(string: curRep, containsInOrder: [s1.mainInfo.description], thenNotContains: timesSign)
+				} else {
+					XCTFail("Unexpected nil")
+				}
+				
+				if let othSets = step1.otherPartsInfo?.string {
+					assert(string: othSets, containsInOrder: ["1", s2.secondaryInfo.toString(), s2.secondaryInfoLabel.string])
+				} else {
+					XCTFail("Unexpected nil")
+				}
+				
+				XCTAssertNil(step1.rest)
+				
+				if let next = step1.nextUpInfo?.string {
+					assert(string: next, containsInOrder: [n.rest.getDuration(hideHours: true)])
+				} else {
+					XCTFail("Unexpected nil")
+				}
+				
+				XCTAssertFalse(step1.isRest)
+				XCTAssertEqual(step1.set, s1)
+				XCTAssertFalse(step1.isLast)
+				
+				if let details1 = step1 as? WorkoutExercizeStep {
+					XCTAssertEqual(details1.change, 0)
+					
+					XCTAssertEqual(details1.others.count, 1)
+					XCTAssertEqual(details1.others[0].info, s2.secondaryInfo)
+					XCTAssertEqual(details1.others[0].label, s2.secondaryInfoLabel)
+				} else {
+					XCTFail("Invalid class found")
+				}
+				
+				if let next3 = step1.nextUp as? WorkoutStepNextRest {
+					XCTAssertEqual(next3.rest, n.rest)
+				} else {
+					XCTFail("Invalid class found")
+				}
+			} else {
+				XCTFail("Unexpected nil")
+			}
+			
+			if let step2 = iter.next() {
+				XCTAssertEqual(step2.exercizeName, e.name)
+				if let curRep = step2.currentInfo?.string {
+					assert(string: curRep, containsInOrder: [s2.mainInfo.description, timesSign, s2.secondaryInfo.toString(), s2.secondaryInfoLabel.string])
+				} else {
+					XCTFail("Unexpected nil")
+				}
+				
+				XCTAssertNil(step2.otherPartsInfo)
+				XCTAssertNil(step2.rest)
+				
+				if let next = step2.nextUpInfo?.string {
+					assert(string: next, containsInOrder: [n.rest.getDuration(hideHours: true)])
+				} else {
+					XCTFail("Unexpected nil")
+				}
+				
+				XCTAssertFalse(step2.isRest)
+				XCTAssertEqual(step2.set, s2)
+				XCTAssertFalse(step2.isLast)
+				
+				if let details2 = step2 as? WorkoutExercizeStep {
+					XCTAssertEqual(details2.change, 0)
+					
+					XCTAssertTrue(details2.others.isEmpty)
+				} else {
+					XCTFail("Invalid class found")
+				}
+				
+				if let next3 = step2.nextUp as? WorkoutStepNextRest {
+					XCTAssertEqual(next3.rest, n.rest)
+				} else {
+					XCTFail("Invalid class found")
+				}
+			} else {
+				XCTFail("Unexpected nil")
+			}
+		}
+		
+		do { // Rest
+			let r = workout[1] as! GTRest
+			let n = workout[2] as! GTSimpleSetsExercize
+			
+			if let step5 = iter.next() {
+				XCTAssertNil(step5.exercizeName)
+				XCTAssertNil(step5.currentInfo)
+				XCTAssertNil(step5.otherPartsInfo)
+				
+				XCTAssertEqual(step5.rest, r.rest)
+				
+				if let next = step5.nextUpInfo?.string {
+					assert(string: next, containsInOrder: [n.name], thenNotContains: n[0]!.secondaryInfo.toString())
+				} else {
+					XCTFail("Unexpected nil")
+				}
+				
+				XCTAssertTrue(step5.isRest)
+				XCTAssertNil(step5.set)
+				XCTAssertFalse(step5.isLast)
+				
+				XCTAssertTrue(step5 is WorkoutRestStep)
+				if let next5 = step5.nextUp as? WorkoutStepNextSet {
+					XCTAssertEqual(next5.exercizeName, n.name)
+					XCTAssertEqual(next5.secondaryInfo, n[0]?.secondaryInfo)
+					XCTAssertEqual(next5.secondaryInfoLabel, n[0]?.secondaryInfoLabel)
+					XCTAssertEqual(next5.change, 0)
+				} else {
+					XCTFail("Invalid class found")
+				}
+			} else {
+				XCTFail("Unexpected nil")
+			}
+		}
+		
+		XCTAssertNotNil(iter.next())
+	}
+	
+	func testCircuitChoice() {
+		workout.remove(part: workout[2]!)
+		let e1 = workout[0] as! GTSimpleSetsExercize
+		let e2 = workout[1] as! GTSimpleSetsExercize
+		let e3 = workout[2] as! GTSimpleSetsExercize
+		let s = dataManager.newSet(for: e3)
+		s.set(mainInfo: 10)
+		s.set(secondaryInfo: 5)
+		s.set(rest: 60)
+		
+		workout.movePartAt(number: e3.order, to: 1)
+		let ch = choicify()
+		let c = dataManager.newCircuit()
+		workout.movePartAt(number: c.order, to: 0)
+		c.add(parts: ch, e2)
+		workout.add(parts: c)
+		
+		e1.enableCircuitRest(true)
+		e3.enableCircuitRest(false)
+		e2.enableCircuitRest(true)
+		
+		guard let iter = WorkoutIterator(workout, choices: [1], using: dataManager.preferences) else {
+			XCTFail("Invalid workout")
+			return
+		}
+		
+		let s1 = e3[0]!
+		let s2 = e2[0]!
+		let s3 = e3[1]!
+		let s4 = e2[1]!
+		
+		if let step1 = iter.next() {
+			XCTAssertEqual(step1.exercizeName, e3.name)
+			if let curRep = step1.currentInfo?.string {
+				assert(string: curRep, containsInOrder: [s1.mainInfo.description], thenNotContains: timesSign)
+			} else {
+				XCTFail("Unexpected nil")
+			}
+			
+			if let othSets = step1.otherPartsInfo?.string {
+				assert(string: othSets, containsInOrder: ["1", "2", "1", "2"])
+			} else {
+				XCTFail("Unexpected nil")
+			}
+			
+			XCTAssertNil(step1.rest)
+			
+			if let next = step1.nextUpInfo?.string {
+				assert(string: next, containsInOrder: [e2.name, s2.secondaryInfo.toString(), s2.secondaryInfoLabel.string])
+			} else {
+				XCTFail("Unexpected nil")
+			}
+			
+			XCTAssertFalse(step1.isRest)
+			XCTAssertEqual(step1.set, s1)
+			XCTAssertFalse(step1.isLast)
+			
+			if let details1 = step1 as? WorkoutCircuitStep {
+				XCTAssertEqual(details1.change, 0)
+				
+				XCTAssertEqual(details1.circuitCompletion.exercize, 1)
+				XCTAssertEqual(details1.circuitCompletion.totalExercizes, 2)
+				XCTAssertEqual(details1.circuitCompletion.round, 1)
+				XCTAssertEqual(details1.circuitCompletion.totalRounds, 2)
+			} else {
+				XCTFail("Invalid class found")
+			}
+			
+			if let next1 = step1.nextUp as? WorkoutStepNextSet {
+				XCTAssertEqual(next1.exercizeName, e2.name)
+				XCTAssertEqual(next1.secondaryInfo, s2.secondaryInfo)
+				XCTAssertEqual(next1.secondaryInfoLabel, s2.secondaryInfoLabel)
+				XCTAssertEqual(next1.change, 0)
+			} else {
+				XCTFail("Invalid class found")
+			}
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		
+		if let step2 = iter.next() {
+			XCTAssertEqual(step2.exercizeName, e2.name)
+			if let curRep = step2.currentInfo?.string {
+				assert(string: curRep, containsInOrder: [s2.mainInfo.description, timesSign, s2.secondaryInfo.toString(), s2.secondaryInfoLabel.string])
+			} else {
+				XCTFail("Unexpected nil")
+			}
+			
+			if let othSets = step2.otherPartsInfo?.string {
+				assert(string: othSets, containsInOrder: ["2", "2", "1", "2"])
+			} else {
+				XCTFail("Unexpected nil")
+			}
+			
+			XCTAssertEqual(step2.rest, s2.rest)
+			
+			if let next = step2.nextUpInfo?.string {
+				assert(string: next, containsInOrder: [e3.name, s3.secondaryInfo.toString(), s3.secondaryInfoLabel.string])
+			} else {
+				XCTFail("Unexpected nil")
+			}
+			
+			XCTAssertFalse(step2.isRest)
+			XCTAssertEqual(step2.set, s2)
+			XCTAssertFalse(step2.isLast)
+			
+			if let details2 = step2 as? WorkoutCircuitStep {
+				XCTAssertEqual(details2.change, 0)
+				
+				XCTAssertEqual(details2.circuitCompletion.exercize, 2)
+				XCTAssertEqual(details2.circuitCompletion.totalExercizes, 2)
+				XCTAssertEqual(details2.circuitCompletion.round, 1)
+				XCTAssertEqual(details2.circuitCompletion.totalRounds, 2)
+			} else {
+				XCTFail("Invalid class found")
+			}
+			
+			if let next2 = step2.nextUp as? WorkoutStepNextSet {
+				XCTAssertEqual(next2.exercizeName, e3.name)
+				XCTAssertEqual(next2.secondaryInfo, s3.secondaryInfo)
+				XCTAssertEqual(next2.secondaryInfoLabel, s3.secondaryInfoLabel)
+				XCTAssertEqual(next2.change, 0)
+			} else {
+				XCTFail("Invalid class found")
+			}
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		
+		if let step3 = iter.next() {
+			XCTAssertEqual(step3.exercizeName, e3.name)
+			if let curRep = step3.currentInfo?.string {
+				assert(string: curRep, containsInOrder: [s3.mainInfo.description, timesSign, s3.secondaryInfo.toString(), s3.secondaryInfoLabel.string])
+			} else {
+				XCTFail("Unexpected nil")
+			}
+			
+			if let othSets = step3.otherPartsInfo?.string {
+				assert(string: othSets, containsInOrder: ["1", "2", "2", "2"])
+			} else {
+				XCTFail("Unexpected nil")
+			}
+			
+			XCTAssertNil(step3.rest)
+			
+			if let next = step3.nextUpInfo?.string {
+				assert(string: next, containsInOrder: [e2.name, s4.secondaryInfo.toString(), s4.secondaryInfoLabel.string])
+			} else {
+				XCTFail("Unexpected nil")
+			}
+			
+			XCTAssertFalse(step3.isRest)
+			XCTAssertEqual(step3.set, s3)
+			XCTAssertFalse(step3.isLast)
+			
+			if let details3 = step3 as? WorkoutCircuitStep {
+				XCTAssertEqual(details3.change, 0)
+				
+				XCTAssertEqual(details3.circuitCompletion.exercize, 1)
+				XCTAssertEqual(details3.circuitCompletion.totalExercizes, 2)
+				XCTAssertEqual(details3.circuitCompletion.round, 2)
+				XCTAssertEqual(details3.circuitCompletion.totalRounds, 2)
+			} else {
+				XCTFail("Invalid class found")
+			}
+			
+			if let next3 = step3.nextUp as? WorkoutStepNextSet {
+				XCTAssertEqual(next3.exercizeName, e2.name)
+				XCTAssertEqual(next3.secondaryInfo, s4.secondaryInfo)
+				XCTAssertEqual(next3.secondaryInfoLabel, s4.secondaryInfoLabel)
+				XCTAssertEqual(next3.change, 0)
+			} else {
+				XCTFail("Invalid class found")
+			}
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		
+		if let step4 = iter.next() {
+			XCTAssertEqual(step4.exercizeName, e2.name)
+			if let curRep = step4.currentInfo?.string {
+				assert(string: curRep, containsInOrder: [s4.mainInfo.description, timesSign, s4.secondaryInfo.toString(), s4.secondaryInfoLabel.string])
+			} else {
+				XCTFail("Unexpected nil")
+			}
+			
+			if let othSets = step4.otherPartsInfo?.string {
+				assert(string: othSets, containsInOrder: ["2", "2", "2", "2"])
+			} else {
+				XCTFail("Unexpected nil")
+			}
+			
+			XCTAssertNil(step4.rest)
+			XCTAssertNil(step4.nextUpInfo)
+			
+			XCTAssertFalse(step4.isRest)
+			XCTAssertEqual(step4.set, s4)
+			XCTAssertTrue(step4.isLast)
+			
+			if let details4 = step4 as? WorkoutCircuitStep {
+				XCTAssertEqual(details4.change, 0)
+				
+				XCTAssertEqual(details4.circuitCompletion.exercize, 2)
+				XCTAssertEqual(details4.circuitCompletion.totalExercizes, 2)
+				XCTAssertEqual(details4.circuitCompletion.round, 2)
+				XCTAssertEqual(details4.circuitCompletion.totalRounds, 2)
+			} else {
+				XCTFail("Invalid class found")
+			}
+			
+			XCTAssertNil(step4.nextUp)
+		} else {
+			XCTFail("Unexpected nil")
+		}
+		
+		XCTAssertNil(iter.next())
+	}
+	
 	private func assert(string: String, containsInOrder others: [String], thenNotContains notContains: String? = nil, _ message: @autoclosure () -> String = "", file: StaticString = #file, line: UInt = #line) {
 		var partial: String = string
 		var i = 0
@@ -1543,5 +1916,5 @@ class WorkoutIteratorTests: XCTestCase {
 			XCTAssertNil(partial.range(of: exclude), "\"\(string)\" contains other strings in specified order but excluded string found - \(message())", file: file, line: line)
 		}
 	}
-    
+	
 }
