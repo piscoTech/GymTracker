@@ -19,12 +19,6 @@ class ImportExportBackupManager: NSObject {
 	let delayReloadTime: TimeInterval = 2
 	
 	static let workoutsTag = "workoutlist"
-	static let workoutTag = "workout"
-	static let workoutNameTag = "name"
-	static let archivedTag = "archived"
-	static let exercizesTag = "exercizes"
-	
-	static let restTag = "rest"
 	
 	private let nameFilter = try! NSRegularExpression(pattern: "[^a-z0-9]+", options: .caseInsensitive)
 	private var query: NSMetadataQuery?
@@ -186,7 +180,7 @@ class ImportExportBackupManager: NSObject {
 	}
 	
 	func `import`(_ file: URL, isRestoring restore: Bool, performCallback: @escaping (Bool, Int?, (() -> ())?) -> Void, callback: @escaping ([GTWorkout]?) -> Void) {
-		if let xsd = Bundle.main.url(forResource: "workout", withExtension: "xsd"),
+		if let xsd = Bundle(for: type(of: self)).url(forResource: "workout", withExtension: "xsd"),
 			let workouts = file.loadAsXML(validatingWithXSD: xsd)?.children, workouts.count > 0 {
 			DispatchQueue.main.async {
 				performCallback(true, workouts.count) {

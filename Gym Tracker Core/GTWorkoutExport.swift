@@ -11,59 +11,82 @@ import MBLibrary
 
 extension GTWorkout {
 	
+	static let workoutTag = "workout"
+	static let nameTag = "name"
+	static let archivedTag = "archived"
+	static let partsTag = "exercizes"
+	
 	override func export() -> String {
-		return ""
-		#warning("Implement me")
-//		var res = "<\(ImportExportBackupManager.workoutTag)>"
-//		res += "<\(ImportExportBackupManager.workoutNameTag)>\(self.name.toXML())</\(ImportExportBackupManager.workoutNameTag)>"
-//		res += "<\(ImportExportBackupManager.archivedTag)>\(self.archived)</\(ImportExportBackupManager.archivedTag)>"
-//		res += "<\(ImportExportBackupManager.exercizesTag)>\(self.exercizeList.map { $0.export() }.reduce("") { $0 + $1 })</\(ImportExportBackupManager.exercizesTag)>"
-//		res += "</\(ImportExportBackupManager.workoutTag)>"
-//
-//		return res
+		var res = "<\(GTWorkout.workoutTag)>"
+		res += "<\(GTWorkout.nameTag)>\(self.name.toXML())</\(GTWorkout.nameTag)>"
+		res += "<\(GTWorkout.archivedTag)>\(self.archived)</\(GTWorkout.archivedTag)>"
+		res += "<\(GTWorkout.partsTag)>\(self.exercizeList.map { $0.export() }.reduce("") { $0 + $1 })</\(GTWorkout.partsTag)>"
+		res += "</\(GTWorkout.workoutTag)>"
+
+		return res
 	}
 	
 	override class func `import`(fromXML xml: XMLNode, withDataManager dataManager: DataManager) throws -> GTWorkout {
-		throw GTDataImportError.failure([])
-		#warning("Implement me")
-//		// Check that the exercize list in XML does not contain rest period at the start or end, nor two or more consecutive rest
-//		guard let exercizes = xml.children.first(where: { $0.name == ImportExportBackupManager.exercizesTag })?.children,
-//			let lastEx = exercizes.last, lastEx.name == ImportExportBackupManager.exercizeTag else {
-//			return (nil, false)
-//		}
-//
-//		var acceptRest = false
-//		for e in exercizes {
-//			if e.name == ImportExportBackupManager.restTag {
-//				if !acceptRest {
-//					return (nil, false)
-//				}
-//
-//				acceptRest = false
-//			} else if e.name == ImportExportBackupManager.exercizeTag {
-//				acceptRest = true
-//			} else {
-//				return (nil, false)
-//			}
-//		}
-//
-//		guard let name = xml.children.first(where: { $0.name == ImportExportBackupManager.workoutNameTag })?.content?.fromXML(),
-//			let archived = xml.children.first(where: { $0.name == ImportExportBackupManager.archivedTag })?.content else {
-//			return (nil, false)
-//		}
-//
-//		let w = dataManager.newWorkout()
-//		w.set(name: name)
-//		w.archived = archived == "true"
-//
-//		for e in exercizes {
-//			let (_, success) = Exercize.import(fromXML: e, for: w, withDataManager: dataManager)
-//			if !success {
-//				return (w, false)
-//			}
-//		}
-//
-//		return (w, w.hasExercizes)
+		guard xml.name == GTWorkout.workoutTag,
+			let name = xml.children.first(where: { $0.name == GTWorkout.nameTag })?.content?.fromXML(),
+			let archived = xml.children.first(where: { $0.name == GTWorkout.archivedTag })?.content,
+			let parts = xml.children.first(where: { $0.name == GTWorkout.partsTag })?.children else {
+			throw GTDataImportError.failure([])
+		}
+
+		let w = dataManager.newWorkout()
+		w.set(name: name)
+		w.archived = archived == "true"
+		
+		var dynamicCircuit: GTCircuit?
+
+		for p in parts {
+			do {
+				let o = try GTDataObject.import(fromXML: p, withDataManager: dataManager)
+				guard let part = o as? GTPart else {
+					throw GTDataImportError.failure(w.subtreeNodeList.union([o] + (dynamicCircuit?.subtreeNodeList ?? [])))
+				}
+				
+				if let e = part as? GTSetsExercize {
+					let isCircuit = p.children.first(where: { $0.name == GTSimpleSetsExercize.isCircuitTag })?.content ?? "false"  == "true"
+					
+					if let c = dynamicCircuit {
+						c.add(parts: e)
+						
+						if !isCircuit {
+							w.add(parts: c)
+							dynamicCircuit = nil
+						}
+					} else if isCircuit {
+						dynamicCircuit = dataManager.newCircuit()
+						dynamicCircuit?.add(parts: e)
+					} else {
+						w.add(parts: part)
+					}
+				} else {
+					if let c = dynamicCircuit {
+						w.add(parts: c)
+						dynamicCircuit = nil
+					}
+						
+					w.add(parts: part)
+				}
+			} catch GTDataImportError.failure(let obj) {
+				throw GTDataImportError.failure(w.subtreeNodeList.union(obj.union(dynamicCircuit?.subtreeNodeList ?? [])))
+			}
+		}
+		
+		if let c = dynamicCircuit {
+			w.add(parts: c)
+			dynamicCircuit = nil
+		}
+
+		w.purgeInvalidSettings()
+		if w.isSubtreeValid {
+			return w
+		} else {
+			throw GTDataImportError.failure(w.subtreeNodeList)
+		}
 	}
 	
 }

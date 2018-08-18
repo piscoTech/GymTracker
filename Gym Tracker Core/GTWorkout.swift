@@ -53,7 +53,11 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 	}
 	
 	override var isSubtreeValid: Bool {
-		return name.count > 0 && hasExercizes && parts.reduce(true) { $0 && $1.isValid }
+		guard name.count > 0 && hasExercizes && parts.reduce(true, { $0 && $1.isValid }) else {
+			return false
+		}
+		
+		return exercizeList.split(omittingEmptySubsequences: false) { $0 is GTRest }.first { $0.isEmpty } == nil
 	}
 	
 	var hasExercizes: Bool {

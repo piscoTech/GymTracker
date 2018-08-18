@@ -31,6 +31,12 @@ extension GTDataObject {
 			type = GTSimpleSetsExercize.self
 		case GTChoice.choiceTag:
 			type = GTChoice.self
+		case GTCircuit.circuitTag:
+			type = GTCircuit.self
+		case GTRest.restTag:
+			type = GTRest.self
+		case GTWorkout.workoutTag:
+			type = GTWorkout.self
 		default:
 			throw GTDataImportError.failure([])
 		}

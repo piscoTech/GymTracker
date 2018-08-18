@@ -113,9 +113,7 @@ class GTRepsSetTests: XCTestCase {
 		assert(string: xml, containsInOrder: [GTRepsSet.setTag, GTRepsSet.repsTag, s.mainInfo.description, "</", GTRepsSet.repsTag, GTRepsSet.weightTag, s.secondaryInfo.description ,"</", GTRepsSet.weightTag, GTRepsSet.restTag, Int(s.rest).description, "</", GTRepsSet.restTag, "</", GTRepsSet.setTag])
 	}
 	
-	static let validXml: XMLNode = validXML(reps: 5)
-	
-	static func validXML(reps r: Int) -> XMLNode {
+	static func validXml(reps r: Int = 5) -> XMLNode {
 		let xml = XMLNode(name: GTRepsSet.setTag)
 		let reps = XMLNode(name: GTRepsSet.repsTag)
 		reps.set(content: r.description)
@@ -161,7 +159,7 @@ class GTRepsSetTests: XCTestCase {
 		}
 		
 		do {
-			let s = try GTRepsSet.import(fromXML: GTRepsSetTests.validXml, withDataManager: dataManager)
+			let s = try GTRepsSet.import(fromXML: GTRepsSetTests.validXml(), withDataManager: dataManager)
 			XCTAssertTrue(s.isSubtreeValid)
 			
 			XCTAssertEqual(s.mainInfo, 5)
@@ -172,7 +170,7 @@ class GTRepsSetTests: XCTestCase {
 		}
 		
 		do {
-			let o = try GTDataObject.import(fromXML: GTRepsSetTests.validXml, withDataManager: dataManager)
+			let o = try GTDataObject.import(fromXML: GTRepsSetTests.validXml(), withDataManager: dataManager)
 			XCTAssertTrue(o is GTRepsSet)
 		} catch _ {
 			XCTFail()

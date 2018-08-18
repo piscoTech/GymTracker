@@ -241,16 +241,16 @@ class GTChoiceTests: XCTestCase {
 		assert(string: xml, containsInOrder: [GTChoice.choiceTag, GTChoice.exercizesTag, GTSimpleSetsExercize.exercizeTag, "</", GTSimpleSetsExercize.exercizeTag, GTSimpleSetsExercize.exercizeTag, "</", GTSimpleSetsExercize.exercizeTag, "</", GTChoice.exercizesTag, "</", GTChoice.choiceTag])
 	}
 	
-	static let validXml: XMLNode = {
+	static func validXml() -> XMLNode {
 		let xml = XMLNode(name: GTChoice.choiceTag)
 		let exs = XMLNode(name: GTChoice.exercizesTag)
 		xml.add(child: exs)
-		exs.add(child: GTSimpleSetsExercizeTests.validXml)
-		exs.add(child: GTSimpleSetsExercizeTests.validXML(name: 2))
-		exs.add(child: GTSimpleSetsExercizeTests.validXML(name: 3))
+		exs.add(child: GTSimpleSetsExercizeTests.validXml())
+		exs.add(child: GTSimpleSetsExercizeTests.validXml(name: 2))
+		exs.add(child: GTSimpleSetsExercizeTests.validXml(name: 3))
 		
 		return xml
-	}()
+	}
 	
 	func testImport() {
 		do {
@@ -280,7 +280,7 @@ class GTChoiceTests: XCTestCase {
 			let xml = XMLNode(name: GTChoice.choiceTag)
 			let exs = XMLNode(name: GTChoice.exercizesTag)
 			xml.add(child: exs)
-			exs.add(child: GTSimpleSetsExercizeTests.validXml)
+			exs.add(child: GTSimpleSetsExercizeTests.validXml())
 			
 			_ = try GTChoice.import(fromXML: xml, withDataManager: dataManager)
 			XCTFail()
@@ -292,7 +292,7 @@ class GTChoiceTests: XCTestCase {
 		}
 		
 		do {
-			let e = try GTChoice.import(fromXML: GTChoiceTests.validXml, withDataManager: dataManager)
+			let e = try GTChoice.import(fromXML: GTChoiceTests.validXml(), withDataManager: dataManager)
 			XCTAssertTrue(e.isSubtreeValid)
 			
 			XCTAssertFalse(e.hasCircuitRest)
@@ -308,7 +308,7 @@ class GTChoiceTests: XCTestCase {
 		}
 		
 		do {
-			let xml = GTChoiceTests.validXml
+			let xml = GTChoiceTests.validXml()
 			let cr = XMLNode(name: GTSimpleSetsExercize.hasCircuitRestTag)
 			cr.set(content: "true")
 			xml.children[0].children[1].add(child: cr)
@@ -330,7 +330,7 @@ class GTChoiceTests: XCTestCase {
 		}
 		
 		do {
-			let o = try GTDataObject.import(fromXML: GTChoiceTests.validXml, withDataManager: dataManager)
+			let o = try GTDataObject.import(fromXML: GTChoiceTests.validXml(), withDataManager: dataManager)
 			XCTAssertTrue(o is GTChoice)
 		} catch _ {
 			XCTFail()

@@ -7,6 +7,7 @@
 //
 
 import XCTest
+@testable import MBLibrary
 @testable import GymTrackerCore
 
 class GTRestTests: XCTestCase {
@@ -73,6 +74,60 @@ class GTRestTests: XCTestCase {
 	func testSubtree() {
 		let r = dataManager.newRest()
 		XCTAssertEqual(r.subtreeNodeList, [r])
+	}
+	
+	func testExport() {
+		let r = dataManager.newRest()
+		r.set(rest: 60)
+		let xml = r.export()
+		
+		assert(string: xml, containsInOrder: [GTRest.restTag, "60", "</", GTRest.restTag])
+	}
+	
+	static func validXml() -> XMLNode {
+		let xml = XMLNode(name: GTRest.restTag)
+		xml.set(content: "60")
+		
+		return xml
+	}
+	
+	func testImport() {
+		do {
+			_ = try GTRest.import(fromXML: XMLNode(name: ""), withDataManager: dataManager)
+			XCTFail()
+		} catch GTDataImportError.failure(let o) {
+			XCTAssertEqual(o, [])
+		} catch _ {
+			XCTFail()
+		}
+		
+		do {
+			let xml = XMLNode(name: GTRest.restTag)
+			xml.set(content: "0")
+			
+			let r = try GTRest.import(fromXML: xml, withDataManager: dataManager)
+			XCTAssertTrue(r.isSubtreeValid)
+			
+			XCTAssertEqual(r.rest, GTRest.minRest)
+		} catch _ {
+			XCTFail()
+		}
+		
+		do {
+			let r = try GTRest.import(fromXML: GTRestTests.validXml(), withDataManager: dataManager)
+			XCTAssertTrue(r.isSubtreeValid)
+			
+			XCTAssertEqual(r.rest, 60)
+		} catch _ {
+			XCTFail()
+		}
+		
+		do {
+			let o = try GTDataObject.import(fromXML: GTRestTests.validXml(), withDataManager: dataManager)
+			XCTAssertTrue(o is GTRest)
+		} catch _ {
+			XCTFail()
+		}
 	}
 	
 }

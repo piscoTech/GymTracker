@@ -75,30 +75,30 @@
 		</xs:sequence>
 	</xs:complexType>
 	
+	<xs:complexType name="workoutType">
+		<xs:sequence>
+			<xs:element name="name" type="nameType" />
+			<xs:element name="archived" type="xs:boolean" />
+			
+			<xs:element name="exercizes">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:choice minOccurs="1" maxOccurs="unbounded">
+							<xs:element name="rest" type="restPeriodType" />
+							<xs:element name="exercize" type="exercizeType" />
+							<xs:element name="choice" type="choiceType" />
+							<xs:element name="circuit" type="circuitType" />
+						</xs:choice>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
 	<xs:element name="workoutlist">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="workout" minOccurs="0" maxOccurs="unbounded">
-					<xs:complexType>
-						<xs:sequence>
-							<xs:element name="name" type="nameType" />
-							<xs:element name="archived" type="xs:boolean" />
-							
-							<xs:element name="exercizes">
-								<xs:complexType>
-									<xs:sequence>
-										<xs:choice minOccurs="1" maxOccurs="unbounded">
-											<xs:element name="rest" type="restPeriodType" />
-											<xs:element name="exercize" type="exercizeType" />
-											<xs:element name="choice" type="choiceType" />
-											<xs:element name="circuit" type="circuitType" />
-										</xs:choice>
-									</xs:sequence>
-								</xs:complexType>
-							</xs:element>
-						</xs:sequence>
-					</xs:complexType>
-				</xs:element>
+				<xs:element name="workout" type="workoutType" minOccurs="0" maxOccurs="unbounded" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>

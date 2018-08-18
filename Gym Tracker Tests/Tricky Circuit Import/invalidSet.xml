@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workoutlist>
+	<workout>
+		<name>Test</name>
+		<archived>false</archived>
+		<exercizes>
+			<exercize>
+				<name>Test</name>
+				<sets>
+					<set>
+						<reps>0</reps>
+						<weight>-1</weight>
+						<rest>-5</rest>
+					</set>
+				</sets>
+			</exercize>
+		</exercizes>
+	</workout>
+</workoutlist>

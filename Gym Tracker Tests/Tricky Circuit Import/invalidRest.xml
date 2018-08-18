@@ -6,9 +6,12 @@
 		<exercizes>
 			<exercize>
 				<name>Test</name>
-				<iscircuit>true</iscircuit>
-				<hascircuitrest>true</hascircuitrest>
 				<sets>
+					<set>
+						<reps>10</reps>
+						<weight>35.0</weight>
+						<rest>30</rest>
+					</set>
 					<set>
 						<reps>10</reps>
 						<weight>35.0</weight>
@@ -16,11 +19,9 @@
 					</set>
 				</sets>
 			</exercize>
-			<rest>30</rest>
+			<rest>-60</rest>
 			<exercize>
 				<name>Prova</name>
-				<iscircuit>true</iscircuit>
-				<hascircuitrest>true</hascircuitrest>
 				<sets>
 					<set>
 						<reps>5</reps>

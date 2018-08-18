@@ -287,17 +287,15 @@ class GTSimpleSetsExercizeTests: XCTestCase {
 		XCTAssertNil(xml.range(of: GTSimpleSetsExercize.isCircuitTag))
 	}
 	
-	static let validXml: XMLNode = validXML(name: 1)
-	
-	static func validXML(name n: Int) -> XMLNode {
+	static func validXml(name n: Int = 1) -> XMLNode {
 		let xml = XMLNode(name: GTSimpleSetsExercize.exercizeTag)
 		let name = XMLNode(name: GTSimpleSetsExercize.nameTag)
 		name.set(content: "Ex \(n)")
 		let sets = XMLNode(name: GTSimpleSetsExercize.setsTag)
 		xml.add(child: name)
 		xml.add(child: sets)
-		sets.add(child: GTRepsSetTests.validXml)
-		sets.add(child: GTRepsSetTests.validXML(reps: 10))
+		sets.add(child: GTRepsSetTests.validXml())
+		sets.add(child: GTRepsSetTests.validXml(reps: 10))
 		
 		return xml
 	}
@@ -319,8 +317,8 @@ class GTSimpleSetsExercizeTests: XCTestCase {
 			let sets = XMLNode(name: GTSimpleSetsExercize.setsTag)
 			xml.add(child: name)
 			xml.add(child: sets)
-			sets.add(child: GTRepsSetTests.validXml)
-			sets.add(child: GTRepsSetTests.validXML(reps: 10))
+			sets.add(child: GTRepsSetTests.validXml())
+			sets.add(child: GTRepsSetTests.validXml(reps: 10))
 			
 			_ = try GTSimpleSetsExercize.import(fromXML: xml, withDataManager: dataManager)
 			XCTFail()
@@ -332,7 +330,7 @@ class GTSimpleSetsExercizeTests: XCTestCase {
 		}
 
 		do {
-			let e = try GTSimpleSetsExercize.import(fromXML: GTSimpleSetsExercizeTests.validXml, withDataManager: dataManager)
+			let e = try GTSimpleSetsExercize.import(fromXML: GTSimpleSetsExercizeTests.validXml(), withDataManager: dataManager)
 			XCTAssertTrue(e.isSubtreeValid)
 
 			XCTAssertEqual(e.name, "Ex 1")
@@ -345,7 +343,7 @@ class GTSimpleSetsExercizeTests: XCTestCase {
 		}
 		
 		do {
-			let xml = GTSimpleSetsExercizeTests.validXml
+			let xml = GTSimpleSetsExercizeTests.validXml()
 			let cr = XMLNode(name: GTSimpleSetsExercize.hasCircuitRestTag)
 			cr.set(content: "true")
 			xml.add(child: cr)
@@ -365,7 +363,7 @@ class GTSimpleSetsExercizeTests: XCTestCase {
 		}
 		
 		do {
-			let xml = GTSimpleSetsExercizeTests.validXml
+			let xml = GTSimpleSetsExercizeTests.validXml()
 			let cr = XMLNode(name: GTSimpleSetsExercize.hasCircuitRestTag)
 			cr.set(content: "true")
 			xml.add(child: cr)
@@ -385,7 +383,7 @@ class GTSimpleSetsExercizeTests: XCTestCase {
 		}
 		
 		do {
-			let o = try GTDataObject.import(fromXML: GTSimpleSetsExercizeTests.validXml, withDataManager: dataManager)
+			let o = try GTDataObject.import(fromXML: GTSimpleSetsExercizeTests.validXml(), withDataManager: dataManager)
 			XCTAssertTrue(o is GTSimpleSetsExercize)
 		} catch _ {
 			XCTFail()

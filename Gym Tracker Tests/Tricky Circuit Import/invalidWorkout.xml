@@ -6,8 +6,6 @@
 		<exercizes>
 			<exercize>
 				<name>Test</name>
-				<iscircuit>true</iscircuit>
-				<hascircuitrest>true</hascircuitrest>
 				<sets>
 					<set>
 						<reps>10</reps>
@@ -21,18 +19,7 @@
 					</set>
 				</sets>
 			</exercize>
-			<exercize>
-				<name>Prova</name>
-				<iscircuit>true</iscircuit>
-				<hascircuitrest>true</hascircuitrest>
-				<sets>
-					<set>
-						<reps>5</reps>
-						<weight>4.0</weight>
-						<rest>60</rest>
-					</set>
-				</sets>
-			</exercize>
+			<rest>60</rest>
 		</exercizes>
 	</workout>
 </workoutlist>

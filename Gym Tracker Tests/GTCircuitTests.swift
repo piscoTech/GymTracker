@@ -7,6 +7,7 @@
 //
 
 import XCTest
+@testable import MBLibrary
 @testable import GymTrackerCore
 
 class GTCircuitTests: XCTestCase {
@@ -224,6 +225,130 @@ class GTCircuitTests: XCTestCase {
 		let sets = Set(arrayLiteral: dataManager.newSet(for: e1), dataManager.newSet(for: e2), dataManager.newSet(for: e3), dataManager.newSet(for: e4), dataManager.newSet(for: e4), dataManager.newSet(for: e1), dataManager.newSet(for: e2), dataManager.newSet(for: e3))
 		
 		XCTAssertEqual(choice.subtreeNodeList, Set(arrayLiteral: ch, e1, e2, e3, e4, choice).union(sets))
+	}
+	
+	func testExport() {
+		let e6 = circuit[0] as! GTSimpleSetsExercize
+		let e7 = circuit[1] as! GTSimpleSetsExercize
+		let e8 = circuit[2] as! GTSimpleSetsExercize
+		
+		_ = dataManager.newSet(for: e6)
+		_ = dataManager.newSet(for: e6)
+		_ = dataManager.newSet(for: e7)
+		_ = dataManager.newSet(for: e7)
+		_ = dataManager.newSet(for: e8)
+		_ = dataManager.newSet(for: e8)
+		
+		let xml = circuit.export()
+		assert(string: xml, containsInOrder: [GTCircuit.circuitTag, GTCircuit.exercizesTag, GTSimpleSetsExercize.exercizeTag, GTSimpleSetsExercize.hasCircuitRestTag, "</", GTSimpleSetsExercize.exercizeTag, GTSimpleSetsExercize.exercizeTag, GTSimpleSetsExercize.hasCircuitRestTag, "</", GTSimpleSetsExercize.exercizeTag, GTSimpleSetsExercize.exercizeTag, GTSimpleSetsExercize.hasCircuitRestTag, "</", GTSimpleSetsExercize.exercizeTag, "</", GTCircuit.exercizesTag, "</", GTCircuit.circuitTag])
+	}
+	
+	static func validXml() -> XMLNode {
+		let xml = XMLNode(name: GTCircuit.circuitTag)
+		let exs = XMLNode(name: GTCircuit.exercizesTag)
+		xml.add(child: exs)
+		exs.add(child: GTSimpleSetsExercizeTests.validXml())
+		exs.add(child: GTSimpleSetsExercizeTests.validXml(name: 2))
+		exs.add(child: GTChoiceTests.validXml())
+		
+		return xml
+	}
+	
+	func testImport() {
+		do {
+			_ = try GTCircuit.import(fromXML: XMLNode(name: ""), withDataManager: dataManager)
+			XCTFail()
+		} catch GTDataImportError.failure(let o) {
+			XCTAssertEqual(o, [])
+		} catch _ {
+			XCTFail()
+		}
+		
+		do {
+			let xml = XMLNode(name: GTCircuit.circuitTag)
+			let exs = XMLNode(name: GTCircuit.exercizesTag)
+			xml.add(child: exs)
+			
+			_ = try GTCircuit.import(fromXML: xml, withDataManager: dataManager)
+			XCTFail()
+		} catch GTDataImportError.failure(let o) {
+			XCTAssertEqual(o.count, 1)
+			XCTAssertTrue(o.first is GTCircuit)
+		} catch _ {
+			XCTFail()
+		}
+		
+		do {
+			let xml = XMLNode(name: GTCircuit.circuitTag)
+			let exs = XMLNode(name: GTCircuit.exercizesTag)
+			xml.add(child: exs)
+			exs.add(child: GTSimpleSetsExercizeTests.validXml())
+			
+			_ = try GTCircuit.import(fromXML: xml, withDataManager: dataManager)
+			XCTFail()
+		} catch GTDataImportError.failure(let o) {
+			XCTAssertFalse(o.isEmpty)
+			XCTAssertNil(o.first { !($0 is GTCircuit) && !($0 is GTSimpleSetsExercize) && !($0 is GTRepsSet) })
+		} catch _ {
+			XCTFail()
+		}
+		
+		do {
+			let xml = XMLNode(name: GTCircuit.circuitTag)
+			let exs = XMLNode(name: GTCircuit.exercizesTag)
+			xml.add(child: exs)
+			exs.add(child: GTSimpleSetsExercizeTests.validXml())
+			exs.add(child: GTSimpleSetsExercizeTests.validXml(name: 2))
+			exs.add(child: GTSimpleSetsExercizeTests.validXml(name: 3))
+			
+			let c = try GTCircuit.import(fromXML: xml, withDataManager: dataManager)
+			XCTAssertTrue(c.isSubtreeValid)
+			
+			XCTAssertEqual(c.exercizes.count, 3)
+			XCTAssertEqual((c[0] as? GTSimpleSetsExercize)?.name, "Ex 1")
+			XCTAssertEqual((c[1] as? GTSimpleSetsExercize)?.name, "Ex 2")
+			XCTAssertEqual((c[2] as? GTSimpleSetsExercize)?.name, "Ex 3")
+		} catch _ {
+			XCTFail()
+		}
+		
+		do {
+			let xml = XMLNode(name: GTCircuit.circuitTag)
+			let exs = XMLNode(name: GTCircuit.exercizesTag)
+			xml.add(child: exs)
+			exs.add(child: GTSimpleSetsExercizeTests.validXml())
+			exs.add(child: GTSimpleSetsExercizeTests.validXml(name: 2))
+			let chXml = GTChoiceTests.validXml()
+			exs.add(child: chXml)
+			chXml.children[0].children[1].children[1].add(child: GTRepsSetTests.validXml())
+			
+			_ = try GTCircuit.import(fromXML: xml, withDataManager: dataManager)
+			XCTFail()
+		} catch GTDataImportError.failure(let o) {
+			XCTAssertFalse(o.isEmpty)
+			XCTAssertNil(o.first { !($0 is GTCircuit) && !($0 is GTSimpleSetsExercize) && !($0 is GTRepsSet) && !($0 is GTChoice)})
+		} catch _ {
+			XCTFail()
+		}
+		
+		do {
+			let c = try GTCircuit.import(fromXML: GTCircuitTests.validXml(), withDataManager: dataManager)
+			XCTAssertTrue(c.isSubtreeValid)
+			
+			XCTAssertEqual(c.exercizes.count, 3)
+			XCTAssertEqual((c[0] as? GTSimpleSetsExercize)?.name, "Ex 1")
+			XCTAssertEqual((c[1] as? GTSimpleSetsExercize)?.name, "Ex 2")
+			XCTAssertTrue(c[2] is GTChoice)
+		} catch _ {
+			XCTFail()
+		}
+		
+		do {
+			let o = try GTDataObject.import(fromXML: GTCircuitTests.validXml(), withDataManager: dataManager)
+			XCTAssertTrue(o is GTCircuit)
+		} catch _ {
+			XCTFail()
+		}
 	}
     
 }

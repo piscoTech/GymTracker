@@ -11,23 +11,25 @@ import MBLibrary
 
 extension GTRest {
 	
+	static let restTag = "rest"
+	
 	override func export() -> String {
-		return ""
-		return "<\(ImportExportBackupManager.restTag)>\(Int(rest))</\(ImportExportBackupManager.restTag)>"
+		return "<\(GTRest.restTag)>\(Int(rest))</\(GTRest.restTag)>"
 	}
 	
 	override class func `import`(fromXML xml: XMLNode, withDataManager dataManager: DataManager) throws -> GTRest {
-		throw GTDataImportError.failure([])
-		
-		if xml.name == ImportExportBackupManager.restTag {
-			guard let restData = xml.content, let restTime = TimeInterval(restData) else {
-				throw GTDataImportError.failure([])
-			}
+		guard xml.name == GTRest.restTag,
+			let restData = xml.content, let restTime = TimeInterval(restData) else {
+			throw GTDataImportError.failure([])
+		}
 			
-			let e = dataManager.newRest()
-			e.set(rest: restTime)
+		let r = dataManager.newRest()
+		r.set(rest: restTime)
 			
-			return e
+		if r.isSubtreeValid {
+			return r
+		} else {
+			throw GTDataImportError.failure(r.subtreeNodeList)
 		}
 	}
 }

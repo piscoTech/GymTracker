@@ -18,8 +18,8 @@
 		7A2D95712125A4F1008DECEC /* GTChoiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A2D95702125A4F1008DECEC /* GTChoiceTests.swift */; };
 		7A3F61171E92958F000F7514 /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A3F61161E92958F000F7514 /* SettingsVC.swift */; };
 		7A45113A1FDDCCFA0065282A /* oldVersion_1.1.1.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7A4511371FDDCCF90065282A /* oldVersion_1.1.1.xml */; };
-		7A45113C1FDDD4510065282A /* invalidCircuitSets.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7A45113B1FDDD4500065282A /* invalidCircuitSets.xml */; };
-		7A4DC7A01FDDC9AB00BC60FE /* invalidCircuitRest.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7A4DC79F1FDDC9AB00BC60FE /* invalidCircuitRest.xml */; };
+		7A45113C1FDDD4510065282A /* invalidRest.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7A45113B1FDDD4500065282A /* invalidRest.xml */; };
+		7A4DC7A01FDDC9AB00BC60FE /* invalidSet.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7A4DC79F1FDDC9AB00BC60FE /* invalidSet.xml */; };
 		7A4DF0171E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4DF0161E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift */; };
 		7A4E4DCC21275CDB0052E6A3 /* GTChoiceExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4E4DCB21275CDB0052E6A3 /* GTChoiceExport.swift */; };
 		7A5346BB1E86BA7000AC5638 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A5346BA1E86BA7000AC5638 /* HealthKit.framework */; };
@@ -57,6 +57,12 @@
 		7A568B252124212D00116EB5 /* GymTrackerCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7A568AE621241AB200116EB5 /* GymTrackerCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7A581B2F2126114800FD0CCE /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A581B2E2126114800FD0CCE /* HealthKit.framework */; };
 		7A5D2B711E8422DB008EED4C /* WorkoutDetailIC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A5D2B701E8422DB008EED4C /* WorkoutDetailIC.swift */; };
+		7A65864F2127FA6700DC9C03 /* GTCircuitExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A65864E2127FA6700DC9C03 /* GTCircuitExport.swift */; };
+		7A65865321281EA400DC9C03 /* invalidExercize.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7A65865221281EA400DC9C03 /* invalidExercize.xml */; };
+		7A65865521281EE100DC9C03 /* invalidChoice.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7A65865421281EE100DC9C03 /* invalidChoice.xml */; };
+		7A65865721281F0E00DC9C03 /* invalidCircuit.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7A65865621281F0E00DC9C03 /* invalidCircuit.xml */; };
+		7A65865921281F5800DC9C03 /* xsdInvalidWorkout.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7A65865821281F5800DC9C03 /* xsdInvalidWorkout.xml */; };
+		7A65865B2128206500DC9C03 /* invalidWorkout.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7A65865A2128206400DC9C03 /* invalidWorkout.xml */; };
 		7A6E083D1E98E94C003BB048 /* CurrentWorkoutVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A6E083C1E98E94C003BB048 /* CurrentWorkoutVC.swift */; };
 		7A8D992D2126DB9700A06A9C /* oldVersion_2.0.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7A8D992C2126DB9700A06A9C /* oldVersion_2.0.xml */; };
 		7A8E60A92125B53B00935344 /* GTRestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A8E60A82125B53B00935344 /* GTRestTests.swift */; };
@@ -318,9 +324,9 @@
 		7A2E10431FBDDDBA004767D7 /* GTCircuitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTCircuitTests.swift; sourceTree = "<group>"; };
 		7A3F61161E92958F000F7514 /* SettingsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
 		7A4511371FDDCCF90065282A /* oldVersion_1.1.1.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = oldVersion_1.1.1.xml; sourceTree = "<group>"; };
-		7A45113B1FDDD4500065282A /* invalidCircuitSets.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = invalidCircuitSets.xml; sourceTree = "<group>"; };
+		7A45113B1FDDD4500065282A /* invalidRest.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = invalidRest.xml; sourceTree = "<group>"; };
 		7A4539C31E75CFC200AD0215 /* Gym Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gym Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		7A4DC79F1FDDC9AB00BC60FE /* invalidCircuitRest.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = invalidCircuitRest.xml; sourceTree = "<group>"; };
+		7A4DC79F1FDDC9AB00BC60FE /* invalidSet.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = invalidSet.xml; sourceTree = "<group>"; };
 		7A4DF0161E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompletedWorkoutsTVC.swift; sourceTree = "<group>"; };
 		7A4E4DCB21275CDB0052E6A3 /* GTChoiceExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTChoiceExport.swift; sourceTree = "<group>"; };
 		7A5346B21E86B16400AC5638 /* Gym Tracker watchOS Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Gym Tracker watchOS Extension.entitlements"; sourceTree = "<group>"; };
@@ -332,6 +338,12 @@
 		7A581B2E2126114800FD0CCE /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS5.0.sdk/System/Library/Frameworks/HealthKit.framework; sourceTree = DEVELOPER_DIR; };
 		7A5A47F01E78A3CF00ABCF46 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		7A5D2B701E8422DB008EED4C /* WorkoutDetailIC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkoutDetailIC.swift; sourceTree = "<group>"; };
+		7A65864E2127FA6700DC9C03 /* GTCircuitExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTCircuitExport.swift; sourceTree = "<group>"; };
+		7A65865221281EA400DC9C03 /* invalidExercize.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = invalidExercize.xml; sourceTree = "<group>"; };
+		7A65865421281EE100DC9C03 /* invalidChoice.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = invalidChoice.xml; sourceTree = "<group>"; };
+		7A65865621281F0E00DC9C03 /* invalidCircuit.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = invalidCircuit.xml; sourceTree = "<group>"; };
+		7A65865821281F5800DC9C03 /* xsdInvalidWorkout.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = xsdInvalidWorkout.xml; sourceTree = "<group>"; };
+		7A65865A2128206400DC9C03 /* invalidWorkout.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = invalidWorkout.xml; sourceTree = "<group>"; };
 		7A6E083C1E98E94C003BB048 /* CurrentWorkoutVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentWorkoutVC.swift; sourceTree = "<group>"; };
 		7A8D992C2126DB9700A06A9C /* oldVersion_2.0.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = oldVersion_2.0.xml; sourceTree = "<group>"; };
 		7A8E60A82125B53B00935344 /* GTRestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTRestTests.swift; sourceTree = "<group>"; };
@@ -538,8 +550,13 @@
 			children = (
 				7A4511371FDDCCF90065282A /* oldVersion_1.1.1.xml */,
 				7A8D992C2126DB9700A06A9C /* oldVersion_2.0.xml */,
-				7A4DC79F1FDDC9AB00BC60FE /* invalidCircuitRest.xml */,
-				7A45113B1FDDD4500065282A /* invalidCircuitSets.xml */,
+				7A4DC79F1FDDC9AB00BC60FE /* invalidSet.xml */,
+				7A45113B1FDDD4500065282A /* invalidRest.xml */,
+				7A65865221281EA400DC9C03 /* invalidExercize.xml */,
+				7A65865421281EE100DC9C03 /* invalidChoice.xml */,
+				7A65865621281F0E00DC9C03 /* invalidCircuit.xml */,
+				7A65865821281F5800DC9C03 /* xsdInvalidWorkout.xml */,
+				7A65865A2128206400DC9C03 /* invalidWorkout.xml */,
 			);
 			path = "Tricky Circuit Import";
 			sourceTree = "<group>";
@@ -650,6 +667,7 @@
 				7ABA40BB2123644C00BDA133 /* GTRepsSetExport.swift */,
 				7ABA40BC2123644C00BDA133 /* GTSimpleSetsExercizeExport.swift */,
 				7A4E4DCB21275CDB0052E6A3 /* GTChoiceExport.swift */,
+				7A65864E2127FA6700DC9C03 /* GTCircuitExport.swift */,
 				7A9C03582126F4A500CC1536 /* GTRestExport.swift */,
 				7ABA40BA2123644C00BDA133 /* GTWorkoutExport.swift */,
 			);
@@ -1141,10 +1159,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7A45113C1FDDD4510065282A /* invalidCircuitSets.xml in Resources */,
+				7A65865521281EE100DC9C03 /* invalidChoice.xml in Resources */,
+				7A45113C1FDDD4510065282A /* invalidRest.xml in Resources */,
+				7A65865721281F0E00DC9C03 /* invalidCircuit.xml in Resources */,
+				7A65865921281F5800DC9C03 /* xsdInvalidWorkout.xml in Resources */,
 				7A8D992D2126DB9700A06A9C /* oldVersion_2.0.xml in Resources */,
+				7A65865B2128206500DC9C03 /* invalidWorkout.xml in Resources */,
 				7A45113A1FDDCCFA0065282A /* oldVersion_1.1.1.xml in Resources */,
-				7A4DC7A01FDDC9AB00BC60FE /* invalidCircuitRest.xml in Resources */,
+				7A65865321281EA400DC9C03 /* invalidExercize.xml in Resources */,
+				7A4DC7A01FDDC9AB00BC60FE /* invalidSet.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1295,6 +1318,7 @@
 				7AB69FFD21233A010053E259 /* GTSet.swift in Sources */,
 				7AB69FD5212336E50053E259 /* WorkoutIterator.swift in Sources */,
 				7AB69FF621233A010053E259 /* GTPart.swift in Sources */,
+				7A65864F2127FA6700DC9C03 /* GTCircuitExport.swift in Sources */,
 				7AB69FD4212336E50053E259 /* Double.swift in Sources */,
 				7ABA40BE2123644D00BDA133 /* GTWorkoutExport.swift in Sources */,
 				7AB69FDC212336E50053E259 /* ExecuteWorkoutController.swift in Sources */,

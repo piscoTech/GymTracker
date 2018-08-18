@@ -26,176 +26,159 @@ class ImportExportTest: XCTestCase {
 		
         super.tearDown()
     }
-    
-    func testImportExport() {
-		#warning("Add back")
-//        let w = dataManager.newWorkout()
-//		let name = "Workout Import Export Test </name>\"'"
-//		let ow = OrganizedWorkout(w)
-//		ow.name = name
-//
-//		var e = dataManager.newExercize(for: w)
-//		let eName = "Exercize Import Export Test"
-//		e.set(name: eName)
-//		var s = dataManager.newSet(for: e)
-//		let sReps: Int32 = 10
-//		let sWeight = 5.0
-//		let sRest = 90.0
-//		s.set(reps: sReps)
-//		s.set(weight: sWeight)
-//		s.set(rest: sRest)
-//		s = dataManager.newSet(for: e)
-//		s.set(reps: sReps / 2)
-//		s.set(weight: sWeight * 2)
-//		s.set(rest: sRest)
-//
-//		e = dataManager.newExercize(for: w)
-//		e.set(name: eName)
-//		s = dataManager.newSet(for: e)
-//		s.set(reps: sReps)
-//		s.set(weight: sWeight)
-//		s.set(rest: sRest)
-//		s = dataManager.newSet(for: e)
-//		s.set(reps: sReps / 2)
-//		s.set(weight: sWeight * 2)
-//		s.set(rest: sRest)
-//
-//		e = dataManager.newExercize(for: w)
-//		let rest = 4 * 60.0
-//		e.set(rest: rest)
-//
-//		e = dataManager.newExercize(for: w)
-//		e.set(name: eName)
-//		s = dataManager.newSet(for: e)
-//		s.set(reps: sReps)
-//		s.set(weight: sWeight)
-//		s.set(rest: sRest)
-//
-//		ow.makeCircuit(exercize: ow[0]!, isCircuit: true)
-//		ow.enableCircuitRestPeriods(for: ow[1]!, enable: true)
-//
-//		if let f = dataManager.importExportManager.export(workout: w) {
-//			dataManager.importExportManager.import(f, isRestoring: false, performCallback: { fileValid, number, doPerform in
-//				XCTAssertTrue(fileValid)
-//				XCTAssertEqual(number, 1)
-//				XCTAssertNotNil(doPerform)
-//				doPerform?()
-//			}) { wrktList in
-//				if let wrkt = wrktList {
-//					XCTAssertEqual(wrkt.count, 1)
-//					let w = wrkt[0]
-//					let ow = OrganizedWorkout(w)
-//					XCTAssertEqual(ow.name, name)
-//
-//					XCTAssertEqual(ow.exercizes.count, 4)
-//					XCTAssertFalse(ow[0]!.isRest)
-//					XCTAssertFalse(ow[1]!.isRest)
-//					XCTAssertTrue(ow[2]!.isRest)
-//					XCTAssertFalse(ow[3]!.isRest)
-//
-//					if let (n, t) = ow.circuitStatus(for: ow[1]!) {
-//						XCTAssertEqual(n, 2)
-//						XCTAssertEqual(n, t)
-//					} else {
-//						XCTFail("Unexpected nil")
-//					}
-//
-//					XCTAssertFalse(ow[0]!.hasCircuitRest)
-//					XCTAssertTrue(ow[1]!.hasCircuitRest)
-//
-//					let e0 = ow[0]!
-//					XCTAssertFalse(e0.isRest)
-//					XCTAssertEqual(e0.name, eName)
-//					XCTAssertEqual(e0.sets.count, 2)
-//
-//					let s0 = e0[0]!
-//					XCTAssertEqual(s0.reps, sReps)
-//					XCTAssertEqual(s0.weight, sWeight, accuracy: 0.0001)
-//					XCTAssertEqual(s0.rest, sRest, accuracy: 0.0001)
-//
-//					let s1 = e0[1]!
-//					XCTAssertEqual(s1.reps, sReps / 2)
-//					XCTAssertEqual(s1.weight, sWeight * 2, accuracy: 0.0001)
-//					XCTAssertEqual(s1.rest, sRest, accuracy: 0.0001)
-//
-//					self.importExpectation.fulfill()
-//				} else {
-//					XCTFail("Import failed")
-//				}
-//			}
-//		} else {
-//			XCTFail("Export failed")
-//		}
-//
-//		wait(for: [importExpectation], timeout: 5)
-    }
 	
 	func testImportVersion_1_1_1() {
-		#warning("Add back")
-//		let f = Bundle(for: type(of: self)).url(forResource: "oldVersion_1.1.1", withExtension: "xml")!
-//		dataManager.importExportManager.import(f, isRestoring: false, performCallback: { (valid, _, doPerform) in
-//			XCTAssertTrue(valid)
-//			doPerform?()
-//		}) { wrkt in
-//			XCTAssertEqual(wrkt?.count, 9)
-//			self.importExpectation.fulfill()
-//		}
-//
-//		wait(for: [importExpectation], timeout: 5)
+		let f = Bundle(for: type(of: self)).url(forResource: "oldVersion_1.1.1", withExtension: "xml")!
+		dataManager.importExportManager.import(f, isRestoring: false, performCallback: { (valid, count, doPerform) in
+			XCTAssertTrue(valid)
+			XCTAssertEqual(count, 9)
+			XCTAssertNotNil(doPerform)
+			doPerform?()
+		}) { wrkt in
+			XCTAssertEqual(wrkt?.count, 9)
+			self.importExpectation.fulfill()
+		}
+
+		wait(for: [importExpectation], timeout: 5)
 	}
 	
 	func testImportVersion_2_0() {
-		// 8 workouts
-		// workout index 6 has two circuit (both 2 ex), positions 8 and 11
-		#warning("Check that circuit in one of them is fine")
+		let f = Bundle(for: type(of: self)).url(forResource: "oldVersion_2.0", withExtension: "xml")!
+		dataManager.importExportManager.import(f, isRestoring: false, performCallback: { (valid, count, doPerform) in
+			XCTAssertTrue(valid)
+			XCTAssertEqual(count, 8)
+			XCTAssertNotNil(doPerform)
+			doPerform?()
+		}) { wrkt in
+			XCTAssertEqual(wrkt?.count, 8)
+			
+			let w = wrkt![6]
+			XCTAssertEqual(w.parts.count, 12)
+			XCTAssertEqual(w.parts.filter { $0 is GTCircuit }.count, 2)
+			
+			for p in [w[8], w[11]] {
+				if let c = p as? GTCircuit {
+					XCTAssertEqual(c.exercizes.count, 2)
+				} else {
+					XCTFail("Circuit expected")
+				}
+			}
+			
+			self.importExpectation.fulfill()
+		}
+		
+		wait(for: [importExpectation], timeout: 5)
 	}
 	
-	func testPurgeInvalidCircuitRest() {
-		#warning("Add back")
-//		let f = Bundle(for: type(of: self)).url(forResource: "invalidCircuitRest", withExtension: "xml")!
-//		dataManager.importExportManager.import(f, isRestoring: false, performCallback: { (valid, _, doPerform) in
-//			XCTAssertTrue(valid)
-//			doPerform?()
-//		}) { wrkt in
-//			XCTAssertEqual(wrkt?.count, 1)
-//			if let w = wrkt?.first {
-//				let ow = OrganizedWorkout(w)
-//
-//				XCTAssertFalse(ow.isCircuit(ow[0]!))
-//				XCTAssertFalse(ow[0]!.isCircuit)
-//				XCTAssertFalse(ow[0]!.hasCircuitRest)
-//				XCTAssertFalse(ow[0]!.isRest)
-//				XCTAssertFalse(ow.isCircuit(ow[1]!))
-//				XCTAssertFalse(ow[1]!.isCircuit)
-//				XCTAssertFalse(ow[1]!.hasCircuitRest)
-//				XCTAssertTrue(ow[1]!.isRest)
-//				XCTAssertFalse(ow.isCircuit(ow[2]!))
-//				XCTAssertFalse(ow[2]!.isCircuit)
-//				XCTAssertFalse(ow[2]!.hasCircuitRest)
-//				XCTAssertFalse(ow[2]!.isRest)
-//
-//				self.importExpectation.fulfill()
-//			} else {
-//				XCTFail("Unexpected nil")
-//			}
-//		}
-//
-//		wait(for: [importExpectation], timeout: 2)
+	func testImportVersion_3_0() {
+		#warning("With a choice")
+		XCTFail("Add me")
 	}
 	
-	func testPurgeInvalidCircuitSets() {
-		#warning("Add back")
-//		let f = Bundle(for: type(of: self)).url(forResource: "invalidCircuitSets", withExtension: "xml")!
-//		dataManager.importExportManager.import(f, isRestoring: false, performCallback: { (valid, _, doPerform) in
-//			XCTAssertTrue(valid)
-//			doPerform?()
-//		}) { wrkt in
-//			XCTAssertEqual(wrkt?.count, 0, "Somehow different numbers of sets are fine in a circuit")
-//
-//			self.importExpectation.fulfill()
-//		}
-//
-//		wait(for: [importExpectation], timeout: 2)
+	func testXsdInvalidSet() {
+		let f = Bundle(for: type(of: self)).url(forResource: "invalidSet", withExtension: "xml")!
+		dataManager.importExportManager.import(f, isRestoring: false, performCallback: { (valid, count, doPerform) in
+			XCTAssertFalse(valid)
+			XCTAssertNil(count)
+			XCTAssertNil(doPerform)
+			
+			self.importExpectation.fulfill()
+		}) { _ in
+			XCTFail()
+		}
+		
+		wait(for: [importExpectation], timeout: 5)
+	}
+	
+	func testXsdInvalidRest() {
+		let f = Bundle(for: type(of: self)).url(forResource: "invalidRest", withExtension: "xml")!
+		dataManager.importExportManager.import(f, isRestoring: false, performCallback: { (valid, count, doPerform) in
+			XCTAssertFalse(valid)
+			XCTAssertNil(count)
+			XCTAssertNil(doPerform)
+			
+			self.importExpectation.fulfill()
+		}) { _ in
+			XCTFail()
+		}
+		
+		wait(for: [importExpectation], timeout: 5)
+	}
+	
+	func testXsdInvalidExercize() {
+		let f = Bundle(for: type(of: self)).url(forResource: "invalidExercize", withExtension: "xml")!
+		dataManager.importExportManager.import(f, isRestoring: false, performCallback: { (valid, count, doPerform) in
+			XCTAssertFalse(valid)
+			XCTAssertNil(count)
+			XCTAssertNil(doPerform)
+			
+			self.importExpectation.fulfill()
+		}) { _ in
+			XCTFail()
+		}
+		
+		wait(for: [importExpectation], timeout: 5)
+	}
+	
+	func testXsdInvalidChoice() {
+		let f = Bundle(for: type(of: self)).url(forResource: "invalidChoice", withExtension: "xml")!
+		dataManager.importExportManager.import(f, isRestoring: false, performCallback: { (valid, count, doPerform) in
+			XCTAssertFalse(valid)
+			XCTAssertNil(count)
+			XCTAssertNil(doPerform)
+			
+			self.importExpectation.fulfill()
+		}) { _ in
+			XCTFail()
+		}
+		
+		wait(for: [importExpectation], timeout: 5)
+	}
+	
+	func testXsdInvalidCircuit() {
+		let f = Bundle(for: type(of: self)).url(forResource: "invalidCircuit", withExtension: "xml")!
+		dataManager.importExportManager.import(f, isRestoring: false, performCallback: { (valid, count, doPerform) in
+			XCTAssertFalse(valid)
+			XCTAssertNil(count)
+			XCTAssertNil(doPerform)
+			
+			self.importExpectation.fulfill()
+		}) { _ in
+			XCTFail()
+		}
+		
+		wait(for: [importExpectation], timeout: 5)
+	}
+	
+	func testXsdInvalidWorkout() {
+		let f = Bundle(for: type(of: self)).url(forResource: "xsdInvalidWorkout", withExtension: "xml")!
+		dataManager.importExportManager.import(f, isRestoring: false, performCallback: { (valid, count, doPerform) in
+			XCTAssertFalse(valid)
+			XCTAssertNil(count)
+			XCTAssertNil(doPerform)
+			
+			self.importExpectation.fulfill()
+		}) { _ in
+			XCTFail()
+		}
+		
+		wait(for: [importExpectation], timeout: 5)
+	}
+	
+	func testInvalidWorkout() {
+		let f = Bundle(for: type(of: self)).url(forResource: "invalidWorkout", withExtension: "xml")!
+		dataManager.importExportManager.import(f, isRestoring: false, performCallback: { (valid, count, doPerform) in
+			XCTAssertTrue(valid)
+			XCTAssertEqual(count, 1)
+			XCTAssertNotNil(doPerform)
+			
+			doPerform?()
+		}) { wrkt in
+			XCTAssertEqual(wrkt?.count, 0)
+			self.importExpectation.fulfill()
+		}
+		
+		wait(for: [importExpectation], timeout: 5)
 	}
 	
 }
