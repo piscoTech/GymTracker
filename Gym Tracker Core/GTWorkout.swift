@@ -37,7 +37,7 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 	
 	override var description: String {
 		let n = parts.filter { $0 is GTExercize }.count
-		return "\(n) " + NSLocalizedString("EXERCIZE" + (n > 1 ? "S" : ""), comment: "exercize(s)").lowercased()
+		return "\(n) " + GTLocalizedString("EXERCIZE" + (n > 1 ? "S" : ""), comment: "exercize(s)").lowercased()
 	}
 	
 	override class func loadWithID(_ id: String, fromDataManager dataManager: DataManager) -> GTWorkout? {

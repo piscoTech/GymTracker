@@ -20,12 +20,34 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		case setNextUpTextHidden(Bool)
 		case workoutHasStarted
 		case askForChoices([GTChoice])
+		case disableGlobalActions
+		case exitWorkoutTracking
+		case endNotifyEndRest
+		case startTimer(Date)
+		case setExercizeName(String)
+		case setCurrentSetViewHidden(Bool)
+		case setCurrentSetText(String)
+		case setSetDoneButtonHidden(Bool)
+		case setOtherSetsViewHidden(Bool)
+		case setOtherSetsText(String)
+		case stopRestTimer
+		case notifyExercizeChange(Bool)
+		case setNextUpText(String)
+		case askUpdateSecondaryInfo(UpdateSecondaryInfoData)
+		case startRestTimer(Date)
+		case setRestEndButtonHidden(Bool)
+		case notifyEndRest
+		case setWorkoutDoneText(String)
+		case setWorkoutDoneButtonEnabled(Bool)
+		case stopTimer
 	}
 	
 	private let source = RunningWorkoutSource.phone
 	private var calls: [DelegateCalls]!
 	private var expectations = [XCTestExpectation]()
 	private var w: GTWorkout!
+	private var e1, e2, e3, e4: GTSimpleSetsExercize!
+	private var r: GTRest!
 
     override func setUp() {
         super.setUp()
@@ -46,6 +68,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		s.set(mainInfo: 5)
 		s.set(secondaryInfo: 8)
 		s.set(rest: 90)
+		e1 = e
 		
 		e = dataManager.newExercize()
 		w.add(parts: e)
@@ -53,16 +76,16 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		s = dataManager.newSet(for: e)
 		s.set(mainInfo: 12)
 		s.set(secondaryInfo: 4)
-		s.set(rest: 60)
+		s.set(rest: 30)
 		s = dataManager.newSet(for: e)
 		s.set(mainInfo: 10)
 		s.set(secondaryInfo: 6)
 		s.set(rest: 60)
+		e2 = e
 		
-		let r = dataManager.newRest()
+		r = dataManager.newRest()
 		w.add(parts: r)
-		let rest = 4 * 60.0
-		r.set(rest: rest)
+		r.set(rest: 60)
 		
 		e = dataManager.newExercize()
 		w.add(parts: e)
@@ -71,6 +94,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		s.set(mainInfo: 15)
 		s.set(secondaryInfo: 0)
 		s.set(rest: 60)
+		e3 = e
 		
 		e = dataManager.newExercize()
 		w.add(parts: e)
@@ -79,6 +103,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		s.set(mainInfo: 10)
 		s.set(secondaryInfo: 5)
 		s.set(rest: 60)
+		e4 = e
     }
 	
 	private func choicify() {
@@ -96,6 +121,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
 		dataManager.setRunningWorkout(nil, fromSource: source)
+		dataManager.preferences.runningWorkoutSource = nil
 		dataManager.discardAllChanges()
 		
 		super.tearDown()
@@ -158,6 +184,9 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		wait(for: waitCalls(n: 1), timeout: 1)
 		
 		assertCall { $0 == .workoutHasStarted }
+		XCTAssertEqual(dataManager.preferences.runningWorkout, w.recordID)
+		XCTAssertEqual(dataManager.preferences.runningWorkoutSource, source)
+		#warning("Also check persisted choices")
     }
 	
 	func testChoiceStart() {
@@ -261,18 +290,612 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		wait(for: waitCalls(n: 1), timeout: 1)
 		
 		assertCall { $0 == .workoutHasStarted }
+		XCTAssertEqual(dataManager.preferences.runningWorkout, w.recordID)
+		XCTAssertEqual(dataManager.preferences.runningWorkoutSource, source)
+		#warning("Also check persisted choices")
 	}
 	
-	private func assertCall(file: StaticString = #file, line: UInt = #line, _ where: (DelegateCalls) -> Bool) {
+	func testStartSurplusChoices() {
+		choicify()
+		
+		let data = ExecuteWorkoutData(workout: w, resume: false, choices: [4,7,8,10])
+		let ctrl = ExecuteWorkoutController(data: data, viewController: self, source: source, dataManager: dataManager)
+		
+		XCTAssertFalse(calls.isEmpty)
+		XCTAssertFalse(calls.contains { c in
+			if case DelegateCalls.askForChoices(_) = c {
+				return true
+			} else {
+				return false
+			}
+		})
+		calls = []
+		
+		XCTAssertTrue(calls.isEmpty)
+		wait(for: waitCalls(n: 1), timeout: 1)
+		
+		assertCall { c in
+			if case DelegateCalls.askForChoices(let ch) = c {
+				XCTAssertEqual(ch.count, 2)
+				ctrl.reportChoices([ch[0]: 0, ch[1]: 0])
+				
+				return true
+			}
+			
+			return false
+		}
+		
+		XCTAssertTrue(calls.isEmpty)
+		wait(for: waitCalls(n: 1), timeout: 1)
+		
+		assertCall { $0 == .workoutHasStarted }
+		XCTAssertTrue(calls.isEmpty)
+		
+		XCTAssertEqual(dataManager.preferences.runningWorkout, w.recordID)
+		XCTAssertEqual(dataManager.preferences.runningWorkoutSource, source)
+		#warning("Also check persisted choices are empty")
+	}
+	
+	func testCancelStart() {
+		choicify()
+		
+		let data = ExecuteWorkoutData(workout: w, resume: false, choices: [])
+		let ctrl = ExecuteWorkoutController(data: data, viewController: self, source: source, dataManager: dataManager)
+		
+		XCTAssertFalse(calls.isEmpty)
+		XCTAssertFalse(calls.contains { c in
+			if case DelegateCalls.askForChoices(_) = c {
+				return true
+			} else {
+				return false
+			}
+		})
+		calls = []
+		
+		XCTAssertTrue(calls.isEmpty)
+		wait(for: waitCalls(n: 1), timeout: 1)
+		
+		assertCall { c in
+			if case DelegateCalls.askForChoices(let ch) = c {
+				XCTAssertFalse(ch.isEmpty)
+				return true
+			}
+			
+			return false
+		}
+		
+		ctrl.cancelStartup()
+		
+		assertCall { $0 == .disableGlobalActions }
+		assertCall { $0 == .exitWorkoutTracking }
+		assertCall { $0 == .endNotifyEndRest }
+		XCTAssertTrue(calls.isEmpty)
+		
+		XCTAssertNil(dataManager.preferences.runningWorkout)
+		XCTAssertEqual(dataManager.preferences.runningWorkoutSource, source)
+		#warning("Also check persisted choices are nil")
+	}
+	
+	func testExecution() {
+		choicify()
+		let data = ExecuteWorkoutData(workout: w, resume: false, choices: [1, 0])
+		let ctrl = ExecuteWorkoutController(data: data, viewController: self, source: source, dataManager: dataManager)
+		
+		XCTAssertFalse(calls.isEmpty)
+		XCTAssertFalse(calls.contains { c in
+			if case DelegateCalls.askForChoices(_) = c {
+				return true
+			} else {
+				return false
+			}
+		})
+		calls = []
+		
+		do { // First set
+			wait(for: waitCalls(n: 14), timeout: 1)
+			
+			assertCall { $0 == .workoutHasStarted }
+			assertCall { c in
+				if case DelegateCalls.startTimer(let d) = c {
+					let now = Date()
+					XCTAssertEqual(d.timeIntervalSince1970, Date().timeIntervalSince1970, accuracy: 2)
+					
+					return true
+				}
+				
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setNextUpTextHidden(let h) = c {
+					XCTAssertFalse(h)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setCurrentExercizeViewHidden(let h) = c {
+					XCTAssertFalse(h)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setExercizeName(let n) = c {
+					XCTAssertEqual(n, e2.name)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setCurrentSetViewHidden(let h) = c {
+					XCTAssertFalse(h)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setCurrentSetText(let str) = c {
+					let s = e2[0]!
+					assert(string: str, containsInOrder: [s.mainInfo.description, timesSign, s.secondaryInfo.toString(), s.secondaryInfoLabel.string])
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setSetDoneButtonHidden(let h) = c {
+					XCTAssertFalse(h)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setOtherSetsViewHidden(let h) = c {
+					XCTAssertFalse(h)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setOtherSetsText(let str) = c {
+					let s = e2[1]!
+					assert(string: str, containsInOrder: ["1", s.secondaryInfo.toString(), s.secondaryInfoLabel.string])
+					return true
+				}
+				return false
+			}
+			assertCall { $0 == .stopRestTimer }
+			assertCall { c in
+				if case DelegateCalls.setRestViewHidden(let h) = c {
+					XCTAssertTrue(h)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.notifyExercizeChange(let r) = c {
+					XCTAssertFalse(r)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setNextUpText(let str) = c {
+					assert(string: str, containsInOrder: [r.rest.getDuration(hideHours: true)])
+					return true
+				}
+				return false
+			}
+			
+			XCTAssertTrue(calls.isEmpty)
+		}
+		
+		let e2Change = 1.0
+		func checkE2Rest() {
+			assertCall { c in
+				if case DelegateCalls.setCurrentExercizeViewHidden(let h) = c {
+					XCTAssertFalse(h)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setExercizeName(let n) = c {
+					XCTAssertEqual(n, e2.name)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setCurrentSetViewHidden(let h) = c {
+					XCTAssertTrue(h)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setSetDoneButtonHidden(let h) = c {
+					XCTAssertTrue(h)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setOtherSetsViewHidden(let h) = c {
+					XCTAssertFalse(h)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setOtherSetsText(let str) = c {
+					let s = e2[1]!
+					assert(string: str, containsInOrder: ["1", s.secondaryInfo.toString(), s.secondaryInfoLabel.string])
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.startRestTimer(let d) = c {
+					let s = e2[0]!
+					XCTAssertEqual(d.timeIntervalSince1970, Date().timeIntervalSince1970 + s.rest, accuracy: 2)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setRestViewHidden(let h) = c {
+					XCTAssertFalse(h)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setRestEndButtonHidden(let h) = c {
+					XCTAssertFalse(h)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setNextUpText(let str) = c {
+					assert(string: str, containsInOrder: [r.rest.getDuration(hideHours: true)])
+					return true
+				}
+				return false
+			}
+		}
+		
+		do { // First set rest start
+			ctrl.endSet()
+			
+			assertCall { c in
+				if case DelegateCalls.askUpdateSecondaryInfo(let d) = c {
+					XCTAssertEqual(d.set, e2[0])
+					XCTAssertEqual(d.workoutController, ctrl)
+					return true
+				}
+				return false
+			}
+			checkE2Rest()
+			assertCall { c in
+				if case DelegateCalls.notifyExercizeChange(let r) = c {
+					XCTAssertTrue(r)
+					return true
+				}
+				return false
+			}
+			
+			XCTAssertTrue(calls.isEmpty)
+		}
+		
+		do { // First set update
+			ctrl.setSecondaryInfoChange(e2Change, for: e2[0]!)
+			checkE2Rest()
+			XCTAssertTrue(calls.isEmpty)
+		}
+		
+		do { // First set rest end
+			wait(for: waitCalls(n: 2), timeout: e2[0]!.rest + 5)
+			
+			assertCall { $0 == .stopRestTimer }
+			assertCall { $0 == .notifyEndRest }
+			XCTAssertTrue(calls.isEmpty)
+		}
+		
+		do { // Second set
+			ctrl.endRest()
+			
+			assertCall { c in
+				if case DelegateCalls.setCurrentExercizeViewHidden(let h) = c {
+					XCTAssertFalse(h)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setExercizeName(let n) = c {
+					XCTAssertEqual(n, e2.name)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setCurrentSetViewHidden(let h) = c {
+					XCTAssertFalse(h)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setCurrentSetText(let str) = c {
+					let s = e2[1]!
+					assert(string: str, containsInOrder: [s.mainInfo.description, timesSign, s.secondaryInfo.toString(), plusSign, e2Change.toString(), s.secondaryInfoLabel.string])
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setSetDoneButtonHidden(let h) = c {
+					XCTAssertFalse(h)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setOtherSetsViewHidden(let h) = c {
+					XCTAssertTrue(h)
+					return true
+				}
+				return false
+			}
+			assertCall(count: 2) { $0 == .stopRestTimer }
+			assertCall { c in
+				if case DelegateCalls.setRestViewHidden(let h) = c {
+					XCTAssertTrue(h)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.notifyExercizeChange(let r) = c {
+					XCTAssertFalse(r)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setNextUpText(let str) = c {
+					assert(string: str, containsInOrder: [r.rest.getDuration(hideHours: true)])
+					return true
+				}
+				return false
+			}
+			assertCall { $0 == .endNotifyEndRest }
+			
+			XCTAssertTrue(calls.isEmpty)
+		}
+		
+		do { // Rest period start
+			let restStart = Date().addingTimeInterval(-45)
+			ctrl.endSet(endTime: restStart, secondaryInfoChange: e2Change * 2)
+			
+			XCTAssertEqual(ctrl.secondaryInfoChange(for: e2[1]!), e2Change * 2)
+			
+			assertCall { c in
+				if case DelegateCalls.setCurrentExercizeViewHidden(let h) = c {
+					XCTAssertTrue(h)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.startRestTimer(let d) = c {
+					XCTAssertEqual(d.timeIntervalSince1970, restStart.timeIntervalSince1970 + r.rest, accuracy: 5)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setRestViewHidden(let h) = c {
+					XCTAssertFalse(h)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setRestEndButtonHidden(let h) = c {
+					XCTAssertFalse(h)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.notifyExercizeChange(let r) = c {
+					XCTAssertTrue(r)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setNextUpText(let str) = c {
+					assert(string: str, containsInOrder: [e3.name], thenNotContains: e3[0]!.secondaryInfoLabel.string)
+					return true
+				}
+				return false
+			}
+		}
+		
+		do { // Rest period end
+			wait(for: waitCalls(n: 2), timeout: 20)
+			
+			assertCall { $0 == .stopRestTimer }
+			assertCall { $0 == .notifyEndRest }
+			XCTAssertTrue(calls.isEmpty)
+		}
+		
+		do { // Last set
+			ctrl.endRest()
+			
+			assertCall { $0 == .endNotifyEndRest }
+			assertCall { c in
+				if case DelegateCalls.setCurrentExercizeViewHidden(let h) = c {
+					XCTAssertFalse(h)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setExercizeName(let n) = c {
+					XCTAssertEqual(n, e3.name)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setCurrentSetViewHidden(let h) = c {
+					XCTAssertFalse(h)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setCurrentSetText(let str) = c {
+					let s = e3[0]!
+					assert(string: str, containsInOrder: [s.mainInfo.description], thenNotContains: timesSign)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setSetDoneButtonHidden(let h) = c {
+					XCTAssertFalse(h)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setOtherSetsViewHidden(let h) = c {
+					XCTAssertTrue(h)
+					return true
+				}
+				return false
+			}
+			assertCall(count: 2) { $0 == .stopRestTimer }
+			assertCall { c in
+				if case DelegateCalls.setRestViewHidden(let h) = c {
+					XCTAssertTrue(h)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.notifyExercizeChange(let r) = c {
+					XCTAssertFalse(r)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setNextUpText(let str) = c {
+					return true
+				}
+				return false
+			}
+			
+			XCTAssertTrue(calls.isEmpty)
+		}
+		
+		do { // End workout
+			ctrl.endSet()
+			
+			assertCall { c in
+				if case DelegateCalls.askUpdateSecondaryInfo(let d) = c {
+					XCTAssertEqual(d.set, e3[0])
+					XCTAssertEqual(d.workoutController, ctrl)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setCurrentExercizeViewHidden(let h) = c {
+					XCTAssertTrue(h)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setRestViewHidden(let h) = c {
+					XCTAssertTrue(h)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setNextUpTextHidden(let h) = c {
+					XCTAssertTrue(h)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setWorkoutDoneButtonEnabled(let e) = c {
+					XCTAssertFalse(e)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setWorkoutDoneText(_) = c {
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setWorkoutDoneViewHidden(let h) = c {
+					XCTAssertFalse(h)
+					return true
+				}
+				return false
+			}
+			assertCall { $0 == .stopTimer }
+			assertCall { $0 == .disableGlobalActions }
+			assertCall { $0 == .endNotifyEndRest }
+			
+			XCTAssertTrue(calls.isEmpty)
+			wait(for: waitCalls(n: 2), timeout: 2)
+			
+			assertCall { c in
+				if case DelegateCalls.setWorkoutDoneButtonEnabled(let e) = c {
+					XCTAssertTrue(e)
+					return true
+				}
+				return false
+			}
+			assertCall { c in
+				if case DelegateCalls.setWorkoutDoneText(_) = c {
+					return true
+				}
+				return false
+			}
+			
+			XCTAssertTrue(calls.isEmpty)
+			XCTAssertNil(dataManager.preferences.runningWorkout)
+			XCTAssertEqual(dataManager.preferences.runningWorkoutSource, source)
+			#warning("Also check persisted choices are nil")
+		}
+		
+	}
+	
+	private func assertCall(count: Int = 1, file: StaticString = #file, line: UInt = #line, _ where: (DelegateCalls) -> Bool) {
 		let n = calls.count
 		calls.removeAll { `where`($0) }
-		if calls.count != n - 1{
+		if calls.count != n - count {
 			XCTFail("Call not found", file: file, line: line)
 		}
 	}
 	
 	private func waitCalls(n: Int) -> [XCTestExpectation] {
-		let e = [()-> XCTestExpectation](repeating: { return XCTestExpectation() }, count: n).map { $0() }
+		let e = (0 ..< n).map { _ in XCTestExpectation() }
 		expectations = e
 		return e
 	}
@@ -297,11 +920,13 @@ extension ExecuteWorkoutControllerTests: ExecuteWorkoutControllerDelegate {
 	}
 	
 	func startTimer(at date: Date) {
-		#warning("Record called")
+		self.calls.append(.startTimer(date))
+		expectations.popLast()?.fulfill()
 	}
 	
 	func stopTimer() {
-		#warning("Record called")
+		self.calls.append(.stopTimer)
+		expectations.popLast()?.fulfill()
 	}
 	
 	func setCurrentExercizeViewHidden(_ hidden: Bool) {
@@ -310,35 +935,43 @@ extension ExecuteWorkoutControllerTests: ExecuteWorkoutControllerDelegate {
 	}
 	
 	func setExercizeName(_ name: String) {
-		#warning("Record called")
+		self.calls.append(.setExercizeName(name))
+		expectations.popLast()?.fulfill()
 	}
 	
 	func setCurrentSetViewHidden(_ hidden: Bool) {
-		#warning("Record called")
+		self.calls.append(.setCurrentSetViewHidden(hidden))
+		expectations.popLast()?.fulfill()
 	}
 	
 	func setCurrentSetText(_ text: NSAttributedString) {
-		#warning("Record called")
+		self.calls.append(.setCurrentSetText(text.string))
+		expectations.popLast()?.fulfill()
 	}
 	
 	func setOtherSetsViewHidden(_ hidden: Bool) {
-		#warning("Record called")
+		self.calls.append(.setOtherSetsViewHidden(hidden))
+		expectations.popLast()?.fulfill()
 	}
 	
 	func setOtherSetsText(_ text: NSAttributedString) {
-		#warning("Record called")
+		self.calls.append(.setOtherSetsText(text.string))
+		expectations.popLast()?.fulfill()
 	}
 	
 	func setSetDoneButtonHidden(_ hidden: Bool) {
-		#warning("Record called")
+		self.calls.append(.setSetDoneButtonHidden(hidden))
+		expectations.popLast()?.fulfill()
 	}
 	
 	func startRestTimer(to date: Date) {
-		#warning("Record called")
+		self.calls.append(.startRestTimer(date))
+		expectations.popLast()?.fulfill()
 	}
 	
 	func stopRestTimer() {
-		#warning("Record called")
+		self.calls.append(.stopRestTimer)
+		expectations.popLast()?.fulfill()
 	}
 	
 	func setRestViewHidden(_ hidden: Bool) {
@@ -347,7 +980,8 @@ extension ExecuteWorkoutControllerTests: ExecuteWorkoutControllerDelegate {
 	}
 	
 	func setRestEndButtonHidden(_ hidden: Bool) {
-		#warning("Record called")
+		self.calls.append(.setRestEndButtonHidden(hidden))
+		expectations.popLast()?.fulfill()
 	}
 	
 	func setWorkoutDoneViewHidden(_ hidden: Bool) {
@@ -356,15 +990,18 @@ extension ExecuteWorkoutControllerTests: ExecuteWorkoutControllerDelegate {
 	}
 	
 	func setWorkoutDoneText(_ text: String) {
-		#warning("Record called")
+		self.calls.append(.setWorkoutDoneText(text))
+		expectations.popLast()?.fulfill()
 	}
 	
 	func setWorkoutDoneButtonEnabled(_ enabled: Bool) {
-		#warning("Record called")
+		self.calls.append(.setWorkoutDoneButtonEnabled(enabled))
+		expectations.popLast()?.fulfill()
 	}
 	
 	func disableGlobalActions() {
-		#warning("Record called")
+		self.calls.append(.disableGlobalActions)
+		expectations.popLast()?.fulfill()
 	}
 	
 	func setNextUpTextHidden(_ hidden: Bool) {
@@ -373,23 +1010,28 @@ extension ExecuteWorkoutControllerTests: ExecuteWorkoutControllerDelegate {
 	}
 	
 	func setNextUpText(_ text: NSAttributedString) {
-		#warning("Record called")
+		self.calls.append(.setNextUpText(text.string))
+		expectations.popLast()?.fulfill()
 	}
 	
 	func notifyEndRest() {
-		#warning("Record called")
+		self.calls.append(.notifyEndRest)
+		expectations.popLast()?.fulfill()
 	}
 	
 	func endNotifyEndRest() {
-		#warning("Record called")
+		self.calls.append(.endNotifyEndRest)
+		expectations.popLast()?.fulfill()
 	}
 	
 	func notifyExercizeChange(isRest: Bool) {
-		#warning("Record called")
+		self.calls.append(.notifyExercizeChange(isRest))
+		expectations.popLast()?.fulfill()
 	}
 	
-	func askUpdateWeight(with data: UpdateSecondaryInfoData) {
-		#warning("Record called")
+	func askUpdateSecondaryInfo(with data: UpdateSecondaryInfoData) {
+		self.calls.append(.askUpdateSecondaryInfo(data))
+		expectations.popLast()?.fulfill()
 	}
 	
 	func workoutHasStarted() {
@@ -398,7 +1040,8 @@ extension ExecuteWorkoutControllerTests: ExecuteWorkoutControllerDelegate {
 	}
 	
 	func exitWorkoutTracking() {
-		#warning("Record called")
+		self.calls.append(.exitWorkoutTracking)
+		expectations.popLast()?.fulfill()
 	}
 	
 }

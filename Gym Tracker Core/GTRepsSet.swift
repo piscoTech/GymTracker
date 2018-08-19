@@ -62,7 +62,7 @@ final class GTRepsSet: GTSet {
 		return Int(reps)
 	}
 	
-	private static let respLabel = NSAttributedString(string: NSLocalizedString("CUR_REPS_INFO", comment: "reps"))
+	private static let repsLabel = NSAttributedString(string: GTLocalizedString("CUR_REPS_INFO", comment: "reps"))
 	private static let timesSignLabel = NSAttributedString(string: timesSign)
 	private static let kgLabel = NSAttributedString(string: "kg")
 	
@@ -73,6 +73,7 @@ final class GTRepsSet: GTSet {
 			repsDescription.append(w)
 			repsDescription.append(secondaryInfoLabel)
 		}
+		repsDescription.append(GTRepsSet.repsLabel)
 		
 		return repsDescription
 	}

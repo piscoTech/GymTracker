@@ -438,7 +438,7 @@ public class DataManager: NSObject {
 	
 	func setRunningWorkout(_ w: GTWorkout?, fromSource s: RunningWorkoutSource) {
 		// Can set workout only for current platform, the phone can set also for the watch
-		guard use == .application, s.isCurrentPlatform() || s == .watch else {
+		guard s.isCurrentPlatform() || s == .watch else {
 			return
 		}
 		#warning("Get choices from preferences and send them to counterpart (delete them if nil)")

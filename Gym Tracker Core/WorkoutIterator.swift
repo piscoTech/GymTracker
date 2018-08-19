@@ -63,7 +63,7 @@ class WorkoutStepNextRest: WorkoutStepNext {
 	let description: NSAttributedString
 	let rest: TimeInterval
 	
-	static private let nextRestTxt = NSLocalizedString("NEXT_EXERCIZE_REST", comment: "rest")
+	static private let nextRestTxt = GTLocalizedString("NEXT_EXERCIZE_REST", comment: "rest")
 	
 	fileprivate init(rest: TimeInterval) {
 		self.rest = rest
@@ -168,8 +168,8 @@ class WorkoutExercizeStep: WorkoutSetStep {
 	
 	private var otherSets: NSAttributedString?
 	
-	static private let otherSetTxt = NSLocalizedString("OTHER_N_SET", comment: "other set")
-	static private let otherSetsTxt = NSLocalizedString("OTHER_N_SETS", comment: "other sets")
+	static private let otherSetTxt = GTLocalizedString("OTHER_N_SET", comment: "other set")
+	static private let otherSetsTxt = GTLocalizedString("OTHER_N_SETS", comment: "other sets")
 	
 	fileprivate init(exercizeName: String, set: GTSet, change: @escaping @autoclosure () -> Double, rest: TimeInterval?, others: [Other], nextUp: WorkoutStepNext?, isLast: Bool) {
 		self.otherSets = NSAttributedString()
@@ -217,8 +217,8 @@ class WorkoutCircuitStep: WorkoutSetStep {
 	
 	private let otherParts: NSAttributedString
 	
-	static private let exercize = NSLocalizedString("EXERCIZE", comment: "exercize")
-	static private let round = NSLocalizedString("ROUND", comment: "round")
+	static private let exercize = GTLocalizedString("EXERCIZE", comment: "exercize")
+	static private let round = GTLocalizedString("ROUND", comment: "round")
 
 	fileprivate init(exercizeName: String, set: GTSet, change: @escaping @autoclosure () -> Double, rest: TimeInterval?, circuitCompletion: WorkoutCircuitStepData, nextUp: WorkoutStepNext?, isLast: Bool) {
 		self.otherParts = NSAttributedString(string: "\(WorkoutCircuitStep.exercize) \(circuitCompletion.exercize)/\(circuitCompletion.totalExercizes), \(WorkoutCircuitStep.round) \(circuitCompletion.round)/\(circuitCompletion.totalRounds)")

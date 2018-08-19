@@ -15,9 +15,13 @@ struct ExecuteWorkoutData {
 	let resume: Bool
 	let choices: [Int32]
 	
+	func withChoices<S>(_ choices: S) -> ExecuteWorkoutData where S: Sequence, S.Element == Int32 {
+		return ExecuteWorkoutData(workout: workout, resume: resume, choices: Array(choices))
+	}
+	
 }
 
-struct UpdateSecondaryInfoData {
+struct UpdateSecondaryInfoData: Equatable {
 	
 	let workoutController: ExecuteWorkoutController
 	let set: GTSet
@@ -57,7 +61,7 @@ protocol ExecuteWorkoutControllerDelegate: AnyObject {
 	func notifyEndRest()
 	func endNotifyEndRest()
 	func notifyExercizeChange(isRest: Bool)
-	func askUpdateWeight(with data: UpdateSecondaryInfoData)
+	func askUpdateSecondaryInfo(with data: UpdateSecondaryInfoData)
 	
 	func workoutHasStarted()
 	func exitWorkoutTracking()
@@ -73,8 +77,8 @@ class ExecuteWorkoutController: NSObject {
 	
 	static let workoutNameMetadataKey = "Workout"
 	private let noHeart = "– –"
-	private let nextTxt = NSLocalizedString("NEXT_EXERCIZE_FLAG", comment: "Next:")
-	private let nextEndTxt = NSLocalizedString("NEXT_EXERCIZE_END", comment: "End")
+	private let nextTxt = GTLocalizedString("NEXT_EXERCIZE_FLAG", comment: "Next:")
+	private let nextEndTxt = GTLocalizedString("NEXT_EXERCIZE_END", comment: "End")
 	
 	private let activityType = HKWorkoutActivityType.traditionalStrengthTraining
 	private let isIndoor = true
@@ -132,7 +136,7 @@ class ExecuteWorkoutController: NSObject {
 		self.isMirroring = false
 		self.view = viewController
 		self.workout = data.workout
-		self.data = data
+		self.data = data.withChoices(data.choices.prefix(workout.choices.count))
 		
 		view.setWorkoutTitle(workout.name)
 		view.setBPM(noHeart)
@@ -184,6 +188,22 @@ class ExecuteWorkoutController: NSObject {
 		self.loadIterator()
 	}
 	
+	/// Cancel the workout while choosing the exercizes as prompted by `askForChoices(_)` call to the view controller.
+	///
+	/// If the workout has already stared, i.e. choices (if any) have been reported with `reportChoices(_)`, use `cancelWorkout()` instead.
+	func cancelStartup() {
+		guard self.workoutIterator == nil else {
+			return
+		}
+		
+		self.isCompleted = true
+		self.terminateAndSave = false
+		self.view.disableGlobalActions()
+		terminate()
+		dataManager.setRunningWorkout(nil, fromSource: source)
+		view.exitWorkoutTracking()
+	}
+	
 	private func completeStartup() {
 		dataManager.setRunningWorkout(workout, fromSource: source)
 		
@@ -213,7 +233,7 @@ class ExecuteWorkoutController: NSObject {
 			} catch {
 				dataManager.setRunningWorkout(nil, fromSource: source)
 				
-				view.setWorkoutDoneText(NSLocalizedString("WORKOUT_START_ERR", comment: "Err starting"))
+				view.setWorkoutDoneText(GTLocalizedString("WORKOUT_START_ERR", comment: "Err starting"))
 				view.setWorkoutDoneViewHidden(false)
 				view.disableGlobalActions()
 			}
@@ -327,7 +347,7 @@ class ExecuteWorkoutController: NSObject {
 		}
 		invalidateBPM = nil
 		restTimer = nil
-		workoutIterator.destroyPersistedState()
+		workoutIterator?.destroyPersistedState()
 		
 		view.endNotifyEndRest()
 	}
@@ -455,7 +475,7 @@ class ExecuteWorkoutController: NSObject {
 			return
 		}
 		
-		let endTxt = hasTerminationError ? NSLocalizedString("WORKOUT_STOP_ERR", comment: "Err") + "\n" : ""
+		let endTxt = hasTerminationError ? GTLocalizedString("WORKOUT_STOP_ERR", comment: "Err") + "\n" : ""
 		dataManager.setRunningWorkout(nil, fromSource: source)
 		
 		let activeEnergyType = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!
@@ -465,6 +485,8 @@ class ExecuteWorkoutController: NSObject {
 		let devicePredicate = HKQuery.predicateForObjects(from: [device])
 		let predicate = NSCompoundPredicate(andPredicateWithSubpredicates:[datePredicate, devicePredicate])
 		let sortByDate = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
+		
+		#warning("Save choices inside corresponding GTChoice instances")
 		
 		// Access workout's name on the main thread as callback are called in the background
 		let workoutName = self.workout.name
@@ -495,9 +517,9 @@ class ExecuteWorkoutController: NSObject {
 					self.isCompleted = true
 					self.view.setWorkoutDoneButtonEnabled(true)
 					if success {
-						self.view.setWorkoutDoneText(endTxt + NSLocalizedString("WORKOUT_SAVED", comment: "Saved"))
+						self.view.setWorkoutDoneText(endTxt + GTLocalizedString("WORKOUT_SAVED", comment: "Saved"))
 					} else {
-						self.view.setWorkoutDoneText(endTxt + NSLocalizedString("WORKOUT_SAVE_ERROR", comment: "Error"))
+						self.view.setWorkoutDoneText(endTxt + GTLocalizedString("WORKOUT_SAVE_ERROR", comment: "Error"))
 					}
 				}
 				
@@ -574,9 +596,9 @@ class ExecuteWorkoutController: NSObject {
 		
 		if let set = prepareNextStep(setEndTime: endTime) {
 			if let ch = change {
-				self.setSecondaryInfoChange(ch, for: set)
+				self.setSecondaryInfoChange(ch, for: set, refreshView: false)
 			} else {
-				view.askUpdateWeight(with: UpdateSecondaryInfoData(workoutController: self, set: set))
+				view.askUpdateSecondaryInfo(with: UpdateSecondaryInfoData(workoutController: self, set: set))
 			}
 		}
 		displayStep()
@@ -587,6 +609,10 @@ class ExecuteWorkoutController: NSObject {
 	}
 	
 	func setSecondaryInfoChange(_ change: Double, for set: GTSet) {
+		setSecondaryInfoChange(change, for: set, refreshView: true)
+	}
+	
+	private func setSecondaryInfoChange(_ change: Double, for set: GTSet, refreshView: Bool) {
 		guard !isMirroring else {
 			return
 		}
@@ -594,7 +620,9 @@ class ExecuteWorkoutController: NSObject {
 		let success = {
 			self.workoutIterator.setSecondaryInfoChange(change, for: set.exercize)
 			self.currentStep?.updateSecondaryInfoChange()
-			self.displayStep(isRefresh: true)
+			if refreshView {
+				self.displayStep(isRefresh: true)
+			}
 		}
 		
 		if change != 0 {
@@ -620,7 +648,7 @@ class ExecuteWorkoutController: NSObject {
 		view.setNextUpTextHidden(true)
 		
 		view.setWorkoutDoneButtonEnabled(false)
-		view.setWorkoutDoneText(NSLocalizedString("WORKOUT_SAVING", comment: "Saving..."))
+		view.setWorkoutDoneText(GTLocalizedString("WORKOUT_SAVING", comment: "Saving..."))
 		view.setWorkoutDoneViewHidden(false)
 		
 		endWorkoutSession()
