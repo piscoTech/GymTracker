@@ -76,12 +76,12 @@ class GTWorkoutTests: XCTestCase {
 		XCTAssertFalse(workout.isSubtreeValid)
 		XCTAssertFalse(workout.isValid)
 		
-		workout.movePartAt(number: r.order, to: 0)
+		workout.movePart(at: r.order, to: 0)
 		
 		XCTAssertFalse(workout.isSubtreeValid)
 		XCTAssertFalse(workout.isValid)
 		
-		workout.movePartAt(number: r.order, to: self.r.order)
+		workout.movePart(at: r.order, to: self.r.order)
 		
 		XCTAssertFalse(workout.isSubtreeValid)
 		XCTAssertFalse(workout.isValid)
@@ -140,7 +140,7 @@ class GTWorkoutTests: XCTestCase {
     }
 	
 	func testReorderBefore() {
-		workout.movePartAt(number: 2, to: 1)
+		workout.movePart(at: 2, to: 1)
 		XCTAssertEqual(workout.exercizes.count, 3, "Some exercizes disappeared")
 		XCTAssertEqual(workout[0], e1)
 		XCTAssertEqual(workout[1], e2)
@@ -148,7 +148,7 @@ class GTWorkoutTests: XCTestCase {
 	}
 	
 	func testReorderAfter() {
-		workout.movePartAt(number: 0, to: 1)
+		workout.movePart(at: 0, to: 1)
 		XCTAssertEqual(workout.exercizes.count, 3, "Some exercizes disappeared")
 		XCTAssertEqual(workout[1], e1)
 		XCTAssertEqual(workout[2], e2)
@@ -156,7 +156,7 @@ class GTWorkoutTests: XCTestCase {
 	}
 	
 	func testCompactSimpleEnd() {
-		workout.movePartAt(number: 2, to: 1)
+		workout.movePart(at: 2, to: 1)
 		let (s, e, m) = workout.compactExercizes()
 		XCTAssertTrue(s.isEmpty)
 		XCTAssertTrue(m.isEmpty)
@@ -166,7 +166,7 @@ class GTWorkoutTests: XCTestCase {
 	}
 	
 	func testCompactSimpleStart() {
-		workout.movePartAt(number: 0, to: 1)
+		workout.movePart(at: 0, to: 1)
 		let (s, e, m) = workout.compactExercizes()
 		XCTAssertTrue(e.isEmpty)
 		XCTAssertTrue(m.isEmpty)
@@ -179,7 +179,7 @@ class GTWorkoutTests: XCTestCase {
 		let r2 = dataManager.newRest()
 		workout.add(parts: r2)
 		r2.set(rest: 30)
-		workout.movePartAt(number: 3, to: 1)
+		workout.movePart(at: 3, to: 1)
 		
 		let (s, e, m) = workout.compactExercizes()
 		XCTAssertTrue(s.isEmpty)
@@ -230,7 +230,7 @@ class GTWorkoutTests: XCTestCase {
 		c.add(parts: ch2)
 		
 		XCTAssertEqual(w.choices, [ch1, ch2])
-		w.movePartAt(number: c.order, to: 0)
+		w.movePart(at: c.order, to: 0)
 		XCTAssertEqual(w.choices, [ch2, ch1])
 	}
 	
@@ -253,7 +253,7 @@ class GTWorkoutTests: XCTestCase {
 		workout.add(parts: ch1, c)
 		c.add(parts: ch2, e2)
 		
-		workout.movePartAt(number: ch1.order, to: 0)
+		workout.movePart(at: ch1.order, to: 0)
 		ch1.add(parts: e1)
 		let e3 = newValidExercize()
 		ch1.add(parts: e3)

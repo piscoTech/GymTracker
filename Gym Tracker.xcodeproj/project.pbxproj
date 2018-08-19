@@ -497,8 +497,8 @@
 			children = (
 				7A4DC79C1FDDC99100BC60FE /* Tricky Circuit Import */,
 				7ABBBB1A212709A900AAC1DA /* Model */,
-				7A2262841FE5853A00E16871 /* WorkoutIteratorTests.swift */,
 				7A1CF9361FDD4CD6009C572C /* ImportExportTest.swift */,
+				7A2262841FE5853A00E16871 /* WorkoutIteratorTests.swift */,
 				7ABBBB1D212709CD00AAC1DA /* ExecuteWorkoutControllerTests.swift */,
 				7A2E103D1FBDD44F004767D7 /* Supporting Files */,
 			);

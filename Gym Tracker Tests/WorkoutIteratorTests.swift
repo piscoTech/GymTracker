@@ -66,7 +66,7 @@ class WorkoutIteratorTests: XCTestCase {
 		workout.add(parts: ch)
 		
 		ch.add(parts: workout[0] as! GTSimpleSetsExercize, workout[1] as! GTSimpleSetsExercize)
-		workout.movePartAt(number: ch.order, to: 0)
+		workout.movePart(at: ch.order, to: 0)
 		
 		return ch
 	}
@@ -440,7 +440,7 @@ class WorkoutIteratorTests: XCTestCase {
 		
 		let c = dataManager.newCircuit()
 		workout.add(parts: c)
-		workout.movePartAt(number: c.order, to: 0)
+		workout.movePart(at: c.order, to: 0)
 		c.add(parts: e1, e2)
 		e1.enableCircuitRest(true)
 		
@@ -835,7 +835,7 @@ class WorkoutIteratorTests: XCTestCase {
 		
 		let c = dataManager.newCircuit()
 		workout.add(parts: c)
-		workout.movePartAt(number: c.order, to: 0)
+		workout.movePart(at: c.order, to: 0)
 		c.add(parts: e1, e2)
 		e2.enableCircuitRest(true)
 		
@@ -1023,7 +1023,7 @@ class WorkoutIteratorTests: XCTestCase {
 		
 		let c = dataManager.newCircuit()
 		workout.add(parts: c)
-		workout.movePartAt(number: c.order, to: 0)
+		workout.movePart(at: c.order, to: 0)
 		c.add(parts: e1, e2)
 		e1.enableCircuitRest(true)
 		
@@ -1268,7 +1268,7 @@ class WorkoutIteratorTests: XCTestCase {
 		
 		let c = dataManager.newCircuit()
 		workout.add(parts: c)
-		workout.movePartAt(number: c.order, to: 0)
+		workout.movePart(at: c.order, to: 0)
 		c.add(parts: e1, e2)
 		e1.enableCircuitRest(true)
 		
@@ -1471,7 +1471,7 @@ class WorkoutIteratorTests: XCTestCase {
 		
 		let c = dataManager.newCircuit()
 		workout.add(parts: c)
-		workout.movePartAt(number: c.order, to: 0)
+		workout.movePart(at: c.order, to: 0)
 		c.add(parts: e1, e2)
 		e1.enableCircuitRest(true)
 		
@@ -1690,10 +1690,10 @@ class WorkoutIteratorTests: XCTestCase {
 		s.set(secondaryInfo: 5)
 		s.set(rest: 60)
 		
-		workout.movePartAt(number: e3.order, to: 1)
+		workout.movePart(at: e3.order, to: 1)
 		let ch = choicify()
 		let c = dataManager.newCircuit()
-		workout.movePartAt(number: c.order, to: 0)
+		workout.movePart(at: c.order, to: 0)
 		c.add(parts: ch, e2)
 		workout.add(parts: c)
 		

@@ -187,12 +187,12 @@ class GTChoiceTests: XCTestCase {
 		XCTAssertEqual(e1.order, 1)
 		XCTAssertEqual(e2.order, 0)
 		
-		ch.movePartAt(number: 0, to: 1)
+		ch.movePart(at: 0, to: 1)
 		
 		XCTAssertEqual(e1.order, 0)
 		XCTAssertEqual(e2.order, 1)
 		
-		ch.movePartAt(number: 1, to: 0)
+		ch.movePart(at: 1, to: 0)
 		
 		XCTAssertEqual(e1.order, 1)
 		XCTAssertEqual(e2.order, 0)

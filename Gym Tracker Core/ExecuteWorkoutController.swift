@@ -13,8 +13,7 @@ struct ExecuteWorkoutData {
 	
 	let workout: GTWorkout
 	let resume: Bool
-	//let choices: [Int]
-	#warning("Add previous line")
+	let choices: [Int32]
 	
 }
 
@@ -28,6 +27,7 @@ struct UpdateSecondaryInfoData {
 protocol ExecuteWorkoutControllerDelegate: AnyObject {
 	
 	func setWorkoutTitle(_ text: String)
+	func askForChoices(_ choices: [GTChoice])
 	
 	func setBPM(_ text: String)
 	func startTimer(at date: Date)
@@ -79,10 +79,11 @@ class ExecuteWorkoutController: NSObject {
 	private let activityType = HKWorkoutActivityType.traditionalStrengthTraining
 	private let isIndoor = true
 	
-	private var workout: GTWorkout
+	private let data: ExecuteWorkoutData!
+	private let workout: GTWorkout
 	fileprivate var start: Date! = nil
 	fileprivate var end: Date! = nil
-	private var workoutIterator: WorkoutIterator
+	private var workoutIterator: WorkoutIterator!
 	private var currentStep: WorkoutStep?
 	/// If the current part is the last set in the entire workout, used to correctly display notifications.
 	var isLastPart: Bool {
@@ -131,6 +132,7 @@ class ExecuteWorkoutController: NSObject {
 		self.isMirroring = false
 		self.view = viewController
 		self.workout = data.workout
+		self.data = data
 		
 		view.setWorkoutTitle(workout.name)
 		view.setBPM(noHeart)
@@ -139,10 +141,51 @@ class ExecuteWorkoutController: NSObject {
 		view.setWorkoutDoneViewHidden(true)
 		view.setNextUpTextHidden(true)
 		
+		super.init()
+		
+		self.loadIterator()
+	}
+	
+	typealias Choice = (choice: GTChoice, exercize: Int32)
+	private var choices: [Choice]!
+	
+	private func loadIterator() {
+		if let iter = WorkoutIterator(workout, choices: self.choices?.map { $0.1 } ?? data.choices, using: dataManager.preferences) {
+			self.workoutIterator = iter
+			self.completeStartup()
+		} else {
+			if self.choices == nil {
+				let chList = workout.choices
+				let ch = data.choices
+				
+				self.choices = zip(chList, ch + [Int32](repeating: -1, count: max(0, chList.count - ch.count))).map { $0 }
+			}
+			
+			var ask = [GTChoice]()
+			for (c, i) in choices {
+				if i < 0 || i >= c.exercizes.count {
+					ask.append(c)
+				}
+			}
+			
+			DispatchQueue.main.async {
+				self.view.askForChoices(ask)
+			}
+		}
+	}
+	
+	func reportChoices(_ choices: [GTChoice: Int32]) {
+		for (c, i) in choices {
+			if let index = self.choices.firstIndex(where: { $0.choice == c }) {
+				self.choices[index].exercize = i
+			}
+		}
+		
+		self.loadIterator()
+	}
+	
+	private func completeStartup() {
 		dataManager.setRunningWorkout(workout, fromSource: source)
-		#warning("Load/Ask for actual choices")
-		#warning("Avoid force unwrap")
-		workoutIterator = WorkoutIterator(workout, choices: [], using: dataManager.preferences)!
 		
 		if data.resume {
 			start = dataManager.preferences.currentStart
@@ -152,8 +195,6 @@ class ExecuteWorkoutController: NSObject {
 		
 		currentStep = workoutIterator.next()
 		workoutIterator.persistState()
-		
-		super.init()
 		
 		DispatchQueue.main.async {
 			self.view.workoutHasStarted()
@@ -197,6 +238,7 @@ class ExecuteWorkoutController: NSObject {
 		self.view = viewController
 		#warning("Load choices from proferences")
 		self.workout = w
+		self.data = nil
 		
 		workoutIterator = WorkoutIterator(workout, choices: [], using: dataManager.preferences)!
 		currentStep = workoutIterator.next()

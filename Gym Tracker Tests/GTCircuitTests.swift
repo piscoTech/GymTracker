@@ -191,12 +191,12 @@ class GTCircuitTests: XCTestCase {
 		XCTAssertEqual(e1.order, 1)
 		XCTAssertEqual(e2.order, 0)
 		
-		c.movePartAt(number: 0, to: 1)
+		c.movePart(at: 0, to: 1)
 		
 		XCTAssertEqual(e1.order, 0)
 		XCTAssertEqual(e2.order, 1)
 		
-		c.movePartAt(number: 1, to: 0)
+		c.movePart(at: 1, to: 0)
 		
 		XCTAssertEqual(e1.order, 1)
 		XCTAssertEqual(e2.order, 0)

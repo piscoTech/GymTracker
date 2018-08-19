@@ -441,7 +441,7 @@ public class DataManager: NSObject {
 		guard use == .application, s.isCurrentPlatform() || s == .watch else {
 			return
 		}
-		
+		#warning("Get choices from preferences and send them to counterpart (delete them if nil)")
 		preferences.runningWorkout = w?.recordID
 		preferences.runningWorkoutSource = s
 		

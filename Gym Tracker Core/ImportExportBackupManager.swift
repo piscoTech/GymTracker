@@ -191,7 +191,6 @@ class ImportExportBackupManager: NSObject {
 						for wData in workouts {
 							do {
 								let w = try GTWorkout.import(fromXML: wData, withDataManager: self.dataManager)
-								#warning("Call .purgeInvalidSettings() and test")
 								
 								if w.isValid {
 									save.append(contentsOf: w.subtreeNodeList)
