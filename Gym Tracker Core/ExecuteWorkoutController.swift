@@ -15,10 +15,6 @@ struct ExecuteWorkoutData {
 	let resume: Bool
 	let choices: [Int32]
 	
-	func withChoices<S>(_ choices: S) -> ExecuteWorkoutData where S: Sequence, S.Element == Int32 {
-		return ExecuteWorkoutData(workout: workout, resume: resume, choices: Array(choices))
-	}
-	
 }
 
 struct UpdateSecondaryInfoData: Equatable {
@@ -136,7 +132,7 @@ class ExecuteWorkoutController: NSObject {
 		self.isMirroring = false
 		self.view = viewController
 		self.workout = data.workout
-		self.data = data.withChoices(data.choices.prefix(workout.choices.count))
+		self.data = data
 		
 		view.setWorkoutTitle(workout.name)
 		view.setBPM(noHeart)
@@ -145,26 +141,24 @@ class ExecuteWorkoutController: NSObject {
 		view.setWorkoutDoneViewHidden(true)
 		view.setNextUpTextHidden(true)
 		
+		let chList = workout.choices
+		let ch = data.choices.prefix(chList.count)
+		
+		self.choices = zip(chList, ch + [Int32](repeating: -1, count: max(0, chList.count - ch.count))).map { $0 }
+		
 		super.init()
 		
 		self.loadIterator()
 	}
 	
 	typealias Choice = (choice: GTChoice, exercize: Int32)
-	private var choices: [Choice]!
+	private var choices: [Choice]
 	
 	private func loadIterator() {
-		if let iter = WorkoutIterator(workout, choices: self.choices?.map { $0.1 } ?? data.choices, using: dataManager.preferences) {
+		if let iter = WorkoutIterator(workout, choices: self.choices.map { $0.1 }, using: dataManager.preferences) {
 			self.workoutIterator = iter
 			self.completeStartup()
 		} else {
-			if self.choices == nil {
-				let chList = workout.choices
-				let ch = data.choices
-				
-				self.choices = zip(chList, ch + [Int32](repeating: -1, count: max(0, chList.count - ch.count))).map { $0 }
-			}
-			
 			var ask = [GTChoice]()
 			for (c, i) in choices {
 				if i < 0 || i >= c.exercizes.count {
@@ -257,6 +251,7 @@ class ExecuteWorkoutController: NSObject {
 		self.isMirroring = true
 		self.view = viewController
 		#warning("Load choices from proferences")
+		self.choices = []
 		self.workout = w
 		self.data = nil
 		
@@ -486,7 +481,14 @@ class ExecuteWorkoutController: NSObject {
 		let predicate = NSCompoundPredicate(andPredicateWithSubpredicates:[datePredicate, devicePredicate])
 		let sortByDate = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
 		
-		#warning("Save choices inside corresponding GTChoice instances")
+		let chList = choices.map { c -> GTChoice in
+			c.0.lastChosen = c.1
+			
+			return c.0
+		}
+		if !dataManager.persistChangesForObjects(chList, andDeleteObjects: []) {
+			dataManager.discardAllChanges()
+		}
 		
 		// Access workout's name on the main thread as callback are called in the background
 		let workoutName = self.workout.name
@@ -655,14 +657,13 @@ class ExecuteWorkoutController: NSObject {
 	}
 	
 	func cancelWorkout() {
-		guard !isMirroring else {
+		guard !isMirroring, workoutIterator != nil else {
 			return
 		}
 		
 		self.isCompleted = true
 		self.terminateAndSave = false
 		endWorkoutSession()
-		terminate()
 		dataManager.setRunningWorkout(nil, fromSource: source)
 		view.exitWorkoutTracking()
 	}
