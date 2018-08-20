@@ -11,10 +11,11 @@ import Foundation
 import CoreData
 
 @objc(GTRest)
-final class GTRest: GTPart {
+final public class GTRest: GTPart {
 	
-	static let restStep: TimeInterval = 30
+	static public let restStep: TimeInterval = 30
 	static let minRest: TimeInterval = 30
+	static public let maxRest: TimeInterval = 10 * 60
 	
 	override class var objectType: String {
 		return "GTRest"
@@ -22,17 +23,17 @@ final class GTRest: GTPart {
 	
 	private let restKey = "rest"
 		
-	@NSManaged private(set) var rest: TimeInterval
+	@NSManaged public private(set) var rest: TimeInterval
 	
-	override var parentLevel: CompositeWorkoutLevel? {
+	override public var parentLevel: CompositeWorkoutLevel? {
 		return workout
 	}
 	
-	func set(rest r: TimeInterval) {
+	public func set(rest r: TimeInterval) {
 		rest = max(r, GTRest.minRest).rounded(to: GTRest.restStep)
 	}
 	
-	override var isValid: Bool {
+	override public var isValid: Bool {
 		return workout != nil && isSubtreeValid
 	}
 	
@@ -40,11 +41,11 @@ final class GTRest: GTPart {
 		return rest >= GTRest.minRest
 	}
 	
-	override var subtreeNodeList: Set<GTDataObject> {
+	override public var subtreeNodeList: Set<GTDataObject> {
 		return [self]
 	}
 	
-	override func purgeInvalidSettings() {}
+	override public func purgeInvalidSettings() {}
 	
 	// MARK: - iOS/watchOS interface
 	

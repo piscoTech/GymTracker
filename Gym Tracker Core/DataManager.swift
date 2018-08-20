@@ -10,7 +10,7 @@ import CoreData
 import WatchConnectivity
 import MBLibrary
 
-struct CDRecordID: Hashable {
+public struct CDRecordID: Hashable {
 	
 	let type: String
 	let id: String
@@ -47,7 +47,7 @@ struct CDRecordID: Hashable {
 		return NSClassFromString(type) as? GTDataObject.Type
 	}
 	
-	func getObject(fromDataManager dataManager: DataManager) -> GTDataObject? {
+	public func getObject(fromDataManager dataManager: DataManager) -> GTDataObject? {
 		return getType()?.loadWithID(id, fromDataManager: dataManager)
 	}
 	
@@ -71,7 +71,7 @@ struct CDRecordID: Hashable {
 	
 }
 
-class GTDataObject: NSManagedObject {
+public class GTDataObject: NSManagedObject {
 	
 	class var objectType: String {
 		fatalError("Abstarct property not implemented")
@@ -106,7 +106,7 @@ class GTDataObject: NSManagedObject {
 	}
 	
 	///- returns: Whether or not the object represented by this instance is still present in the database, `false` is returned even if it was impossible to determine.
-	final func stillExists(inDataManager dataManager: DataManager) -> Bool {
+	final public func stillExists(inDataManager dataManager: DataManager) -> Bool {
 		if let _ = recordID.getType()?.loadWithID(self.id, fromDataManager: dataManager) {
 			return true
 		} else {
@@ -114,7 +114,7 @@ class GTDataObject: NSManagedObject {
 		}
 	}
 	
-	var isValid: Bool {
+	public var isValid: Bool {
 		fatalError("Abstarct property not implemented")
 	}
 	
@@ -123,11 +123,11 @@ class GTDataObject: NSManagedObject {
 	}
 	
 	/// The list of all more specific components of the workout that are linked by the receiver, and the receiver itself.
-	var subtreeNodeList: Set<GTDataObject> {
+	public var subtreeNodeList: Set<GTDataObject> {
 		fatalError("Abstarct property not implemented")
 	}
 	
-	func purgeInvalidSettings() {
+	public func purgeInvalidSettings() {
 		fatalError("Abstarct property not implemented")
 	}
 	
@@ -161,9 +161,9 @@ class GTDataObject: NSManagedObject {
 	
 }
 
-final class WCObject: Equatable {
+final public class WCObject: Equatable {
 	
-	static func == (l: WCObject, r: WCObject) -> Bool {
+	static public func == (l: WCObject, r: WCObject) -> Bool {
 		return l.id == r.id
 	}
 	
@@ -244,7 +244,7 @@ final class WCObject: Equatable {
 
 // MARK: - Delegate Protocol
 
-@objc protocol DataManagerDelegate: class {
+@objc public protocol DataManagerDelegate: class {
 	
 	func refreshData()
 	func cancelAndDisableEdit()
@@ -278,12 +278,12 @@ public class DataManager: NSObject {
 		}
 	}
 	
-	weak var delegate: DataManagerDelegate?
+	public weak var delegate: DataManagerDelegate?
 	
 	let use: Usage
-	let preferences: Preferences
+	public let preferences: Preferences
 	#if os(iOS)
-	private(set) var importExportManager: ImportExportBackupManager!
+	public private(set) var importExportManager: ImportExportBackupManager!
 	#endif
 	private let localData: CoreDataStack
 	private let wcInterface: WatchConnectivityInterface
@@ -292,7 +292,7 @@ public class DataManager: NSObject {
 		fatalError("Not supported")
 	}
 	
-	init(for use: Usage) {
+	public init(for use: Usage) {
 		preferences = Preferences(for: use)
 		localData = CoreDataStack(for: use)
 		wcInterface = WatchConnectivityInterface(for: use)
@@ -334,7 +334,7 @@ public class DataManager: NSObject {
 		return res
 	}
 	
-	private func newObjectFor<T: GTDataObject>(_ obj: T.Type) -> T {
+	private func newObject<T: GTDataObject>(for obj: T.Type) -> T {
 		let context = localData.managedObjectContext
 		var newObj: T!
 		context.performAndWait {
@@ -349,43 +349,47 @@ public class DataManager: NSObject {
 		return newObj
 	}
 	
-	private func newObjectFor(_ src: WCObject) -> GTDataObject? {
+	private func newObject(for src: WCObject) -> GTDataObject? {
 		guard let created = src.created, let type = src.id.getType() else {
 			return nil
 		}
 		
-		let obj = newObjectFor(type)
+		let obj = newObject(for: type)
 		obj.id = src.id.id
 		obj.created = created
 		
 		return obj
 	}
 	
-	func newWorkout() -> GTWorkout {
-		return newObjectFor(GTWorkout.self)
+	public func newWorkout() -> GTWorkout {
+		return newObject(for: GTWorkout.self)
+	}
+
+	public func newPart<T: GTPart>(_ obj: T.Type) -> T {
+		return newObject(for: obj)
 	}
 	
 	func newRest() -> GTRest {
-		return newObjectFor(GTRest.self)
+		return newObject(for: GTRest.self)
 	}
 	
 	func newCircuit() -> GTCircuit {
-		return newObjectFor(GTCircuit.self)
+		return newObject(for: GTCircuit.self)
 	}
 	
 	func newChoice() -> GTChoice {
-		return newObjectFor(GTChoice.self)
+		return newObject(for: GTChoice.self)
 	}
 	
-	func newExercize() -> GTSimpleSetsExercize {
-		return newObjectFor(GTSimpleSetsExercize.self)
+	public func newExercize() -> GTSimpleSetsExercize {
+		return newObject(for: GTSimpleSetsExercize.self)
 	}
 	
 	internal func newSet() -> GTRepsSet {
-		return newObjectFor(GTRepsSet.self)
+		return newObject(for: GTRepsSet.self)
 	}
 	
-	func newSet(for exercize: GTSimpleSetsExercize) -> GTRepsSet {
+	public func newSet(for exercize: GTSimpleSetsExercize) -> GTRepsSet {
 		let newS = newSet()
 		newS.order = Int32(exercize.sets.count)
 		newS.exercize = exercize
@@ -397,7 +401,7 @@ public class DataManager: NSObject {
 		localData.managedObjectContext.rollback()
 	}
 	
-	func persistChangesForObjects(_ data: [GTDataObject], andDeleteObjects delete: [GTDataObject]) -> Bool {
+	public func persistChangesForObjects<S, T>(_ data: S, andDeleteObjects delete: T) -> Bool where S: Collection, S.Element == GTDataObject, T: Collection, T.Element == GTDataObject {
 		let context = localData.managedObjectContext
 		let removedIDs = delete.map { (r) -> CDRecordID in
 			let id = r.recordID
@@ -432,7 +436,7 @@ public class DataManager: NSObject {
 	}
 	
 	@available(watchOS, unavailable)
-	var shouldStartWorkoutOnWatch: Bool {
+	public var shouldStartWorkoutOnWatch: Bool {
 		return use == .application && wcInterface.hasCounterPart && wcInterface.canComunicate
 	}
 	
@@ -457,7 +461,7 @@ public class DataManager: NSObject {
 	}
 	
 	@available(watchOS, unavailable)
-	func requestStarting(_ workout: GTWorkout, completion: @escaping (Bool) -> Void) {
+	public func requestStarting(_ workout: GTWorkout, completion: @escaping (Bool) -> Void) {
 		#if os(iOS)
 			wcInterface.requestStarting(workout, completion: completion)
 		#elseif os(watchOS)
@@ -527,7 +531,7 @@ public class DataManager: NSObject {
 				if let tmp = obj.id.getObject(fromDataManager: self) {
 					cdObj = tmp
 				} else if obj.isNew ?? false || obj.isInitialData {
-					if let tmp = newObjectFor(obj) {
+					if let tmp = newObject(for: obj) {
 						cdObj = tmp
 					} else {
 						res = false
@@ -584,7 +588,7 @@ public class DataManager: NSObject {
 		return res
 	}
 	
-	func askPhoneForData() -> Bool {
+	public func askPhoneForData() -> Bool {
 		return wcInterface.askPhoneForData()
 	}
 	
@@ -619,7 +623,7 @@ public class DataManager: NSObject {
 		}
 	}
 	
-	func reportICloudStatus(_ completion: @escaping (Bool) -> Void) {
+	public func reportICloudStatus(_ completion: @escaping (Bool) -> Void) {
 		rootDirectoryForICloud { url in
 			completion(url != nil)
 		}
@@ -653,7 +657,7 @@ public class DataManager: NSObject {
 	
 	private lazy var fileCoordinator = NSFileCoordinator(filePresenter: nil)
 	
-	func deleteICloudDocument(_ path: URL, completion: @escaping (Bool) -> Void) {
+	public func deleteICloudDocument(_ path: URL, completion: @escaping (Bool) -> Void) {
 		DispatchQueue.background.async {
 			self.fileCoordinator.coordinate(writingItemAt: path, options: .forDeleting, error: nil) { writingPath in
 				let file = FileManager()
@@ -667,7 +671,7 @@ public class DataManager: NSObject {
 		}
 	}
 	
-	func readICloudDocument(_ path: URL, action: @escaping (URL) -> Void) {
+	public func readICloudDocument(_ path: URL, action: @escaping (URL) -> Void) {
 		DispatchQueue.background.async {
 			self.fileCoordinator.coordinate(readingItemAt: path, options: .withoutChanges, error: nil) { readingPath in
 				action(readingPath)
@@ -827,7 +831,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 	private let currentWorkoutStartDate = "curWorkoutStartDate"
 	private let currentWorkoutProgress = "curWorkoutProgress"
 	
-	fileprivate func sendUpdateForChangedObjects(_ data: [GTDataObject], andDeleted delete: [CDRecordID], markAsInitial: Bool = false) {
+	fileprivate func sendUpdateForChangedObjects<S>(_ data: S, andDeleted delete: [CDRecordID], markAsInitial: Bool = false) where S: Collection, S.Element == GTDataObject {
 		guard let sess = session, hasCounterPart else {
 			return
 		}

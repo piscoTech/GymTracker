@@ -8,11 +8,12 @@
 
 import WatchKit
 import Foundation
+import GymTrackerCore
 
 struct WorkoutDetailData {
 	
 	let listController: WorkoutListInterfaceController?
-	let workout: OrganizedWorkout
+	let workout: GTWorkout
 	
 }
 
@@ -23,7 +24,7 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 	
 	@IBOutlet weak var startBtn: WKInterfaceButton!
 	
-	private var workout: OrganizedWorkout!
+	private var workout: GTWorkout!
 	private var delegate: WorkoutListInterfaceController?
 
     override func awake(withContext context: Any?) {
@@ -48,7 +49,7 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 	
 	func reloadData(checkExistence: Bool = true) {
 		if checkExistence {
-			guard workout.raw.stillExists(inDataManager: appDelegate.dataManager), !workout.archived else {
+			guard workout.stillExists(inDataManager: appDelegate.dataManager), !workout.archived else {
 				if delegate != nil {
 					// If delegate is not set this is displayed as a page during a workout, so just do nothing
 					self.pop()
@@ -60,28 +61,43 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 		
 		workoutName.setText(workout.name)
 		let exercizes = workout.exercizes
-		let rows = exercizes.map { e -> (Int, String, (Int, Int)?) in
-			let ord = Int(e.order)
-			if e.isRest {
-				return (ord, "rest", nil)
+		let rows = exercizes.map { p -> (GTPart, String) in
+			if let r = p as? GTRest {
+				return (r, "rest")
+			} else if let e = p as? GTSimpleSetsExercize {
+				return (e, "exercize")
+			} else if let _ = p as? GTCircuit {
+//				let circuit = workout.circuitStatus(for: e)
+//				return (e.order, "exercize" + (circuit != nil ? "Circuit" : ""), circuit)
+				fatalError("Circuit not supported yet")
 			} else {
-				let circuit = workout.circuitStatus(for: e)
-				return (ord, "exercize" + (circuit != nil ? "Circuit" : ""), circuit)
+				#warning("Add choices and circuit")
+				fatalError("Unknown part type")
 			}
 		}
 		table.setRowTypes(rows.map { $0.1 })
 		
-		for (i, type, circuit) in rows {
-			if type == "rest" {
+		for (i, (p, type)) in zip(0 ..< rows.count, rows) {
+			if let r = p as? GTRest {
 				let row = table.rowController(at: i) as! RestCell
-				row.setRest(exercizes[i].rest)
-			} else {
+				row.setRest(r.rest)
+			} else if let se = p as? GTSetsExercize {
 				let row = table.rowController(at: i) as! BasicDetailCell
-				row.titleLabel.setText(exercizes[i].name)
-				row.detailLabel.setText(exercizes[i].setsSummary)
-				if let (n, t) = circuit {
+				
+				if let e = se as? GTSimpleSetsExercize {
+					row.titleLabel.setText(e.name)
+					row.detailLabel.setText(e.summary)
+				} else {
+					#warning("Add choices")
+					fatalError("Unknown part type")
+				}
+				
+				if let (n, t) = se.circuitStatus {
 					row.circuitLabel.setText("\(n)/\(t)")
 				}
+			} else {
+				#warning("Add choices and circuit")
+				fatalError("Unknown part type")
 			}
 		}
     }

@@ -11,13 +11,13 @@ import Foundation
 import CoreData
 
 @objc(GTPart)
-class GTPart: GTDataObject, WorkoutLevel {
+public class GTPart: GTDataObject, WorkoutLevel {
 	
 	final private let workoutKey = "workout"
 	final private let orderKey = "order"
 
 	@NSManaged final private(set) var workout: GTWorkout?
-    @NSManaged final var order: Int32
+    @NSManaged final public var order: Int32
 	
 	/// Make the exercize a part of the given workout.
 	///
@@ -29,7 +29,7 @@ class GTPart: GTDataObject, WorkoutLevel {
 		old?.recalculatePartsOrder()
 	}
 	
-	var parentLevel: CompositeWorkoutLevel? {
+	public var parentLevel: CompositeWorkoutLevel? {
 		fatalError("Abstract property not implemented")
 	}
 	

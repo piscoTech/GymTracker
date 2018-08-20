@@ -8,12 +8,17 @@
 
 import UIKit
 import MBLibrary
+import GymTrackerCore
 
 class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
 	
+	class func instanciate() -> ExercizeTableViewController {
+		return UIStoryboard(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "exercizeView") as! ExercizeTableViewController
+	}
+	
 	var editMode = false
-	var exercize: Exercize!
-	weak var delegate: WorkoutTableViewController!
+	var exercize: GTSimpleSetsExercize!
+	weak var delegate: PartCollectionController!
 	
 	private var oldName: String? {
 		didSet {
@@ -22,7 +27,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 			}
 		}
 	}
-	private let defaultName = NSLocalizedString("EXERCIZE", comment: "Exercize")
+	private let defaultName = GTLocalizedString("EXERCIZE", comment: "Exercize")
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,7 +46,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		super.viewWillDisappear(animated)
 		
 		if self.isMovingFromParent {
-			if (exercize.name ?? "").isEmpty {
+			if exercize.name.isEmpty {
 				exercize.set(name: oldName ?? defaultName)
 			}
 			
@@ -70,7 +75,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	
 	override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
 		if editMode && section == 1 {
-			return NSLocalizedString("REMOVE_SET_TIP", comment: "Remove set")
+			return GTLocalizedString("REMOVE_SET_TIP", comment: "Remove set")
 		}
 		
 		return nil
@@ -89,12 +94,12 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		switch section {
 		case 0:
-			return 2 + (delegate.workout.circuitStatus(for: exercize) != nil ? 2 : 0)
+			#warning("Handle circuit/choice")
+			return 1
+//				+ ((collection as? GTSetsExercize)?.isInCircuit ?? false ? 2 : 0)
+//				+ ((collection as? GTSimpleSetsExercize)?.isInChoice ?? false ? 1 : 0)
 		case 1:
-			guard let (g, l) = delegate.workout.restStatus(for: exercize) else {
-				fatalError("Trying to edit a rest period, exercize expected")
-			}
-			
+			let (g, l) = exercize.restStatus
 			return exercize.sets.count * (g ? 2 : 1) + (g && !l ? -1 : 0) + (editRest != nil ? 1 : 0)
 		case 2:
 			return 1
@@ -118,48 +123,49 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 					return cell
 				}
 			} else { // Circuit rows
-				let cell = tableView.dequeueReusableCell(withIdentifier: "circuitData", for: indexPath)
-				let accessory = cell.accessoryView as? UISwitch ?? UISwitch()
-				cell.accessoryView = accessory
-				
-				cell.detailTextLabel?.text = nil
-				accessory.isOn = false
-				accessory.removeTarget(nil, action: nil, for: .allEvents)
-				let msg: String
-				let sel: Selector
-				
-				switch indexPath.row {
-				case 1: // Is circuit
-					msg = "IS_CIRCUIT"
-					if let (n, t) = delegate.workout.circuitStatus(for: exercize) {
-						cell.detailTextLabel?.text = NSLocalizedString("EXERCIZE", comment: "exercize") + " \(n)/\(t)"
-						accessory.isOn = true
-					}
-					sel = #selector(enableCircuit(_:))
-					accessory.isEnabled = delegate.workout.canBecomeCircuit(exercize: exercize)
-				case 2: // Chain with next
-					msg = "CIRCUIT_CHAIN"
-					accessory.isOn = exercize.isCircuit
-					sel = #selector(enableCircuitChain(_:))
-					accessory.isEnabled = delegate.workout.canChainCircuit(for: exercize)
-				case 3: // Use rest periods
-					msg = "CIRCUITE_USE_REST"
-					accessory.isOn = exercize.hasCircuitRest
-					sel = #selector(enableCircuitRest(_:))
-					accessory.isEnabled = delegate.workout.circuitStatus(for: exercize) != nil
-					
-				default:
-					fatalError("Unknown row")
-				}
-				
-				cell.textLabel?.text = NSLocalizedString(msg, comment: "CIRCUIT_DATA")
-				accessory.addTarget(self, action: sel, for: .valueChanged)
-				accessory.isEnabled = editMode && accessory.isEnabled
-				
-				return cell
+//				let cell = tableView.dequeueReusableCell(withIdentifier: "circuitData", for: indexPath)
+//				let accessory = cell.accessoryView as? UISwitch ?? UISwitch()
+//				cell.accessoryView = accessory
+//
+//				cell.detailTextLabel?.text = nil
+//				accessory.isOn = false
+//				accessory.removeTarget(nil, action: nil, for: .allEvents)
+//				let msg: String
+//				let sel: Selector
+//
+//				switch indexPath.row {
+//				case 1: // Is circuit
+//					msg = "IS_CIRCUIT"
+//					if let (n, t) = delegate.workout.circuitStatus(for: exercize) {
+//						cell.detailTextLabel?.text = GTLocalizedString("EXERCIZE", comment: "exercize") + " \(n)/\(t)"
+//						accessory.isOn = true
+//					}
+//					sel = #selector(enableCircuit(_:))
+//					accessory.isEnabled = delegate.workout.canBecomeCircuit(exercize: exercize)
+//				case 2: // Chain with next
+//					msg = "CIRCUIT_CHAIN"
+//					accessory.isOn = exercize.isCircuit
+//					sel = #selector(enableCircuitChain(_:))
+//					accessory.isEnabled = delegate.workout.canChainCircuit(for: exercize)
+//				case 3: // Use rest periods
+//					msg = "CIRCUITE_USE_REST"
+//					accessory.isOn = exercize.hasCircuitRest
+//					sel = #selector(enableCircuitRest(_:))
+//					accessory.isEnabled = delegate.workout.circuitStatus(for: exercize) != nil
+//
+//				default:
+//					fatalError("Unknown row")
+//				}
+//
+//				cell.textLabel?.text = GTLocalizedString(msg, comment: "CIRCUIT_DATA")
+//				accessory.addTarget(self, action: sel, for: .valueChanged)
+//				accessory.isEnabled = editMode && accessory.isEnabled
+//
+//				return cell
+				fatalError()
 			}
 		case 1:
-			let s = exercize[setNumber(for: indexPath)]!
+			let s = exercize[Int32(setNumber(for: indexPath))]!
 			switch setCellType(for: indexPath) {
 			case .rest:
 				let cell = tableView.dequeueReusableCell(withIdentifier: "rest", for: indexPath) as! RestCell
@@ -167,14 +173,14 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 				
 				return cell
 			case .reps:
-				let cell = tableView.dequeueReusableCell(withIdentifier: "set", for: indexPath) as! RepsSetCell
+				let cell = tableView.dequeueReusableCell(withIdentifier: "set", for: indexPath) as! SetCell
 				cell.set = s
 				cell.isEnabled = editMode
 				
 				return cell
 			case .picker:
 				let cell = tableView.dequeueReusableCell(withIdentifier: "restPicker", for: indexPath) as! RestPickerCell
-				cell.picker.selectRow(Int(ceil(s.rest / 30)), inComponent: 0, animated: false)
+				cell.picker.selectRow(Int(ceil(s.rest / GTRest.restStep)), inComponent: 0, animated: false)
 				
 				return cell
 			}
@@ -213,18 +219,15 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		}
 		
 		let s = appDelegate.dataManager.newSet(for: exercize)
-		s.set(reps: last.reps)
-		s.set(weight: last.weight)
+		s.set(mainInfo: last.mainInfo)
+		s.set(secondaryInfo: last.secondaryInfo)
 		last.set(rest: setList.last?.rest ?? last.rest)
 		s.set(rest: last.rest)
 		insertSet(s)
 	}
 	
-	private func insertSet(_ s: RepsSet) {
-		guard let (g, _) = delegate.workout.restStatus(for: exercize) else {
-			fatalError("Trying to edit a rest period, exercize expected")
-		}
-		
+	private func insertSet(_ s: GTSet) {
+		let (g, _) = exercize.restStatus
 		let count = tableView(tableView, numberOfRowsInSection: 1)
 		var rows = [IndexPath(row: count - 1, section: 1)] // Last set (if no last rest) or last rest
 		if count > 1 && g {
@@ -244,10 +247,8 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		guard editingStyle == .delete else {
 			return
 		}
-		guard let (g, l) = delegate.workout.restStatus(for: exercize) else {
-			fatalError("Trying to edit a rest period, exercize expected")
-		}
 		
+		let (g, l) = exercize.restStatus
 		let setN = Int(setNumber(for: indexPath))
 		let isLast = setN == exercize.sets.count - 1
 		guard let set = exercize[Int32(setN)] else {
@@ -275,7 +276,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		}
 		
 		exercize.removeSet(set)
-		delegate.markAsDeleted([set])
+		delegate.addDeletedEntities([set])
 		
 		tableView.beginUpdates()
 		tableView.deleteRows(at: remove, with: .automatic)
@@ -301,65 +302,63 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	
 	// MARK: - Circuit management
 	
-	@objc func enableCircuit(_ sender: UISwitch) {
-		guard editMode else {
-			return
-		}
-		
-		let wasCircuit = delegate.workout.isCircuit(exercize)
-		delegate.workout.makeCircuit(exercize: exercize, isCircuit: sender.isOn)
-		// Switch is reset by reloading the table
-		
-		updateCircuitCells(wasCircuit: wasCircuit)
-	}
-	
-	@objc func enableCircuitChain(_ sender: UISwitch) {
-		guard editMode else {
-			return
-		}
-		
-		let wasCircuit = delegate.workout.isCircuit(exercize)
-		delegate.workout.chainCircuit(for: exercize, chain: sender.isOn)
-		sender.isOn = exercize.isCircuit
-		
-		updateCircuitCells(wasCircuit: wasCircuit)
-	}
-	
-	@objc func enableCircuitRest(_ sender: UISwitch) {
-		guard editMode else {
-			return
-		}
-		
-		delegate.workout.enableCircuitRestPeriods(for: exercize, enable: sender.isOn)
-		sender.isOn = exercize.hasCircuitRest
-		tableView.reloadSections([1], with: .automatic)
-	}
-	
-	private func updateCircuitCells(wasCircuit: Bool) {
-		let isCircuit = delegate.workout.isCircuit(exercize)
-		
-		tableView.beginUpdates()
-		let index = [2, 3].map { IndexPath(row: $0, section: 0) }
-		if wasCircuit && !isCircuit {
-			tableView.deleteRows(at: index, with: .automatic)
-		} else if !wasCircuit && isCircuit {
-			tableView.insertRows(at: index, with: .automatic)
-		} else if wasCircuit && isCircuit {
-			tableView.reloadRows(at: index, with: .automatic)
-		}
-		tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .automatic)
-		tableView.reloadSections([1], with: .automatic)
-		tableView.endUpdates()
-	}
+//	@objc func enableCircuit(_ sender: UISwitch) {
+//		guard editMode else {
+//			return
+//		}
+//
+//		let wasCircuit = delegate.workout.isCircuit(exercize)
+//		delegate.workout.makeCircuit(exercize: exercize, isCircuit: sender.isOn)
+//		// Switch is reset by reloading the table
+//
+//		updateCircuitCells(wasCircuit: wasCircuit)
+//	}
+//
+//	@objc func enableCircuitChain(_ sender: UISwitch) {
+//		guard editMode else {
+//			return
+//		}
+//
+//		let wasCircuit = delegate.workout.isCircuit(exercize)
+//		delegate.workout.chainCircuit(for: exercize, chain: sender.isOn)
+//		sender.isOn = exercize.isCircuit
+//
+//		updateCircuitCells(wasCircuit: wasCircuit)
+//	}
+//
+//	@objc func enableCircuitRest(_ sender: UISwitch) {
+//		guard editMode else {
+//			return
+//		}
+//
+//		delegate.workout.enableCircuitRestPeriods(for: exercize, enable: sender.isOn)
+//		sender.isOn = exercize.hasCircuitRest
+//		tableView.reloadSections([1], with: .automatic)
+//	}
+//
+//	private func updateCircuitCells(wasCircuit: Bool) {
+//		let isCircuit = delegate.workout.isCircuit(exercize)
+//
+//		tableView.beginUpdates()
+//		let index = [2, 3].map { IndexPath(row: $0, section: 0) }
+//		if wasCircuit && !isCircuit {
+//			tableView.deleteRows(at: index, with: .automatic)
+//		} else if !wasCircuit && isCircuit {
+//			tableView.insertRows(at: index, with: .automatic)
+//		} else if wasCircuit && isCircuit {
+//			tableView.reloadRows(at: index, with: .automatic)
+//		}
+//		tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .automatic)
+//		tableView.reloadSections([1], with: .automatic)
+//		tableView.endUpdates()
+//	}
 	
 	// MARK: - Edit rest
 	
 	private var editRest: Int?
 	
 	private func setNumber(for i: IndexPath) -> Int32 {
-		guard let (g, _) = delegate.workout.restStatus(for: exercize) else {
-			fatalError("Trying to edit a rest period, exercize expected")
-		}
+		let (g, _) = exercize.restStatus
 		var row = i.row
 		
 		if g { // If have rests, having or not the last one is indiffferent here
@@ -378,9 +377,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	}
 	
 	private func setCellType(for i: IndexPath) -> SetCellType {
-		guard let (g, _) = delegate.workout.restStatus(for: exercize) else {
-			fatalError("Trying to edit a rest period, exercize expected")
-		}
+		let (g, _) = exercize.restStatus
 		var row = i.row
 		
 		if g { // If have rests, having or not the last one is indiffferent here
@@ -429,12 +426,12 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	}
 
 	func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-		return Int(ceil(maxRest / 30)) + 1
+		return Int(ceil(GTRest.maxRest / GTRest.restStep)) + 1
 	}
 	
 	func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
 		let color = UILabel.appearance().textColor ?? .black
-		let txt = (TimeInterval(row) * 30).getDuration(hideHours: true)
+		let txt = (TimeInterval(row) * GTRest.restStep).getDuration(hideHours: true)
 		
 		return NSAttributedString(string: txt, attributes: [.foregroundColor : color])
 	}
@@ -444,7 +441,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 			return
 		}
 		
-		set.set(rest: TimeInterval(row) * 30)
+		set.set(rest: TimeInterval(row) * GTRest.restStep)
 		tableView.reloadRows(at: [IndexPath(row: setN * 2 + 1, section: 1)], with: .none)
 	}
 

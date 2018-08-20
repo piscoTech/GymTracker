@@ -11,11 +11,13 @@ import Foundation
 import CoreData
 
 @objc(GTChoice)
-final class GTChoice: GTSetsExercize, ExercizeCollection {
+final public class GTChoice: GTSetsExercize, ExercizeCollection {
 	
 	override class var objectType: String {
 		return "GTChoice"
 	}
+	
+	public let collectionType = GTLocalizedString("CHOICE", comment: "Choice")
 	
 	private let lastChosenKey = "lastChosen"
 	
@@ -23,7 +25,7 @@ final class GTChoice: GTSetsExercize, ExercizeCollection {
 	///
 	/// A negative value represent no choice, a value grater than the last index is equivalent to `0`.
 	@NSManaged var lastChosen: Int32
-	@NSManaged private(set) var exercizes: Set<GTSimpleSetsExercize>
+	@NSManaged public private(set) var exercizes: Set<GTSimpleSetsExercize>
 
 	override class func loadWithID(_ id: String, fromDataManager dataManager: DataManager) -> GTChoice? {
 		let req = NSFetchRequest<GTChoice>(entityName: self.objectType)
@@ -33,7 +35,7 @@ final class GTChoice: GTSetsExercize, ExercizeCollection {
 		return dataManager.executeFetchRequest(req)?.first
 	}
 	
-	override var isValid: Bool {
+	override public var isValid: Bool {
 		return [workout, circuit].compactMap { $0 }.count == 1 && isSubtreeValid
 	}
 	
@@ -41,22 +43,12 @@ final class GTChoice: GTSetsExercize, ExercizeCollection {
 		return exercizes.count > 1 && exercizes.reduce(true) { $0 && $1.isValid } && inCircuitExercizesError?.isEmpty ?? true
 	}
 	
-	override var parentLevel: CompositeWorkoutLevel? {
+	override public var parentLevel: CompositeWorkoutLevel? {
 		return [workout, circuit].compactMap { $0 }.first
 	}
 	
-	///Enables rest periods in circuits for this exercize.
-	///
-	///Regardless on what is passed circuit rest will always be disabled, set circuit rest in each individual exercize.
-	override func enableCircuitRest(_ r: Bool) {
-		super.enableCircuitRest(false)
-	}
-	
-	/// Enables rest periods in circuits for this exercize regardless of membership of a circuit or not.
-	///
-	///Regardless on what is passed circuit rest will always be disabled, set circuit rest in each individual exercize.
-	override func forceEnableCircuitRest(_ r: Bool) {
-		super.forceEnableCircuitRest(false)
+	public override var allowCircuitRest: Bool {
+		return false
 	}
 	
 	override var setsCount: Int? {
@@ -64,11 +56,11 @@ final class GTChoice: GTSetsExercize, ExercizeCollection {
 		return counts.count > 1 ? nil : counts.first
 	}
 	
-	override var subtreeNodeList: Set<GTDataObject> {
+	override public var subtreeNodeList: Set<GTDataObject> {
 		return Set(exercizes.flatMap { $0.subtreeNodeList } + [self])
 	}
 	
-	override func purgeInvalidSettings() {
+	override public func purgeInvalidSettings() {
 		super.purgeInvalidSettings()
 		
 		for e in exercizes {
@@ -89,18 +81,18 @@ final class GTChoice: GTSetsExercize, ExercizeCollection {
 	
 	// MARK: - Exercizes handling
 	
-	var exercizeList: [GTSimpleSetsExercize] {
+	public var exercizeList: [GTSimpleSetsExercize] {
 		return Array(exercizes).sorted { $0.order < $1.order }
 	}
 	
-	func add(parts: GTSimpleSetsExercize...) {
+	public func add(parts: GTSimpleSetsExercize...) {
 		for e in parts {
 			e.order = Int32(self.exercizes.count)
 			e.set(choice: self)
 		}
 	}
 	
-	func remove(part e: GTSimpleSetsExercize) {
+	public func remove(part e: GTSimpleSetsExercize) {
 		exercizes.remove(e)
 		recalculatePartsOrder()
 	}

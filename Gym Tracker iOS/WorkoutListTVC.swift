@@ -13,8 +13,8 @@ class WorkoutListTableViewController: UITableViewController {
 	
 	@IBOutlet weak var addButton: UIBarButtonItem!
 	
-	private var workouts = [Workout]()
-	private var archivedWorkouts = [Workout]()
+	private var workouts = [GTWorkout]()
+	private var archivedWorkouts = [GTWorkout]()
 	private weak var workoutController: WorkoutTableViewController? {
 		didSet {
 			workoutController?.delegate = self
@@ -39,7 +39,7 @@ class WorkoutListTableViewController: UITableViewController {
 		self.workouts.removeAll(keepingCapacity: true)
 		self.archivedWorkouts.removeAll(keepingCapacity: true)
 		
-		for w in Workout.getList(fromDataManager: appDelegate.dataManager) {
+		for w in GTWorkout.getList(fromDataManager: appDelegate.dataManager) {
 			if w.archived {
 				archivedWorkouts.append(w)
 			} else {
@@ -63,7 +63,7 @@ class WorkoutListTableViewController: UITableViewController {
 	
 	func exitDetailAndCreation(completion: (() -> Void)?) {
 		if let wrkt = workoutController {
-			wrkt.cancel(self, animated: false, animationCompletion: completion)
+			wrkt.cancel(animated: false, animationCompletion: completion)
 			if !wrkt.isNew {
 				self.navigationController?.popToRootViewController(animated: false)
 				completion?()
@@ -116,6 +116,10 @@ class WorkoutListTableViewController: UITableViewController {
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		tableView.deselectRow(at: indexPath, animated: true)
+		
+		if !workouts.isEmpty {
+			showWorkout(sender: indexPath)
+		}
 	}
 	
 	func enableEdit(_ flag: Bool) {
@@ -123,9 +127,9 @@ class WorkoutListTableViewController: UITableViewController {
 		addButton.isEnabled = canEdit
 		
 		if !canEdit {
-			workoutController?.cancel(self)
+			workoutController?.doCancel()
 		} else {
-			workoutController?.updateButtons(includeDeleteArchive: true)
+			workoutController?.updateButtons(includeOthers: true)
 		}
 	}
 	
@@ -145,8 +149,7 @@ class WorkoutListTableViewController: UITableViewController {
 					return
 				}
 				
-				let workout = self.workouts[row.row]
-				appDelegate.startWorkout(OrganizedWorkout(workout))
+				appDelegate.startWorkout(self.workouts[row.row])
 			}
 			start.backgroundColor = greenTint
 			act.append(start)
@@ -205,7 +208,7 @@ class WorkoutListTableViewController: UITableViewController {
 		case new, edit, delete, archiveChange
 	}
 	
-	func updateWorkout(_ w: Workout, how: WorkoutUpdateType, wasArchived: Bool) {
+	func updateWorkout(_ w: GTWorkout, how: WorkoutUpdateType, wasArchived: Bool) {
 		switch how {
 		case .new:
 			tableView.beginUpdates()
@@ -300,30 +303,33 @@ class WorkoutListTableViewController: UITableViewController {
 		
 		switch segueID {
 		case "newWorkout":
-			let dest = (segue.destination as! UINavigationController).viewControllers.first as! WorkoutTableViewController
+			let nav = segue.destination as! UINavigationController
+			let dest = WorkoutTableViewController()
+			nav.viewControllers = [dest]
+			
 			workoutController = dest
 			dest.editMode = true
-		case "showWorkout":
-			let w: Workout
-			switch sender {
-			case let send as Workout:
-				w = send
-			case _ as UITableViewCell:
-				guard let index = tableView.indexPathForSelectedRow else {
-					fallthrough
-				}
-				
-				w = (index.section == 0 ? workouts : archivedWorkouts)[index.row]
-			default:
-				fatalError("Unable to determine workout")
-			}
-			
-			let dest = segue.destination as! WorkoutTableViewController
-			workoutController = dest
-			dest.workout = OrganizedWorkout(w)
 		default:
 			break
 		}
     }
+	
+	private func showWorkout(sender: Any?) {
+		let w: GTWorkout
+		switch sender {
+		case let send as GTWorkout:
+			w = send
+		case let index as IndexPath:
+			w = (index.section == 0 ? workouts : archivedWorkouts)[index.row]
+		default:
+			fatalError("Unable to determine workout")
+		}
+		
+		let dest = WorkoutTableViewController()
+		workoutController = dest
+		dest.collection = w
+		
+		navigationController?.pushViewController(dest, animated: true)
+	}
 
 }

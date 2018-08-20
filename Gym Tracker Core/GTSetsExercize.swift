@@ -11,7 +11,7 @@ import Foundation
 import CoreData
 
 @objc(GTSetsExercize)
-class GTSetsExercize: GTExercize {
+public class GTSetsExercize: GTExercize {
 	
 	final private let circuitKey = "circuit"
 	final private let hasCircuitRestKey = "hasCircuitRest"
@@ -47,13 +47,22 @@ class GTSetsExercize: GTExercize {
 		}
 	}
 	
+	public var allowCircuitRest: Bool {
+		return true
+	}
+	
 	/// Enables rest periods in circuits for this exercize only if part of a circuit.
 	func enableCircuitRest(_ r: Bool) {
-		self.hasCircuitRest = isInCircuit && r
+		self.hasCircuitRest = allowCircuitRest && isInCircuit && r
 	}
 	
 	/// Enables rest periods in circuits for this exercize regardless of membership of a circuit or not.
 	internal func forceEnableCircuitRest(_ r: Bool) {
+		guard allowCircuitRest else {
+			self.hasCircuitRest = false
+			return
+		}
+		
 		forcingRest = true
 		self.hasCircuitRest = r
 	}
@@ -63,7 +72,7 @@ class GTSetsExercize: GTExercize {
 		fatalError("Abstract property not implemented")
 	}
 	
-	override func purgeInvalidSettings() {
+	override public func purgeInvalidSettings() {
 		forcingRest = false
 		enableCircuitRest(hasCircuitRest)
 	}
@@ -71,12 +80,12 @@ class GTSetsExercize: GTExercize {
 	// MARK: - Circuit Support
 	
 	/// Whether the exercize is at some point part of a circuit.
-	var isInCircuit: Bool {
+	public var isInCircuit: Bool {
 		return self.parentHierarchy.first { $0 is GTCircuit } != nil
 	}
 	
 	/// The position of the exercize in the circuit, `nil` outside of circuits.
-	var circuitStatus: (number: Int, total: Int)? {
+	public var circuitStatus: (number: Int, total: Int)? {
 		let hierarchy = self.parentHierarchy
 		guard let cIndex = hierarchy.index(where: { $0 is GTCircuit }),
 			let c = hierarchy[cIndex] as? GTCircuit,
@@ -93,7 +102,7 @@ class GTSetsExercize: GTExercize {
 	/// Whether or not the exercize has mid-sets rests, always `true` outside circuits, and wheter the last set has an explit rest, can be `true` only inside a circuit.
 	///
 	/// `last` is always `false` if `global` is `false`.
-	var restStatus: (global: Bool, last: Bool) {
+	public var restStatus: (global: Bool, last: Bool) {
 		guard let (n, t) = circuitStatus else {
 			return (true, false)
 		}

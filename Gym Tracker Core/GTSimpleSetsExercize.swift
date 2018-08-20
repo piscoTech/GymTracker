@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 
 @objc(GTSimpleSetsExercize)
-class GTSimpleSetsExercize: GTSetsExercize {
+public class GTSimpleSetsExercize: GTSetsExercize {
 	
 	override class var objectType: String {
 		return "GTSimpleSetsExercize"
@@ -18,12 +18,12 @@ class GTSimpleSetsExercize: GTSetsExercize {
 	
 	private let nameKey = "name"
 	
-	@NSManaged private(set) var name: String
+	@NSManaged public private(set) var name: String
 	@NSManaged private(set) var choice: GTChoice?
-	@NSManaged private(set) var sets: Set<GTSet>
+	@NSManaged public private(set) var sets: Set<GTSet>
 	
-	override var description: String {
-		return "N \(order): \(name) - \(sets.count) set(s) - \(setsSummary)"
+	override public var description: String {
+		return "N \(order): \(name) - \(sets.count) set(s) - \(summary)"
 	}
 	
 	override class func loadWithID(_ id: String, fromDataManager dataManager: DataManager) -> GTSimpleSetsExercize? {
@@ -65,7 +65,7 @@ class GTSimpleSetsExercize: GTSetsExercize {
 		}
 	}
 	
-	override var isValid: Bool {
+	override public var isValid: Bool {
 		return [workout, circuit, choice].compactMap { $0 }.count == 1 && isSubtreeValid
 	}
 	
@@ -73,7 +73,7 @@ class GTSimpleSetsExercize: GTSetsExercize {
 		return name.count > 0 && sets.count > 0 && sets.reduce(true) { $0 && $1.isValid }
 	}
 	
-	override func purgeInvalidSettings() {
+	override public func purgeInvalidSettings() {
 		super.purgeInvalidSettings()
 		
 		for s in sets {
@@ -81,24 +81,28 @@ class GTSimpleSetsExercize: GTSetsExercize {
 		}
 	}
 	
-	override var parentLevel: CompositeWorkoutLevel? {
+	override public var parentLevel: CompositeWorkoutLevel? {
 		return [workout, circuit, choice].compactMap { $0 }.first
 	}
 	
-	var setList: [GTSet] {
+	public var setList: [GTSet] {
 		return Array(sets).sorted { $0.order < $1.order }
 	}
 	
-	subscript (n: Int32) -> GTSet? {
+	public subscript (n: Int32) -> GTSet? {
 		return sets.first { $0.order == n }
 	}
 	
-	var setsSummary: String {
+	override public var title: String {
+		return name
+	}
+	
+	override public var summary: String {
 		return setList.map { $0.description }.joined(separator: ", ")
 	}
 	
-	///Set the name of the exercize:
-	func set(name n: String) {
+	///Set the name of the exercize.
+	public func set(name n: String) {
 		self.name = n.trimmingCharacters(in: .whitespacesAndNewlines)
 	}
 	
@@ -106,14 +110,14 @@ class GTSimpleSetsExercize: GTSetsExercize {
 		return sets.count
 	}
 	
-	override var subtreeNodeList: Set<GTDataObject> {
+	override public var subtreeNodeList: Set<GTDataObject> {
 		return (sets as Set<GTDataObject>).union([self])
 	}
 	
 	// MARK: - Choice Support
 	
 	/// Whether the exercize is at some point part of a choice.
-	var isInChoice: Bool {
+	public var isInChoice: Bool {
 		return self.parentHierarchy.first { $0 is GTChoice } != nil
 	}
 	
@@ -145,7 +149,7 @@ class GTSimpleSetsExercize: GTSetsExercize {
 		set.exercize = self
 	}
 	
-	func removeSet(_ s: GTSet) {
+	public func removeSet(_ s: GTSet) {
 		sets.remove(s)
 		recalculateSetOrder()
 	}

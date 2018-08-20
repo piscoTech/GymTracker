@@ -9,6 +9,7 @@
 import WatchKit
 import HealthKit
 import AVFoundation
+import GymTrackerCore
 
 class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
 	
@@ -27,8 +28,8 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
 		
 		if let src = dataManager.preferences.runningWorkoutSource, src == .watch,
 			let workoutID = dataManager.preferences.runningWorkout {
-			if let workout = workoutID.getObject(fromDataManager: dataManager) as? Workout {
-				let data = ExecuteWorkoutData(workout: OrganizedWorkout(workout), resume: true)
+			if let workout = workoutID.getObject(fromDataManager: dataManager) as? GTWorkout {
+				let data = ExecuteWorkoutData(workout: workout, resume: true)
 				self.startWorkout(with: data, reloadNow: true)
 			}
 		}
@@ -47,12 +48,12 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
 		// Wait for workout data
 	}
 	
-	func remoteWorkoutStart(_ workout: Workout) {
+	func remoteWorkoutStart(_ workout: GTWorkout) {
 		guard executeWorkout == nil else {
 			return
 		}
 		
-		self.startWorkout(with: ExecuteWorkoutData(workout: OrganizedWorkout(workout), resume: false))
+		self.startWorkout(with: ExecuteWorkoutData(workout: workout, resume: false))
 	}
 
     func handle(_ backgroundTasks: Set<WKRefreshBackgroundTask>) {

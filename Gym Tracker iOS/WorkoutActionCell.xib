@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14306.4" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14278.2"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="actions" id="ABT-Ix-uon" customClass="WorkoutDeleteArchiveCell" customModule="Gym_Tracker" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ABT-Ix-uon" id="Znh-Xc-mie">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="v3F-88-eKO">
+                        <rect key="frame" x="16" y="0.0" width="343" height="43.5"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fmm-np-lV7">
+                                <rect key="frame" x="0.0" y="0.0" width="114.5" height="43.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="Export"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="G2X-dM-tUv">
+                                <rect key="frame" x="114.5" y="0.0" width="114" height="43.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="[Archive]"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cyT-dk-hsj" customClass="DestructiveButton" customModule="Gym_Tracker" customModuleProvider="target">
+                                <rect key="frame" x="228.5" y="0.0" width="114.5" height="43.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="tintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <state key="normal" title="Delete"/>
+                            </button>
+                        </subviews>
+                    </stackView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="v3F-88-eKO" firstAttribute="top" secondItem="Znh-Xc-mie" secondAttribute="top" id="UbS-vf-Uih"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="v3F-88-eKO" secondAttribute="trailing" id="Zhq-sD-r4S"/>
+                    <constraint firstAttribute="bottom" secondItem="v3F-88-eKO" secondAttribute="bottom" id="spa-o5-G3v"/>
+                    <constraint firstItem="v3F-88-eKO" firstAttribute="leading" secondItem="Znh-Xc-mie" secondAttribute="leadingMargin" id="tS2-gU-V7m"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="archiveBtn" destination="G2X-dM-tUv" id="Oob-wU-ifP"/>
+                <outlet property="deleteBtn" destination="cyT-dk-hsj" id="k63-wx-daJ"/>
+            </connections>
+            <point key="canvasLocation" x="221" y="-211"/>
+        </tableViewCell>
+    </objects>
+</document>

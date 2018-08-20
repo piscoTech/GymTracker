@@ -11,6 +11,14 @@ import Foundation
 import CoreData
 
 @objc(GTExercize)
-class GTExercize: GTPart {
-
+public class GTExercize: GTPart {
+	
+	public var title: String {
+		fatalError("Abstract property not implemented")
+	}
+	
+	public var summary: String {
+		fatalError("Abstract property not implemented")
+	}
+	
 }

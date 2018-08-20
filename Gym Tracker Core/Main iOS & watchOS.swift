@@ -9,19 +9,17 @@
 import Foundation
 import HealthKit
 
-let maxRest: TimeInterval = 5 * 60
-
 ///Keep track of the version of health authorization required, increase this number to automatically display an authorization request.
-let authRequired = 2
+public let authRequired = 2
 ///List of health data to require access to.
-let healthReadData = Set([
+public let healthReadData = Set([
 	HKObjectType.workoutType(),
 	HKObjectType.quantityType(forIdentifier: .heartRate)!,
 	HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!
 ])
 ///List of health data to require write access to.
-let healthWriteData = Set([
+public let healthWriteData = Set([
 	HKObjectType.workoutType(),
 	HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!
 ])
-let healthStore = HKHealthStore()
+public let healthStore = HKHealthStore()

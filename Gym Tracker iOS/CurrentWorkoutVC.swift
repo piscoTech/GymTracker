@@ -8,6 +8,7 @@
 
 import UIKit
 import MBLibrary
+import GymTrackerCore
 
 class CurrentWorkoutViewController: UIViewController {
 	
@@ -24,7 +25,6 @@ class CurrentWorkoutViewController: UIViewController {
 	
 	@IBOutlet private weak var currentExercizeInfo: UIStackView!
 	@IBOutlet private weak var exercizeNameLbl: UILabel!
-	@IBOutlet private weak var currentSetInfo: UIView!
 	@IBOutlet private weak var currentSetInfoLbl: UILabel!
 	@IBOutlet private weak var otherSetsLbl: UILabel!
 	@IBOutlet private weak var setDoneBtn: UIButton!
@@ -126,7 +126,7 @@ class CurrentWorkoutViewController: UIViewController {
 	}
 	
 	func setCurrentSetViewHidden(_ hidden: Bool) {
-		currentSetInfo.isHidden = hidden
+		currentSetInfoLbl.isHidden = hidden
 	}
 	
 	func setCurrentSetText(_ text: NSAttributedString) {
@@ -238,12 +238,12 @@ class CurrentWorkoutViewController: UIViewController {
 		nextUpLbl.attributedText = text
 	}
 	
-	private var updateWeightData: UpdateWeightData?
+	private var updateSecondaryInfoData: UpdateSecondaryInfoData?
 	var skipAskUpdate = false
 	
-	func askUpdateWeight(with data: UpdateWeightData) {
+	func askUpdateSecondaryInfo(with data: UpdateSecondaryInfoData) {
 		if !skipAskUpdate {
-			updateWeightData = data
+			updateSecondaryInfoData = data
 			self.performSegue(withIdentifier: "updateWeight", sender: self)
 		}
 		
@@ -319,9 +319,9 @@ class CurrentWorkoutViewController: UIViewController {
 		
 		switch segueID {
 		case "updateWeight":
-			let dest = segue.destination as! UpdateWeightViewController
-			dest.weightData = updateWeightData
-			updateWeightData = nil
+			let dest = segue.destination as! UpdateSecondaryInfoViewController
+			dest.secondaryInfoData = updateSecondaryInfoData
+			updateSecondaryInfoData = nil
 			
 			PopoverController.preparePresentation(for: dest)
 			dest.popoverPresentationController?.backgroundColor = dest.backgroundColor

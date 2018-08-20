@@ -11,13 +11,15 @@ import Foundation
 import CoreData
 
 @objc(GTCircuit)
-final class GTCircuit: GTExercize, ExercizeCollection {
+final public class GTCircuit: GTExercize, ExercizeCollection {
 	
 	override class var objectType: String {
 		return "GTCircuit"
 	}
 	
-	@NSManaged private(set) var exercizes: Set<GTSetsExercize>
+	public let collectionType = GTLocalizedString("CIRCUIT", comment: "Circuit")
+	
+	@NSManaged public private(set) var exercizes: Set<GTSetsExercize>
 	
 	override class func loadWithID(_ id: String, fromDataManager dataManager: DataManager) -> GTCircuit? {
 		let req = NSFetchRequest<GTCircuit>(entityName: self.objectType)
@@ -27,7 +29,7 @@ final class GTCircuit: GTExercize, ExercizeCollection {
 		return dataManager.executeFetchRequest(req)?.first
 	}
 	
-	override var isValid: Bool {
+	override public var isValid: Bool {
 		return workout != nil && isSubtreeValid
 	}
 	
@@ -35,15 +37,15 @@ final class GTCircuit: GTExercize, ExercizeCollection {
 		return exercizes.count > 1 && exercizes.reduce(true) { $0 && $1.isValid } && exercizesError.isEmpty
 	}
 	
-	override var parentLevel: CompositeWorkoutLevel? {
+	override public var parentLevel: CompositeWorkoutLevel? {
 		return workout
 	}
 	
-	override var subtreeNodeList: Set<GTDataObject> {
+	override public var subtreeNodeList: Set<GTDataObject> {
 		return Set(exercizes.flatMap { $0.subtreeNodeList } + [self])
 	}
 	
-	override func purgeInvalidSettings() {
+	override public func purgeInvalidSettings() {
 		for e in exercizes {
 			e.purgeInvalidSettings()
 		}
@@ -63,18 +65,18 @@ final class GTCircuit: GTExercize, ExercizeCollection {
 	
 	// MARK: - Exercizes handling
 	
-	var exercizeList: [GTSetsExercize] {
+	public var exercizeList: [GTSetsExercize] {
 		return Array(exercizes).sorted { $0.order < $1.order }
 	}
 	
-	func add(parts: GTSetsExercize...) {
+	public func add(parts: GTSetsExercize...) {
 		for se in parts {
 			se.order = Int32(self.exercizes.count)
 			se.set(circuit: self)
 		}
 	}
 	
-	func remove(part se: GTSetsExercize) {
+	public func remove(part se: GTSetsExercize) {
 		exercizes.remove(se)
 		recalculatePartsOrder()
 	}

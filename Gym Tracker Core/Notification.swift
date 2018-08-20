@@ -8,21 +8,21 @@
 
 import UserNotifications
 
-struct GTNotification {
+public struct GTNotification {
 	
-	enum ID: String {
+	public enum ID: String {
 		case restStart = "restTimeNotificationID"
 		case restEnd = "restEndNotificationID"
 		case currentSetInfo = "nextSetNotificationID"
 	}
 	
-	enum Action: String {
+	public enum Action: String {
 		case endRest = "endRestNotificationActionID"
 		case endSet = "endSetNotificationActionID"
 		case endSetWeight = "endSetWeightNotificationActionID"
 		case endSetWeightInApp = "endSetWeightInAppNotificationActionID"
 		
-		static var genericSetWeightUpdateOptions: UNNotificationActionOptions = {
+		static public var genericSetWeightUpdateOptions: UNNotificationActionOptions = {
 			if #available(iOS 12.0, *) {
 				return []
 			} else {
@@ -31,7 +31,7 @@ struct GTNotification {
 		}()
 	}
 	
-	enum Category: String {
+	public enum Category: String {
 		case restStart = "endRestNowNotificationCategoryID"
 		case restEnd = "endRestNotificationCategoryID"
 		
@@ -41,7 +41,7 @@ struct GTNotification {
 		case staticCurrentSetInfo = "endSetNotificationCategoryID"
 		case staticLastSetInfo = "endWorkoutNotificationCategoryID"
 		
-		static let currentSetInfo: Category = {
+		static public let currentSetInfo: Category = {
 			if #available(iOS 12.0, *) {
 				return .interactiveCurrentSetInfo
 			} else {
@@ -49,7 +49,7 @@ struct GTNotification {
 			}
 		}()
 		
-		static let lastSetInfo: Category = {
+		static public let lastSetInfo: Category = {
 			if #available(iOS 12.0, *) {
 				return .interactiveLastSetInfo
 			} else {
@@ -58,11 +58,11 @@ struct GTNotification {
 		}()
 	}
 	
-	enum UserInfo: String {
+	public enum UserInfo: String {
 		case setWeight = "setWeight"
 		case setWeightChange = "setWeightChange"
 	}
 	
-	static let immediateNotificationDelay: TimeInterval = 1
+	static public let immediateNotificationDelay: TimeInterval = 1
 	
 }

@@ -10,9 +10,9 @@ import Foundation
 import GymTrackerCore
 
 extension ExecuteWorkoutController {
-	
+
 	convenience init(data: ExecuteWorkoutData, viewController ctrl: ExecuteWorkoutControllerDelegate, source: RunningWorkoutSource) {
 		self.init(data: data, viewController: ctrl, source: source, dataManager: appDelegate.dataManager)
 	}
-	
+
 }

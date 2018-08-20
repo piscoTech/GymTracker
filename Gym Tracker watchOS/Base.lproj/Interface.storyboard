@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="13771" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="f3a-Tn-603">
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="14306.4" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="f3a-Tn-603">
     <device id="watch42" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="13756"/>
+        <deployment identifier="watchOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14278.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="14237"/>
     </dependencies>
     <scenes>
         <!--Workouts-->
@@ -182,10 +183,10 @@
             </objects>
             <point key="canvasLocation" x="162" y="513"/>
         </scene>
-        <!--updateWeight-->
+        <!--updateSecondaryInfo-->
         <scene sceneID="u0t-wj-7YZ">
             <objects>
-                <controller identifier="updateWeight" id="gZe-MZ-R7h" customClass="UpdateWeightInterfaceController" customModule="Gym_Tracker_watchOS_Extension">
+                <controller identifier="updateSecondaryInfo" id="gZe-MZ-R7h" customClass="UpdateSecondaryInfoInterfaceController" customModule="Gym_Tracker_watchOS_Extension">
                     <items>
                         <label alignment="left" text="Update Weight" id="hYo-pw-K45">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
@@ -198,7 +199,7 @@
                                         <label alignment="center" verticalAlignment="center" text="+" id="30y-lu-pfZ"/>
                                         <label alignment="center" verticalAlignment="center" text="−" id="BL9-HX-LBU"/>
                                         <label alignment="center" verticalAlignment="center" text="[0]" id="mLf-O2-5LE"/>
-                                        <label alignment="center" verticalAlignment="center" text="kg" id="Lxl-OG-qIu"/>
+                                        <label alignment="center" verticalAlignment="center" text="[kg]" id="Lxl-OG-qIu"/>
                                     </items>
                                 </group>
                                 <button width="0.5" height="27" alignment="center" verticalAlignment="bottom" title="Done" id="Nbb-Hy-b2b">
@@ -259,6 +260,7 @@
                         <outlet property="base" destination="eeb-UW-bK4" id="SzQ-t1-sac"/>
                         <outlet property="minus" destination="BL9-HX-LBU" id="qLz-61-QBz"/>
                         <outlet property="plus" destination="30y-lu-pfZ" id="q8q-AZ-scd"/>
+                        <outlet property="unit" destination="Lxl-OG-qIu" id="26a-7f-2M7"/>
                     </connections>
                 </controller>
             </objects>

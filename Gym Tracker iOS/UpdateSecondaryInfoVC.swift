@@ -1,5 +1,5 @@
 //
-//  UpdateWeightViewController.swift
+//  UpdateSecondaryInfoViewController.swift
 //  Gym Tracker
 //
 //  Created by Marco Boschi on 16/04/2017.
@@ -7,14 +7,15 @@
 //
 
 import UIKit
+import GymTrackerCore
 
-class UpdateWeightViewController: UIViewController {
+class UpdateSecondaryInfoViewController: UIViewController {
 	
-	var weightData: UpdateWeightData!
+	var secondaryInfoData: UpdateSecondaryInfoData!
 	let backgroundColor = #colorLiteral(red: 0.09803921569, green: 0.09803921569, blue: 0.09803921569, alpha: 1)
 	
 	private weak var delegate: ExecuteWorkoutController!
-	private var set: RepsSet!
+	private var set: GTSet!
 	
 	private var sum = 0.0
 	
@@ -22,13 +23,14 @@ class UpdateWeightViewController: UIViewController {
 	@IBOutlet weak var plus: UILabel!
 	@IBOutlet weak var minus: UILabel!
 	@IBOutlet weak var add: UILabel!
+	@IBOutlet weak var unit: UILabel!
 	
 	@IBOutlet var buttons: [UIButton]!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-		guard let data = weightData else {
+		guard let data = secondaryInfoData else {
 			DispatchQueue.main.async {
 				self.dismiss(animated: true)
 			}
@@ -44,9 +46,10 @@ class UpdateWeightViewController: UIViewController {
 		
 		self.delegate = data.workoutController
 		self.set = data.set
-		self.sum = delegate.weightChange(for: set)
+		self.sum = delegate.secondaryInfoChange(for: set)
 		
-		base.text = set.weight.toString()
+		base.text = set.secondaryInfo.toString()
+		unit.text = set.secondaryInfoLabel.string
 		updateView()
     }
 
@@ -57,7 +60,7 @@ class UpdateWeightViewController: UIViewController {
 	
 	private func addWeight(_ w: Double) {
 		sum += w
-		sum = sum < 0 ? max(sum, -set.weight) : sum
+		sum = sum < 0 ? max(sum, -set.secondaryInfo) : sum
 		updateView()
 	}
 	
@@ -73,7 +76,7 @@ class UpdateWeightViewController: UIViewController {
 	}
 	
 	@IBAction func done() {
-		delegate.setWeightChange(sum, for: set)
+		delegate.setSecondaryInfoChange(sum, for: set)
 		self.dismiss(animated: true)
 	}
 	

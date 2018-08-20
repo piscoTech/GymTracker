@@ -11,6 +11,8 @@
 
 "WORKOUTS" = "Workouts";
 "WORKOUT" = "Workout";
+"CIRCUIT" = "Circuit";
+"CHOICE" = "Choice";
 "ARCH_WORKOUTS" = "Archived Workouts";
 "EXERCIZES" = "Exercizes";
 "EXERCIZE" = "Exercize";

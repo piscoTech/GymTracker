@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14306.4" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14278.2"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="exercize" id="GuX-ty-apX" customClass="ExercizeTableViewCell" customModule="Gym_Tracker" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="GuX-ty-apX" id="DFT-SJ-FsB">
+                <rect key="frame" x="0.0" y="0.0" width="341" height="43.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <stackView opaque="NO" contentMode="scaleToFill" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="aQ5-1N-Caq">
+                        <rect key="frame" x="16" y="0.0" width="321" height="43.5"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oqW-4a-7eJ" userLabel="Text">
+                                <rect key="frame" x="0.0" y="0.0" width="271" height="43.5"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KOI-qe-muj">
+                                        <rect key="frame" x="0.0" y="5" width="33.5" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rUR-v4-MSP">
+                                        <rect key="frame" x="0.0" y="26" width="44" height="14.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="rUR-v4-MSP" secondAttribute="bottom" constant="3" id="DMk-2I-2U1"/>
+                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="KOI-qe-muj" secondAttribute="trailing" id="IxT-dB-vna"/>
+                                    <constraint firstItem="KOI-qe-muj" firstAttribute="leading" secondItem="oqW-4a-7eJ" secondAttribute="leading" id="L6p-DL-fKh"/>
+                                    <constraint firstItem="rUR-v4-MSP" firstAttribute="leading" secondItem="oqW-4a-7eJ" secondAttribute="leading" id="d3t-zz-TWY"/>
+                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="rUR-v4-MSP" secondAttribute="trailing" id="elT-eq-QKa"/>
+                                    <constraint firstItem="KOI-qe-muj" firstAttribute="top" secondItem="oqW-4a-7eJ" secondAttribute="top" constant="5" id="nR1-Pt-cfy"/>
+                                    <constraint firstItem="rUR-v4-MSP" firstAttribute="top" secondItem="KOI-qe-muj" secondAttribute="bottom" id="ziu-b2-i1v"/>
+                                </constraints>
+                            </view>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CircuitWarning" translatesAutoresizingMaskIntoConstraints="NO" id="ruL-8U-pSx" userLabel="CircuitWarning">
+                                <rect key="frame" x="271" y="9.5" width="25" height="25"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="ruL-8U-pSx" secondAttribute="height" multiplier="1:1" id="gyV-Y8-HVv"/>
+                                    <constraint firstAttribute="height" constant="25" id="xI1-Ea-5HS"/>
+                                </constraints>
+                            </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="C8S-6X-T4t" userLabel="CircuitStatus">
+                                <rect key="frame" x="296" y="6.5" width="25" height="31"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="irW-zM-301" userLabel="CircuitIcon">
+                                        <rect key="frame" x="2" y="0.0" width="21" height="21"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="21" id="Kc7-nt-UxS"/>
+                                            <constraint firstAttribute="width" secondItem="irW-zM-301" secondAttribute="height" multiplier="1:1" id="hxb-DL-xRZ"/>
+                                        </constraints>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="N8y-oa-d6p">
+                                        <rect key="frame" x="0.0" y="21" width="25" height="10"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="8"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="irW-zM-301" firstAttribute="centerX" secondItem="C8S-6X-T4t" secondAttribute="centerX" id="DvE-BM-k5a"/>
+                                    <constraint firstAttribute="bottom" secondItem="N8y-oa-d6p" secondAttribute="bottom" id="RuT-Ge-DOI"/>
+                                    <constraint firstItem="N8y-oa-d6p" firstAttribute="leading" secondItem="C8S-6X-T4t" secondAttribute="leading" id="Y9i-N1-SZ4"/>
+                                    <constraint firstAttribute="trailing" secondItem="N8y-oa-d6p" secondAttribute="trailing" id="YQM-YU-LE5"/>
+                                    <constraint firstAttribute="width" constant="25" id="gAR-d4-61B"/>
+                                    <constraint firstItem="N8y-oa-d6p" firstAttribute="top" secondItem="irW-zM-301" secondAttribute="bottom" id="h6N-RF-YPW"/>
+                                    <constraint firstItem="irW-zM-301" firstAttribute="top" secondItem="C8S-6X-T4t" secondAttribute="top" id="ijQ-tY-UrV"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                    </stackView>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="aQ5-1N-Caq" secondAttribute="trailing" constant="4" id="2w1-n8-YLw"/>
+                    <constraint firstItem="aQ5-1N-Caq" firstAttribute="leading" secondItem="DFT-SJ-FsB" secondAttribute="leadingMargin" id="CQa-e0-IP5"/>
+                    <constraint firstAttribute="bottom" secondItem="aQ5-1N-Caq" secondAttribute="bottom" id="fN2-fr-jzA"/>
+                    <constraint firstItem="aQ5-1N-Caq" firstAttribute="top" secondItem="DFT-SJ-FsB" secondAttribute="top" id="khx-dm-lzC"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="circuitNumber" destination="N8y-oa-d6p" id="2Cz-yQ-RSk"/>
+                <outlet property="circuitStatus" destination="C8S-6X-T4t" id="9lR-NO-eUJ"/>
+                <outlet property="circuitWarning" destination="ruL-8U-pSx" id="5Ee-sC-7ki"/>
+                <outlet property="exercizeInfo" destination="rUR-v4-MSP" id="tPy-39-EyI"/>
+                <outlet property="name" destination="KOI-qe-muj" id="4F5-yJ-qI3"/>
+                <outlet property="stack" destination="aQ5-1N-Caq" id="ZZ3-2V-WAS"/>
+            </connections>
+            <point key="canvasLocation" x="425" y="-81"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="CircuitWarning" width="25" height="25"/>
+    </resources>
+</document>

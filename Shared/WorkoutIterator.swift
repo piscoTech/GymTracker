@@ -9,10 +9,11 @@
 import Foundation
 import GymTrackerCore
 
-extension WorkoutIterator {
-	
-	convenience init?(_ w: GTWorkout, choices: [Int32]) {
-		self.init(w, choices: choices, using preferences: appDelegate.dataManager.preferences) {
-	}
-	
-}
+#warning("Remove me")
+//extension WorkoutIterator {
+//	
+//	convenience init?(_ w: GTWorkout, choices: [Int32]) {
+//		self.init(w, choices: choices, using preferences: appDelegate.dataManager.preferences) {
+//	}
+//	
+//}

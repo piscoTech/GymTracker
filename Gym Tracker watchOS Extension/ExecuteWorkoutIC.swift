@@ -10,6 +10,7 @@ import WatchKit
 import HealthKit
 import Foundation
 import AVFoundation
+import GymTrackerCore
 
 class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutControllerDelegate {
 	
@@ -68,6 +69,11 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutCo
     }
 	
 	// MARK: - ExecuteWorkoutViewController
+	
+	func askForChoices(_ choices: [GTChoice]) {
+		#warning("Implement me")
+		fatalError()
+	}
 	
 	func setWorkoutTitle(_ text: String) {
 		self.setTitle(text)
@@ -183,8 +189,8 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutCo
 		WKInterfaceDevice.current().play(.click)
 	}
 	
-	func askUpdateWeight(with data: UpdateSecondaryInfoData) {
-		presentController(withName: "updateWeight", context: data)
+	func askUpdateSecondaryInfo(with data: UpdateSecondaryInfoData) {
+		presentController(withName: "updateSecondaryInfo", context: data)
 	}
 	
 	@IBAction func endRest() {

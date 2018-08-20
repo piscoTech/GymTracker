@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14306.4" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14278.2"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="editTitle" id="J7z-2f-QLK" customClass="SingleFieldCell" customModule="Gym_Tracker" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="J7z-2f-QLK" id="hRp-4g-igx">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Workout Name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xFp-V8-a3B">
+                        <rect key="frame" x="16" y="0.0" width="343" height="43.5"/>
+                        <nil key="textColor"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                    </textField>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailingMargin" secondItem="xFp-V8-a3B" secondAttribute="trailing" id="12i-n8-qYh"/>
+                    <constraint firstItem="xFp-V8-a3B" firstAttribute="top" secondItem="hRp-4g-igx" secondAttribute="top" id="3J4-EG-4Y1"/>
+                    <constraint firstAttribute="bottom" secondItem="xFp-V8-a3B" secondAttribute="bottom" id="Ax3-Ug-nWg"/>
+                    <constraint firstItem="xFp-V8-a3B" firstAttribute="leading" secondItem="hRp-4g-igx" secondAttribute="leadingMargin" id="VcL-NC-iFV"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="textField" destination="xFp-V8-a3B" id="lQi-G0-lDe"/>
+            </connections>
+            <point key="canvasLocation" x="221" y="-18"/>
+        </tableViewCell>
+    </objects>
+</document>

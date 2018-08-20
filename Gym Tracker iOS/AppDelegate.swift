@@ -12,6 +12,7 @@ import UserNotifications
 import AVFoundation
 import MBLibrary
 import StoreKit
+import GymTrackerCore
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -108,6 +109,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			let cell = UITableViewCell.appearance()
 			cell.backgroundColor = #colorLiteral(red: 0.0393620953, green: 0.0393620953, blue: 0.0393620953, alpha: 1)
 			cell.selectionStyle = .gray
+			cell.tintColor = customTint
 			
 			let textColor = #colorLiteral(red: 0.9198423028, green: 0.9198423028, blue: 0.9198423028, alpha: 1)
 			UILabel.appearance().textColor = textColor
@@ -284,7 +286,7 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 					displayError()
 				} else {
 					DispatchQueue.background.asyncAfter(delay: 1) {
-						self.dataManager.requestStarting(workout.raw) { success in
+						self.dataManager.requestStarting(workout) { success in
 							if !success {
 								displayError()
 							}
@@ -316,6 +318,11 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 		}
 		
 		workoutController = ExecuteWorkoutController(data: data, viewController: self, source: .phone)
+	}
+	
+	func askForChoices(_ choices: [GTChoice]) {
+		#warning("Implement me")
+		fatalError()
 	}
 	
 	func setWorkoutTitle(_ text: String) {
@@ -475,8 +482,8 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 		}
 	}
 
-	func askUpdateWeight(with data: UpdateWeightData) {
-		currentWorkout.askUpdateWeight(with: data)
+	func askUpdateSecondaryInfo(with data: UpdateSecondaryInfoData) {
+		currentWorkout.askUpdateSecondaryInfo(with: data)
 	}
 	
 	func workoutHasStarted() {
@@ -545,7 +552,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 			let endTime = dataManager.preferences.setEndedInNotificationTime
 			let weightChange = isUpdate ? dataManager.preferences.weightChangeFromNotification : nil
 			
-			workoutController?.endSet(endTime: endTime, weightChange: weightChange)
+			workoutController?.endSet(endTime: endTime, secondaryInfoChange: weightChange)
 		default:
 			break
 		}
@@ -584,7 +591,7 @@ extension AppDelegate: DataManagerDelegate {
 		
 		DispatchQueue.main.async {
 			if self.workoutController?.isCompleted ?? true {
-				self.workoutController = ExecuteWorkoutController(mirrorWorkoutForViewController: self)
+				self.workoutController = ExecuteWorkoutController(mirrorWorkoutForViewController: self, dataManager: self.dataManager)
 			}
 			
 			guard let controller = self.workoutController, controller.isMirroring else {

@@ -1,5 +1,5 @@
 //
-//  TableView Cells.swift
+//  Table View Cells.swift
 //  Gym Tracker
 //
 //  Created by Marco Boschi on 13/03/2017.
@@ -8,6 +8,7 @@
 
 import UIKit
 import MBLibrary
+import GymTrackerCore
 
 class MultilineCell: UITableViewCell {
 	
@@ -31,12 +32,53 @@ class SingleFieldCell: UITableViewCell {
 
 }
 
-class RepsSetCell: UITableViewCell, UITextFieldDelegate {
+class ExercizeTableViewCell: UITableViewCell {
+	@IBOutlet private weak var stack: UIStackView!
+	
+	@IBOutlet private weak var name: UILabel!
+	@IBOutlet private weak var exercizeInfo: UILabel!
+	
+	@IBOutlet private var circuitWarning: UIView!
+	@IBOutlet private var circuitStatus: UIView!
+	@IBOutlet private weak var circuitNumber: UILabel!
+	
+	private var isCircuit = false
+	
+	func setInfo(for exercize: GTExercize, circuitInfo: (number: Int, total: Int)?) {
+		name.text = exercize.title
+		exercizeInfo.text = exercize.summary
+		
+		circuitWarning.removeFromSuperview()
+		if let (n, t) = circuitInfo {
+			isCircuit = true
+			stack.addArrangedSubview(circuitStatus)
+			circuitNumber.text = "\(n)/\(t)"
+		} else {
+			isCircuit = false
+			circuitStatus.removeFromSuperview()
+		}
+	}
+	
+	func setValidity(_ valid: Bool) {
+		if valid {
+			circuitWarning.removeFromSuperview()
+			if isCircuit {
+				stack.addArrangedSubview(circuitStatus)
+			}
+		} else {
+			circuitStatus.removeFromSuperview()
+			stack.addArrangedSubview(circuitWarning)
+		}
+	}
+	
+}
+
+class SetCell: UITableViewCell, UITextFieldDelegate {
 	
 	@IBOutlet weak var repsCount: UITextField!
 	@IBOutlet weak var weight: UITextField!
 	
-	var set: RepsSet! {
+	var set: GTSet! {
 		didSet {
 			updateView()
 		}
@@ -55,8 +97,8 @@ class RepsSetCell: UITableViewCell, UITextFieldDelegate {
 	}
 	
 	private func updateView() {
-		self.repsCount.text = set.reps > 0 ? "\(set.reps)" : ""
-		self.weight.text = set.weight > 0 ? set.weight.toString() : ""
+		self.repsCount.text = set.mainInfo > 0 ? "\(set.mainInfo)" : ""
+		self.weight.text = set.secondaryInfo > 0 ? set.secondaryInfo.toString() : ""
 	}
 	
 	func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
@@ -74,9 +116,9 @@ class RepsSetCell: UITableViewCell, UITextFieldDelegate {
 	@IBAction func valueChanged(_ sender: UITextField) {
 		switch sender {
 		case repsCount:
-			set.set(reps: Int32(sender.text ?? "") ?? 0)
+			set.set(mainInfo: Int(sender.text ?? "") ?? 0)
 		case weight:
-			set.set(weight: sender.text?.toDouble() ?? 0)
+			set.set(secondaryInfo: sender.text?.toDouble() ?? 0)
 		default:
 			fatalError("Unknown field")
 		}
@@ -104,9 +146,11 @@ class RestCell: UITableViewCell {
 	
 }
 
-class WorkoutManageExercizeCell: UITableViewCell {
+class AddExercizeCell: UITableViewCell {
 	
-	@IBOutlet weak var reorderBtn: UIButton!
+	@IBOutlet weak var addExercize: UIButton!
+	@IBOutlet weak var addOther: UIButton!
+	@IBOutlet weak var addExistent: UIButton!
 	
 }
 

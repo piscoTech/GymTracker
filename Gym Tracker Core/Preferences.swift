@@ -44,7 +44,7 @@ enum PreferenceKeys: String, KeyValueStoreKey {
 	case reviewRequestCounter = "reviewRequestCounter"
 }
 
-enum RunningWorkoutSource: String {
+public enum RunningWorkoutSource: String {
 	
 	case watch = "watch"
 	case phone = "phone"
@@ -129,7 +129,7 @@ public class Preferences {
 	
 	// MARK: - Data
 	
-	var firstLaunchDone: Bool {
+	public var firstLaunchDone: Bool {
 		get {
 			return local.bool(forKey: PreferenceKeys.firstLaunchDone)
 		}
@@ -139,7 +139,7 @@ public class Preferences {
 		}
 	}
 	
-	var initialSyncDone: Bool {
+	public var initialSyncDone: Bool {
 		get {
 			return local.bool(forKey: PreferenceKeys.initialSyncDone)
 		}
@@ -149,10 +149,10 @@ public class Preferences {
 		}
 	}
 	
-	var reviewRequestThreshold: Int {
+	public var reviewRequestThreshold: Int {
 		return 5
 	}
-	var reviewRequestCounter: Int {
+	public var reviewRequestCounter: Int {
 		get {
 			return local.integer(forKey: PreferenceKeys.reviewRequestCounter)
 		}
@@ -164,7 +164,7 @@ public class Preferences {
 	
 	// MARK: - Local data not yet sent
 	
-	var transferLocal: [CDRecordID] {
+	public var transferLocal: [CDRecordID] {
 		get {
 			return CDRecordID.decodeArray(local.array(forKey: PreferenceKeys.transferLocal) as? [[String]] ?? [])
 		}
@@ -179,7 +179,7 @@ public class Preferences {
 		}
 	}
 	
-	var deleteLocal: [CDRecordID] {
+	public var deleteLocal: [CDRecordID] {
 		get {
 			return CDRecordID.decodeArray(local.array(forKey: PreferenceKeys.deleteLocal) as? [[String]] ?? [])
 		}
@@ -196,7 +196,7 @@ public class Preferences {
 	
 	// MARK: - Updates not persisted yet
 	
-	var saveRemote: [WCObject] {
+	public var saveRemote: [WCObject] {
 		get {
 			return WCObject.decodeArray(local.array(forKey: PreferenceKeys.saveRemote) as? [[String: Any]] ?? [])
 		}
@@ -211,7 +211,7 @@ public class Preferences {
 		}
 	}
 	
-	var deleteRemote: [CDRecordID] {
+	public var deleteRemote: [CDRecordID] {
 		get {
 			return CDRecordID.decodeArray(local.array(forKey: PreferenceKeys.deleteRemote) as? [[String]] ?? [])
 		}
@@ -228,7 +228,7 @@ public class Preferences {
 	
 	// MARK: - Running Workout data
 	
-	var runningWorkout: CDRecordID? {
+	public var runningWorkout: CDRecordID? {
 		get {
 			return CDRecordID(wcRepresentation: local.array(forKey: PreferenceKeys.runningWorkout) as? [String] ?? [])
 		}
@@ -243,7 +243,7 @@ public class Preferences {
 		}
 	}
 	
-	var runningWorkoutSource: RunningWorkoutSource? {
+	public var runningWorkoutSource: RunningWorkoutSource? {
 		get {
 			return RunningWorkoutSource(rawValue: local.string(forKey: PreferenceKeys.runningWorkoutSource) ?? "")
 		}
@@ -258,7 +258,7 @@ public class Preferences {
 		}
 	}
 	
-	var runningWorkoutNeedsTransfer: Bool {
+	public var runningWorkoutNeedsTransfer: Bool {
 		get {
 			return local.bool(forKey: PreferenceKeys.runningWorkoutNeedsTransfer)
 		}
@@ -268,7 +268,7 @@ public class Preferences {
 		}
 	}
 	
-	var currentStart: Date {
+	public var currentStart: Date {
 		get {
 			return local.object(forKey: PreferenceKeys.currentStart) as? Date ?? Date()
 		}
@@ -279,7 +279,7 @@ public class Preferences {
 	}
 	
 	/// The current exercize, rest or circuit in the running workout.
-	var currentExercize: Int {
+	public var currentExercize: Int {
 		get {
 			return local.integer(forKey: PreferenceKeys.currentExercize)
 		}
@@ -290,7 +290,7 @@ public class Preferences {
 	}
 	
 	/// The current set inside the current exercize or circuit, if `currentRestEnd` is set the workout is currently in the rest after the set.
-	var currentPart: Int {
+	public var currentPart: Int {
 		get {
 			return local.integer(forKey: PreferenceKeys.currentPart)
 		}
@@ -301,7 +301,7 @@ public class Preferences {
 	}
 	
 	
-	var currentRestEnd: Date? {
+	public var currentRestEnd: Date? {
 		get {
 			return local.object(forKey: PreferenceKeys.currentRestEnd) as? Date
 		}
@@ -316,7 +316,7 @@ public class Preferences {
 		}
 	}
 	
-	var weightChangeCache: [CDRecordID : Double] {
+	public var weightChangeCache: [CDRecordID : Double] {
 		get {
 			var cache: [CDRecordID : Double] = [:]
 			for wc in local.array(forKey: PreferenceKeys.weightChangeCache) as? [[Any]] ?? [] {
@@ -345,7 +345,7 @@ public class Preferences {
 	
 	// MARK: - Health Access
 	
-	var authorized: Bool {
+	public var authorized: Bool {
 		get {
 			return local.bool(forKey: PreferenceKeys.authorized)
 		}
@@ -355,7 +355,7 @@ public class Preferences {
 		}
 	}
 	
-	var authVersion: Int {
+	public var authVersion: Int {
 		get {
 			return local.integer(forKey: PreferenceKeys.authVersion)
 		}
@@ -367,7 +367,7 @@ public class Preferences {
 	
 	// MARK: - Backups
 	
-	var useBackups: Bool {
+	public var useBackups: Bool {
 		get {
 			return local.bool(forKey: PreferenceKeys.useBackups)
 		}
@@ -377,7 +377,7 @@ public class Preferences {
 		}
 	}
 	
-	var lastBackup: Date? {
+	public var lastBackup: Date? {
 		get {
 			return local.object(forKey: PreferenceKeys.lastBackup) as? Date
 		}

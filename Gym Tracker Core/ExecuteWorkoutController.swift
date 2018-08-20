@@ -9,22 +9,28 @@
 import Foundation
 import HealthKit
 
-struct ExecuteWorkoutData {
+public struct ExecuteWorkoutData {
 	
-	let workout: GTWorkout
-	let resume: Bool
-	let choices: [Int32]
+	public let workout: GTWorkout
+	public let resume: Bool
+	public let choices: [Int32]
+	
+	public init(workout w: GTWorkout, resume r: Bool, choices c: [Int32] = []) {
+		self.workout = w
+		self.resume = r
+		self.choices = c
+	}
 	
 }
 
-struct UpdateSecondaryInfoData: Equatable {
+public struct UpdateSecondaryInfoData: Equatable {
 	
-	let workoutController: ExecuteWorkoutController
-	let set: GTSet
+	public let workoutController: ExecuteWorkoutController
+	public let set: GTSet
 	
 }
 
-protocol ExecuteWorkoutControllerDelegate: AnyObject {
+public protocol ExecuteWorkoutControllerDelegate: AnyObject {
 	
 	func setWorkoutTitle(_ text: String)
 	func askForChoices(_ choices: [GTChoice])
@@ -64,14 +70,14 @@ protocol ExecuteWorkoutControllerDelegate: AnyObject {
 	
 }
 
-class ExecuteWorkoutController: NSObject {
+public class ExecuteWorkoutController: NSObject {
 	
 	private let dataManager: DataManager
 	
 	private let source: RunningWorkoutSource
-	private(set) var isMirroring: Bool
+	public private(set) var isMirroring: Bool
 	
-	static let workoutNameMetadataKey = "Workout"
+	static public let workoutNameMetadataKey = "Workout"
 	private let noHeart = "– –"
 	private let nextTxt = GTLocalizedString("NEXT_EXERCIZE_FLAG", comment: "Next:")
 	private let nextEndTxt = GTLocalizedString("NEXT_EXERCIZE_END", comment: "End")
@@ -86,11 +92,11 @@ class ExecuteWorkoutController: NSObject {
 	private var workoutIterator: WorkoutIterator!
 	private var currentStep: WorkoutStep?
 	/// If the current part is the last set in the entire workout, used to correctly display notifications.
-	var isLastPart: Bool {
+	public var isLastPart: Bool {
 		return currentStep?.isLast ?? false
 	}
 	/// If the current part is a rest.
-	var isRestMode: Bool {
+	public var isRestMode: Bool {
 		return restStart != nil
 	}
 	/// The start time of teh current rest.
@@ -118,7 +124,7 @@ class ExecuteWorkoutController: NSObject {
 	fileprivate var workoutEvents: [HKWorkoutEvent] = []
 	fileprivate var hasTerminationError = false
 	private var terminateAndSave = true
-	private(set) var isCompleted = false
+	public private(set) var isCompleted = false
 	
 	private weak var view: ExecuteWorkoutControllerDelegate!
 	
@@ -126,7 +132,7 @@ class ExecuteWorkoutController: NSObject {
 		fatalError("Not supported")
 	}
 
-	init(data: ExecuteWorkoutData, viewController: ExecuteWorkoutControllerDelegate, source: RunningWorkoutSource, dataManager: DataManager) {
+	public init(data: ExecuteWorkoutData, viewController: ExecuteWorkoutControllerDelegate, source: RunningWorkoutSource, dataManager: DataManager) {
 		self.dataManager = dataManager
 		self.source = source
 		self.isMirroring = false
@@ -141,10 +147,15 @@ class ExecuteWorkoutController: NSObject {
 		view.setWorkoutDoneViewHidden(true)
 		view.setNextUpTextHidden(true)
 		
-		let chList = workout.choices
-		let ch = data.choices.prefix(chList.count)
-		
-		self.choices = zip(chList, ch + [Int32](repeating: -1, count: max(0, chList.count - ch.count))).map { $0 }
+		if data.resume {
+			#warning("Load choices from preferences, ignore passed")
+			self.choices = workout.choices.map { ($0, -1) }
+		} else {
+			let chList = workout.choices
+			let ch = data.choices.prefix(chList.count)
+			
+			self.choices = zip(chList, ch + [Int32](repeating: -1, count: max(0, chList.count - ch.count))).map { $0 }
+		}
 		
 		super.init()
 		
@@ -241,7 +252,7 @@ class ExecuteWorkoutController: NSObject {
 	}
 	
 	@available(watchOS, unavailable)
-	init?(mirrorWorkoutForViewController viewController: ExecuteWorkoutControllerDelegate, dataManager: DataManager) {
+	public init?(mirrorWorkoutForViewController viewController: ExecuteWorkoutControllerDelegate, dataManager: DataManager) {
 		guard let w = dataManager.preferences.runningWorkout?.getObject(fromDataManager: dataManager) as? GTWorkout else {
 			return nil
 		}
@@ -545,7 +556,7 @@ class ExecuteWorkoutController: NSObject {
 	// MARK: - Workout Actions
 	
 	@available(watchOS, unavailable)
-	func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date?) {
+	public func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date?) {
 		guard isMirroring else {
 			return
 		}
@@ -566,7 +577,7 @@ class ExecuteWorkoutController: NSObject {
 	}
 	
 	@available(watchOS, unavailable)
-	func mirroredWorkoutHasEnded() {
+	public func mirroredWorkoutHasEnded() {
 		guard isMirroring else {
 			return
 		}
@@ -579,7 +590,7 @@ class ExecuteWorkoutController: NSObject {
 		displayStep()
 	}
 	
-	func endRest() {
+	public func endRest() {
 		guard !isMirroring, isRestMode else {
 			return
 		}
@@ -591,7 +602,7 @@ class ExecuteWorkoutController: NSObject {
 		nextStep()
 	}
 	
-	func endSet(endTime: Date? = nil, secondaryInfoChange change: Double? = nil) {
+	public func endSet(endTime: Date? = nil, secondaryInfoChange change: Double? = nil) {
 		guard !isMirroring, !isRestMode else {
 			return
 		}
@@ -606,11 +617,11 @@ class ExecuteWorkoutController: NSObject {
 		displayStep()
 	}
 	
-	func secondaryInfoChange(for s: GTSet) -> Double {
+	public func secondaryInfoChange(for s: GTSet) -> Double {
 		return workoutIterator.secondaryInfoChange(for: s.exercize)
 	}
 	
-	func setSecondaryInfoChange(_ change: Double, for set: GTSet) {
+	public func setSecondaryInfoChange(_ change: Double, for set: GTSet) {
 		setSecondaryInfoChange(change, for: set, refreshView: true)
 	}
 	
@@ -640,7 +651,7 @@ class ExecuteWorkoutController: NSObject {
 		}
 	}
 	
-	func endWorkout() {
+	public func endWorkout() {
 		guard !isMirroring else {
 			return
 		}
@@ -656,7 +667,7 @@ class ExecuteWorkoutController: NSObject {
 		endWorkoutSession()
 	}
 	
-	func cancelWorkout() {
+	public func cancelWorkout() {
 		guard !isMirroring, workoutIterator != nil else {
 			return
 		}
@@ -670,7 +681,7 @@ class ExecuteWorkoutController: NSObject {
 	
 	// MARK: - Notification Information Gathering
 	
-	var currentRestTime: (duration: TimeInterval, endTime: Date)? {
+	public var currentRestTime: (duration: TimeInterval, endTime: Date)? {
 		guard isRestMode, let rest = currentStep?.rest, let end = self.restEndDate else {
 			return nil
 		}
@@ -678,7 +689,7 @@ class ExecuteWorkoutController: NSObject {
 		return (rest, end)
 	}
 	
-	var currentSetInfo: (exercize: String, setInfo: String, otherSetsInfo: String?)? {
+	public var currentSetInfo: (exercize: String, setInfo: String, otherSetsInfo: String?)? {
 		guard !(currentStep?.isRest ?? true), let e = currentStep?.exercizeName, let s = currentStep?.currentInfo else {
 			return nil
 		}
@@ -686,7 +697,7 @@ class ExecuteWorkoutController: NSObject {
 		return (e, s.string, currentStep?.otherPartsInfo?.string)
 	}
 	
-	var currentSetRawInfo: (secondaryInfo: Double, change: Double)? {
+	public var currentSetRawInfo: (secondaryInfo: Double, change: Double)? {
 		guard !(currentStep?.isRest ?? true), let set = currentStep?.set else {
 			return nil
 		}
@@ -694,7 +705,7 @@ class ExecuteWorkoutController: NSObject {
 		return (set.secondaryInfo, secondaryInfoChange(for: set))
 	}
 	
-	var currentIsRestPeriod: Bool {
+	public var currentIsRestPeriod: Bool {
 		return currentStep?.isRest ?? false
 	}
 	
@@ -705,7 +716,7 @@ class ExecuteWorkoutController: NSObject {
 
 extension ExecuteWorkoutController: HKWorkoutSessionDelegate {
 
-	func workoutSession(_ workoutSession: HKWorkoutSession, didChangeTo toState: HKWorkoutSessionState, from fromState: HKWorkoutSessionState, date: Date) {
+	public func workoutSession(_ workoutSession: HKWorkoutSession, didChangeTo toState: HKWorkoutSessionState, from fromState: HKWorkoutSessionState, date: Date) {
 		if fromState == .notStarted && toState == .running {
 			start = self.start ?? date
 			
@@ -719,11 +730,11 @@ extension ExecuteWorkoutController: HKWorkoutSessionDelegate {
 		}
 	}
 	
-	func workoutSession(_ workoutSession: HKWorkoutSession, didFailWithError error: Error) {
+	public func workoutSession(_ workoutSession: HKWorkoutSession, didFailWithError error: Error) {
 		hasTerminationError = true
 	}
 	
-	func workoutSession(_ workoutSession: HKWorkoutSession, didGenerate event: HKWorkoutEvent) {
+	public func workoutSession(_ workoutSession: HKWorkoutSession, didGenerate event: HKWorkoutEvent) {
 		workoutEvents.append(event)
 	}
 	

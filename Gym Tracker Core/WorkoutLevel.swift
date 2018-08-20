@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol WorkoutLevel {
+public protocol WorkoutLevel {
 	
 	var parentLevel: CompositeWorkoutLevel? { get }
 	
@@ -29,11 +29,13 @@ extension WorkoutLevel {
 	
 }
 
-protocol CompositeWorkoutLevel: WorkoutLevel {}
+public protocol CompositeWorkoutLevel: WorkoutLevel {}
 
-protocol ExercizeCollection: CompositeWorkoutLevel {
+public protocol ExercizeCollection: CompositeWorkoutLevel {
 	
 	associatedtype Exercize: GTPart
+	
+	var collectionType: String { get }
 	
 	var exercizes: Set<Exercize> { get }
 	var exercizeList: [Exercize] { get }
@@ -45,7 +47,7 @@ protocol ExercizeCollection: CompositeWorkoutLevel {
 
 extension ExercizeCollection {
 	
-	subscript (n: Int32) -> Exercize? {
+	public subscript (n: Int32) -> Exercize? {
 		return exercizes.first { $0.order == n }
 	}
 	
@@ -74,5 +76,12 @@ extension ExercizeCollection {
 			i += 1
 		}
 	}
+	
+}
+
+public protocol NamedExercizeCollection: ExercizeCollection {
+	
+	var name: String { get }
+	func set(name: String)
 	
 }

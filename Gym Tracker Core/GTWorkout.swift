@@ -10,13 +10,15 @@ import Foundation
 import CoreData
 
 @objc(GTWorkout)
-final class GTWorkout: GTDataObject, ExercizeCollection {
+final public class GTWorkout: GTDataObject, NamedExercizeCollection {
 	
 	override class var objectType: String {
 		return "GTWorkout"
 	}
 	
-	class func getList(fromDataManager dataManager: DataManager) -> [GTWorkout] {
+	public let collectionType = GTLocalizedString("WORKOUT", comment: "Workout")
+	
+	public class func getList(fromDataManager dataManager: DataManager) -> [GTWorkout] {
 		let workoutQuery = NSFetchRequest<GTWorkout>(entityName: self.objectType)
 		var list = dataManager.executeFetchRequest(workoutQuery) ?? []
 		list.sort { $0.name < $1.name }
@@ -27,15 +29,15 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 	private let nameKey = "name"
 	private let archivedKey = "archived"
 	
-	@NSManaged private(set) var name: String
+	@NSManaged public private(set) var name: String
 	@NSManaged private(set) var parts: Set<GTPart>
-	var exercizes: Set<GTPart> {
+	public var exercizes: Set<GTPart> {
 		return parts
 	}
 	
-	@NSManaged var archived: Bool
+	@NSManaged public var archived: Bool
 	
-	override var description: String {
+	public override var description: String {
 		let n = parts.filter { $0 is GTExercize }.count
 		return "\(n) " + GTLocalizedString("EXERCIZE" + (n > 1 ? "S" : ""), comment: "exercize(s)").lowercased()
 	}
@@ -48,7 +50,7 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 		return dataManager.executeFetchRequest(req)?.first
 	}
 	
-	override var isValid: Bool {
+	override public var isValid: Bool {
 		return isSubtreeValid
 	}
 	
@@ -65,48 +67,47 @@ final class GTWorkout: GTDataObject, ExercizeCollection {
 		return parts.first { $0 is GTExercize } != nil
 	}
 	
-	let parentLevel: CompositeWorkoutLevel? = nil
+	public let parentLevel: CompositeWorkoutLevel? = nil
 	
-	override var subtreeNodeList: Set<GTDataObject> {
+	override public var subtreeNodeList: Set<GTDataObject> {
 		return Set(parts.flatMap { $0.subtreeNodeList } + [self])
 	}
 	
-	override func purgeInvalidSettings() {
+	override public func purgeInvalidSettings() {
 		for p in parts {
 			p.purgeInvalidSettings()
 		}
 	}
 	
 	var choices: [GTChoice] {
-		#warning("Use me to determine for which choice to ask what to do")
 		return exercizeList.flatMap { ($0 as? GTCircuit)?.exercizeList.compactMap { $0 as? GTChoice } ?? [$0 as? GTChoice].compactMap { $0 } }
 	}
 	
 	// MARK: - Parts handling
 	
-	var exercizeList: [GTPart] {
+	public var exercizeList: [GTPart] {
 		return Array(exercizes).sorted { $0.order < $1.order }
 	}
 	
-	func add(parts: GTPart...) {
+	public func add(parts: GTPart...) {
 		for p in parts {
 			p.order = Int32(self.parts.count)
 			p.set(workout: self)
 		}
 	}
 	
-	func remove(part p: GTPart) {
+	public func remove(part p: GTPart) {
 		parts.remove(p)
 		recalculatePartsOrder()
 	}
 	
-	func set(name: String) {
+	public func set(name: String) {
 		self.name = name.trimmingCharacters(in: .whitespacesAndNewlines)
 	}
 	
 	/// Removes rest period from start and end.
 	/// - returns: A collection of removed parts (rest periods) from the start, end and somewhere between exercizes.
-	func compactExercizes() -> (start: [GTPart], end: [GTPart], middle: [(e: GTPart, oldOrder: Int32)]) {
+	public func compactExercizes() -> (start: [GTPart], end: [GTPart], middle: [(e: GTPart, oldOrder: Int32)]) {
 		var s = [GTPart]()
 		var e = [GTPart]()
 		var middle = [(GTPart, Int32)]()

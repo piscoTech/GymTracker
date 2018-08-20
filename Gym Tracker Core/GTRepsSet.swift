@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 
 @objc(GTRepsSet)
-final class GTRepsSet: GTSet {
+final public class GTRepsSet: GTSet {
 	
 	override class var objectType: String {
 		return "GTRepsSet"
@@ -22,7 +22,7 @@ final class GTRepsSet: GTSet {
 	@NSManaged private var reps: Int32
 	@NSManaged private var weight: Double
 	
-	override var description: String {
+	override public var description: String {
 		return "\(reps)\(timesSign)\(weight.toString())kg"
 	}
 	
@@ -34,7 +34,7 @@ final class GTRepsSet: GTSet {
 		return dataManager.executeFetchRequest(req)?.first
 	}
 	
-	override var isValid: Bool {
+	override public var isValid: Bool {
 		return super.isValid && isSubtreeValid
 	}
 	
@@ -42,23 +42,23 @@ final class GTRepsSet: GTSet {
 		return super.isSubtreeValid && reps > 0 && weight >= 0
 	}
 	
-	override func purgeInvalidSettings() {}
+	override public func purgeInvalidSettings() {}
 	
-	override func set(mainInfo n: Int) {
+	override public func set(mainInfo n: Int) {
 		reps = max(Int32(n), 0)
 	}
 	
-	override func set(secondaryInfo w: Double) {
+	override public func set(secondaryInfo w: Double) {
 		weight = max(w, 0).rounded(to: 0.5)
 	}
 	
-	override var subtreeNodeList: Set<GTDataObject> {
+	override public var subtreeNodeList: Set<GTDataObject> {
 		return [self]
 	}
 	
 	// MARK: - Standard accessors
 	
-	override var mainInfo: Int {
+	override public var mainInfo: Int {
 		return Int(reps)
 	}
 	
@@ -78,11 +78,11 @@ final class GTRepsSet: GTSet {
 		return repsDescription
 	}
 	
-	override var secondaryInfo: Double {
+	override public var secondaryInfo: Double {
 		return weight
 	}
 	
-	override var secondaryInfoLabel: NSAttributedString {
+	override public var secondaryInfoLabel: NSAttributedString {
 		return GTRepsSet.kgLabel
 	}
 	

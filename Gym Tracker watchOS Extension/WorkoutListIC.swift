@@ -8,12 +8,13 @@
 
 import WatchKit
 import Foundation
+import GymTrackerCore
 
 class WorkoutListInterfaceController: WKInterfaceController {
 	
 	weak var workoutDetail: WorkoutDetailInterfaceController?
 	
-	private var workouts: [Workout] = []
+	private var workouts: [GTWorkout] = []
 	
 	@IBOutlet weak var table: WKInterfaceTable!
 	@IBOutlet weak var unlockMsg: WKInterfaceLabel!
@@ -57,7 +58,7 @@ class WorkoutListInterfaceController: WKInterfaceController {
 		
 		self.workouts.removeAll(keepingCapacity: true)
 		
-		for w in Workout.getList(fromDataManager: appDelegate.dataManager) {
+		for w in GTWorkout.getList(fromDataManager: appDelegate.dataManager) {
 			if !w.archived {
 				workouts.append(w)
 			}
@@ -100,7 +101,7 @@ class WorkoutListInterfaceController: WKInterfaceController {
 			return nil
 		}
 		
-		return WorkoutDetailData(listController: self, workout: OrganizedWorkout(workouts[rowIndex]))
+		return WorkoutDetailData(listController: self, workout: workouts[rowIndex])
 	}
 	
 	func setEnable(_ flag: Bool) {

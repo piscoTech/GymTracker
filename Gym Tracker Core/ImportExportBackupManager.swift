@@ -9,11 +9,11 @@
 
 import Foundation
 
-class ImportExportBackupManager: NSObject {
+public class ImportExportBackupManager: NSObject {
 	
 	let dataManager: DataManager
 	
-	let fileExtension = ".wrkt"
+	public let fileExtension = ".wrkt"
 	let keepBackups = 5
 	let autoBackupTime: TimeInterval = 7 * 24 * 60 * 60 // 7 days
 	let delayReloadTime: TimeInterval = 2
@@ -41,12 +41,12 @@ class ImportExportBackupManager: NSObject {
 	
 	// MARK: - Backup fetch
 	
-	typealias BackupList = [(path: URL, date: Date)]
-	typealias BackupCallback = () -> Void
+	public typealias BackupList = [(path: URL, date: Date)]
+	public typealias BackupCallback = () -> Void
 	private var backupCallbacks = [BackupCallback]()
-	private(set) var backups: BackupList = []
+	public private(set) var backups: BackupList = []
 	
-	func loadBackups(_ completion: @escaping BackupCallback) {
+	public func loadBackups(_ completion: @escaping BackupCallback) {
 		backupCallbacks.append(completion)
 		
 		DispatchQueue.main.async {
@@ -89,7 +89,7 @@ class ImportExportBackupManager: NSObject {
 	
 	// MARK: - Export
 	
-	func export(workout: GTWorkout) -> URL? {
+	public func export(workout: GTWorkout) -> URL? {
 		let name = dataManager.performCoreDataCodeAndWait { return workout.name }
 		return export(workouts: [workout], name: nameFilter.stringByReplacingMatches(in: name, options: [], range: NSRange(location: 0, length: name.count), withTemplate: "_"))
 	}
@@ -118,7 +118,7 @@ class ImportExportBackupManager: NSObject {
 		}
 	}
 	
-	func doBackup(manual: Bool = false, completion: ((Bool) -> Void)? = nil) {
+	public func doBackup(manual: Bool = false, completion: ((Bool) -> Void)? = nil) {
 		if !manual {
 			guard dataManager.preferences.useBackups else {
 				completion?(false)
@@ -179,7 +179,7 @@ class ImportExportBackupManager: NSObject {
 		}
 	}
 	
-	func `import`(_ file: URL, isRestoring restore: Bool, performCallback: @escaping (Bool, Int?, (() -> ())?) -> Void, callback: @escaping ([GTWorkout]?) -> Void) {
+	public func `import`(_ file: URL, isRestoring restore: Bool, performCallback: @escaping (Bool, Int?, (() -> ())?) -> Void, callback: @escaping ([GTWorkout]?) -> Void) {
 		if let xsd = Bundle(for: type(of: self)).url(forResource: "workout", withExtension: "xsd"),
 			let workouts = file.loadAsXML(validatingWithXSD: xsd)?.children, workouts.count > 0 {
 			DispatchQueue.main.async {

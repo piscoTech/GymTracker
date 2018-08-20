@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14306.4" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14278.2"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="restPicker" rowHeight="150" id="6eF-Np-6XI" customClass="RestPickerCell" customModule="Gym_Tracker" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="150"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="6eF-Np-6XI" id="8Wa-nS-agi">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="149.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ulc-yk-h3R">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="149.5"/>
+                    </pickerView>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="ulc-yk-h3R" secondAttribute="trailing" id="8qF-42-HND"/>
+                    <constraint firstItem="ulc-yk-h3R" firstAttribute="top" secondItem="8Wa-nS-agi" secondAttribute="top" id="GZG-Ex-Jv2"/>
+                    <constraint firstItem="ulc-yk-h3R" firstAttribute="leading" secondItem="8Wa-nS-agi" secondAttribute="leading" id="Zof-kY-aLB"/>
+                    <constraint firstAttribute="bottom" secondItem="ulc-yk-h3R" secondAttribute="bottom" id="u2k-mY-QPO"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="picker" destination="ulc-yk-h3R" id="Gxh-Vp-Qda"/>
+            </connections>
+            <point key="canvasLocation" x="352" y="151"/>
+        </tableViewCell>
+    </objects>
+</document>

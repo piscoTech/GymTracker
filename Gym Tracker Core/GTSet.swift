@@ -11,7 +11,7 @@ import Foundation
 import CoreData
 
 @objc(GTSet)
-class GTSet: GTDataObject {
+public class GTSet: GTDataObject {
 	
 	private let minRest: TimeInterval = 0
 	
@@ -20,11 +20,11 @@ class GTSet: GTDataObject {
 	final private let restKey = "rest"
 	
     @NSManaged final var exercize: GTSimpleSetsExercize
-	@NSManaged final var order: Int32
+	@NSManaged final public var order: Int32
 	
-	@NSManaged final private(set) var rest: TimeInterval
+	@NSManaged final public private(set) var rest: TimeInterval
 
-	override var isValid: Bool {
+	override public var isValid: Bool {
 		// A low-level CoreData access is needed to check validity
 		return isSubtreeValid && self.value(forKey: "exercize") is GTSimpleSetsExercize
 	}
@@ -33,11 +33,11 @@ class GTSet: GTDataObject {
 		return rest >= 0
 	}
 	
-	func set(rest r: TimeInterval) {
+	public func set(rest r: TimeInterval) {
 		rest = max(r, minRest).rounded(to: GTRest.restStep)
 	}
 	
-	var mainInfo: Int {
+	public var mainInfo: Int {
 		fatalError("Abstract property not implemented")
 	}
 	
@@ -45,19 +45,19 @@ class GTSet: GTDataObject {
 		fatalError("Abstract method not implemented")
 	}
 	
-	var secondaryInfo: Double {
+	public var secondaryInfo: Double {
 		fatalError("Abstract property not implemented")
 	}
 	
-	var secondaryInfoLabel: NSAttributedString {
+	public var secondaryInfoLabel: NSAttributedString {
 		fatalError("Abstract property not implemented")
 	}
 	
-	func set(mainInfo n: Int) {
+	public func set(mainInfo n: Int) {
 		fatalError("Abstract method not implemented")
 	}
 	
-	func set(secondaryInfo s: Double) {
+	public func set(secondaryInfo s: Double) {
 		fatalError("Abstract method not implemented")
 	}
 	

@@ -1,5 +1,5 @@
 //
-//  UpdateWeightInterfaceController.swift
+//  UpdateSecondaryInfoInterfaceController.swift
 //  Gym Tracker
 //
 //  Created by Marco Boschi on 25/03/2017.
@@ -8,11 +8,12 @@
 
 import WatchKit
 import Foundation
+import GymTrackerCore
 
-class UpdateWeightInterfaceController: WKInterfaceController {
+class UpdateSecondaryInfoInterfaceController: WKInterfaceController {
 	
 	private weak var delegate: ExecuteWorkoutController!
-	private var set: RepsSet!
+	private var set: GTSet!
 	
 	private var sum = 0.0
 	
@@ -20,6 +21,7 @@ class UpdateWeightInterfaceController: WKInterfaceController {
 	@IBOutlet weak var plus: WKInterfaceLabel!
 	@IBOutlet weak var minus: WKInterfaceLabel!
 	@IBOutlet weak var add: WKInterfaceLabel!
+	@IBOutlet weak var unit: WKInterfaceLabel!
 
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
@@ -33,9 +35,10 @@ class UpdateWeightInterfaceController: WKInterfaceController {
 		
 		self.delegate = data.workoutController
 		self.set = data.set
-		self.sum = delegate.weightChange(for: set)
+		self.sum = delegate.secondaryInfoChange(for: set)
 		
-		base.setText(set.weight.toString())
+		base.setText(set.secondaryInfo.toString())
+		unit.setText(set.secondaryInfoLabel.string)
 		updateView()
     }
 
@@ -51,7 +54,7 @@ class UpdateWeightInterfaceController: WKInterfaceController {
 	
 	private func addWeight(_ w: Double) {
 		sum += w
-		sum = sum < 0 ? max(sum, -set.weight) : sum
+		sum = sum < 0 ? max(sum, -set.secondaryInfo) : sum
 		updateView()
 	}
 	
@@ -67,7 +70,7 @@ class UpdateWeightInterfaceController: WKInterfaceController {
 	}
 	
 	@IBAction func done() {
-		delegate.setWeightChange(sum, for: set)
+		delegate.setSecondaryInfoChange(sum, for: set)
 		self.dismiss()
 	}
 	
