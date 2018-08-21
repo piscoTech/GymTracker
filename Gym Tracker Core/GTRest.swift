@@ -41,11 +41,17 @@ final public class GTRest: GTPart {
 		return rest >= GTRest.minRest
 	}
 	
-	override public var subtreeNodeList: Set<GTDataObject> {
+	override public var subtreeNodes: Set<GTDataObject> {
 		return [self]
 	}
 	
-	override public func purgeInvalidSettings() {}
+	public override var isPurgeableToValid: Bool {
+		return false
+	}
+	
+	public override func purge(onlySettings: Bool) -> [GTDataObject] {
+		return []
+	}
 	
 	// MARK: - iOS/watchOS interface
 	

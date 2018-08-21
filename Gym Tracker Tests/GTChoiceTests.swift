@@ -78,7 +78,7 @@ class GTChoiceTests: XCTestCase {
 		e.forceEnableCircuitRest(true)
 		XCTAssertFalse(ch.hasCircuitRest)
 		XCTAssertTrue(e.hasCircuitRest)
-		ch.purgeInvalidSettings()
+		XCTAssertTrue(ch.purge().isEmpty)
 		XCTAssertFalse(ch.hasCircuitRest)
 		XCTAssertFalse(e.hasCircuitRest)
 		
@@ -90,7 +90,7 @@ class GTChoiceTests: XCTestCase {
 		e.forceEnableCircuitRest(true)
 		XCTAssertFalse(ch.hasCircuitRest)
 		XCTAssertTrue(e.hasCircuitRest)
-		ch.purgeInvalidSettings()
+		XCTAssertTrue(ch.purge().isEmpty)
 		XCTAssertFalse(ch.hasCircuitRest)
 		XCTAssertTrue(e.hasCircuitRest)
 	}
@@ -230,7 +230,7 @@ class GTChoiceTests: XCTestCase {
 		let e2 = newValidExercize()
 		ch.add(parts: e2, e1)
 		
-		XCTAssertEqual(ch.subtreeNodeList, Set(arrayLiteral: ch, e1, e2).union(e1.sets.union(e2.sets)))
+		XCTAssertEqual(ch.subtreeNodes, Set(arrayLiteral: ch, e1, e2).union(e1.sets.union(e2.sets)))
 	}
 	
 	func testExport() {

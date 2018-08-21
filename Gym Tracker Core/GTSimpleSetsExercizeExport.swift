@@ -44,19 +44,19 @@ extension GTSimpleSetsExercize {
 			do {
 				let o = try GTDataObject.import(fromXML: s, withDataManager: dataManager)
 				guard let repSet = o as? GTSet else {
-					throw GTDataImportError.failure(e.subtreeNodeList.union([o]))
+					throw GTDataImportError.failure(e.subtreeNodes.union([o]))
 				}
 				
 				e.add(set: repSet)
 			} catch GTDataImportError.failure(let obj) {
-				throw GTDataImportError.failure(e.subtreeNodeList.union(obj))
+				throw GTDataImportError.failure(e.subtreeNodes.union(obj))
 			}
 		}
 		
 		if e.isSubtreeValid {
 			return e
 		} else {
-			throw GTDataImportError.failure(e.subtreeNodeList)
+			throw GTDataImportError.failure(e.subtreeNodes)
 		}
 	}
 	

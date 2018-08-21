@@ -72,9 +72,11 @@ public class GTSetsExercize: GTExercize {
 		fatalError("Abstract property not implemented")
 	}
 	
-	override public func purgeInvalidSettings() {
+	public override func purge(onlySettings: Bool) -> [GTDataObject] {
 		forcingRest = false
 		enableCircuitRest(hasCircuitRest)
+		
+		return []
 	}
 	
 	// MARK: - Circuit Support

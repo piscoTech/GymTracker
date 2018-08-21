@@ -93,9 +93,9 @@ class WorkoutListTableViewController: UITableViewController {
 	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 		switch section {
 		case 0:
-			return NSLocalizedString("WORKOUTS", comment: "Workouts")
+			return GTLocalizedString("WORKOUTS", comment: "Workouts")
 		case 1:
-			return NSLocalizedString("ARCH_WORKOUTS", comment: "Archived Workouts")
+			return GTLocalizedString("ARCH_WORKOUTS", comment: "Archived Workouts")
 		default:
 			return nil
 		}
@@ -117,8 +117,8 @@ class WorkoutListTableViewController: UITableViewController {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		tableView.deselectRow(at: indexPath, animated: true)
 		
-		if !workouts.isEmpty {
-			showWorkout(sender: indexPath)
+		if (indexPath.section == 0 && !workouts.isEmpty) || indexPath.section == 1 {
+			openWorkout(sender: indexPath)
 		}
 	}
 	
@@ -143,7 +143,7 @@ class WorkoutListTableViewController: UITableViewController {
 		var act = [UITableViewRowAction]()
 		
 		if canEdit && indexPath.section == 0 {
-			let start = UITableViewRowAction(style: .default, title: NSLocalizedString("START_WORKOUT", comment: "Start")) { _, row in
+			let start = UITableViewRowAction(style: .default, title: GTLocalizedString("START_WORKOUT", comment: "Start")) { _, row in
 				self.tableView.setEditing(false, animated: true)
 				guard self.canEdit && row.section == 0 else {
 					return
@@ -155,14 +155,14 @@ class WorkoutListTableViewController: UITableViewController {
 			act.append(start)
 		}
 		
-		let archive = UITableViewRowAction(style: .normal, title: NSLocalizedString((indexPath.section == 1 ? "UN" : "") + "ARCHIVE_WORKOUT", comment: "(un)archive")) { _, row in
+		let archive = UITableViewRowAction(style: .normal, title: GTLocalizedString((indexPath.section == 1 ? "UN" : "") + "ARCHIVE_WORKOUT", comment: "(un)archive")) { _, row in
 			self.tableView.setEditing(false, animated: true)
 			guard self.canEdit else {
 				return
 			}
 			
 			let workout = (row.section == 0 ? self.workouts : self.archivedWorkouts)[row.row]
-			let errTitle = NSLocalizedString((workout.archived ? "UN" : "") + "ARCHIVE_WORKOUT_FAIL", comment: "(Un)archive fail")
+			let errTitle = GTLocalizedString((workout.archived ? "UN" : "") + "ARCHIVE_WORKOUT_FAIL", comment: "(Un)archive fail")
 			let archived = workout.archived
 			workout.archived = !archived
 			if appDelegate.dataManager.persistChangesForObjects([workout], andDeleteObjects: []) {
@@ -175,25 +175,25 @@ class WorkoutListTableViewController: UITableViewController {
 		}
 		act.append(archive)
 		
-		let del = UITableViewRowAction(style: .destructive, title: NSLocalizedString("DELETE", comment: "Del")) { _, row in
+		let del = UITableViewRowAction(style: .destructive, title: GTLocalizedString("DELETE", comment: "Del")) { _, row in
 			self.tableView.setEditing(false, animated: true)
 			guard self.canEdit else {
 				return
 			}
 			
 			let workout = (row.section == 0 ? self.workouts : self.archivedWorkouts)[row.row]
-			let confirm = UIAlertController(title: NSLocalizedString("DELETE_WORKOUT", comment: "Del"), message: NSLocalizedString("DELETE_WORKOUT_CONFIRM", comment: "Del confirm") + workout.name + "?", preferredStyle: .actionSheet)
-			confirm.addAction(UIAlertAction(title: NSLocalizedString("DELETE", comment: "Del"), style: .destructive) { _ in
+			let confirm = UIAlertController(title: GTLocalizedString("DELETE_WORKOUT", comment: "Del"), message: GTLocalizedString("DELETE_WORKOUT_CONFIRM", comment: "Del confirm") + workout.name + "?", preferredStyle: .alert)
+			confirm.addAction(UIAlertAction(title: GTLocalizedString("DELETE", comment: "Del"), style: .destructive) { _ in
 				let archived = workout.archived
 				if appDelegate.dataManager.persistChangesForObjects([], andDeleteObjects: [workout]) {
 					self.updateWorkout(workout, how: .delete, wasArchived: archived)
 				} else {
 					appDelegate.dataManager.discardAllChanges()
-					let alert = UIAlertController(simpleAlert: NSLocalizedString("DELETE_WORKOUT_FAIL", comment: "Err"), message: nil)
+					let alert = UIAlertController(simpleAlert: GTLocalizedString("DELETE_WORKOUT_FAIL", comment: "Err"), message: nil)
 					self.present(alert, animated: true)
 				}
 			})
-			confirm.addAction(UIAlertAction(title: NSLocalizedString("CANCEL", comment: "Cancel"), style: .cancel))
+			confirm.addAction(UIAlertAction(title: GTLocalizedString("CANCEL", comment: "Cancel"), style: .cancel))
 			
 			self.present(confirm, animated: true)
 		}
@@ -314,7 +314,7 @@ class WorkoutListTableViewController: UITableViewController {
 		}
     }
 	
-	private func showWorkout(sender: Any?) {
+	private func openWorkout(sender: Any?) {
 		let w: GTWorkout
 		switch sender {
 		case let send as GTWorkout:

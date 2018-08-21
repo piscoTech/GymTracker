@@ -199,6 +199,8 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		}
 		
 		let s = appDelegate.dataManager.newSet(for: exercize)
+		s.set(mainInfo: 0)
+		s.set(secondaryInfo: 0)
 		s.set(rest: 60)
 	
 		if let tmp = sender as? ExercizeTableViewController, tmp == self {
@@ -297,7 +299,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	}
 	
 	func textFieldDidEndEditing(_ textField: UITextField) {
-		textField.text = exercize.name ?? ""
+		textField.text = exercize.name
 	}
 	
 	// MARK: - Circuit management

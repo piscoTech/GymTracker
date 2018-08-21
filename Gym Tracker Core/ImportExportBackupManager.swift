@@ -193,7 +193,7 @@ public class ImportExportBackupManager: NSObject {
 								let w = try GTWorkout.import(fromXML: wData, withDataManager: self.dataManager)
 								
 								if w.isValid {
-									save.append(contentsOf: w.subtreeNodeList)
+									save.append(contentsOf: w.subtreeNodes)
 								} else {
 									delete.append(w)
 								}

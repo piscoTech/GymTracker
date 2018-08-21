@@ -55,28 +55,60 @@ final public class GTWorkout: GTDataObject, NamedExercizeCollection {
 	}
 	
 	override var isSubtreeValid: Bool {
-		guard name.count > 0 && hasExercizes && parts.reduce(true, { $0 && $1.isValid }) else {
+		guard isPurgeableToValid else {
 			return false
 		}
 		
 		return exercizeList.split(omittingEmptySubsequences: false) { $0 is GTRest }.first { $0.isEmpty } == nil
 	}
 	
-	var hasExercizes: Bool {
-		#warning("Consider removing and incorporating in isValid")
-		return parts.first { $0 is GTExercize } != nil
+	public override var isPurgeableToValid: Bool {
+		return name.count > 0 && parts.first { $0 is GTExercize } != nil && parts.reduce(true, { $0 && $1.isValid })
 	}
 	
 	public let parentLevel: CompositeWorkoutLevel? = nil
 	
-	override public var subtreeNodeList: Set<GTDataObject> {
-		return Set(parts.flatMap { $0.subtreeNodeList } + [self])
+	override public var subtreeNodes: Set<GTDataObject> {
+		return Set(parts.flatMap { $0.subtreeNodes } + [self])
 	}
 	
-	override public func purgeInvalidSettings() {
-		for p in parts {
-			p.purgeInvalidSettings()
+	public override func purge(onlySettings: Bool) -> [GTDataObject] {
+		var res = [GTDataObject]()
+		
+		if !onlySettings {
+			var steps = self.exercizeList
+			
+			while let f = steps.first, f is GTRest {
+				self.remove(part: f)
+				res.append(steps.removeFirst())
+			}
+			
+			while let l = steps.last, l is GTRest {
+				self.remove(part: l)
+				res.append(steps.popLast()!)
+			}
+			
+			var hasRest = false
+			while let s = steps.first {
+				steps.remove(at: 0)
+				
+				guard s is GTRest else {
+					hasRest = false
+					continue
+				}
+				
+				if hasRest {
+					self.remove(part: s)
+					res.append(s)
+				} else {
+					hasRest = true
+				}
+			}
+			
+			recalculatePartsOrder()
 		}
+		
+		return parts.reduce(res) { $0 + $1.purge(onlySettings: onlySettings) }
 	}
 	
 	var choices: [GTChoice] {
@@ -103,45 +135,6 @@ final public class GTWorkout: GTDataObject, NamedExercizeCollection {
 	
 	public func set(name: String) {
 		self.name = name.trimmingCharacters(in: .whitespacesAndNewlines)
-	}
-	
-	/// Removes rest period from start and end.
-	/// - returns: A collection of removed parts (rest periods) from the start, end and somewhere between exercizes.
-	public func compactExercizes() -> (start: [GTPart], end: [GTPart], middle: [(e: GTPart, oldOrder: Int32)]) {
-		var s = [GTPart]()
-		var e = [GTPart]()
-		var middle = [(GTPart, Int32)]()
-		var steps = self.exercizeList
-		
-		while let f = steps.first, f is GTRest {
-			self.remove(part: f)
-			s.append(steps.removeFirst())
-		}
-		
-		while let l = steps.last, l is GTRest {
-			self.remove(part: l)
-			e.append(steps.popLast()!)
-		}
-		
-		var hasRest = false
-		while let s = steps.first {
-			steps.remove(at: 0)
-			
-			guard s is GTRest else {
-				hasRest = false
-				continue
-			}
-			
-			if hasRest {
-				self.remove(part: s)
-				middle.append((s, s.order))
-			} else {
-				hasRest = true
-			}
-		}
-		
-		recalculatePartsOrder()
-		return (s, e, middle)
 	}
 	
 	// MARK: - iOS/watchOS interface

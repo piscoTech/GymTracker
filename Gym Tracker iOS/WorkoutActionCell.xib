@@ -50,6 +50,7 @@
             <connections>
                 <outlet property="archiveBtn" destination="G2X-dM-tUv" id="Oob-wU-ifP"/>
                 <outlet property="deleteBtn" destination="cyT-dk-hsj" id="k63-wx-daJ"/>
+                <outlet property="exportBtn" destination="fmm-np-lV7" id="uFw-fn-P1c"/>
             </connections>
             <point key="canvasLocation" x="221" y="-211"/>
         </tableViewCell>

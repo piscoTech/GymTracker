@@ -43,6 +43,10 @@ final public class GTChoice: GTSetsExercize, ExercizeCollection {
 		return exercizes.count > 1 && exercizes.reduce(true) { $0 && $1.isValid } && inCircuitExercizesError?.isEmpty ?? true
 	}
 	
+	public override var isPurgeableToValid: Bool {
+		return false
+	}
+	
 	override public var parentLevel: CompositeWorkoutLevel? {
 		return [workout, circuit].compactMap { $0 }.first
 	}
@@ -56,16 +60,12 @@ final public class GTChoice: GTSetsExercize, ExercizeCollection {
 		return counts.count > 1 ? nil : counts.first
 	}
 	
-	override public var subtreeNodeList: Set<GTDataObject> {
-		return Set(exercizes.flatMap { $0.subtreeNodeList } + [self])
+	override public var subtreeNodes: Set<GTDataObject> {
+		return Set(exercizes.flatMap { $0.subtreeNodes } + [self])
 	}
 	
-	override public func purgeInvalidSettings() {
-		super.purgeInvalidSettings()
-		
-		for e in exercizes {
-			e.purgeInvalidSettings()
-		}
+	public override func purge(onlySettings: Bool) -> [GTDataObject] {
+		return exercizes.reduce(super.purge(onlySettings: onlySettings)) { $0 + $1.purge(onlySettings: onlySettings) }
 	}
 	
 	/// Whether or not the exercizes of this choice are valid inside the parent circuit or `nil` if none.

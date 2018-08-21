@@ -37,18 +37,20 @@ final public class GTCircuit: GTExercize, ExercizeCollection {
 		return exercizes.count > 1 && exercizes.reduce(true) { $0 && $1.isValid } && exercizesError.isEmpty
 	}
 	
+	public override var isPurgeableToValid: Bool {
+		return false
+	}
+	
 	override public var parentLevel: CompositeWorkoutLevel? {
 		return workout
 	}
 	
-	override public var subtreeNodeList: Set<GTDataObject> {
-		return Set(exercizes.flatMap { $0.subtreeNodeList } + [self])
+	override public var subtreeNodes: Set<GTDataObject> {
+		return Set(exercizes.flatMap { $0.subtreeNodes } + [self])
 	}
 	
-	override public func purgeInvalidSettings() {
-		for e in exercizes {
-			e.purgeInvalidSettings()
-		}
+	public override func purge(onlySettings: Bool) -> [GTDataObject] {
+		return exercizes.reduce([]) { $0 + $1.purge(onlySettings: onlySettings) }
 	}
 	
 	/// Whether or not the exercizes of this circuit are valid inside of it.

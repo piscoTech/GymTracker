@@ -29,7 +29,7 @@ extension GTRest {
 		if r.isSubtreeValid {
 			return r
 		} else {
-			throw GTDataImportError.failure(r.subtreeNodeList)
+			throw GTDataImportError.failure(r.subtreeNodes)
 		}
 	}
 }

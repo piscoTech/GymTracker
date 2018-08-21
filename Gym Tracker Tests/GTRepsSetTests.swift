@@ -52,7 +52,7 @@ class GTRepsSetTests: XCTestCase {
     }
 
 	func testPurgeSetting() {
-		s.purgeInvalidSettings()
+		XCTAssertTrue(s.purge().isEmpty)
 	}
 	
 	func testSetReps() {
@@ -101,7 +101,7 @@ class GTRepsSetTests: XCTestCase {
 	}
 
 	func testSubtree() {
-		XCTAssertEqual(s.subtreeNodeList, [s])
+		XCTAssertEqual(s.subtreeNodes, [s])
 	}
 	
 	func testExport() {

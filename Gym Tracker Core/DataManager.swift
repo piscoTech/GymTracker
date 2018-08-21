@@ -122,12 +122,30 @@ public class GTDataObject: NSManagedObject {
 		fatalError("Abstarct property not implemented")
 	}
 	
-	/// The list of all more specific components of the workout that are linked by the receiver, and the receiver itself.
-	public var subtreeNodeList: Set<GTDataObject> {
+	/// Whether a call to `purge(onlySettings: false)` will make the receiver valid as per `isValid`.
+	public var isPurgeableToValid: Bool {
 		fatalError("Abstarct property not implemented")
 	}
 	
-	public func purgeInvalidSettings() {
+	/// The list of all more specific components of the workout that are linked by the receiver, and the receiver itself.
+	public var subtreeNodes: Set<GTDataObject> {
+		fatalError("Abstarct property not implemented")
+	}
+	
+	/// Remove and returns all more specific components of the workout linked by the receiver that are invalid and all invalid settings.
+	public final func purge() -> [GTDataObject] {
+		return purge(onlySettings: false)
+	}
+	
+	/// Remove and returns all more specific components of the workout linked by the receiver that are invalid and all invalid settings.
+	public func purge(onlySettings: Bool) -> [GTDataObject] {
+		fatalError("Abstarct method not implemented")
+	}
+	
+	/// Whether the receiver should be deleted.
+	///
+	/// Before accessing this property `purge()` should be called.
+	public var shouldBePurged: Bool {
 		fatalError("Abstarct property not implemented")
 	}
 	
@@ -493,7 +511,7 @@ public class DataManager: NSObject {
 			self.preferences.saveRemote = []
 			self.preferences.deleteRemote = []
 			
-			let data = GTWorkout.getList(fromDataManager: self).flatMap { $0.subtreeNodeList }
+			let data = GTWorkout.getList(fromDataManager: self).flatMap { $0.subtreeNodes }
 			self.wcInterface.sendUpdateForChangedObjects(data, andDeleted: [], markAsInitial: true)
 			
 			self.preferences.initialSyncDone = true

@@ -33,19 +33,19 @@ extension GTChoice {
 			do {
 				let o = try GTDataObject.import(fromXML: e, withDataManager: dataManager)
 				guard let exercize = o as? GTSimpleSetsExercize else {
-					throw GTDataImportError.failure(ch.subtreeNodeList.union([o]))
+					throw GTDataImportError.failure(ch.subtreeNodes.union([o]))
 				}
 				
 				ch.add(parts: exercize)
 			} catch GTDataImportError.failure(let obj) {
-				throw GTDataImportError.failure(ch.subtreeNodeList.union(obj))
+				throw GTDataImportError.failure(ch.subtreeNodes.union(obj))
 			}
 		}
 		
 		if ch.isSubtreeValid {
 			return ch
 		} else {
-			throw GTDataImportError.failure(ch.subtreeNodeList)
+			throw GTDataImportError.failure(ch.subtreeNodes)
 		}
 	}
 }

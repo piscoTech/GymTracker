@@ -52,7 +52,7 @@ extension ExercizeCollection {
 	}
 	
 	/// Move the part at the specified index to `to` index, the old exercize at `to` index will have index `dest+1` if the part is being moved towards the start of the collection, `dest-1` otherwise.
-	func movePart(at from: Int32, to dest: Int32) {
+	public func movePart(at from: Int32, to dest: Int32) {
 		guard let e = self[from], dest < exercizes.count else {
 			return
 		}

@@ -259,21 +259,21 @@ class CurrentWorkoutViewController: UIViewController {
 	}
 	
 	@IBAction func endWorkout() {
-		let alert = UIAlertController(title: NSLocalizedString("WORKOUT_END", comment: "End"), message: NSLocalizedString("WORKOUT_END_TXT", comment: "End?"), preferredStyle: .alert)
-		alert.addAction(UIAlertAction(title: NSLocalizedString("YES", comment: "Yes"), style: .default) { _ in
+		let alert = UIAlertController(title: GTLocalizedString("WORKOUT_END", comment: "End"), message: GTLocalizedString("WORKOUT_END_TXT", comment: "End?"), preferredStyle: .alert)
+		alert.addAction(UIAlertAction(title: GTLocalizedString("YES", comment: "Yes"), style: .default) { _ in
 			self.workoutController?.endWorkout()
 			})
-		alert.addAction(UIAlertAction(title: NSLocalizedString("NO", comment: "No"), style: .cancel, handler: nil))
+		alert.addAction(UIAlertAction(title: GTLocalizedString("NO", comment: "No"), style: .cancel, handler: nil))
 		
 		self.present(alert, animated: true)
 	}
 	
 	@IBAction func cancelWorkout() {
-		let alert = UIAlertController(title: NSLocalizedString("WORKOUT_CANCEL", comment: "Cancel"), message: NSLocalizedString("WORKOUT_CANCEL_TXT", comment: "Cancel??"), preferredStyle: .alert)
-		alert.addAction(UIAlertAction(title: NSLocalizedString("YES", comment: "Yes"), style: .destructive) { _ in
+		let alert = UIAlertController(title: GTLocalizedString("WORKOUT_CANCEL", comment: "Cancel"), message: GTLocalizedString("WORKOUT_CANCEL_TXT", comment: "Cancel??"), preferredStyle: .alert)
+		alert.addAction(UIAlertAction(title: GTLocalizedString("YES", comment: "Yes"), style: .destructive) { _ in
 			self.workoutController?.cancelWorkout()
 		})
-		alert.addAction(UIAlertAction(title: NSLocalizedString("NO", comment: "No"), style: .cancel, handler: nil))
+		alert.addAction(UIAlertAction(title: GTLocalizedString("NO", comment: "No"), style: .cancel, handler: nil))
 		
 		self.present(alert, animated: true)
 	}

@@ -36,6 +36,8 @@
 "REORDER_EXERCIZE" = "Reorder";
 "DONE_REORDER_EXERCIZE" = "Done Reorder";
 
+"ADD_CHOOSE" = "What type of exercize do you want to add?";
+
 "IS_CIRCUIT" = "Circuit";
 "CIRCUIT_CHAIN" = "Chain with next";
 "CIRCUITE_USE_REST" = "Use rest periods";

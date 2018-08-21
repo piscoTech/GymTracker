@@ -73,12 +73,8 @@ public class GTSimpleSetsExercize: GTSetsExercize {
 		return name.count > 0 && sets.count > 0 && sets.reduce(true) { $0 && $1.isValid }
 	}
 	
-	override public func purgeInvalidSettings() {
-		super.purgeInvalidSettings()
-		
-		for s in sets {
-			s.purgeInvalidSettings()
-		}
+	public override var isPurgeableToValid: Bool {
+		return false
 	}
 	
 	override public var parentLevel: CompositeWorkoutLevel? {
@@ -110,8 +106,16 @@ public class GTSimpleSetsExercize: GTSetsExercize {
 		return sets.count
 	}
 	
-	override public var subtreeNodeList: Set<GTDataObject> {
+	override public var subtreeNodes: Set<GTDataObject> {
 		return (sets as Set<GTDataObject>).union([self])
+	}
+	
+	public override func purge(onlySettings: Bool) -> [GTDataObject] {
+		return sets.reduce(super.purge(onlySettings: onlySettings) + recalculateSetOrder(filterInvalid: true)) { $0 + $1.purge(onlySettings: onlySettings) }
+	}
+	
+	public override var shouldBePurged: Bool {
+		return !isValid
 	}
 	
 	// MARK: - Choice Support
@@ -137,12 +141,6 @@ public class GTSimpleSetsExercize: GTSetsExercize {
 	}
 	
 	// MARK: - Sets handling
-	
-	///Checks all sets and remove invalid ones.
-	///- returns: A collection of removed sets.
-	func compactSets() -> [GTSet] {
-		return recalculateSetOrder(filterInvalid: true)
-	}
 	
 	internal func add(set: GTSet) {
 		set.order = Int32(sets.count)

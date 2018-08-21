@@ -153,7 +153,8 @@ class CompletedWorkoutsTableViewController: UITableViewController {
 			cell.textLabel?.text = n
 			cell.textLabel?.font = normalFont
 		} else {
-			cell.textLabel?.text = NSLocalizedString("WORKOUT", comment: "Workout")
+			#warning("Test localization")
+			cell.textLabel?.text = GTLocalizedString("WORKOUT", comment: "Workout")
 			cell.textLabel?.font = italicFont
 		}
 		

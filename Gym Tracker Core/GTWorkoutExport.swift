@@ -44,7 +44,7 @@ extension GTWorkout {
 			do {
 				let o = try GTDataObject.import(fromXML: p, withDataManager: dataManager)
 				guard let part = o as? GTPart else {
-					throw GTDataImportError.failure(w.subtreeNodeList.union([o] + (dynamicCircuit?.subtreeNodeList ?? [])))
+					throw GTDataImportError.failure(w.subtreeNodes.union([o] + (dynamicCircuit?.subtreeNodes ?? [])))
 				}
 				
 				if let e = part as? GTSetsExercize {
@@ -72,7 +72,7 @@ extension GTWorkout {
 					w.add(parts: part)
 				}
 			} catch GTDataImportError.failure(let obj) {
-				throw GTDataImportError.failure(w.subtreeNodeList.union(obj.union(dynamicCircuit?.subtreeNodeList ?? [])))
+				throw GTDataImportError.failure(w.subtreeNodes.union(obj.union(dynamicCircuit?.subtreeNodes ?? [])))
 			}
 		}
 		
@@ -81,11 +81,11 @@ extension GTWorkout {
 			dynamicCircuit = nil
 		}
 
-		w.purgeInvalidSettings()
-		if w.isSubtreeValid {
+		let del = w.purge()
+		if w.isSubtreeValid && del.isEmpty {
 			return w
 		} else {
-			throw GTDataImportError.failure(w.subtreeNodeList)
+			throw GTDataImportError.failure(w.subtreeNodes.union(del))
 		}
 	}
 	

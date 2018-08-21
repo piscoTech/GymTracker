@@ -75,7 +75,7 @@ class GTSimpleSetsExercizeTests: XCTestCase {
 		XCTAssertFalse(e.hasCircuitRest)
 		e.forceEnableCircuitRest(true)
 		XCTAssertTrue(e.hasCircuitRest)
-		e.purgeInvalidSettings()
+		XCTAssertTrue(e.purge().isEmpty)
 		XCTAssertFalse(e.hasCircuitRest)
 		
 		let c = dataManager.newCircuit()
@@ -83,7 +83,7 @@ class GTSimpleSetsExercizeTests: XCTestCase {
 		XCTAssertFalse(e.hasCircuitRest)
 		e.forceEnableCircuitRest(true)
 		XCTAssertTrue(e.hasCircuitRest)
-		e.purgeInvalidSettings()
+		XCTAssertTrue(e.purge().isEmpty)
 		XCTAssertTrue(e.hasCircuitRest)
 	}
 	
@@ -246,13 +246,13 @@ class GTSimpleSetsExercizeTests: XCTestCase {
 		let s1 = dataManager.newSet(for: e)
 		let s2 = dataManager.newSet(for: e)
 		
-		XCTAssertTrue(e.compactSets().isEmpty)
+		XCTAssertTrue(e.purge().isEmpty)
 		XCTAssertEqual(e.setsCount, 2)
 		XCTAssertEqual(e[0], s1)
 		XCTAssertEqual(e[1], s2)
 		
 		s1.set(mainInfo: 0)
-		XCTAssertEqual(e.compactSets(), [s1])
+		XCTAssertEqual(e.purge(), [s1])
 		XCTAssertEqual(e.setsCount, 1)
 		XCTAssertEqual(e[0], s2)
 	}
@@ -261,7 +261,7 @@ class GTSimpleSetsExercizeTests: XCTestCase {
 		let s1 = dataManager.newSet(for: e)
 		let s2 = dataManager.newSet(for: e)
 		
-		XCTAssertEqual(e.subtreeNodeList, [e, s1, s2])
+		XCTAssertEqual(e.subtreeNodes, [e, s1, s2])
 	}
 	
 	func testExport() {

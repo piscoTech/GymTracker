@@ -8,6 +8,7 @@
 
 import UIKit
 import MBLibrary
+import GymTrackerCore
 
 class SettingsViewController: UITableViewController {
 	
@@ -26,11 +27,12 @@ class SettingsViewController: UITableViewController {
 
 		appDelegate.settings = self
 		
-		healthInfo = NSLocalizedString("HEALTH_ACCESS_MANAGE", comment: "Health")
-		appInfo = NSLocalizedString("REPORT_TEXT", comment: "Report problem") + "\n\nGym Tracker \(Bundle.main.versionDescription)\n© 2017-2018 Marco Boschi"
-		errNoBackup = NSLocalizedString("ERR_BACKUP_UNAVAILABLE", comment: "Cannot use becuase...")
-		backupUsageManual = NSLocalizedString("BACKUP_USAGE_MANUAL", comment: "How-to")
-		backupUsageAuto = NSLocalizedString("BACKUP_USAGE_AUTO", comment: "How-to")
+		healthInfo = GTLocalizedString("HEALTH_ACCESS_MANAGE", comment: "Health")
+		appInfo = GTLocalizedString("REPORT_TEXT", comment: "Report problem") + "\n\nGym Tracker \(Bundle.main.versionDescription)\n© 2017-2018 Marco Boschi"
+		errNoBackup = GTLocalizedString("ERR_BACKUP_UNAVAILABLE", comment: "Cannot use becuase...")
+		backupUsageManual = GTLocalizedString("BACKUP_USAGE_MANUAL", comment: "How-to")
+		backupUsageAuto = GTLocalizedString("BACKUP_USAGE_AUTO", comment: "How-to")
+		#warning("Test localized string for available workouts")
 		
 		appDelegate.dataManager.reportICloudStatus { res in
 			self.iCloudEnabled = res

@@ -34,9 +34,10 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	
 	private var invalidityCache: Set<Int32>!
 	
-	@IBOutlet var cancelBtn: UIBarButtonItem?
-	@IBOutlet var doneBtn: UIBarButtonItem?
+	var cancelBtn: UIBarButtonItem?
+	var doneBtn: UIBarButtonItem?
 	private var editBtn: UIBarButtonItem?
+	private var reorderBtn: UIBarButtonItem!
 	var additionalRightButton: UIBarButtonItem? {
 		return nil
 	}
@@ -89,11 +90,9 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		if canControlEdit {
 			cancelBtn = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(doCancel))
 			doneBtn = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(saveEdit))
-			editBtn = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(edit(_:)))
-		} else {
-			cancelBtn = nil
-			doneBtn = nil
+			editBtn = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(edit))
 		}
+		reorderBtn = UIBarButtonItem(title: "", style: .plain, target: self, action: #selector(updateReorderMode))
 		
 		updateButtons()
 		if editMode {
@@ -104,7 +103,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	func updateButtons(includeOthers: Bool = false) {
 		navigationItem.leftBarButtonItem = editMode ? cancelBtn : nil
 		navigationItem.rightBarButtonItems = (editMode
-			? [doneBtn]
+			? [doneBtn, reorderBtn]
 			: [additionalRightButton, canControlEdit ? editBtn : nil]
 			).compactMap { $0 }
 		
@@ -117,12 +116,10 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 			return
 		}
 		
-		collection.purgeInvalidSettings()
-//		if let subCircuit = collection as? GTSetsExercize {
-//			(doneBtn.isEnabled, circuitInvalidityCache) = subCircuit.
-//		}
-		doneBtn?.isEnabled = collection.isValid
-		invalidityCache = []
+		addDeletedEntities(collection.purge(onlySettings: true))
+		invalidityCache = Set(collection.exercizes.lazy.filter { !$0.isValid }.map { $0.order })
+		#warning("Add invalidity for circuit (and circuit in choice)")
+		doneBtn?.isEnabled = collection.isPurgeableToValid
 		
 		if doUpdateTable {
 			tableView.reloadRows(at: collection.exercizeList.lazy.filter { $0 is GTExercize }.map { self.exercizeCellIndexPath(for: $0) }, with: .automatic)
@@ -133,6 +130,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		tableView.reloadData()
 		
 		subCollection?.updateView()
+		exercizeController?.updateView()
 	}
 
     // MARK: - Table view data source
@@ -219,6 +217,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 			let cell = tableView.dequeueReusableCell(withIdentifier: addExercizeId.identifier, for: indexPath) as! AddExercizeCell
 			#warning("Link add actions")
 			cell.addExercize.addTarget(self, action: #selector(newExercize), for: .primaryActionTriggered)
+			cell.addOther.addTarget(self, action: #selector(newChoose), for: .primaryActionTriggered)
 			
 			return cell
 		default:
@@ -229,7 +228,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		tableView.deselectRow(at: indexPath, animated: true)
 		
-		guard !collection.exercizes.isEmpty, indexPath.section == 1 else {
+		guard !collection.exercizes.isEmpty, !self.isEditing, indexPath.section == 1 else {
 			return
 		}
 		
@@ -264,14 +263,15 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	
 	// MARK: - Editing
 	
-	@objc func edit(_ sender: AnyObject) {
-		guard delegate.canEdit else {
+	@objc private func edit() {
+		guard delegate.canEdit, canControlEdit else {
 			return
 		}
 		
 		editMode = true
 		navigationController?.interactivePopGestureRecognizer?.isEnabled = false
 		appDelegate.tabController.isPopToWorkoutListRootEnabled = false
+		reorderBtn.title = reorderLbl
 		updateButtons()
 		
 		reloadAllSections()
@@ -281,21 +281,21 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		if isNew {
 			self.dismiss(animated: true)
 		} else {
-		editMode = false
-		deletedEntities.removeAll()
-		navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-		appDelegate.tabController.isPopToWorkoutListRootEnabled = true
-		_ = navigationController?.popToViewController(self, animated: true)
-		updateButtons()
-		editRest = nil
-		
-		self.setEditing(false, animated: false)
-		reloadAllSections()
+			editMode = false
+			deletedEntities.removeAll()
+			navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+			appDelegate.tabController.isPopToWorkoutListRootEnabled = true
+			_ = navigationController?.popToViewController(self, animated: true)
+			updateButtons()
+			editRest = nil
+			
+			self.setEditing(false, animated: false)
+			reloadAllSections()
 		}
 	}
 	
 	@objc func saveEdit() -> Bool {
-		guard editMode else {
+		guard editMode, canControlEdit else {
 			return false
 		}
 		
@@ -305,17 +305,34 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 			return false
 		}
 		
-		if appDelegate.dataManager.persistChangesForObjects(collection.subtreeNodeList, andDeleteObjects: deletedEntities) {
+		addDeletedEntities(collection.purge())
+		
+		if appDelegate.dataManager.persistChangesForObjects(collection.subtreeNodes, andDeleteObjects: deletedEntities) {
 			exitEdit()
 			return true
 		} else {
 			self.present(UIAlertController(simpleAlert: GTLocalizedString("WORKOUT_SAVE_ERR", comment: "Cannot save"), message: nil), animated: true)
+			tableView.reloadSections([1], with: .automatic)
 			return false
 		}
 	}
 	
 	private func canHandle(_ p: GTPart.Type) -> Bool {
 		return p is T.Exercize.Type
+	}
+	
+	@objc private func newChoose() {
+		let choose = UIAlertController(title: GTLocalizedString("ADD_CHOOSE", comment: "Choose"), message: nil, preferredStyle: .actionSheet)
+		
+		for (n, t) in [("CIRCUIT", GTCircuit.self), ("CHOICE", GTChoice.self), ("EXERCIZE", GTSimpleSetsExercize.self), ("REST", GTRest.self)] {
+			choose.addAction(UIAlertAction(title: GTLocalizedString(n, comment: "Type"), style: .default) { _ in
+				self.newPart(of: t)
+			})
+		}
+		
+		choose.addAction(UIAlertAction(title: GTLocalizedString("CANCEL", comment: "Cancel"), style: .cancel))
+		
+		self.present(choose, animated: true)
 	}
 	
 	@objc private func newExercize() {
@@ -336,11 +353,14 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		collection.add(parts: p)
 		if let e = p as? GTSimpleSetsExercize {
 			e.set(name: "")
+		} else if let r = p as? GTRest {
+			r.set(rest: 4 * 60)
 		}
 		
 		tableView.insertRows(at: [IndexPath(row: Int(p.order), section: 1)], with: .automatic)
 		tableView.endUpdates()
 		openExercize(p)
+		updateValidityAndButtons(doUpdateTable: false)
 	}
 	
 	func exercizeUpdated(_ e: GTPart) {
@@ -348,13 +368,11 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 			return
 		}
 		
-		#warning("Implement me")
-//		deletedEntities += e.compactSets() as [DataObject]
-//
-//		if !e.isValid {
-//			removeExercize(e)
-//		}
-//
+		addDeletedEntities(p.purge())
+		if p.shouldBePurged {
+			removeExercize(p)
+		}
+
 		DispatchQueue.main.async {
 			self.updateValidityAndButtons()
 		}
@@ -362,7 +380,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	
 	private func removeExercize(_ e: T.Exercize) {
 		let index = IndexPath(row: Int(e.order), section: 1)
-		deletedEntities.append(e)
+		addDeletedEntities([e])
 		collection.remove(part: e)
 		
 		tableView.beginUpdates()
@@ -426,29 +444,6 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		return i
 	}
 	
-	@IBAction func newRest(_ sender: AnyObject) {
-		#warning("Implement me")
-//		guard editMode else {
-//			return
-//		}
-//
-//		if let rest = editRest {
-//			//Simulate tap on rest row to hide picker
-//			self.tableView(tableView, didSelectRowAt: IndexPath(row: rest, section: 1))
-//		}
-//
-//		tableView.beginUpdates()
-//		if workout.isEmpty {
-//			tableView.deleteRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
-//		}
-//
-//		let r = appDelegate.dataManager.newExercize(for: workout.raw)
-//		r.set(rest: 4 * 60)
-//
-//		tableView.insertRows(at: [IndexPath(row: Int(r.order), section: 1)], with: .automatic)
-//		tableView.endUpdates()
-	}
-	
 	func endEditRest() {
 		if let rest = editRest {
 			//Simulate tap on rest row to hide picker
@@ -501,65 +496,62 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		tableView.reloadRows(at: [IndexPath(row: exN, section: 1)], with: .none)
 	}
 	
-	// MARK: - Delete rest & exercize
+	// MARK: - Delete exercizes
 	
-//	override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-//		return editMode && indexPath.section == 1 && !workout.isEmpty && exercizeCellType(for: indexPath) != .picker
-//	}
-//
-//	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-//		guard editingStyle == .delete else {
-//			return
-//		}
-//
-//		let exN = exercizeNumber(for: indexPath)
-//		guard let e = workout[exN] else {
-//			return
-//		}
-//
-//		removeExercize(e)
-//	}
+	override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+		return editMode && indexPath.section == 1 && !collection.exercizes.isEmpty && exercizeCellType(for: indexPath) != .picker
+	}
+
+	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+		guard editingStyle == .delete else {
+			return
+		}
+
+		let exN = exercizeNumber(for: indexPath)
+		guard let p = collection[Int32(exN)] else {
+			return
+		}
+
+		removeExercize(p)
+	}
 	
 	// MARK: - Reorder exercizes
 	
-//	@IBAction func updateReorderMode(_ sender: AnyObject) {
-//		guard editMode && !workout.isEmpty else {
-//			return
-//		}
-//
-//		if let rest = editRest {
-//			//Simulate tap on rest row to hide picker
-//			self.tableView(tableView, didSelectRowAt: IndexPath(row: rest, section: 1))
-//		}
-//
-//		self.setEditing(!self.isEditing, animated: true)
-//		tableView.reloadRows(at: [IndexPath(row: 0, section: 2)], with: .none)
-//	}
-//
-//	override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-//		return editMode && indexPath.section == 1 && !workout.isEmpty && exercizeCellType(for: indexPath) != .picker
-//	}
-//
-//	override func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
-//		if proposedDestinationIndexPath.section < 1 {
-//			return IndexPath(row: 0, section: 1)
-//		} else if proposedDestinationIndexPath.section > 1 {
-//			return IndexPath(row: workout.count - 1, section: 1)
-//		}
-//
-//		return proposedDestinationIndexPath
-//	}
-//
-//	override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-//		guard editMode && fromIndexPath.section == 1 && to.section == 1 && !workout.isEmpty else {
-//			return
-//		}
-//
-//		workout.moveExercizeAt(number: fromIndexPath.row, to: to.row)
-//		DispatchQueue.main.async {
-//			self.updateValidityAndButtons()
-//		}
-//	}
+	@objc private func updateReorderMode() {
+		guard editMode, !collection.exercizes.isEmpty || self.isEditing else {
+			return
+		}
+
+		endEditRest()
+
+		self.setEditing(!self.isEditing, animated: true)
+		reorderBtn.title = self.isEditing ? doneReorderLbl : reorderLbl
+	}
+
+	override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+		return editMode && indexPath.section == 1 && !collection.exercizes.isEmpty && exercizeCellType(for: indexPath) != .picker
+	}
+
+	override func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
+		if proposedDestinationIndexPath.section < 1 {
+			return IndexPath(row: 0, section: 1)
+		} else if proposedDestinationIndexPath.section > 1 {
+			return IndexPath(row: collection.exercizes.count - 1, section: 1)
+		}
+
+		return proposedDestinationIndexPath
+	}
+
+	override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
+		guard editMode && fromIndexPath.section == 1 && to.section == 1 && !collection.exercizes.isEmpty else {
+			return
+		}
+
+		collection.movePart(at: Int32(fromIndexPath.row), to: Int32(to.row))
+		DispatchQueue.main.async {
+			self.updateValidityAndButtons()
+		}
+	}
 
     // MARK: - Navigation
 	
@@ -576,12 +568,6 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 			exitEdit()
 		}
 	}
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
 	
 	func openExercize(_ p: T.Exercize) {
 		if let e = p as? GTSimpleSetsExercize {
@@ -593,6 +579,8 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 			self.exercizeController = dest
 			
 			navigationController?.pushViewController(dest, animated: true)
+		} else if p is GTRest {
+			// No need to push something else, edit is in place
 		} else {
 			fatalError("Implement me")
 		}

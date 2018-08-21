@@ -42,7 +42,7 @@ extension GTRepsSet {
 		if s.isSubtreeValid {
 			return s
 		} else {
-			throw GTDataImportError.failure(s.subtreeNodeList)
+			throw GTDataImportError.failure(s.subtreeNodes)
 		}
 	}
 	

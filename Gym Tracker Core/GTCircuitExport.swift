@@ -33,19 +33,19 @@ extension GTCircuit {
 			do {
 				let o = try GTDataObject.import(fromXML: e, withDataManager: dataManager)
 				guard let exercize = o as? GTSetsExercize else {
-					throw GTDataImportError.failure(c.subtreeNodeList.union([o]))
+					throw GTDataImportError.failure(c.subtreeNodes.union([o]))
 				}
 
 				c.add(parts: exercize)
 			} catch GTDataImportError.failure(let obj) {
-				throw GTDataImportError.failure(c.subtreeNodeList.union(obj))
+				throw GTDataImportError.failure(c.subtreeNodes.union(obj))
 			}
 		}
 
 		if c.isSubtreeValid {
 			return c
 		} else {
-			throw GTDataImportError.failure(c.subtreeNodeList)
+			throw GTDataImportError.failure(c.subtreeNodes)
 		}
 	}
 }

@@ -42,7 +42,13 @@ final public class GTRepsSet: GTSet {
 		return super.isSubtreeValid && reps > 0 && weight >= 0
 	}
 	
-	override public func purgeInvalidSettings() {}
+	public override var isPurgeableToValid: Bool {
+		return false
+	}
+	
+	public override func purge(onlySettings: Bool) -> [GTDataObject] {
+		return []
+	}
 	
 	override public func set(mainInfo n: Int) {
 		reps = max(Int32(n), 0)
@@ -52,7 +58,7 @@ final public class GTRepsSet: GTSet {
 		weight = max(w, 0).rounded(to: 0.5)
 	}
 	
-	override public var subtreeNodeList: Set<GTDataObject> {
+	override public var subtreeNodes: Set<GTDataObject> {
 		return [self]
 	}
 	

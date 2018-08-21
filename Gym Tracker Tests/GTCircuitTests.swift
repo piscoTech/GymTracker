@@ -139,12 +139,12 @@ class GTCircuitTests: XCTestCase {
 		XCTAssertFalse(e.hasCircuitRest)
 		e.forceEnableCircuitRest(true)
 		XCTAssertTrue(e.hasCircuitRest)
-		circuit.purgeInvalidSettings()
+		XCTAssertTrue(circuit.purge().isEmpty)
 		XCTAssertTrue(e.hasCircuitRest)
 		
 		circuit.add(parts: e)
 		XCTAssertTrue(e.hasCircuitRest)
-		circuit.purgeInvalidSettings()
+		XCTAssertTrue(circuit.purge().isEmpty)
 		XCTAssertTrue(e.hasCircuitRest)
 	}
 	
@@ -224,7 +224,7 @@ class GTCircuitTests: XCTestCase {
 		
 		let sets = Set(arrayLiteral: dataManager.newSet(for: e1), dataManager.newSet(for: e2), dataManager.newSet(for: e3), dataManager.newSet(for: e4), dataManager.newSet(for: e4), dataManager.newSet(for: e1), dataManager.newSet(for: e2), dataManager.newSet(for: e3))
 		
-		XCTAssertEqual(choice.subtreeNodeList, Set(arrayLiteral: ch, e1, e2, e3, e4, choice).union(sets))
+		XCTAssertEqual(choice.subtreeNodes, Set(arrayLiteral: ch, e1, e2, e3, e4, choice).union(sets))
 	}
 	
 	func testExport() {

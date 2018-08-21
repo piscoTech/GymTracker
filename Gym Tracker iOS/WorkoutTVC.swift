@@ -61,17 +61,11 @@ class WorkoutTableViewController: NamedPartCollectionTableViewController<GTWorko
 		
 		appDelegate.startWorkout(collection)
 	}
-	
-	override func updateView() {
-		super.updateView()
-		
-		exercizeController?.updateView()
-	}
 
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-		return super.numberOfSections(in: tableView) + (editMode ? 1 : 0)
+		return super.numberOfSections(in: tableView) + (editMode ? 0 : 1)
 	}
 	
 	override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
@@ -93,10 +87,16 @@ class WorkoutTableViewController: NamedPartCollectionTableViewController<GTWorko
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		if !editMode && indexPath.section == 2 {
 			let cell = tableView.dequeueReusableCell(withIdentifier: workoutActionId.identifier, for: indexPath) as! WorkoutDeleteArchiveCell
+			
+			cell.exportBtn.addTarget(self, action: #selector(export), for: .primaryActionTriggered)
+			
 			let title = (collection.archived ? "UN" : "") + "ARCHIVE_WORKOUT"
 			cell.archiveBtn.setTitle(GTLocalizedString(title, comment: "(Un)archive"), for: [])
 			cell.archiveBtn.isEnabled = delegate.canEdit
+			cell.archiveBtn.addTarget(self, action: #selector(archiveWorkout), for: .primaryActionTriggered)
+			
 			cell.deleteBtn.isEnabled = delegate.canEdit
+			cell.deleteBtn.addTarget(self, action: #selector(deleteWorkout), for: .primaryActionTriggered)
 			
 			return cell
 		}
@@ -107,35 +107,6 @@ class WorkoutTableViewController: NamedPartCollectionTableViewController<GTWorko
 	// MARK: - Edit
 	
 	override func saveEdit() -> Bool{
-		guard editMode else {
-			return false
-		}
-		
-		endEditRest()
-		
-		if !collection.exercizes.isEmpty {
-			tableView.beginUpdates()
-			
-			let totExercizeRows = tableView.numberOfRows(inSection: 1)
-			let (s, e, m) = collection.compactExercizes()
-			self.addDeletedEntities(s + e + m.map { $0.e })
-			var removeRows = [IndexPath]()
-			
-			for i in 0 ..< s.count {
-				removeRows.append(IndexPath(row: i, section: 1))
-			}
-			for i in totExercizeRows - e.count ..< totExercizeRows {
-				removeRows.append(IndexPath(row: i, section: 1))
-			}
-			for (_, r) in m {
-				removeRows.append(IndexPath(row: Int(r), section: 1))
-			}
-			
-			tableView.deleteRows(at: removeRows, with: .automatic)
-			tableView.endUpdates()
-			updateValidityAndButtons()
-		}
-
 		if super.saveEdit() {
 			if isNew {
 				delegate.updateWorkout(collection, how: .new, wasArchived: false)
@@ -149,12 +120,12 @@ class WorkoutTableViewController: NamedPartCollectionTableViewController<GTWorko
 		}
 	}
 	
-	@IBAction func deleteWorkout(_ sender: AnyObject) {
+	@objc func deleteWorkout() {
 		guard !editMode, delegate.canEdit else {
 			return
 		}
 		
-		let confirm = UIAlertController(title: GTLocalizedString("DELETE_WORKOUT", comment: "Del"), message: GTLocalizedString("DELETE_WORKOUT_CONFIRM", comment: "Del confirm") + collection.name + "?", preferredStyle: .actionSheet)
+		let confirm = UIAlertController(title: GTLocalizedString("DELETE_WORKOUT", comment: "Del"), message: GTLocalizedString("DELETE_WORKOUT_CONFIRM", comment: "Del confirm") + collection.name + "?", preferredStyle: .alert)
 		confirm.addAction(UIAlertAction(title: GTLocalizedString("DELETE", comment: "Del"), style: .destructive) { _ in
 			let archived = self.collection.archived
 			if appDelegate.dataManager.persistChangesForObjects([], andDeleteObjects: [self.collection]) {
@@ -171,7 +142,7 @@ class WorkoutTableViewController: NamedPartCollectionTableViewController<GTWorko
 		self.present(confirm, animated: true)
 	}
 	
-	@IBAction func archiveWorkout(_ sender: AnyObject) {
+	@objc func archiveWorkout() {
 		guard !editMode, delegate.canEdit else {
 			return
 		}
@@ -194,7 +165,7 @@ class WorkoutTableViewController: NamedPartCollectionTableViewController<GTWorko
 	
 	private var documentController: UIActivityViewController?
 	
-	@IBAction func export(_ sender: UIButton) {
+	@objc func export() {
 		let loading = UIAlertController.getModalLoading()
 		present(loading, animated: true)
 		DispatchQueue.background.async {

@@ -97,7 +97,7 @@ class GTWorkoutTests: XCTestCase {
 		XCTAssertFalse(e.hasCircuitRest)
 		e.forceEnableCircuitRest(true)
 		XCTAssertTrue(e.hasCircuitRest)
-		workout.purgeInvalidSettings()
+		XCTAssertTrue(workout.purge().isEmpty)
 		XCTAssertFalse(e.hasCircuitRest)
 		
 		let c = dataManager.newCircuit()
@@ -106,7 +106,7 @@ class GTWorkoutTests: XCTestCase {
 		XCTAssertFalse(e.hasCircuitRest)
 		e.forceEnableCircuitRest(true)
 		XCTAssertTrue(e.hasCircuitRest)
-		workout.purgeInvalidSettings()
+		XCTAssertTrue(workout.purge().isEmpty)
 		XCTAssertTrue(e.hasCircuitRest)
 	}
 	
@@ -157,21 +157,33 @@ class GTWorkoutTests: XCTestCase {
 	
 	func testCompactSimpleEnd() {
 		workout.movePart(at: 2, to: 1)
-		let (s, e, m) = workout.compactExercizes()
-		XCTAssertTrue(s.isEmpty)
-		XCTAssertTrue(m.isEmpty)
-		XCTAssertEqual(e.count, 1, "Rest not removed")
-		XCTAssertEqual(e.first, r, "Removed part is not the rest period")
+		_ = dataManager.newSet(for: e1)
+		_ = dataManager.newSet(for: e2)
+		workout.set(name: "Workt")
+		XCTAssertFalse(workout.isValid)
+		XCTAssertTrue(workout.isPurgeableToValid)
+		XCTAssertTrue(workout.purge(onlySettings: true).isEmpty)
+		XCTAssertFalse(workout.isValid)
+		XCTAssertTrue(workout.isPurgeableToValid)
+		let del = workout.purge()
+		XCTAssertEqual(del.count, 1, "Rest not removed")
+		XCTAssertEqual(del.first, r, "Removed part is not the rest period")
 		XCTAssertEqual(workout.exercizes.count, 2)
 	}
 	
 	func testCompactSimpleStart() {
 		workout.movePart(at: 0, to: 1)
-		let (s, e, m) = workout.compactExercizes()
-		XCTAssertTrue(e.isEmpty)
-		XCTAssertTrue(m.isEmpty)
-		XCTAssertEqual(s.count, 1, "Rest not removed")
-		XCTAssertEqual(s.first, r, "Removed part is not the rest period")
+		_ = dataManager.newSet(for: e1)
+		_ = dataManager.newSet(for: e2)
+		workout.set(name: "Workt")
+		XCTAssertFalse(workout.isValid)
+		XCTAssertTrue(workout.isPurgeableToValid)
+		XCTAssertTrue(workout.purge(onlySettings: true).isEmpty)
+		XCTAssertFalse(workout.isValid)
+		XCTAssertTrue(workout.isPurgeableToValid)
+		let del = workout.purge()
+		XCTAssertEqual(del.count, 1, "Rest not removed")
+		XCTAssertEqual(del.first, r, "Removed part is not the rest period")
 		XCTAssertEqual(workout.exercizes.count, 2)
 	}
 	
@@ -180,16 +192,20 @@ class GTWorkoutTests: XCTestCase {
 		workout.add(parts: r2)
 		r2.set(rest: 30)
 		workout.movePart(at: 3, to: 1)
+		_ = dataManager.newSet(for: e1)
+		_ = dataManager.newSet(for: e2)
+		workout.set(name: "Workt")
+		XCTAssertFalse(workout.isValid)
+		XCTAssertTrue(workout.isPurgeableToValid)
+		XCTAssertTrue(workout.purge(onlySettings: true).isEmpty)
+		XCTAssertFalse(workout.isValid)
+		XCTAssertTrue(workout.isPurgeableToValid)
 		
-		let (s, e, m) = workout.compactExercizes()
-		XCTAssertTrue(s.isEmpty)
-		XCTAssertTrue(e.isEmpty)
-		XCTAssertEqual(m.count, 1, "Rest not removed")
+		let del = workout.purge()
+		XCTAssertEqual(del.count, 1, "Rest not removed")
 		
 		XCTAssertEqual(workout.exercizes.count, 3)
-		let (removed, order) = m.first!
-		XCTAssertEqual(removed, r)
-		XCTAssertEqual(order, 2)
+		XCTAssertEqual(del.first, r)
 	}
 	
 	func testPartList() {
@@ -245,7 +261,7 @@ class GTWorkoutTests: XCTestCase {
 	
 	func testSubtree() {
 		var sets = [e1,e2].flatMap { $0!.sets }
-		XCTAssertEqual(workout.subtreeNodeList, Set(arrayLiteral: workout, r, e1, e2).union(sets))
+		XCTAssertEqual(workout.subtreeNodes, Set(arrayLiteral: workout, r, e1, e2).union(sets))
 		
 		let ch1 = dataManager.newChoice()
 		let ch2 = dataManager.newChoice()
@@ -263,7 +279,7 @@ class GTWorkoutTests: XCTestCase {
 		ch2.add(parts: e4, e5)
 		
 		sets = [e1,e2,e3,e4,e5].flatMap { $0!.sets }
-		XCTAssertEqual(workout.subtreeNodeList, Set(arrayLiteral: workout, r, e1, e2, e3, e4, e5, ch1, ch2, c).union(sets))
+		XCTAssertEqual(workout.subtreeNodes, Set(arrayLiteral: workout, r, e1, e2, e3, e4, e5, ch1, ch2, c).union(sets))
 	}
 	
 	func testExport() {

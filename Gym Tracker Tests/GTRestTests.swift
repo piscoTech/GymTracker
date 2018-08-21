@@ -49,7 +49,7 @@ class GTRestTests: XCTestCase {
 	}
 
 	func testPurgeSetting() {
-		dataManager.newRest().purgeInvalidSettings()
+		XCTAssertTrue(dataManager.newRest().purge().isEmpty)
 	}
 	
 	func testSetRest() {
@@ -73,7 +73,7 @@ class GTRestTests: XCTestCase {
 	
 	func testSubtree() {
 		let r = dataManager.newRest()
-		XCTAssertEqual(r.subtreeNodeList, [r])
+		XCTAssertEqual(r.subtreeNodes, [r])
 	}
 	
 	func testExport() {
