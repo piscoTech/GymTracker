@@ -390,6 +390,8 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 			return
 		}
 		
+		endEditRest()
+		
 		tableView.beginUpdates()
 		if collection.exercizes.isEmpty {
 			tableView.deleteRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)

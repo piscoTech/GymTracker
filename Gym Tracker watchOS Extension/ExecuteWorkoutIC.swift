@@ -19,7 +19,6 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutCo
 	
 	@IBOutlet weak var currentExercizeGrp: WKInterfaceGroup!
 	@IBOutlet weak var exercizeNameLbl: WKInterfaceLabel!
-	@IBOutlet weak var currentSetGrp: WKInterfaceGroup!
 	@IBOutlet weak var setRepWeightLbl: WKInterfaceLabel!
 	@IBOutlet weak var otherSetsLbl: WKInterfaceLabel!
 	@IBOutlet weak var doneSetBtn: WKInterfaceButton!
@@ -101,7 +100,7 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutCo
 	}
 	
 	func setCurrentSetViewHidden(_ hidden: Bool) {
-		currentSetGrp.setHidden(hidden)
+		setRepWeightLbl.setHidden(hidden)
 	}
 	
 	func setCurrentSetText(_ text: NSAttributedString) {

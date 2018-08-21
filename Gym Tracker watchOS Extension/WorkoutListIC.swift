@@ -72,7 +72,7 @@ class WorkoutListInterfaceController: WKInterfaceController {
 					continue
 				}
 				
-				row.titleLabel.setText(workouts[i].name)
+				row.set(title: workouts[i].name)
 				row.detailLabel.setText(workouts[i].description)
 			}
 		} else {

@@ -60,43 +60,42 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 		}
 		
 		workoutName.setText(workout.name)
-		let exercizes = workout.exercizes
-		let rows = exercizes.map { p -> (GTPart, String) in
+		let exercizes = workout.exercizeList
+		let rows = exercizes.flatMap { p -> [(GTPart, String)] in
 			if let r = p as? GTRest {
-				return (r, "rest")
+				return [(r, "rest")]
 			} else if let e = p as? GTSimpleSetsExercize {
-				return (e, "exercize")
-			} else if let _ = p as? GTCircuit {
-//				let circuit = workout.circuitStatus(for: e)
-//				return (e.order, "exercize" + (circuit != nil ? "Circuit" : ""), circuit)
-				fatalError("Circuit not supported yet")
+				return [(e, "exercize")]
+			} else if let c = p as? GTCircuit {
+				return c.exercizeList.map { ($0, "exercizeCircuit") }
+			} else if let ch = p as? GTChoice {
+				return [(ch, "exercizeCircuit")]
 			} else {
-				#warning("Add choices and circuit")
 				fatalError("Unknown part type")
 			}
 		}
 		table.setRowTypes(rows.map { $0.1 })
 		
-		for (i, (p, type)) in zip(0 ..< rows.count, rows) {
+		for (i, (p, _)) in zip(0 ..< rows.count, rows) {
 			if let r = p as? GTRest {
 				let row = table.rowController(at: i) as! RestCell
 				row.setRest(r.rest)
 			} else if let se = p as? GTSetsExercize {
 				let row = table.rowController(at: i) as! BasicDetailCell
+				row.detailLabel.setText(se.summary)
 				
 				if let e = se as? GTSimpleSetsExercize {
-					row.titleLabel.setText(e.name)
-					row.detailLabel.setText(e.summary)
+					row.set(title: e.title)
+				} else if let ch = se as? GTChoice {
+					row.setChoice(title: ch.title, total: ch.exercizes.count)
 				} else {
-					#warning("Add choices")
 					fatalError("Unknown part type")
 				}
 				
 				if let (n, t) = se.circuitStatus {
-					row.circuitLabel.setText("\(n)/\(t)")
+					row.setCircuit(number: n, total: t)
 				}
 			} else {
-				#warning("Add choices and circuit")
 				fatalError("Unknown part type")
 			}
 		}

@@ -20,7 +20,7 @@
                                     <group key="rootItem" width="1" height="0.0" alignment="left" layout="vertical" id="5zA-bJ-Yok">
                                         <items>
                                             <label alignment="left" text="Label" numberOfLines="0" id="fkO-le-IEs">
-                                                <fontDescription key="font" style="UICTFontTextStyleBody"/>
+                                                <fontDescription key="font" type="system" pointSize="16"/>
                                             </label>
                                             <label alignment="left" text="Label" id="OUG-jG-MMG">
                                                 <fontDescription key="font" style="UICTFontTextStyleCaption2"/>
@@ -100,16 +100,9 @@
                                         </label>
                                         <group width="1" alignment="left" layout="vertical" spacing="0.0" id="wNH-rK-hqr">
                                             <items>
-                                                <group width="1" alignment="left" id="NeG-zb-b9q">
-                                                    <items>
-                                                        <label alignment="left" text="[10x20kg]" id="ZkP-lM-XZO">
-                                                            <fontDescription key="font" style="UICTFontTextStyleCaption2"/>
-                                                        </label>
-                                                        <label alignment="left" text="reps" id="I7m-Aq-eFC">
-                                                            <fontDescription key="font" style="UICTFontTextStyleCaption2"/>
-                                                        </label>
-                                                    </items>
-                                                </group>
+                                                <label alignment="left" text="[10x20kg reps]" numberOfLines="0" id="ZkP-lM-XZO">
+                                                    <fontDescription key="font" style="UICTFontTextStyleCaption2"/>
+                                                </label>
                                                 <label alignment="left" text="[N other sets]" numberOfLines="0" id="V1b-Db-h3Z">
                                                     <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
                                                 </label>
@@ -165,7 +158,6 @@
                     <connections>
                         <outlet property="bpmLbl" destination="8WJ-4H-ILz" id="x2P-Om-UxZ"/>
                         <outlet property="currentExercizeGrp" destination="g8Q-Xz-KGs" id="hwK-Rz-ecP"/>
-                        <outlet property="currentSetGrp" destination="NeG-zb-b9q" id="rgg-BQ-e68"/>
                         <outlet property="doneSetBtn" destination="UF6-FT-XB6" id="Q8d-2L-RLx"/>
                         <outlet property="exercizeNameLbl" destination="es3-lO-YvL" id="ptR-dY-eLL"/>
                         <outlet property="nextUpLbl" destination="COt-rO-686" id="Ynb-fZ-H52"/>
@@ -288,7 +280,7 @@
                                             <group width="1" widthAdjustment="-22" alignment="left" verticalAlignment="center" layout="vertical" spacing="1" id="mcV-pv-jbx">
                                                 <items>
                                                     <label alignment="left" text="Label" numberOfLines="0" id="c9m-oy-Yey">
-                                                        <fontDescription key="font" style="UICTFontTextStyleBody"/>
+                                                        <fontDescription key="font" type="system" pointSize="16"/>
                                                     </label>
                                                     <label alignment="left" text="Label" numberOfLines="0" id="VXn-ev-WQp">
                                                         <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
@@ -297,7 +289,7 @@
                                             </group>
                                             <group alignment="right" verticalAlignment="center" layout="vertical" spacing="0.0" id="rZR-cv-2CH" userLabel="Circuit">
                                                 <items>
-                                                    <imageView width="21" height="21" alignment="center" image="IsCircuit" id="gSD-J8-nAb"/>
+                                                    <imageView width="21" height="21" alignment="center" image="IsCircuit" contentMode="center" id="gSD-J8-nAb"/>
                                                     <label alignment="center" text="0/0" id="tQI-BU-p1y">
                                                         <fontDescription key="font" type="system" pointSize="7"/>
                                                     </label>
@@ -306,7 +298,8 @@
                                         </items>
                                     </group>
                                     <connections>
-                                        <outlet property="circuitLabel" destination="tQI-BU-p1y" id="ZN7-Yl-P29"/>
+                                        <outlet property="collectionImage" destination="gSD-J8-nAb" id="IiC-bu-jGG"/>
+                                        <outlet property="collectionLabel" destination="tQI-BU-p1y" id="J87-eE-FSn"/>
                                         <outlet property="detailLabel" destination="VXn-ev-WQp" id="HTD-D5-uMf"/>
                                         <outlet property="titleLabel" destination="c9m-oy-Yey" id="8jK-D6-Nsc"/>
                                     </connections>
@@ -315,7 +308,7 @@
                                     <group key="rootItem" width="1" height="0.0" alignment="left" layout="vertical" spacing="1" id="Mq0-bl-Qy5">
                                         <items>
                                             <label alignment="left" text="Label" numberOfLines="0" id="AYN-Tv-chk">
-                                                <fontDescription key="font" style="UICTFontTextStyleBody"/>
+                                                <fontDescription key="font" type="system" pointSize="16"/>
                                             </label>
                                             <label alignment="left" text="Label" numberOfLines="0" id="DJH-In-QYp">
                                                 <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
@@ -330,7 +323,9 @@
                                 <tableRow identifier="rest" selectable="NO" id="7MH-wF-y5l" customClass="RestCell" customModule="Gym_Tracker" customModuleProvider="target">
                                     <group key="rootItem" width="1" alignment="left" id="9op-lA-Tup">
                                         <items>
-                                            <label alignment="center" verticalAlignment="center" text="Label" id="qEE-st-N8c"/>
+                                            <label alignment="center" verticalAlignment="center" text="Label" id="qEE-st-N8c">
+                                                <fontDescription key="font" type="system" pointSize="16"/>
+                                            </label>
                                         </items>
                                     </group>
                                     <connections>

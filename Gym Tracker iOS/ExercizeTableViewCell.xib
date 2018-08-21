@@ -47,7 +47,7 @@
                                     <constraint firstItem="rUR-v4-MSP" firstAttribute="top" secondItem="KOI-qe-muj" secondAttribute="bottom" id="ziu-b2-i1v"/>
                                 </constraints>
                             </view>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="IsInvalid" translatesAutoresizingMaskIntoConstraints="NO" id="ruL-8U-pSx">
+                            <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="IsInvalid" translatesAutoresizingMaskIntoConstraints="NO" id="ruL-8U-pSx">
                                 <rect key="frame" x="250" y="9.5" width="25" height="25"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="ruL-8U-pSx" secondAttribute="height" multiplier="1:1" id="gyV-Y8-HVv"/>
@@ -60,14 +60,14 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PeQ-ze-uRf">
                                         <rect key="frame" x="0.0" y="0.0" width="42" height="21"/>
                                         <subviews>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="IsCircuit" translatesAutoresizingMaskIntoConstraints="NO" id="irW-zM-301">
+                                            <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="IsCircuit" translatesAutoresizingMaskIntoConstraints="NO" id="irW-zM-301">
                                                 <rect key="frame" x="0.0" y="0.0" width="21" height="21"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="21" id="Kc7-nt-UxS"/>
                                                     <constraint firstAttribute="width" secondItem="irW-zM-301" secondAttribute="height" multiplier="1:1" id="hxb-DL-xRZ"/>
                                                 </constraints>
                                             </imageView>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="IsChoice" translatesAutoresizingMaskIntoConstraints="NO" id="P3O-vu-wjW">
+                                            <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="IsChoice" translatesAutoresizingMaskIntoConstraints="NO" id="P3O-vu-wjW">
                                                 <rect key="frame" x="21" y="0.0" width="21" height="21"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" secondItem="P3O-vu-wjW" secondAttribute="height" multiplier="1:1" id="R5b-5V-9VN"/>
@@ -75,9 +75,6 @@
                                                 </constraints>
                                             </imageView>
                                         </subviews>
-                                        <constraints>
-                                            <constraint firstItem="P3O-vu-wjW" firstAttribute="width" secondItem="P3O-vu-wjW" secondAttribute="height" multiplier="1:1" id="Ecu-tg-fh3"/>
-                                        </constraints>
                                     </stackView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="N7B-s3-vzO">
                                         <rect key="frame" x="18.5" y="21" width="5.5" height="10"/>

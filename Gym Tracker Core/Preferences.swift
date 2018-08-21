@@ -66,8 +66,10 @@ public class Preferences {
 	
 	let use: DataManager.Usage
 	let local: KeyValueStore
+	#if os(iOS)
 	let notificationData: KeyValueStore
-
+	#endif
+	
 	public init(for use: DataManager.Usage) {
 		self.use = use
 		
@@ -77,14 +79,17 @@ public class Preferences {
 		} else {
 			local = KeyValueStore(userDefaults: UserDefaults(suiteName: "GymTrackerTests")!)
 		}
+		#if os(iOS)
 		#warning("Check this is ok from inside a framework")
 		notificationData = KeyValueStore(userDefaults: UserDefaults.init(suiteName: "group.marcoboschi.gymtracker.notificationdata")!)
+		#endif
 		
 		print("\(use) Preferences initialized")
 	}
 	
 	// MARK: - Notification Data
 	
+	#if os(iOS)
 	public var weightUpdatedInNotification: Bool {
 		get {
 			return notificationData.bool(forKey: PreferenceKeys.weightUpdatedInNotification)
@@ -126,6 +131,7 @@ public class Preferences {
 		setEndedInNotificationTime = nil
 		weightChangeFromNotification = 0
 	}
+	#endif
 	
 	// MARK: - Data
 	

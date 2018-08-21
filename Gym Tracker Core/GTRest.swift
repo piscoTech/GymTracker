@@ -29,6 +29,14 @@ final public class GTRest: GTPart {
 		return workout
 	}
 	
+	override class func loadWithID(_ id: String, fromDataManager dataManager: DataManager) -> GTRest? {
+		let req = NSFetchRequest<GTRest>(entityName: self.objectType)
+		let pred = NSPredicate(format: "id == %@", id)
+		req.predicate = pred
+		
+		return dataManager.executeFetchRequest(req)?.first
+	}
+	
 	public func set(rest r: TimeInterval) {
 		rest = max(r, GTRest.minRest).rounded(to: GTRest.restStep)
 	}

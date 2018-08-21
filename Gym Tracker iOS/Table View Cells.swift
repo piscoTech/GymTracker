@@ -43,8 +43,19 @@ class ExercizeTableViewCell: UITableViewCell {
 	@IBOutlet private weak var isChoice: UIView!
 	@IBOutlet private weak var collectionCount: UILabel!
 	
+	private static var normalFont: UIFont!
+	private static var italicFont: UIFont!
+	
 	func setInfo(for exercize: GTExercize) {
+		if ExercizeTableViewCell.normalFont == nil {
+			ExercizeTableViewCell.normalFont = name?.font
+			if let font = ExercizeTableViewCell.normalFont?.fontDescriptor, let descr = font.withSymbolicTraits(.traitItalic) {
+				ExercizeTableViewCell.italicFont = UIFont(descriptor: descr, size: 0)
+			}
+		}
+		
 		name.text = exercize.title
+		name.font = exercize is GTSimpleSetsExercize ? ExercizeTableViewCell.normalFont : ExercizeTableViewCell.italicFont
 		exercizeInfo.text = exercize.summary
 		
 		isCircuit.isHidden = true

@@ -321,11 +321,12 @@ public class ExecuteWorkoutController: NSObject {
 		}
 	}
 	
-	private func endWorkoutSession() {
+	private func endWorkoutSession(ended: (() -> Void)? = nil) {
 		guard !isMirroring else {
 			return
 		}
 		
+		postEndAction = ended
 		#if os(watchOS)
 			healthStore.end(session)
 		#else
@@ -334,10 +335,14 @@ public class ExecuteWorkoutController: NSObject {
 		#endif
 	}
 	
+	private var postEndAction: (() -> Void)?
+	
 	fileprivate func workoutSessionEnded(doSave: Bool = true) {
 		self.view.stopTimer()
 		self.view.disableGlobalActions()
 		terminate()
+		postEndAction?()
+		postEndAction = nil
 		
 		if !isMirroring && terminateAndSave && doSave {
 			DispatchQueue.main.async {
@@ -674,9 +679,10 @@ public class ExecuteWorkoutController: NSObject {
 		
 		self.isCompleted = true
 		self.terminateAndSave = false
-		endWorkoutSession()
-		dataManager.setRunningWorkout(nil, fromSource: source)
-		view.exitWorkoutTracking()
+		endWorkoutSession {
+			self.dataManager.setRunningWorkout(nil, fromSource: self.source)
+			self.view.exitWorkoutTracking()
+		}
 	}
 	
 	// MARK: - Notification Information Gathering

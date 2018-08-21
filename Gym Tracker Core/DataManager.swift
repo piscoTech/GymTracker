@@ -537,7 +537,7 @@ public class DataManager: NSObject {
 		
 		// Save changes
 		var res = true
-		let order: [GTDataObject.Type] = [GTWorkout.self, GTCircuit.self, GTChoice.self, GTSimpleSetsExercize.self, GTRepsSet.self]
+		let order: [GTDataObject.Type] = [GTWorkout.self, GTCircuit.self, GTChoice.self, GTSimpleSetsExercize.self, GTRepsSet.self, GTRest.self]
 		var pendingSave = changes
 		for type in order {
 			for obj in pendingSave {
@@ -1030,7 +1030,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 		sess.transferUserInfo([currentWorkoutProgress: info])
 	}
 	
-	// MARK: - Watch initail setup & Remote workou start
+	// MARK: - Watch initail setup & Remote workout start
 	
 	private let askDataKey = "watchNeedsData"
 	private let isInitialDataKey = "isInitialData"
@@ -1053,6 +1053,11 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 				}
 				RunLoop.main.add(timer, forMode: .common)
 			}
+			
+			dataManager.preferences.deleteLocal = []
+			dataManager.preferences.transferLocal = []
+			dataManager.preferences.deleteRemote = []
+			dataManager.preferences.saveRemote = []
 			
 			session.sendMessage([askDataKey: true], replyHandler: { reply in
 				guard let isOK = reply[self.dataIncomingKey] as? Bool, isOK else {
