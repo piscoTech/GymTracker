@@ -129,7 +129,7 @@ class WorkoutListTableViewController: UITableViewController {
 		if !canEdit {
 			workoutController?.doCancel()
 		} else {
-			workoutController?.updateButtons(includeOthers: true)
+			workoutController?.updateButtons()
 		}
 	}
 	

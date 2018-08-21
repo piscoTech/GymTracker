@@ -53,7 +53,7 @@ class GTChoiceTests: XCTestCase {
 		XCTAssertEqual(ch.parentLevel as? GTWorkout, w)
 
 		let c = dataManager.newCircuit()
-		c.add(parts: ch, dataManager.newExercize())
+		c.add(parts: ch, newValidExercize())
 		XCTAssertNotEqual(w[0], ch)
 		XCTAssertEqual(w[0]?.order, 0)
 		XCTAssertEqual(w.parts.count, 1)
@@ -120,6 +120,23 @@ class GTChoiceTests: XCTestCase {
 		
 		XCTAssertFalse(ch.isValid)
 		XCTAssertEqual(ch.inCircuitExercizesError, [0])
+		
+		_ = dataManager.newSet(for: e2)
+		_ = dataManager.newSet(for: e3)
+		
+		XCTAssertTrue(ch.isValid)
+		XCTAssertEqual(ch.inCircuitExercizesError, [])
+		
+		let e4 = newValidExercize()
+		let e5 = newValidExercize()
+		c.add(parts: e4, e5)
+		
+		XCTAssertFalse(ch.isValid)
+		XCTAssertEqual(ch.inCircuitExercizesError, [0,1,2])
+		
+		_ = dataManager.newSet(for: e4)
+		XCTAssertTrue(ch.isValid)
+		XCTAssertEqual(ch.inCircuitExercizesError, [])
 	}
 	
 	func testInCircuit() {

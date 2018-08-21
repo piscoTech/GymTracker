@@ -45,11 +45,11 @@ class WorkoutTableViewController: NamedPartCollectionTableViewController<GTWorko
         // Dispose of any resources that can be recreated.
     }
 	
-	override func updateButtons(includeOthers: Bool = false) {
-		super.updateButtons(includeOthers: includeOthers)
+	override func updateButtons() {
+		super.updateButtons()
 		
 		startBtn.isEnabled = delegate.canEdit
-		if includeOthers {
+		if !editMode {
 			tableView.reloadSections([2], with: .none)
 		}
 	}
@@ -66,14 +66,6 @@ class WorkoutTableViewController: NamedPartCollectionTableViewController<GTWorko
 
     override func numberOfSections(in tableView: UITableView) -> Int {
 		return super.numberOfSections(in: tableView) + (editMode ? 0 : 1)
-	}
-	
-	override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-		if editMode && section == 1 {
-			return GTLocalizedString("EXERCIZE_MANAGEMENT_TIP", comment: "Remove exercize")
-		}
-		
-		return nil
 	}
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -152,7 +144,6 @@ class WorkoutTableViewController: NamedPartCollectionTableViewController<GTWorko
 		collection.archived = !archived
 		if appDelegate.dataManager.persistChangesForObjects([self.collection], andDeleteObjects: []) {
 			self.delegate.updateWorkout(self.collection, how: .archiveChange, wasArchived: archived)
-			self.updateButtons()
 			tableView.reloadSections(IndexSet(integer: 2), with: .fade)
 		} else {
 			appDelegate.dataManager.discardAllChanges()

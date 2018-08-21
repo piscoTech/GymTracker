@@ -29,6 +29,14 @@ final public class GTCircuit: GTExercize, ExercizeCollection {
 		return dataManager.executeFetchRequest(req)?.first
 	}
 	
+	public override var title: String {
+		return collectionType
+	}
+	
+	public override var summary: String {
+		return exercizeList.lazy.map { $0.title }.joined(separator: ", ")
+	}
+	
 	override public var isValid: Bool {
 		return workout != nil && isSubtreeValid
 	}
@@ -39,6 +47,10 @@ final public class GTCircuit: GTExercize, ExercizeCollection {
 	
 	public override var isPurgeableToValid: Bool {
 		return false
+	}
+	
+	public override var shouldBePurged: Bool {
+		return exercizes.isEmpty
 	}
 	
 	override public var parentLevel: CompositeWorkoutLevel? {
@@ -56,12 +68,12 @@ final public class GTCircuit: GTExercize, ExercizeCollection {
 	/// Whether or not the exercizes of this circuit are valid inside of it.
 	///
 	/// An exercize has its index in `exercizeList` included if it has not the same number of sets as the most frequent sets count in the circuit.
-	var exercizesError: [Int] {
+	public var exercizesError: [Int] {
 		return GTCircuit.invalidIndices(for: exercizeList.map { $0.setsCount })
 	}
 	
-	class func invalidIndices(for setsCount: [Int?]) -> [Int] {
-		let mode = setsCount.mode
+	class func invalidIndices(for setsCount: [Int?], mode m: Int?? = nil) -> [Int] {
+		let mode = m ?? setsCount.mode
 		return zip(setsCount, 0 ..< setsCount.count).filter { $0.0 == nil || $0.0 != mode }.map { $0.1 }
 	}
 	

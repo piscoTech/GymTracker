@@ -35,8 +35,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		tableView.rowHeight = UITableView.automaticDimension
 		tableView.estimatedRowHeight = 44
 		
-		if exercize.sets.isEmpty {
-			//This can only appen if it's a new exercize
+		if exercize.sets.isEmpty && editMode {
 			newSet(self)
 		}
 		oldName = exercize.name

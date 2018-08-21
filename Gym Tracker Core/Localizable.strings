@@ -32,6 +32,7 @@
 
 "REMOVE_SET_TIP" = "Swipe left on a set to remove it.";
 "EXERCIZE_MANAGEMENT_TIP" = "Swipe left on an exercize or a rest period to remove it.\nExercizes marked with an exclamation mark don't have the same number of sets as others in the same circuit.";
+"EXERCIZE_MANAGEMENT_CIRC_CHOICE_TIP" = "Two or more exercizes are required.";
 
 "REORDER_EXERCIZE" = "Reorder";
 "DONE_REORDER_EXERCIZE" = "Done Reorder";

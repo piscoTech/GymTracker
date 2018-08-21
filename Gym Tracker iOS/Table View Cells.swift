@@ -33,42 +33,35 @@ class SingleFieldCell: UITableViewCell {
 }
 
 class ExercizeTableViewCell: UITableViewCell {
-	@IBOutlet private weak var stack: UIStackView!
 	
 	@IBOutlet private weak var name: UILabel!
 	@IBOutlet private weak var exercizeInfo: UILabel!
 	
-	@IBOutlet private var circuitWarning: UIView!
-	@IBOutlet private var circuitStatus: UIView!
-	@IBOutlet private weak var circuitNumber: UILabel!
+	@IBOutlet private weak var isInvalid: UIView!
+	@IBOutlet private weak var collectionStatus: UIView!
+	@IBOutlet private weak var isCircuit: UIView!
+	@IBOutlet private weak var isChoice: UIView!
+	@IBOutlet private weak var collectionCount: UILabel!
 	
-	private var isCircuit = false
-	
-	func setInfo(for exercize: GTExercize, circuitInfo: (number: Int, total: Int)?) {
+	func setInfo(for exercize: GTExercize) {
 		name.text = exercize.title
 		exercizeInfo.text = exercize.summary
 		
-		circuitWarning.removeFromSuperview()
-		if let (n, t) = circuitInfo {
-			isCircuit = true
-			stack.addArrangedSubview(circuitStatus)
-			circuitNumber.text = "\(n)/\(t)"
-		} else {
-			isCircuit = false
-			circuitStatus.removeFromSuperview()
+		isCircuit.isHidden = true
+		isChoice.isHidden = true
+		if let c = exercize as? GTCircuit {
+			isCircuit.isHidden = false
+			collectionCount.text = c.exercizes.count.description
 		}
+		if let ch = exercize as? GTChoice {
+			isChoice.isHidden = false
+			collectionCount.text = ch.exercizes.count.description
+		}
+		collectionStatus.isHidden = isCircuit.isHidden && isChoice.isHidden
 	}
 	
 	func setValidity(_ valid: Bool) {
-		if valid {
-			circuitWarning.removeFromSuperview()
-			if isCircuit {
-				stack.addArrangedSubview(circuitStatus)
-			}
-		} else {
-			circuitStatus.removeFromSuperview()
-			stack.addArrangedSubview(circuitWarning)
-		}
+		isInvalid.isHidden = valid
 	}
 	
 }

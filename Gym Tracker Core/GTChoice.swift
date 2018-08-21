@@ -35,6 +35,14 @@ final public class GTChoice: GTSetsExercize, ExercizeCollection {
 		return dataManager.executeFetchRequest(req)?.first
 	}
 	
+	public override var title: String {
+		return collectionType
+	}
+	
+	public override var summary: String {
+		return exercizeList.lazy.map { $0.title }.joined(separator: ", ")
+	}
+	
 	override public var isValid: Bool {
 		return [workout, circuit].compactMap { $0 }.count == 1 && isSubtreeValid
 	}
@@ -45,6 +53,10 @@ final public class GTChoice: GTSetsExercize, ExercizeCollection {
 	
 	public override var isPurgeableToValid: Bool {
 		return false
+	}
+	
+	public override var shouldBePurged: Bool {
+		return exercizes.isEmpty
 	}
 	
 	override public var parentLevel: CompositeWorkoutLevel? {
@@ -71,12 +83,12 @@ final public class GTChoice: GTSetsExercize, ExercizeCollection {
 	/// Whether or not the exercizes of this choice are valid inside the parent circuit or `nil` if none.
 	///
 	/// An exercize has its index in `exercizeList` included if it has not the same number of sets as the most frequent sets count in the circuit.
-	var inCircuitExercizesError: [Int]? {
-		guard isInCircuit else {
+	public var inCircuitExercizesError: [Int]? {
+		guard isInCircuit, let c = circuit else {
 			return nil
 		}
 		
-		return GTCircuit.invalidIndices(for: exercizeList.map { $0.setsCount })
+		return GTCircuit.invalidIndices(for: exercizeList.map { $0.setsCount }, mode: c.exercizes.count > 1 ? c.exercizes.lazy.map { $0.setsCount }.mode : nil)
 	}
 	
 	// MARK: - Exercizes handling

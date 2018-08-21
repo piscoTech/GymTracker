@@ -13,15 +13,16 @@ protocol PartCollectionController: AnyObject {
 	
 	func addDeletedEntities(_ del: [GTDataObject])
 	func exercizeUpdated(_ e: GTPart)
+	func updateView()
 	
 }
 
 class PartCollectionTableViewController<T: GTDataObject>: UITableViewController, UIPickerViewDelegate, UIPickerViewDataSource, PartCollectionController where T: ExercizeCollection {
 	
 	weak var delegate: WorkoutListTableViewController!
-	weak var parentCollection: PartCollectionTableViewController?
+	weak var parentCollection: PartCollectionController?
 	
-	private(set) weak var subCollection: PartCollectionTableViewController?
+	private(set) weak var subCollection: PartCollectionController?
 	private(set) weak var exercizeController: ExercizeTableViewController?
 	
 	var editMode = false
@@ -32,7 +33,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		return parentCollection == nil
 	}
 	
-	private var invalidityCache: Set<Int32>!
+	private var invalidityCache: Set<Int>!
 	
 	var cancelBtn: UIBarButtonItem?
 	var doneBtn: UIBarButtonItem?
@@ -44,6 +45,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	
 	private let reorderLbl = GTLocalizedString("REORDER_EXERCIZE", comment: "Reorder")
 	private let doneReorderLbl = GTLocalizedString("DONE_REORDER_EXERCIZE", comment: "Done Reorder")
+	private let additionalTip: String?
 	
 	var collection: T!
 
@@ -64,11 +66,15 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	private let restPickerId: CellInfo = ("RestPickerCell", "restPicker")
 	private let addExercizeId: CellInfo = ("AddExercizeCell", "add")
 	
-	init() {
+	init(additionalTip: String? = nil) {
+		self.additionalTip = additionalTip
+		
 		super.init(style: .grouped)
 	}
 	
 	required init?(coder aDecoder: NSCoder) {
+		additionalTip = nil
+		
 		super.init(coder: aDecoder)
 	}
 	
@@ -100,14 +106,24 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		}
     }
 	
-	func updateButtons(includeOthers: Bool = false) {
+	override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+		
+		if self.isMovingFromParent {
+			parentCollection?.exercizeUpdated(collection as! GTPart)
+		}
+	}
+	
+	func updateButtons() {
 		navigationItem.leftBarButtonItem = editMode ? cancelBtn : nil
-		navigationItem.rightBarButtonItems = (editMode
+		let right = (editMode
 			? [doneBtn, reorderBtn]
 			: [additionalRightButton, canControlEdit ? editBtn : nil]
 			).compactMap { $0 }
+		navigationItem.rightBarButtonItems = right
 		
 		editBtn?.isEnabled = delegate.canEdit
+		reorderBtn.title = isEditing ? doneReorderLbl : reorderLbl
 	}
 	
 	func updateValidityAndButtons(doUpdateTable: Bool = true) {
@@ -117,8 +133,9 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		}
 		
 		addDeletedEntities(collection.purge(onlySettings: true))
-		invalidityCache = Set(collection.exercizes.lazy.filter { !$0.isValid }.map { $0.order })
-		#warning("Add invalidity for circuit (and circuit in choice)")
+		invalidityCache = Set(collection.exercizes.lazy.filter { !$0.isValid }.map { Int($0.order) })
+		invalidityCache.formUnion((collection as? GTCircuit)?.exercizesError ?? [])
+		invalidityCache.formUnion((collection as? GTChoice)?.inCircuitExercizesError ?? [])
 		doneBtn?.isEnabled = collection.isPurgeableToValid
 		
 		if doUpdateTable {
@@ -146,6 +163,19 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 		if section == 1 {
 			return GTLocalizedString("EXERCIZES", comment: "Exercizes")
+		}
+		
+		return nil
+	}
+	
+	override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+		if editMode && section == 1 {
+			var tip = GTLocalizedString("EXERCIZE_MANAGEMENT_TIP", comment: "Remove exercize")
+			if let addTip = additionalTip {
+				tip += "\n\(addTip)"
+			}
+			
+			return tip
 		}
 		
 		return nil
@@ -200,8 +230,8 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 				
 				let cell = tableView.dequeueReusableCell(withIdentifier: exercizeId.identifier, for: indexPath) as! ExercizeTableViewCell
 				let e = p as! GTExercize
-				cell.setInfo(for: e, circuitInfo: nil)
-				cell.setValidity(!invalidityCache.contains(e.order))
+				cell.setInfo(for: e)
+				cell.setValidity(!invalidityCache.contains(Int(e.order)))
 				
 				return cell
 			case .picker:
@@ -217,7 +247,13 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 			let cell = tableView.dequeueReusableCell(withIdentifier: addExercizeId.identifier, for: indexPath) as! AddExercizeCell
 			#warning("Link add actions")
 			cell.addExercize.addTarget(self, action: #selector(newExercize), for: .primaryActionTriggered)
-			cell.addOther.addTarget(self, action: #selector(newChoose), for: .primaryActionTriggered)
+			
+			if handleableTypes().count == 1 {
+				cell.addOther.isHidden = true
+			} else {
+				cell.addOther.isHidden = false
+				cell.addOther.addTarget(self, action: #selector(newChoose), for: .primaryActionTriggered)
+			}
 			
 			return cell
 		default:
@@ -281,6 +317,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		if isNew {
 			self.dismiss(animated: true)
 		} else {
+			tableView.beginUpdates()
 			editMode = false
 			deletedEntities.removeAll()
 			navigationController?.interactivePopGestureRecognizer?.isEnabled = true
@@ -291,6 +328,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 			
 			self.setEditing(false, animated: false)
 			reloadAllSections()
+			tableView.endUpdates()
 		}
 	}
 	
@@ -321,10 +359,18 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		return p is T.Exercize.Type
 	}
 	
+	private func handleableTypes() -> [(String, GTPart.Type)] {
+		return [("CIRCUIT", GTCircuit.self), ("CHOICE", GTChoice.self), ("EXERCIZE", GTSimpleSetsExercize.self), ("REST", GTRest.self)].filter { canHandle($0.1) }
+	}
+	
 	@objc private func newChoose() {
 		let choose = UIAlertController(title: GTLocalizedString("ADD_CHOOSE", comment: "Choose"), message: nil, preferredStyle: .actionSheet)
 		
-		for (n, t) in [("CIRCUIT", GTCircuit.self), ("CHOICE", GTChoice.self), ("EXERCIZE", GTSimpleSetsExercize.self), ("REST", GTRest.self)] {
+		for (n, t) in handleableTypes() {
+			guard canHandle(t) else {
+				continue
+			}
+			
 			choose.addAction(UIAlertAction(title: GTLocalizedString(n, comment: "Type"), style: .default) { _ in
 				self.newPart(of: t)
 			})
@@ -570,6 +616,8 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	}
 	
 	func openExercize(_ p: T.Exercize) {
+		let circuitChoiceAdditionalTip = GTLocalizedString("EXERCIZE_MANAGEMENT_CIRC_CHOICE_TIP", comment: "2 exercizes")
+		
 		if let e = p as? GTSimpleSetsExercize {
 			let dest = ExercizeTableViewController.instanciate()
 			
@@ -580,7 +628,25 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 			
 			navigationController?.pushViewController(dest, animated: true)
 		} else if p is GTRest {
-			// No need to push something else, edit is in place
+			// No need to push anything else, edit is in place
+		} else if let c = p as? GTCircuit {
+			let dest = PartCollectionTableViewController<GTCircuit>(additionalTip: circuitChoiceAdditionalTip)
+			
+			self.subCollection = dest
+			dest.parentCollection = self
+			dest.editMode = editMode
+			dest.collection = c
+			
+			navigationController?.pushViewController(dest, animated: true)
+		} else if let ch = p as? GTChoice {
+			let dest = PartCollectionTableViewController<GTChoice>(additionalTip: circuitChoiceAdditionalTip)
+			
+			self.subCollection = dest
+			dest.parentCollection = self
+			dest.editMode = editMode
+			dest.collection = ch
+			
+			navigationController?.pushViewController(dest, animated: true)
 		} else {
 			fatalError("Implement me")
 		}
