@@ -9,11 +9,93 @@
 import UIKit
 import GymTrackerCore
 
-protocol PartCollectionController: AnyObject {
+@objc protocol PartCollectionController: AnyObject {
 	
 	func addDeletedEntities(_ del: [GTDataObject])
 	func exercizeUpdated(_ e: GTPart)
 	func updateView()
+	
+	var partCollection: GTDataObject { get }
+	var tableView: UITableView! { get }
+	var editMode: Bool { get }
+	
+	/// Enable or disable circuit rest for the collection if it's in a circuit and it allow so. After changing it reload section `1` of the table view.
+	@objc func enableCircuitRest(_ s: UISwitch)
+	
+}
+
+extension PartCollectionController {
+	
+	typealias CellInfo = (nib: String, identifier: String)
+	
+	var collectionDataId: CellInfo {
+		return ("CollectionData", "collectionData")
+	}
+	
+	func numberOfRowInHeaderSection() -> Int {
+		var count = 0
+		
+		if let se = partCollection as? GTSetsExercize, se.isInCircuit {
+			count += 1 + (se.allowCircuitRest ? 1 : 0)
+		}
+		
+		return count + ((partCollection as? GTSimpleSetsExercize)?.isInChoice ?? false ? 1 : 0)
+	}
+	
+	func headerCell(forRowAt indexPath: IndexPath, reallyAt realIndex: IndexPath? = nil) -> UITableViewCell {
+		let real = realIndex ?? indexPath
+		
+		switch indexPath.row {
+		case 0: // Circuti information
+			guard let se = partCollection as? GTSetsExercize, let (n, t) = se.circuitStatus else {
+				fallthrough
+			}
+			
+			let cell = tableView.dequeueReusableCell(withIdentifier: collectionDataId.identifier, for: real)
+			cell.accessoryView = nil
+			cell.textLabel?.text = GTLocalizedString("IS_CIRCUIT", comment: "Circuit info")
+			cell.detailTextLabel?.text = GTLocalizedString("EXERCIZE", comment: "exercize") + " \(n)/\(t)"
+			
+			return cell
+		case 1:
+			guard let se = partCollection as? GTSetsExercize, se.isInCircuit, se.allowCircuitRest else {
+				fallthrough
+			}
+			
+			let s = UISwitch()
+			s.addTarget(self, action: #selector(enableCircuitRest(_:)), for: .valueChanged)
+			s.isOn = se.hasCircuitRest
+			s.isEnabled = editMode
+			
+			let cell = tableView.dequeueReusableCell(withIdentifier: collectionDataId.identifier, for: real)
+			cell.accessoryView = s
+			cell.textLabel?.text = GTLocalizedString("CIRCUITE_USE_REST", comment: "Use rest")
+			cell.detailTextLabel?.text = nil
+			
+			return cell
+		case 2:
+			guard let e = partCollection as? GTSimpleSetsExercize, let (n, t) = e.choiceStatus else {
+				fallthrough
+			}
+			
+			let cell = tableView.dequeueReusableCell(withIdentifier: collectionDataId.identifier, for: real)
+			cell.accessoryView = nil
+			cell.textLabel?.text = GTLocalizedString("IS_CHOICE", comment: "Choice info")
+			cell.detailTextLabel?.text = GTLocalizedString("EXERCIZE", comment: "exercize") + " \(n)/\(t)"
+			
+			return cell
+		default:
+			fatalError("Unknown row")
+		}
+	}
+	
+	private func updateCollectionCells() {
+		let total = tableView.numberOfRows(inSection: 0)
+		let collection = numberOfRowInHeaderSection()
+		
+		// The types of parent collections cannot change until you pop to their respective controller, so just reloading is fine
+		tableView.reloadRows(at: ((total - collection) ..< total).map { IndexPath(row: $0, section: 0) }, with: .automatic)
+	}
 	
 }
 
@@ -42,12 +124,15 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	var additionalRightButton: UIBarButtonItem? {
 		return nil
 	}
-	
+
 	private let reorderLbl = GTLocalizedString("REORDER_EXERCIZE", comment: "Reorder")
 	private let doneReorderLbl = GTLocalizedString("DONE_REORDER_EXERCIZE", comment: "Done Reorder")
 	private let additionalTip: String?
 	
 	var collection: T!
+	var partCollection: GTDataObject {
+		return collection
+	}
 
 	private var deletedEntities = [GTDataObject]()
 	func addDeletedEntities(_ del: [GTDataObject]) {
@@ -58,7 +143,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		}
 	}
 	
-	typealias CellInfo = (nib: String, identifier: String)
+	typealias CellInfo = PartCollectionController.CellInfo
 	private let collectionDataId: CellInfo = ("CollectionData", "collectionData")
 	private let noExercizesId: CellInfo = ("NoExercizes", "noExercize")
 	private let exercizeId: CellInfo = ("ExercizeTableViewCell", "exercize")
@@ -192,9 +277,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		switch section {
 		case 0:
-			return 0
-//				+ ((collection as? GTSetsExercize)?.isInCircuit ?? false ? 1 : 0)
-//				+ ((collection as? GTSimpleSetsExercize)?.isInChoice ?? false ? 1 : 0)
+			return numberOfRowInHeaderSection()
 		case 1:
 			return max(collection.exercizes.count, 1) + (editRest != nil ? 1 : 0)
 		case 2:
@@ -207,8 +290,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		switch indexPath.section {
 		case 0:
-			#warning("Handle circuit/choice")
-			fatalError()
+			return headerCell(forRowAt: indexPath)
 		case 1:
 			if collection.exercizes.isEmpty {
 				return tableView.dequeueReusableCell(withIdentifier: noExercizesId.identifier, for: indexPath)
@@ -448,6 +530,18 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		DispatchQueue.main.async {
 			self.updateValidityAndButtons()
 		}
+	}
+	
+	// MARK: - Edit circuit
+	
+	func enableCircuitRest(_ s: UISwitch) {
+		guard editMode, let se = partCollection as? GTSetsExercize, se.isInCircuit, se.allowCircuitRest else {
+			return
+		}
+		
+		se.enableCircuitRest(s.isOn)
+		s.isOn = se.hasCircuitRest
+		tableView.reloadSections([1], with: .automatic)
 	}
 	
 	// MARK: - Edit rest

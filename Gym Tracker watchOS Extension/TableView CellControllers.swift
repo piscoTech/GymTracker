@@ -7,6 +7,7 @@
 //
 
 import WatchKit
+import GymTrackerCore
 
 class BasicDetailCell: NSObject {
 	
@@ -40,7 +41,7 @@ class RestCell: NSObject {
 	@IBOutlet weak var restLabel: WKInterfaceLabel!
 	
 	func setRest(_ r: TimeInterval) {
-		restLabel.setText("\(r.getDuration(hideHours: true)) \(NSLocalizedString("REST", comment: "rest").lowercased())")
+		restLabel.setText("\(r.getDuration(hideHours: true)) \(GTLocalizedString("REST", comment: "rest").lowercased())")
 	}
 	
 }

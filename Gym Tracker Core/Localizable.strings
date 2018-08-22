@@ -39,9 +39,9 @@
 
 "ADD_CHOOSE" = "What type of exercize do you want to add?";
 
-"IS_CIRCUIT" = "Circuit";
-"CIRCUIT_CHAIN" = "Chain with next";
+"IS_CIRCUIT" = "Circuit info";
 "CIRCUITE_USE_REST" = "Use rest periods";
+"IS_CHOICE" = "Choice info";
 
 "WORKOUT_SAVE_ERR" = "Cannot save workout";
 
@@ -58,6 +58,7 @@
 "WORKOUT_START_ERR" = "Unable to start workout";
 "WORKOUT_START_ERR_WATCH" = "Cannot start workout on Apple Watch";
 "WORKOUT_STOP_ERR" = "Workout terminated due to an error";
+"WORKOUT_ENDING" = "Ending workout...";
 "WORKOUT_SAVING" = "Saving workout...";
 "WORKOUT_SAVED" = "Workout saved";
 "WORKOUT_SAVE_ERROR" = "Error saving workout";

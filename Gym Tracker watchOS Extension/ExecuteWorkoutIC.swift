@@ -51,8 +51,8 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutCo
 		}
 		
 		appDelegate.executeWorkout = self
-		addMenuItem(with: .decline, title: NSLocalizedString("CANCEL", comment: "cancel"), action: #selector(cancelWorkout))
-		addMenuItem(with: .accept, title: NSLocalizedString("WORKOUT_END_BUTTON", comment: "End"), action: #selector(endWorkout))
+		addMenuItem(with: .decline, title: GTLocalizedString("CANCEL", comment: "cancel"), action: #selector(cancelWorkout))
+		addMenuItem(with: .accept, title: GTLocalizedString("WORKOUT_END_BUTTON", comment: "End"), action: #selector(endWorkout))
 		
 		self.workoutController = ExecuteWorkoutController(data: data, viewController: self, source: .watch)
     }

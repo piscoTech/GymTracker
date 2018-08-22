@@ -16,7 +16,7 @@ public class GTSetsExercize: GTExercize {
 	final private let circuitKey = "circuit"
 	final private let hasCircuitRestKey = "hasCircuitRest"
 
-    @NSManaged private(set) var hasCircuitRest: Bool
+    @NSManaged public private(set) var hasCircuitRest: Bool
 	@NSManaged private(set) var circuit: GTCircuit?
 	
 	private var forcingRest = false
@@ -52,7 +52,7 @@ public class GTSetsExercize: GTExercize {
 	}
 	
 	/// Enables rest periods in circuits for this exercize only if part of a circuit.
-	func enableCircuitRest(_ r: Bool) {
+	public func enableCircuitRest(_ r: Bool) {
 		self.hasCircuitRest = allowCircuitRest && isInCircuit && r
 	}
 	

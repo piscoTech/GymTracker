@@ -231,10 +231,17 @@ public class ExecuteWorkoutController: NSObject {
 				configuration.activityType = activityType
 				configuration.locationType = isIndoor ? .indoor : .outdoor
 				
-				session = try HKWorkoutSession(configuration: configuration)
-				
-				session.delegate = self
-				healthStore.start(session)
+				if #available(watchOS 5.0, *) {
+					session = try HKWorkoutSession(healthStore: healthStore, configuration: configuration)
+					session.delegate = self
+					
+					session.startActivity(with: nil)
+				} else {
+					session = try HKWorkoutSession(configuration: configuration)
+					session.delegate = self
+					
+					healthStore.start(session)
+				}
 			} catch {
 				dataManager.setRunningWorkout(nil, fromSource: source)
 				
@@ -326,11 +333,27 @@ public class ExecuteWorkoutController: NSObject {
 			return
 		}
 		
+		view.setCurrentExercizeViewHidden(true)
+		view.setRestViewHidden(true)
+		view.setNextUpTextHidden(true)
+		
 		postEndAction = ended
+		self.view.stopTimer()
+		self.view.disableGlobalActions()
+		terminate()
+		
+		view.setWorkoutDoneButtonEnabled(false)
+		view.setWorkoutDoneText(GTLocalizedString("WORKOUT_ENDING", comment: "Ending..."))
+		view.setWorkoutDoneViewHidden(false)
+		
+		end = Date()
 		#if os(watchOS)
-			healthStore.end(session)
+			if #available(watchOS 5.0, *) {
+				session.end()
+			} else {
+				healthStore.end(session)
+			}
 		#else
-			end = Date()
 			workoutSessionEnded()
 		#endif
 	}
@@ -338,9 +361,6 @@ public class ExecuteWorkoutController: NSObject {
 	private var postEndAction: (() -> Void)?
 	
 	fileprivate func workoutSessionEnded(doSave: Bool = true) {
-		self.view.stopTimer()
-		self.view.disableGlobalActions()
-		terminate()
 		postEndAction?()
 		postEndAction = nil
 		
@@ -487,6 +507,7 @@ public class ExecuteWorkoutController: NSObject {
 		}
 		
 		let endTxt = hasTerminationError ? GTLocalizedString("WORKOUT_STOP_ERR", comment: "Err") + "\n" : ""
+		view.setWorkoutDoneText(GTLocalizedString("WORKOUT_SAVING", comment: "Saving..."))
 		dataManager.setRunningWorkout(nil, fromSource: source)
 		
 		let activeEnergyType = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!
@@ -661,14 +682,6 @@ public class ExecuteWorkoutController: NSObject {
 			return
 		}
 		
-		view.setCurrentExercizeViewHidden(true)
-		view.setRestViewHidden(true)
-		view.setNextUpTextHidden(true)
-		
-		view.setWorkoutDoneButtonEnabled(false)
-		view.setWorkoutDoneText(GTLocalizedString("WORKOUT_SAVING", comment: "Saving..."))
-		view.setWorkoutDoneViewHidden(false)
-		
 		endWorkoutSession()
 	}
 	
@@ -730,8 +743,6 @@ extension ExecuteWorkoutController: HKWorkoutSessionDelegate {
 		}
 		
 		if toState == .ended {
-			end = date
-			
 			workoutSessionEnded(doSave: fromState == .running || fromState == .paused)
 		}
 	}

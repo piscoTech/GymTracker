@@ -10,7 +10,7 @@ import UIKit
 import MBLibrary
 import GymTrackerCore
 
-class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
+class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource, PartCollectionController {
 	
 	class func instanciate() -> ExercizeTableViewController {
 		return UIStoryboard(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "exercizeView") as! ExercizeTableViewController
@@ -18,7 +18,14 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	
 	var editMode = false
 	var exercize: GTSimpleSetsExercize!
+	var partCollection: GTDataObject {
+		return exercize
+	}
 	weak var delegate: PartCollectionController!
+	
+	func addDeletedEntities(_ del: [GTDataObject]) {
+		delegate.addDeletedEntities(del)
+	}
 	
 	private var oldName: String? {
 		didSet {
@@ -31,6 +38,10 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 
     override func viewDidLoad() {
         super.viewDidLoad()
+		
+		for (n, i) in [collectionDataId] {
+			tableView.register(UINib(nibName: n, bundle: Bundle.main), forCellReuseIdentifier: i)
+		}
 		
 		tableView.rowHeight = UITableView.automaticDimension
 		tableView.estimatedRowHeight = 44
@@ -61,6 +72,8 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	func updateView() {
 		tableView.reloadData()
 	}
+	
+	func exercizeUpdated(_ e: GTPart) {}
 	
 	// MARK: - Table view data source
 	
@@ -93,10 +106,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		switch section {
 		case 0:
-			#warning("Handle circuit/choice")
-			return 1
-//				+ ((collection as? GTSetsExercize)?.isInCircuit ?? false ? 2 : 0)
-//				+ ((collection as? GTSimpleSetsExercize)?.isInChoice ?? false ? 1 : 0)
+			return 1 + numberOfRowInHeaderSection()
 		case 1:
 			let (g, l) = exercize.restStatus
 			return exercize.sets.count * (g ? 2 : 1) + (g && !l ? -1 : 0) + (editRest != nil ? 1 : 0)
@@ -121,47 +131,8 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 					cell.label.text = exercize.name
 					return cell
 				}
-			} else { // Circuit rows
-//				let cell = tableView.dequeueReusableCell(withIdentifier: "circuitData", for: indexPath)
-//				let accessory = cell.accessoryView as? UISwitch ?? UISwitch()
-//				cell.accessoryView = accessory
-//
-//				cell.detailTextLabel?.text = nil
-//				accessory.isOn = false
-//				accessory.removeTarget(nil, action: nil, for: .allEvents)
-//				let msg: String
-//				let sel: Selector
-//
-//				switch indexPath.row {
-//				case 1: // Is circuit
-//					msg = "IS_CIRCUIT"
-//					if let (n, t) = delegate.workout.circuitStatus(for: exercize) {
-//						cell.detailTextLabel?.text = GTLocalizedString("EXERCIZE", comment: "exercize") + " \(n)/\(t)"
-//						accessory.isOn = true
-//					}
-//					sel = #selector(enableCircuit(_:))
-//					accessory.isEnabled = delegate.workout.canBecomeCircuit(exercize: exercize)
-//				case 2: // Chain with next
-//					msg = "CIRCUIT_CHAIN"
-//					accessory.isOn = exercize.isCircuit
-//					sel = #selector(enableCircuitChain(_:))
-//					accessory.isEnabled = delegate.workout.canChainCircuit(for: exercize)
-//				case 3: // Use rest periods
-//					msg = "CIRCUITE_USE_REST"
-//					accessory.isOn = exercize.hasCircuitRest
-//					sel = #selector(enableCircuitRest(_:))
-//					accessory.isEnabled = delegate.workout.circuitStatus(for: exercize) != nil
-//
-//				default:
-//					fatalError("Unknown row")
-//				}
-//
-//				cell.textLabel?.text = GTLocalizedString(msg, comment: "CIRCUIT_DATA")
-//				accessory.addTarget(self, action: sel, for: .valueChanged)
-//				accessory.isEnabled = editMode && accessory.isEnabled
-//
-//				return cell
-				fatalError()
+			} else { // Parent collection rows
+				return headerCell(forRowAt: IndexPath(row: indexPath.row - 1, section: 0), reallyAt: indexPath)
 			}
 		case 1:
 			let s = exercize[Int32(setNumber(for: indexPath))]!
@@ -277,7 +248,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		}
 		
 		exercize.removeSet(set)
-		delegate.addDeletedEntities([set])
+		addDeletedEntities([set])
 		
 		tableView.beginUpdates()
 		tableView.deleteRows(at: remove, with: .automatic)
@@ -301,58 +272,17 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		textField.text = exercize.name
 	}
 	
-	// MARK: - Circuit management
+	// MARK: - Edit circuit
 	
-//	@objc func enableCircuit(_ sender: UISwitch) {
-//		guard editMode else {
-//			return
-//		}
-//
-//		let wasCircuit = delegate.workout.isCircuit(exercize)
-//		delegate.workout.makeCircuit(exercize: exercize, isCircuit: sender.isOn)
-//		// Switch is reset by reloading the table
-//
-//		updateCircuitCells(wasCircuit: wasCircuit)
-//	}
-//
-//	@objc func enableCircuitChain(_ sender: UISwitch) {
-//		guard editMode else {
-//			return
-//		}
-//
-//		let wasCircuit = delegate.workout.isCircuit(exercize)
-//		delegate.workout.chainCircuit(for: exercize, chain: sender.isOn)
-//		sender.isOn = exercize.isCircuit
-//
-//		updateCircuitCells(wasCircuit: wasCircuit)
-//	}
-//
-//	@objc func enableCircuitRest(_ sender: UISwitch) {
-//		guard editMode else {
-//			return
-//		}
-//
-//		delegate.workout.enableCircuitRestPeriods(for: exercize, enable: sender.isOn)
-//		sender.isOn = exercize.hasCircuitRest
-//		tableView.reloadSections([1], with: .automatic)
-//	}
-//
-//	private func updateCircuitCells(wasCircuit: Bool) {
-//		let isCircuit = delegate.workout.isCircuit(exercize)
-//
-//		tableView.beginUpdates()
-//		let index = [2, 3].map { IndexPath(row: $0, section: 0) }
-//		if wasCircuit && !isCircuit {
-//			tableView.deleteRows(at: index, with: .automatic)
-//		} else if !wasCircuit && isCircuit {
-//			tableView.insertRows(at: index, with: .automatic)
-//		} else if wasCircuit && isCircuit {
-//			tableView.reloadRows(at: index, with: .automatic)
-//		}
-//		tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .automatic)
-//		tableView.reloadSections([1], with: .automatic)
-//		tableView.endUpdates()
-//	}
+	func enableCircuitRest(_ s: UISwitch) {
+		guard editMode, exercize.isInCircuit, exercize.allowCircuitRest else {
+			return
+		}
+		
+		exercize.enableCircuitRest(s.isOn)
+		s.isOn = exercize.hasCircuitRest
+		tableView.reloadSections([1], with: .automatic)
+	}
 	
 	// MARK: - Edit rest
 	

@@ -868,7 +868,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 			assertCall { $0 == .endNotifyEndRest }
 			
 			XCTAssertTrue(calls.isEmpty)
-			wait(for: waitCalls(n: 2), timeout: 2)
+			wait(for: waitCalls(n: 3), timeout: 2)
 			
 			assertCall { c in
 				if case DelegateCalls.setWorkoutDoneButtonEnabled(let e) = c {
@@ -877,7 +877,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 				}
 				return false
 			}
-			assertCall { c in
+			assertCall(count: 2) { c in
 				if case DelegateCalls.setWorkoutDoneText(_) = c {
 					return true
 				}
@@ -1159,9 +1159,51 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		XCTAssertTrue(calls.isEmpty)
 		ctrl.cancelWorkout()
 		
+		assertCall { c in
+			if case DelegateCalls.setCurrentExercizeViewHidden(let h) = c {
+				XCTAssertTrue(h)
+				return true
+			}
+			return false
+		}
+		assertCall { c in
+			if case DelegateCalls.setRestViewHidden(let h) = c {
+				XCTAssertTrue(h)
+				return true
+			}
+			return false
+		}
+		assertCall { c in
+			if case DelegateCalls.setNextUpTextHidden(let h) = c {
+				XCTAssertTrue(h)
+				return true
+			}
+			return false
+		}
+		
 		assertCall { $0 == .stopTimer }
 		assertCall { $0 == .disableGlobalActions }
 		assertCall { $0 == .endNotifyEndRest }
+		assertCall { c in
+			if case DelegateCalls.setWorkoutDoneButtonEnabled(let e) = c {
+				XCTAssertFalse(e)
+				return true
+			}
+			return false
+		}
+		assertCall { c in
+			if case DelegateCalls.setWorkoutDoneText(_) = c {
+				return true
+			}
+			return false
+		}
+		assertCall { c in
+			if case DelegateCalls.setWorkoutDoneViewHidden(let h) = c {
+				XCTAssertFalse(h)
+				return true
+			}
+			return false
+		}
 		assertCall { $0 == .exitWorkoutTracking }
 		XCTAssertTrue(calls.isEmpty)
 		
@@ -1239,7 +1281,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 			}
 			return false
 		}
-		assertCall { c in
+		assertCall(count: 2) { c in
 			if case DelegateCalls.setWorkoutDoneText(_) = c {
 				return true
 			}
@@ -1320,7 +1362,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 			}
 			return false
 		}
-		assertCall { c in
+		assertCall(count: 2) { c in
 			if case DelegateCalls.setWorkoutDoneText(_) = c {
 				return true
 			}
