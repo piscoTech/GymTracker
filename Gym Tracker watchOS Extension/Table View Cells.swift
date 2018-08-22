@@ -1,5 +1,5 @@
 //
-//  TableView CellControllers.swift
+//  Table View Cells.swift
 //  Gym Tracker
 //
 //  Created by Marco Boschi on 21/03/2017.

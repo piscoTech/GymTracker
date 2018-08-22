@@ -72,6 +72,12 @@ class CurrentWorkoutViewController: UIViewController {
 		workoutTitleLbl.text = text
 	}
 	
+	func askForChoices(_ choices: [GTChoice]) {
+		DispatchQueue.main.async {
+			self.performSegue(withIdentifier: "askChoices", sender: choices)
+		}
+	}
+	
 	func setBPM(_ text: String) {
 		bpmLbl.text = text
 	}
@@ -238,13 +244,11 @@ class CurrentWorkoutViewController: UIViewController {
 		nextUpLbl.attributedText = text
 	}
 	
-	private var updateSecondaryInfoData: UpdateSecondaryInfoData?
 	var skipAskUpdate = false
 	
 	func askUpdateSecondaryInfo(with data: UpdateSecondaryInfoData) {
 		if !skipAskUpdate {
-			updateSecondaryInfoData = data
-			self.performSegue(withIdentifier: "updateWeight", sender: self)
+			self.performSegue(withIdentifier: "updateWeight", sender: data)
 		}
 		
 		skipAskUpdate = false
@@ -317,17 +321,27 @@ class CurrentWorkoutViewController: UIViewController {
 			return
 		}
 		
+		let dest = segue.destination
+		PopoverController.preparePresentation(for: dest)
+		dest.popoverPresentationController?.sourceRect = CGRect(x: view.bounds.midX, y: view.bounds.midY, width: 0, height: 0)
+		dest.popoverPresentationController?.sourceView = self.view
+		dest.popoverPresentationController?.canOverlapSourceViewRect = true
+		
 		switch segueID {
 		case "updateWeight":
-			let dest = segue.destination as! UpdateSecondaryInfoViewController
-			dest.secondaryInfoData = updateSecondaryInfoData
-			updateSecondaryInfoData = nil
+			guard let updateSec = dest as? UpdateSecondaryInfoViewController, let data = sender as? UpdateSecondaryInfoData else {
+				break
+			}
 			
-			PopoverController.preparePresentation(for: dest)
-			dest.popoverPresentationController?.backgroundColor = dest.backgroundColor
-			dest.popoverPresentationController?.sourceRect = CGRect(x: view.bounds.midX, y: view.bounds.midY, width: 0, height: 0)
-			dest.popoverPresentationController?.sourceView = self.view
-			dest.popoverPresentationController?.canOverlapSourceViewRect = true
+			updateSec.secondaryInfoData = data
+			updateSec.popoverPresentationController?.backgroundColor = updateSec.backgroundColor
+		case "askChoices":
+			guard let ask = (dest as? UINavigationController)?.viewControllers.first as? AskChoiceTableViewController, let choices = sender as? [GTChoice] else {
+				break
+			}
+			
+			ask.choices = choices
+			ask.n = 0
 		default:
 			break
 		}

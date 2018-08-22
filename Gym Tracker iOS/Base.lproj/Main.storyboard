@@ -232,7 +232,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zp2-JD-fb7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1877" y="48"/>
+            <point key="canvasLocation" x="1861" y="-140"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="295-VX-ZV3">
@@ -553,6 +553,9 @@
                         <outlet property="workoutInfo" destination="viH-kh-aJE" id="8ph-3S-1Sq"/>
                         <outlet property="workoutTitleLbl" destination="cjt-UG-ZUf" id="e4k-C8-AeX"/>
                         <segue destination="wIG-ae-cDG" kind="popoverPresentation" identifier="updateWeight" popoverAnchorView="QbR-kw-1nr" id="chQ-Ck-iZH">
+                            <popoverArrowDirection key="popoverArrowDirection"/>
+                        </segue>
+                        <segue destination="4qY-q0-dme" kind="popoverPresentation" identifier="askChoices" popoverAnchorView="viH-kh-aJE" id="wpD-MH-6MC">
                             <popoverArrowDirection key="popoverArrowDirection"/>
                         </segue>
                     </connections>
@@ -1210,6 +1213,90 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7f3-jt-syX" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2815" y="-708"/>
+        </scene>
+        <!--Ask Choice Table View Controller-->
+        <scene sceneID="aaO-1s-E8r">
+            <objects>
+                <tableViewController id="rlU-a7-RiB" customClass="AskChoiceTableViewController" customModule="Gym_Tracker" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="qTQ-wT-fuj">
+                        <rect key="frame" x="0.0" y="0.0" width="300" height="300"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <connections>
+                            <outlet property="dataSource" destination="rlU-a7-RiB" id="4ef-zj-4PT"/>
+                            <outlet property="delegate" destination="rlU-a7-RiB" id="vHs-Yc-hpx"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="RXS-1c-WsK">
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="gxC-PC-jq5">
+                            <connections>
+                                <action selector="cancel" destination="rlU-a7-RiB" id="9K5-Ee-dQd"/>
+                            </connections>
+                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem style="done" systemItem="done" id="r4h-fE-gR8">
+                                <connections>
+                                    <action selector="done" destination="rlU-a7-RiB" id="Ef2-aj-XvS"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="Next" id="1XZ-Nm-jnZ">
+                                <connections>
+                                    <segue destination="rlU-a7-RiB" kind="show" identifier="next" id="2of-wa-scu"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
+                        <connections>
+                            <outlet property="titleView" destination="ljI-6g-B1E" id="Q61-gs-q3c"/>
+                        </connections>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="choiceLbl" destination="570-eB-edc" id="Gub-mP-LS0"/>
+                        <outlet property="doneBtn" destination="r4h-fE-gR8" id="WMd-uU-Hq7"/>
+                        <outlet property="nextBtn" destination="1XZ-Nm-jnZ" id="5hn-BT-bWM"/>
+                    </connections>
+                </tableViewController>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" alignment="center" id="ljI-6g-B1E">
+                    <rect key="frame" x="0.0" y="0.0" width="176" height="40"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" text="Choose Exercize" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4p2-Cw-dbX">
+                            <rect key="frame" x="22" y="0.0" width="132" height="25"/>
+                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" text="[x/y choice(s)]" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="570-eB-edc">
+                            <rect key="frame" x="53" y="25" width="70.5" height="15"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <gestureRecognizers/>
+                </stackView>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="aLC-07-3jb" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2608" y="282"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="HDQ-eb-zeL">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="4qY-q0-dme" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <value key="contentSizeForViewInPopover" type="size" width="300" height="300"/>
+                    <size key="freeformSize" width="300" height="300"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" barStyle="black" id="w5O-nj-9pB">
+                        <rect key="frame" x="0.0" y="0.0" width="300" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="rlU-a7-RiB" kind="relationship" relationship="rootViewController" id="hPf-bU-Ezp"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="q65-ne-gKF" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1861" y="283"/>
         </scene>
     </scenes>
     <resources>

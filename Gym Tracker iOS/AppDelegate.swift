@@ -321,8 +321,15 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 	}
 	
 	func askForChoices(_ choices: [GTChoice]) {
-		#warning("Implement me")
-		fatalError()
+		currentWorkout.askForChoices(choices)
+	}
+	
+	func reportChoices(_ choices: [GTChoice: Int32]) {
+		workoutController?.reportChoices(choices)
+	}
+	
+	func cancelStartup() {
+		workoutController?.cancelStartup()
 	}
 	
 	func setWorkoutTitle(_ text: String) {

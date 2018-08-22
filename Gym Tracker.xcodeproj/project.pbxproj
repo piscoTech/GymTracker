@@ -118,6 +118,7 @@
 		7ABBBB1E212709CD00AAC1DA /* ExecuteWorkoutControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ABBBB1D212709CD00AAC1DA /* ExecuteWorkoutControllerTests.swift */; };
 		7ABC3F2C1EA6A8DF008A3FCF /* rest_end_notification.caf in Resources */ = {isa = PBXBuildFile; fileRef = 7ABC3F2A1EA6A8DF008A3FCF /* rest_end_notification.caf */; };
 		7ABC3F2D1EA6A8DF008A3FCF /* rest_end.caf in Resources */ = {isa = PBXBuildFile; fileRef = 7ABC3F2B1EA6A8DF008A3FCF /* rest_end.caf */; };
+		7ABCE3F5212DCAE50069FA0B /* AskChoiceTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ABCE3F4212DCAE50069FA0B /* AskChoiceTVC.swift */; };
 		7AC388F51EA21B3200EB9571 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AC388F41EA21B3200EB9571 /* UserNotifications.framework */; };
 		7AC705E8210F3A1D003E4DF4 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AC388F41EA21B3200EB9571 /* UserNotifications.framework */; };
 		7AC705EA210F3A1D003E4DF4 /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AC705E9210F3A1D003E4DF4 /* UserNotificationsUI.framework */; };
@@ -143,7 +144,7 @@
 		7ADC03DE1E78A328005BDC25 /* WorkoutTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADC03D41E78A328005BDC25 /* WorkoutTVC.swift */; };
 		7ADC07D31E98CE450047E0C2 /* ExecuteWorkoutIC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADC07D21E98CE450047E0C2 /* ExecuteWorkoutIC.swift */; };
 		7ADC07D51E98CE860047E0C2 /* UpdateSecondaryInfoIC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADC07D41E98CE860047E0C2 /* UpdateSecondaryInfoIC.swift */; };
-		7ADCF6911E81135700ECF011 /* TableView CellControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADCF6901E81135700ECF011 /* TableView CellControllers.swift */; };
+		7ADCF6911E81135700ECF011 /* Table View Cells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADCF6901E81135700ECF011 /* Table View Cells.swift */; };
 		7ADD77BF2110562C008CDC00 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADD77BE2110562C008CDC00 /* DataManager.swift */; };
 		7AEE4D661E812A9200D843EB /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7AEE4D641E812A9200D843EB /* Interface.storyboard */; };
 		7AF561271E93A845009BF658 /* Appearance Classes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AF561261E93A845009BF658 /* Appearance Classes.swift */; };
@@ -396,6 +397,7 @@
 		7ABBBB1D212709CD00AAC1DA /* ExecuteWorkoutControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExecuteWorkoutControllerTests.swift; sourceTree = "<group>"; };
 		7ABC3F2A1EA6A8DF008A3FCF /* rest_end_notification.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = rest_end_notification.caf; sourceTree = "<group>"; };
 		7ABC3F2B1EA6A8DF008A3FCF /* rest_end.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = rest_end.caf; sourceTree = "<group>"; };
+		7ABCE3F4212DCAE50069FA0B /* AskChoiceTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AskChoiceTVC.swift; sourceTree = "<group>"; };
 		7AC388F41EA21B3200EB9571 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		7AC705E7210F3A1D003E4DF4 /* Gym Tracker Notifications.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Gym Tracker Notifications.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7AC705E9210F3A1D003E4DF4 /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
@@ -428,7 +430,7 @@
 		7ADC07D21E98CE450047E0C2 /* ExecuteWorkoutIC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExecuteWorkoutIC.swift; sourceTree = "<group>"; };
 		7ADC07D41E98CE860047E0C2 /* UpdateSecondaryInfoIC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateSecondaryInfoIC.swift; sourceTree = "<group>"; };
 		7ADC07D61E98CEB20047E0C2 /* ExecuteWorkoutController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExecuteWorkoutController.swift; sourceTree = "<group>"; };
-		7ADCF6901E81135700ECF011 /* TableView CellControllers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TableView CellControllers.swift"; sourceTree = "<group>"; };
+		7ADCF6901E81135700ECF011 /* Table View Cells.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Table View Cells.swift"; sourceTree = "<group>"; };
 		7ADD77BE2110562C008CDC00 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		7ADD77C021105938008CDC00 /* Gym Tracker Notifications.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Gym Tracker Notifications.entitlements"; sourceTree = "<group>"; };
 		7AE10A421E7D6F1000A64CF7 /* Preferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
@@ -510,6 +512,7 @@
 			children = (
 				7A6E083C1E98E94C003BB048 /* CurrentWorkoutVC.swift */,
 				7A27276E1EA3536400E67F70 /* UpdateSecondaryInfoVC.swift */,
+				7ABCE3F4212DCAE50069FA0B /* AskChoiceTVC.swift */,
 			);
 			name = ExecuteWorkout;
 			sourceTree = "<group>";
@@ -745,6 +748,14 @@
 			name = Sounds;
 			sourceTree = "<group>";
 		};
+		7ABCE3F2212DC7E90069FA0B /* View */ = {
+			isa = PBXGroup;
+			children = (
+				7ADCF6901E81135700ECF011 /* Table View Cells.swift */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
 		7AC705EB210F3A1D003E4DF4 /* Gym Tracker Notifications */ = {
 			isa = PBXGroup;
 			children = (
@@ -789,6 +800,7 @@
 			isa = PBXGroup;
 			children = (
 				7ACF6DB21E80399D00579B67 /* Controller */,
+				7ABCE3F2212DC7E90069FA0B /* View */,
 				7ACF6D941E802FD200579B67 /* ExtensionDelegate.swift */,
 				7ACF6DB31E8039B500579B67 /* Main watchOS.swift */,
 				7ACF6DA91E80317A00579B67 /* Supporting Files */,
@@ -820,7 +832,6 @@
 				7A5D2B701E8422DB008EED4C /* WorkoutDetailIC.swift */,
 				7ADC07D21E98CE450047E0C2 /* ExecuteWorkoutIC.swift */,
 				7ADC07D41E98CE860047E0C2 /* UpdateSecondaryInfoIC.swift */,
-				7ADCF6901E81135700ECF011 /* TableView CellControllers.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -1310,6 +1321,7 @@
 				7AB6A00621233DCD0053E259 /* WorkoutIterator.swift in Sources */,
 				7AB72FE91EB0C80400091E0D /* BackupListTableViewController.swift in Sources */,
 				7ADC03DE1E78A328005BDC25 /* WorkoutTVC.swift in Sources */,
+				7ABCE3F5212DCAE50069FA0B /* AskChoiceTVC.swift in Sources */,
 				7ADC03D91E78A328005BDC25 /* ExercizeTVC.swift in Sources */,
 				7A342EED212ACB610049103A /* PartCollectionTVC.swift in Sources */,
 				7A4DF0171E9BCC3300E2F031 /* CompletedWorkoutsTVC.swift in Sources */,
@@ -1399,7 +1411,7 @@
 				7A5D2B711E8422DB008EED4C /* WorkoutDetailIC.swift in Sources */,
 				7ACF6DB41E8039B500579B67 /* Main watchOS.swift in Sources */,
 				7ADC07D31E98CE450047E0C2 /* ExecuteWorkoutIC.swift in Sources */,
-				7ADCF6911E81135700ECF011 /* TableView CellControllers.swift in Sources */,
+				7ADCF6911E81135700ECF011 /* Table View Cells.swift in Sources */,
 				7ACF6D951E802FD200579B67 /* ExtensionDelegate.swift in Sources */,
 				7AB6A00721233DCD0053E259 /* WorkoutIterator.swift in Sources */,
 				7ACF6D931E802FD200579B67 /* WorkoutListIC.swift in Sources */,

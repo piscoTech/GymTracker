@@ -183,7 +183,7 @@ public class ExecuteWorkoutController: NSObject {
 		}
 	}
 	
-	func reportChoices(_ choices: [GTChoice: Int32]) {
+	public func reportChoices(_ choices: [GTChoice: Int32]) {
 		for (c, i) in choices {
 			if let index = self.choices.firstIndex(where: { $0.choice == c }) {
 				self.choices[index].exercize = i
@@ -196,7 +196,7 @@ public class ExecuteWorkoutController: NSObject {
 	/// Cancel the workout while choosing the exercizes as prompted by `askForChoices(_)` call to the view controller.
 	///
 	/// If the workout has already stared, i.e. choices (if any) have been reported with `reportChoices(_)`, use `cancelWorkout()` instead.
-	func cancelStartup() {
+	public func cancelStartup() {
 		guard self.workoutIterator == nil else {
 			return
 		}

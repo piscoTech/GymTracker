@@ -44,7 +44,8 @@
 "IS_CHOICE" = "Choice info";
 
 "WORKOUT_SAVE_ERR" = "Cannot save workout";
-
+"ASK_CHOICE" = "%d/%d choice";
+"ASK_CHOICES" = "%d/%d choices";
 "NEXT_EXERCIZE_FLAG" = "NEXT: ";
 "NEXT_EXERCIZE_END" = "Workout End";
 "NEXT_EXERCIZE_REST" = " rest";

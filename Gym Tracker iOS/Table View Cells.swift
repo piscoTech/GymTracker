@@ -12,12 +12,21 @@ import GymTrackerCore
 
 class MultilineCell: UITableViewCell {
 	
-	static let font = UIFont.systemFont(ofSize: 20, weight: .heavy)
+	static let heavyFont = UIFont.systemFont(ofSize: 20, weight: .heavy)
+	static private(set) var normalFont: UIFont!
 	
 	@IBOutlet weak var label: UILabel! {
 		didSet {
-			label.font = MultilineCell.font
+			if MultilineCell.normalFont == nil {
+				MultilineCell.normalFont = label.font
+			}
+			
+			label.font = MultilineCell.heavyFont
 		}
+	}
+	
+	func useNormalFont(_ normal: Bool = true) {
+		label.font = normal ? MultilineCell.normalFont : MultilineCell.heavyFont
 	}
 	
 }
@@ -26,7 +35,7 @@ class SingleFieldCell: UITableViewCell {
 
 	@IBOutlet weak var textField: UITextField! {
 		didSet {
-			textField.font = MultilineCell.font
+			textField.font = MultilineCell.heavyFont
 		}
 	}
 

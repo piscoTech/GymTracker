@@ -24,7 +24,7 @@ final public class GTChoice: GTSetsExercize, ExercizeCollection {
 	/// The index of the last chosen exercize.
 	///
 	/// A negative value represent no choice, a value grater than the last index is equivalent to `0`.
-	@NSManaged var lastChosen: Int32
+	@NSManaged public var lastChosen: Int32
 	@NSManaged public private(set) var exercizes: Set<GTSimpleSetsExercize>
 
 	override class func loadWithID(_ id: String, fromDataManager dataManager: DataManager) -> GTChoice? {
