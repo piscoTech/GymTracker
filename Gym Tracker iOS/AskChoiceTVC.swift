@@ -27,14 +27,10 @@ class AskChoiceTableViewController: UITableViewController {
 	}
 	
 	@IBOutlet private weak var choiceLbl: UILabel!
-	private let rowId = "title"
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-		tableView.rowHeight = 44
-		
-        tableView.register(UINib(nibName: "TitleCell", bundle: Bundle.main), forCellReuseIdentifier: rowId)
 		if n == choices.count - 1 {
 			navigationItem.rightBarButtonItems = [doneBtn]
 			nextBtn = nil
@@ -49,8 +45,9 @@ class AskChoiceTableViewController: UITableViewController {
 		}
 		
 		let ch = choices[n]
-		choice = min(ch.lastChosen, Int32(ch.exercizes.count) - 1)
-		choice = choice >= 0 ? choice + 1 : nil
+		let count = Int32(ch.exercizes.count)
+		choice = min(ch.lastChosen, count - 1)
+		choice = choice >= 0 ? (choice + 1) % count : nil
 		
 		updateButtons()
 	}
@@ -78,11 +75,12 @@ class AskChoiceTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: rowId, for: indexPath) as! MultilineCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "exercize", for: indexPath)
 
 		let i = Int32(indexPath.row)
-        cell.label.text = choices[n][i]?.title
-		cell.useNormalFont()
+		let ch = choices[n][i]!
+        cell.textLabel?.text = ch.title
+		cell.detailTextLabel?.text = ch.summary
 		cell.accessoryType = choice == i ? .checkmark : .none
 
         return cell
@@ -91,10 +89,12 @@ class AskChoiceTableViewController: UITableViewController {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		tableView.deselectRow(at: indexPath, animated: true)
 		
-		choice = Int32(indexPath.row)
-		for i in 0 ..< choices[n].exercizes.count {
-			tableView.cellForRow(at: IndexPath(row: i, section: 0))?.accessoryType = choice == i ? .checkmark : .none
+		if let old = choice {
+			tableView.cellForRow(at: IndexPath(row: Int(old), section: 0))?.accessoryType = .none
 		}
+		
+		choice = Int32(indexPath.row)
+		tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
 		
 		updateButtons()
 	}

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="14306.4" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="f3a-Tn-603">
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="14313.13.2" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="f3a-Tn-603">
     <device id="watch42" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="watchOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14278.2"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="14237"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.9"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="14238.4.1"/>
     </dependencies>
     <scenes>
         <!--Workouts-->
@@ -16,7 +16,7 @@
                     <items>
                         <table alignment="left" id="Bs2-Pu-6ym">
                             <items>
-                                <tableRow identifier="workout" id="EjV-nl-LHf" customClass="BasicDetailCell" customModule="Gym_Tracker_watchOS_Extension">
+                                <tableRow identifier="workout" id="EjV-nl-LHf" customClass="AccessoryCell" customModule="Gym_Tracker_watchOS_Extension">
                                     <group key="rootItem" width="1" height="0.0" alignment="left" layout="vertical" id="5zA-bJ-Yok">
                                         <items>
                                             <label alignment="left" text="Label" numberOfLines="0" id="fkO-le-IEs">
@@ -258,6 +258,78 @@
             </objects>
             <point key="canvasLocation" x="457" y="475"/>
         </scene>
+        <!--choice-->
+        <scene sceneID="lIk-SX-gI4">
+            <objects>
+                <controller identifier="choice" spacing="10" id="fqP-hb-IcB" customClass="AskChoiceInterfaceController" customModule="Gym_Tracker_watchOS_Extension">
+                    <items>
+                        <group width="1" alignment="left" layout="vertical" spacing="0.0" id="olc-5n-HRX">
+                            <items>
+                                <label alignment="left" text="Choose Exercize" id="hmh-Pu-WVE">
+                                    <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
+                                </label>
+                                <label alignment="left" text="[x/y]" id="4XE-xS-u8M">
+                                    <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
+                                </label>
+                            </items>
+                        </group>
+                        <table alignment="left" id="kP2-yh-oC5">
+                            <items>
+                                <tableRow identifier="exercize" id="xNJ-ba-bnl" customClass="AccessoryCell" customModule="Gym_Tracker_watchOS_Extension">
+                                    <group key="rootItem" width="1" height="0.0" alignment="left" spacing="0.0" id="2wa-HK-QzA">
+                                        <items>
+                                            <group width="1" widthAdjustment="-24" alignment="left" verticalAlignment="center" layout="vertical" spacing="1" id="ubU-K8-7PU">
+                                                <items>
+                                                    <label alignment="left" text="Label" numberOfLines="0" id="Ml8-nw-49z">
+                                                        <fontDescription key="font" type="system" pointSize="16"/>
+                                                    </label>
+                                                    <label alignment="left" text="Label" numberOfLines="0" id="C8W-hZ-dYd">
+                                                        <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
+                                                    </label>
+                                                </items>
+                                            </group>
+                                            <imageView width="20" height="20" alignment="right" verticalAlignment="center" image="Checkmark" contentMode="center" id="10j-0E-ZXy"/>
+                                        </items>
+                                    </group>
+                                    <connections>
+                                        <outlet property="accessory" destination="10j-0E-ZXy" id="Ew4-Vh-URZ"/>
+                                        <outlet property="detailLabel" destination="C8W-hZ-dYd" id="9g9-Ek-cy5"/>
+                                        <outlet property="mainContent" destination="ubU-K8-7PU" id="k01-Sm-D8m"/>
+                                        <outlet property="titleLabel" destination="Ml8-nw-49z" id="aXK-wd-kl9"/>
+                                    </connections>
+                                </tableRow>
+                            </items>
+                        </table>
+                        <group width="1" alignment="left" layout="vertical" id="01i-dt-2bu">
+                            <items>
+                                <button width="1" alignment="left" title="Next" id="Nru-IY-yrY">
+                                    <connections>
+                                        <action selector="nextChoice" destination="fqP-hb-IcB" id="XDL-iG-6xH"/>
+                                    </connections>
+                                </button>
+                                <button width="1" alignment="left" title="Done" id="RRc-gt-X8U">
+                                    <connections>
+                                        <action selector="reportChoices" destination="fqP-hb-IcB" id="Rya-Da-Rm6"/>
+                                    </connections>
+                                </button>
+                            </items>
+                        </group>
+                    </items>
+                    <menu key="menu" id="W6k-1N-Wvr">
+                        <items>
+                            <menuItem title="Menu Item" id="dAf-E1-1jJ"/>
+                        </items>
+                    </menu>
+                    <connections>
+                        <outlet property="choiceNum" destination="4XE-xS-u8M" id="2U5-Mr-6wy"/>
+                        <outlet property="doneBtn" destination="RRc-gt-X8U" id="pEx-x5-nl5"/>
+                        <outlet property="nextBtn" destination="Nru-IY-yrY" id="3hB-8k-geo"/>
+                        <outlet property="table" destination="kP2-yh-oC5" id="RZH-HD-wkA"/>
+                    </connections>
+                </controller>
+            </objects>
+            <point key="canvasLocation" x="457" y="758"/>
+        </scene>
         <!--Workout-->
         <scene sceneID="Zdc-Zm-5g9">
             <objects>
@@ -274,7 +346,7 @@
                         </button>
                         <table alignment="left" id="itK-2w-s1f">
                             <items>
-                                <tableRow identifier="exercizeCircuit" selectable="NO" id="TqS-vF-PJI" customClass="BasicDetailCell" customModule="Gym_Tracker_watchOS_Extension">
+                                <tableRow identifier="exercize" selectable="NO" id="TqS-vF-PJI" customClass="ExercizeCell" customModule="Gym_Tracker_watchOS_Extension">
                                     <group key="rootItem" width="1" height="0.0" alignment="left" spacing="0.0" id="P8d-ix-mag">
                                         <items>
                                             <group width="1" widthAdjustment="-22" alignment="left" verticalAlignment="center" layout="vertical" spacing="1" id="mcV-pv-jbx">
@@ -298,26 +370,12 @@
                                         </items>
                                     </group>
                                     <connections>
+                                        <outlet property="accessory" destination="rZR-cv-2CH" id="LJ9-H4-OsX"/>
                                         <outlet property="collectionImage" destination="gSD-J8-nAb" id="IiC-bu-jGG"/>
                                         <outlet property="collectionLabel" destination="tQI-BU-p1y" id="J87-eE-FSn"/>
                                         <outlet property="detailLabel" destination="VXn-ev-WQp" id="HTD-D5-uMf"/>
+                                        <outlet property="mainContent" destination="mcV-pv-jbx" id="Ohb-9f-Vw6"/>
                                         <outlet property="titleLabel" destination="c9m-oy-Yey" id="8jK-D6-Nsc"/>
-                                    </connections>
-                                </tableRow>
-                                <tableRow identifier="exercize" selectable="NO" id="i3I-EY-pnf" customClass="BasicDetailCell" customModule="Gym_Tracker_watchOS_Extension">
-                                    <group key="rootItem" width="1" height="0.0" alignment="left" layout="vertical" spacing="1" id="Mq0-bl-Qy5">
-                                        <items>
-                                            <label alignment="left" text="Label" numberOfLines="0" id="AYN-Tv-chk">
-                                                <fontDescription key="font" type="system" pointSize="16"/>
-                                            </label>
-                                            <label alignment="left" text="Label" numberOfLines="0" id="DJH-In-QYp">
-                                                <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
-                                            </label>
-                                        </items>
-                                    </group>
-                                    <connections>
-                                        <outlet property="detailLabel" destination="DJH-In-QYp" id="7JT-G2-Nmf"/>
-                                        <outlet property="titleLabel" destination="AYN-Tv-chk" id="E86-bR-4PH"/>
                                     </connections>
                                 </tableRow>
                                 <tableRow identifier="rest" selectable="NO" id="7MH-wF-y5l" customClass="RestCell" customModule="Gym_Tracker" customModuleProvider="target">

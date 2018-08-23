@@ -68,11 +68,11 @@ class WorkoutListInterfaceController: WKInterfaceController {
 			table.setNumberOfRows(workouts.count, withRowType: "workout")
 			
 			for i in 0 ..< workouts.count {
-				guard let row = table.rowController(at: i) as? BasicDetailCell else {
+				guard let row = table.rowController(at: i) as? AccessoryCell else {
 					continue
 				}
 				
-				row.set(title: workouts[i].name)
+				row.titleLabel.setText(workouts[i].name)
 				row.detailLabel.setText(workouts[i].description)
 			}
 		} else {

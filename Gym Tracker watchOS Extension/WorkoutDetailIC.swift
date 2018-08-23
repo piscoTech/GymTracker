@@ -61,15 +61,16 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 		
 		workoutName.setText(workout.name)
 		let exercizes = workout.exercizeList
+		let exCell = "exercize"
 		let rows = exercizes.flatMap { p -> [(GTPart, String)] in
 			if let r = p as? GTRest {
 				return [(r, "rest")]
 			} else if let e = p as? GTSimpleSetsExercize {
-				return [(e, "exercize")]
+				return [(e, exCell)]
 			} else if let c = p as? GTCircuit {
-				return c.exercizeList.map { ($0, "exercizeCircuit") }
+				return c.exercizeList.map { ($0, exCell) }
 			} else if let ch = p as? GTChoice {
-				return [(ch, "exercizeCircuit")]
+				return [(ch, exCell)]
 			} else {
 				fatalError("Unknown part type")
 			}
@@ -81,8 +82,10 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 				let row = table.rowController(at: i) as! RestCell
 				row.setRest(r.rest)
 			} else if let se = p as? GTSetsExercize {
-				let row = table.rowController(at: i) as! BasicDetailCell
+				let row = table.rowController(at: i) as! ExercizeCell
 				row.detailLabel.setText(se.summary)
+				row.accessoryWidth = 21
+				row.showAccessory(false)
 				
 				if let e = se as? GTSimpleSetsExercize {
 					row.set(title: e.title)
