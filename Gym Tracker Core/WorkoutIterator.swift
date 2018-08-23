@@ -292,7 +292,7 @@ public class WorkoutIterator: IteratorProtocol {
 					let group = try circuit.exercizeList.map { e -> GTPart in
 						if let choice = e as? GTChoice {
 							guard choices.count > chCount, let e = choice[choices[chCount]] else {
-								throw NSError()
+								throw GTError.generic
 							}
 							chCount += 1
 							return e
@@ -300,7 +300,7 @@ public class WorkoutIterator: IteratorProtocol {
 							return e
 						}
 						
-						throw NSError()
+						throw GTError.generic
 					}
 					parts.append(group)
 				} catch _ {

@@ -315,11 +315,6 @@
                             </items>
                         </group>
                     </items>
-                    <menu key="menu" id="W6k-1N-Wvr">
-                        <items>
-                            <menuItem title="Menu Item" id="dAf-E1-1jJ"/>
-                        </items>
-                    </menu>
                     <connections>
                         <outlet property="choiceNum" destination="4XE-xS-u8M" id="2U5-Mr-6wy"/>
                         <outlet property="doneBtn" destination="RRc-gt-X8U" id="pEx-x5-nl5"/>

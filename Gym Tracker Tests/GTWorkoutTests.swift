@@ -319,7 +319,7 @@ class GTWorkoutTests: XCTestCase {
 		do {
 			_ = try GTWorkout.import(fromXML: XMLNode(name: ""), withDataManager: dataManager)
 			XCTFail()
-		} catch GTDataImportError.failure(let o) {
+		} catch GTDataImportError.importFailure(let o) {
 			XCTAssertEqual(o, [])
 		} catch _ {
 			XCTFail()
@@ -338,7 +338,7 @@ class GTWorkoutTests: XCTestCase {
 			
 			_ = try GTWorkout.import(fromXML: xml, withDataManager: dataManager)
 			XCTFail()
-		} catch GTDataImportError.failure(let o) {
+		} catch GTDataImportError.importFailure(let o) {
 			XCTAssertEqual(o.count, 1)
 			XCTAssertTrue(o.first is GTWorkout)
 		} catch _ {
@@ -386,7 +386,7 @@ class GTWorkoutTests: XCTestCase {
 			
 			_ = try GTWorkout.import(fromXML: xml, withDataManager: dataManager)
 			XCTFail()
-		} catch GTDataImportError.failure(let o) {
+		} catch GTDataImportError.importFailure(let o) {
 			XCTAssertFalse(o.isEmpty)
 			XCTAssertNil(o.first { !($0 is GTWorkout) && !($0 is GTCircuit) && !($0 is GTSimpleSetsExercize) && !($0 is GTRepsSet) && !($0 is GTChoice)})
 		} catch _ {
@@ -413,7 +413,7 @@ class GTWorkoutTests: XCTestCase {
 			
 			_ = try GTWorkout.import(fromXML: xml, withDataManager: dataManager)
 			XCTFail()
-		} catch GTDataImportError.failure(let o) {
+		} catch GTDataImportError.importFailure(let o) {
 			XCTAssertFalse(o.isEmpty)
 			XCTAssertNil(o.first { !($0 is GTWorkout) && !($0 is GTCircuit) && !($0 is GTSimpleSetsExercize) && !($0 is GTRepsSet) && !($0 is GTChoice)})
 		} catch _ {
@@ -429,7 +429,7 @@ class GTWorkoutTests: XCTestCase {
 			
 			_ = try GTWorkout.import(fromXML: xml, withDataManager: dataManager)
 			XCTFail()
-		} catch GTDataImportError.failure(let o) {
+		} catch GTDataImportError.importFailure(let o) {
 			XCTAssertFalse(o.isEmpty)
 			XCTAssertNil(o.first { !($0 is GTWorkout) && !($0 is GTCircuit) && !($0 is GTSimpleSetsExercize) && !($0 is GTRepsSet) && !($0 is GTChoice) && !($0 is GTRest) })
 		} catch _ {

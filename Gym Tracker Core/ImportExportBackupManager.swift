@@ -197,7 +197,7 @@ public class ImportExportBackupManager: NSObject {
 								} else {
 									delete.append(w)
 								}
-							} catch GTDataImportError.failure(let obj) {
+							} catch GTError.importFailure(let obj) {
 								delete.append(contentsOf: obj)
 							} catch _ {}
 						}

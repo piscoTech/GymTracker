@@ -557,7 +557,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 		case GTNotification.Action.endSetWeightInApp.rawValue, GTNotification.Action.endSetWeight.rawValue:
 			let isUpdate = dataManager.preferences.weightUpdatedInNotification
 			let endTime = dataManager.preferences.setEndedInNotificationTime
-			let weightChange = isUpdate ? dataManager.preferences.weightChangeFromNotification : nil
+			let weightChange = isUpdate ? dataManager.preferences.secondaryInfoChangeFromNotification : nil
 			
 			workoutController?.endSet(endTime: endTime, secondaryInfoChange: weightChange)
 		default:

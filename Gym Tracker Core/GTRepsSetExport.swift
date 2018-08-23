@@ -31,7 +31,7 @@ extension GTRepsSet {
 			let repsData = xml.children.first(where: { $0.name == GTRepsSet.repsTag })?.content, let reps = Int(repsData),
 			let weightData = xml.children.first(where: { $0.name == GTRepsSet.weightTag })?.content, let weight = Double(weightData),
 			let restData = xml.children.first(where: { $0.name == GTRepsSet.restTag })?.content, let rest = TimeInterval(restData) else {
-			throw GTDataImportError.failure([])
+			throw GTError.importFailure([])
 		}
 		
 		let s = dataManager.newSet()
@@ -42,7 +42,7 @@ extension GTRepsSet {
 		if s.isSubtreeValid {
 			return s
 		} else {
-			throw GTDataImportError.failure(s.subtreeNodes)
+			throw GTError.importFailure(s.subtreeNodes)
 		}
 	}
 	

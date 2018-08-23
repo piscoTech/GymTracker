@@ -25,7 +25,7 @@ extension GTChoice {
 	override class func `import`(fromXML xml: XMLNode, withDataManager dataManager: DataManager) throws -> GTChoice {
 		guard xml.name == GTChoice.choiceTag,
 			let ex = xml.children.first(where: { $0.name == GTChoice.exercizesTag })?.children else {
-				throw GTDataImportError.failure([])
+				throw GTError.importFailure([])
 		}
 		
 		let ch = dataManager.newChoice()
@@ -33,19 +33,19 @@ extension GTChoice {
 			do {
 				let o = try GTDataObject.import(fromXML: e, withDataManager: dataManager)
 				guard let exercize = o as? GTSimpleSetsExercize else {
-					throw GTDataImportError.failure(ch.subtreeNodes.union([o]))
+					throw GTError.importFailure(ch.subtreeNodes.union([o]))
 				}
 				
 				ch.add(parts: exercize)
-			} catch GTDataImportError.failure(let obj) {
-				throw GTDataImportError.failure(ch.subtreeNodes.union(obj))
+			} catch GTError.importFailure(let obj) {
+				throw GTError.importFailure(ch.subtreeNodes.union(obj))
 			}
 		}
 		
 		if ch.isSubtreeValid {
 			return ch
 		} else {
-			throw GTDataImportError.failure(ch.subtreeNodes)
+			throw GTError.importFailure(ch.subtreeNodes)
 		}
 	}
 }

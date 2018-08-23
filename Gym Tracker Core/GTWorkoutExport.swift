@@ -31,7 +31,7 @@ extension GTWorkout {
 			let name = xml.children.first(where: { $0.name == GTWorkout.nameTag })?.content?.fromXML(),
 			let archived = xml.children.first(where: { $0.name == GTWorkout.archivedTag })?.content,
 			let parts = xml.children.first(where: { $0.name == GTWorkout.partsTag })?.children else {
-			throw GTDataImportError.failure([])
+			throw GTError.importFailure([])
 		}
 
 		let w = dataManager.newWorkout()
@@ -44,7 +44,7 @@ extension GTWorkout {
 			do {
 				let o = try GTDataObject.import(fromXML: p, withDataManager: dataManager)
 				guard let part = o as? GTPart else {
-					throw GTDataImportError.failure(w.subtreeNodes.union([o] + (dynamicCircuit?.subtreeNodes ?? [])))
+					throw GTError.importFailure(w.subtreeNodes.union([o] + (dynamicCircuit?.subtreeNodes ?? [])))
 				}
 				
 				if let e = part as? GTSetsExercize {
@@ -71,8 +71,8 @@ extension GTWorkout {
 						
 					w.add(parts: part)
 				}
-			} catch GTDataImportError.failure(let obj) {
-				throw GTDataImportError.failure(w.subtreeNodes.union(obj.union(dynamicCircuit?.subtreeNodes ?? [])))
+			} catch GTError.importFailure(let obj) {
+				throw GTError.importFailure(w.subtreeNodes.union(obj.union(dynamicCircuit?.subtreeNodes ?? [])))
 			}
 		}
 		
@@ -85,7 +85,7 @@ extension GTWorkout {
 		if w.isSubtreeValid && del.isEmpty {
 			return w
 		} else {
-			throw GTDataImportError.failure(w.subtreeNodes.union(del))
+			throw GTError.importFailure(w.subtreeNodes.union(del))
 		}
 	}
 	

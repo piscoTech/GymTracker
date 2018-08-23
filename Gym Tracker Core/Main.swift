@@ -27,3 +27,8 @@ public func GTLocalizedString(_ key: String, comment: String) -> String {
 	let bundle = Bundle(for: DataManager.self)
 	return NSLocalizedString(key, tableName: nil, bundle: bundle, value: "", comment: comment)
 }
+
+public enum GTError: Error {
+	case importFailure(Set<GTDataObject>)
+	case generic
+}

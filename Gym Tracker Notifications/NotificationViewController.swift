@@ -121,7 +121,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
 	
 	@IBAction func saveWeight(_ sender: AnyObject) {
 		preferences.weightUpdatedInNotification = true
-		preferences.weightChangeFromNotification = sum
+		preferences.secondaryInfoChangeFromNotification = sum
 		notificationCompletion?(.dismissAndForwardAction)
 	}
 	

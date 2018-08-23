@@ -41,13 +41,14 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 		if delegate == nil {
 			startBtn.setEnabled(false)
 			startBtn.setHidden(true)
+			appDelegate.executeWorkoutDetail = self
 		}
 		
 		reloadData(checkExistence: false)
 		updateButton()
 	}
 	
-	func reloadData(checkExistence: Bool = true) {
+	func reloadData(checkExistence: Bool = true, choices: [GTChoice: Int32]? = nil) {
 		if checkExistence {
 			guard workout.stillExists(inDataManager: appDelegate.dataManager), !workout.archived else {
 				if delegate != nil {
@@ -73,6 +74,12 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 				return [(ch, exCell)]
 			} else {
 				fatalError("Unknown part type")
+			}
+		}.map { p -> (GTPart, String) in
+			if let ch = p.0 as? GTChoice, let i = choices?[ch], let e = ch[i] {
+				return (e, exCell)
+			} else {
+				return p
 			}
 		}
 		table.setRowTypes(rows.map { $0.1 })

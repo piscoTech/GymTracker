@@ -25,7 +25,7 @@ extension GTCircuit {
 	override class func `import`(fromXML xml: XMLNode, withDataManager dataManager: DataManager) throws -> GTCircuit {
 		guard xml.name == GTCircuit.circuitTag,
 			let ex = xml.children.first(where: { $0.name == GTCircuit.exercizesTag })?.children else {
-				throw GTDataImportError.failure([])
+				throw GTError.importFailure([])
 		}
 
 		let c = dataManager.newCircuit()
@@ -33,19 +33,19 @@ extension GTCircuit {
 			do {
 				let o = try GTDataObject.import(fromXML: e, withDataManager: dataManager)
 				guard let exercize = o as? GTSetsExercize else {
-					throw GTDataImportError.failure(c.subtreeNodes.union([o]))
+					throw GTError.importFailure(c.subtreeNodes.union([o]))
 				}
 
 				c.add(parts: exercize)
-			} catch GTDataImportError.failure(let obj) {
-				throw GTDataImportError.failure(c.subtreeNodes.union(obj))
+			} catch GTError.importFailure(let obj) {
+				throw GTError.importFailure(c.subtreeNodes.union(obj))
 			}
 		}
 
 		if c.isSubtreeValid {
 			return c
 		} else {
-			throw GTDataImportError.failure(c.subtreeNodes)
+			throw GTError.importFailure(c.subtreeNodes)
 		}
 	}
 }

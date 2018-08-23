@@ -37,9 +37,9 @@ enum PreferenceKeys: String, KeyValueStoreKey {
 	case useBackups = "useBackups"
 	case lastBackup = "lastBackup"
 	
-	case weightUpdatedInNotification = "weightUpdatedInNotification"
+	case secondaryInfoUpdatedInNotification = "secondaryInfoUpdatedInNotification"
 	case setEndedInNotificationTime = "setEndedInNotification"
-	case weightChangeFromNotification = "weightChangeFromNotification"
+	case secondaryInfoChangeFromNotification = "secondaryInfoChangeFromNotification"
 	
 	case reviewRequestCounter = "reviewRequestCounter"
 }
@@ -90,12 +90,12 @@ public class Preferences {
 	// MARK: - Notification Data
 	
 	#if os(iOS)
-	public var weightUpdatedInNotification: Bool {
+	public var secondaryInfoUpdatedInNotification: Bool {
 		get {
-			return notificationData.bool(forKey: PreferenceKeys.weightUpdatedInNotification)
+			return notificationData.bool(forKey: PreferenceKeys.secondaryInfoUpdatedInNotification)
 		}
 		set {
-			notificationData.set(newValue, forKey: PreferenceKeys.weightUpdatedInNotification)
+			notificationData.set(newValue, forKey: PreferenceKeys.secondaryInfoUpdatedInNotification)
 			notificationData.synchronize()
 		}
 	}
@@ -115,21 +115,20 @@ public class Preferences {
 		}
 	}
 	
-	#warning("Rename me")
-	public var weightChangeFromNotification: Double {
+	public var secondaryInfoChangeFromNotification: Double {
 		get {
-			return notificationData.double(forKey: PreferenceKeys.weightChangeFromNotification)
+			return notificationData.double(forKey: PreferenceKeys.secondaryInfoChangeFromNotification)
 		}
 		set {
-			notificationData.set(newValue, forKey: PreferenceKeys.weightChangeFromNotification)
+			notificationData.set(newValue, forKey: PreferenceKeys.secondaryInfoChangeFromNotification)
 			notificationData.synchronize()
 		}
 	}
 	
 	public func clearNotificationData() {
-		weightUpdatedInNotification = false
+		secondaryInfoUpdatedInNotification = false
 		setEndedInNotificationTime = nil
-		weightChangeFromNotification = 0
+		secondaryInfoChangeFromNotification = 0
 	}
 	#endif
 	

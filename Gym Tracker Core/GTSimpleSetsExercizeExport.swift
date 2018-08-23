@@ -33,7 +33,7 @@ extension GTSimpleSetsExercize {
 		guard xml.name == GTSimpleSetsExercize.exercizeTag,
 			let name = xml.children.first(where: { $0.name == GTSimpleSetsExercize.nameTag })?.content?.fromXML(),
 			let sets = xml.children.first(where: { $0.name == GTSimpleSetsExercize.setsTag })?.children else {
-				throw GTDataImportError.failure([])
+				throw GTError.importFailure([])
 		}
 		let hasCircuitRest = xml.children.first(where: { $0.name == GTSimpleSetsExercize.hasCircuitRestTag })?.content ?? "false" == "true"
 		
@@ -44,19 +44,19 @@ extension GTSimpleSetsExercize {
 			do {
 				let o = try GTDataObject.import(fromXML: s, withDataManager: dataManager)
 				guard let repSet = o as? GTSet else {
-					throw GTDataImportError.failure(e.subtreeNodes.union([o]))
+					throw GTError.importFailure(e.subtreeNodes.union([o]))
 				}
 				
 				e.add(set: repSet)
-			} catch GTDataImportError.failure(let obj) {
-				throw GTDataImportError.failure(e.subtreeNodes.union(obj))
+			} catch GTError.importFailure(let obj) {
+				throw GTError.importFailure(e.subtreeNodes.union(obj))
 			}
 		}
 		
 		if e.isSubtreeValid {
 			return e
 		} else {
-			throw GTDataImportError.failure(e.subtreeNodes)
+			throw GTError.importFailure(e.subtreeNodes)
 		}
 	}
 	

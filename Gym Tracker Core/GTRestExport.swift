@@ -20,7 +20,7 @@ extension GTRest {
 	override class func `import`(fromXML xml: XMLNode, withDataManager dataManager: DataManager) throws -> GTRest {
 		guard xml.name == GTRest.restTag,
 			let restData = xml.content, let restTime = TimeInterval(restData) else {
-			throw GTDataImportError.failure([])
+			throw GTError.importFailure([])
 		}
 			
 		let r = dataManager.newRest()
@@ -29,7 +29,7 @@ extension GTRest {
 		if r.isSubtreeValid {
 			return r
 		} else {
-			throw GTDataImportError.failure(r.subtreeNodes)
+			throw GTError.importFailure(r.subtreeNodes)
 		}
 	}
 }

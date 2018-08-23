@@ -273,7 +273,7 @@ class GTChoiceTests: XCTestCase {
 		do {
 			_ = try GTChoice.import(fromXML: XMLNode(name: ""), withDataManager: dataManager)
 			XCTFail()
-		} catch GTDataImportError.failure(let o) {
+		} catch GTDataImportError.importFailure(let o) {
 			XCTAssertEqual(o, [])
 		} catch _ {
 			XCTFail()
@@ -286,7 +286,7 @@ class GTChoiceTests: XCTestCase {
 			
 			_ = try GTChoice.import(fromXML: xml, withDataManager: dataManager)
 			XCTFail()
-		} catch GTDataImportError.failure(let o) {
+		} catch GTDataImportError.importFailure(let o) {
 			XCTAssertEqual(o.count, 1)
 			XCTAssertTrue(o.first is GTChoice)
 		} catch _ {
@@ -301,7 +301,7 @@ class GTChoiceTests: XCTestCase {
 			
 			_ = try GTChoice.import(fromXML: xml, withDataManager: dataManager)
 			XCTFail()
-		} catch GTDataImportError.failure(let o) {
+		} catch GTDataImportError.importFailure(let o) {
 			XCTAssertFalse(o.isEmpty)
 			XCTAssertNil(o.first { !($0 is GTChoice) && !($0 is GTSimpleSetsExercize) && !($0 is GTRepsSet) })
 		} catch _ {

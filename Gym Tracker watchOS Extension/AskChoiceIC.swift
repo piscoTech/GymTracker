@@ -15,7 +15,7 @@ struct AskChoiceData {
 	var choices: [GTChoice]
 	var n: Int
 	var otherChoices: [GTChoice: Int32]
-	var delegate: ExecuteWorkoutController
+	var delegate: ExecuteWorkoutInterfaceController
 	
 }
 

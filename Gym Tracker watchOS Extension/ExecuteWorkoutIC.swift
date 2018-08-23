@@ -70,11 +70,12 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutCo
 	// MARK: - ExecuteWorkoutViewController
 	
 	func askForChoices(_ choices: [GTChoice]) {
-		presentController(withName: "choice", context: AskChoiceData(choices: choices, n: 0, otherChoices: [:], delegate: workoutController))
+		presentController(withName: "choice", context: AskChoiceData(choices: choices, n: 0, otherChoices: [:], delegate: self))
 	}
 	
 	func reportChoices(_ choices: [GTChoice: Int32]) {
 		workoutController.reportChoices(choices)
+		appDelegate.executeWorkoutDetail?.reloadData(choices: choices)
 	}
 	
 	func cancelStartup() {

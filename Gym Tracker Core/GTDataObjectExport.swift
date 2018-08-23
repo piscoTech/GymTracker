@@ -9,10 +9,6 @@
 import Foundation
 import MBLibrary
 
-enum GTDataImportError: Error {
-	case failure(Set<GTDataObject>)
-}
-
 extension GTDataObject {
 	
 	@objc func export() -> String {
@@ -21,7 +17,7 @@ extension GTDataObject {
 	
 	///Read XML data and create the corresponding `GTDataObject`, this method assumes that data is valid according to `workout.xsd`.
 	///- returns: The created `GTDataObject`.
-	///- throws: Throws `GTDataImportErrorWhether.failure` in case of failure, if the error contains `GTDataObject`s they must be deleted.
+	///- throws: Throws `GTError.importFailure` in case of failure, if the error contains `GTDataObject`s they must be deleted.
 	@objc class func `import`(fromXML xml: XMLNode, withDataManager dataManager: DataManager) throws -> GTDataObject {
 		let type: GTDataObject.Type
 		switch xml.name {
@@ -38,7 +34,7 @@ extension GTDataObject {
 		case GTWorkout.workoutTag:
 			type = GTWorkout.self
 		default:
-			throw GTDataImportError.failure([])
+			throw GTError.importFailure([])
 		}
 		
 		return try type.import(fromXML: xml, withDataManager: dataManager)

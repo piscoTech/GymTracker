@@ -15,6 +15,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
 	
 	weak var workoutList: WorkoutListInterfaceController?
 	weak var executeWorkout: ExecuteWorkoutInterfaceController?
+	weak var executeWorkoutDetail: WorkoutDetailInterfaceController?
 	
 	private(set) var dataManager: DataManager!
 
