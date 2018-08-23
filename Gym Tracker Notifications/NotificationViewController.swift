@@ -40,7 +40,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
 		
 		preferences = Preferences(for: .application)
 		updateWeightView.removeFromSuperview()
-		viewInApp = UNNotificationAction(identifier: GTNotification.Action.endSetWeightInApp.rawValue, title: NSLocalizedString("NOTIF_INTERACTIVE_WEIGHT_IN_APP", comment: "Open in App"), options: [.foreground])
+		viewInApp = UNNotificationAction(identifier: GTNotification.Action.endSetWeightInApp.rawValue, title: GTLocalizedString("NOTIF_INTERACTIVE_WEIGHT_IN_APP", comment: "Open in App"), options: [.foreground])
 		
 		let buttons = updateWeightView.arrangedSubviews
 			.compactMap { $0 as? UIStackView }
@@ -120,7 +120,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
 	}
 	
 	@IBAction func saveWeight(_ sender: AnyObject) {
-		preferences.weightUpdatedInNotification = true
+		preferences.secondaryInfoUpdatedInNotification = true
 		preferences.secondaryInfoChangeFromNotification = sum
 		notificationCompletion?(.dismissAndForwardAction)
 	}

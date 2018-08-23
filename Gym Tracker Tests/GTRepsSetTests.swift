@@ -132,7 +132,7 @@ class GTRepsSetTests: XCTestCase {
 		do {
 			_ = try GTRepsSet.import(fromXML: XMLNode(name: ""), withDataManager: dataManager)
 			XCTFail()
-		} catch GTDataImportError.importFailure(let o) {
+		} catch GTError.importFailure(let o) {
 			XCTAssertEqual(o, [])
 		} catch _ {
 			XCTFail()
@@ -151,7 +151,7 @@ class GTRepsSetTests: XCTestCase {
 			xml.add(child: rest)
 			_ = try GTRepsSet.import(fromXML: xml, withDataManager: dataManager)
 			XCTFail()
-		} catch GTDataImportError.importFailure(let o) {
+		} catch GTError.importFailure(let o) {
 			XCTAssertEqual(o.count, 1)
 			XCTAssertTrue(o.first is GTRepsSet)
 		} catch _ {

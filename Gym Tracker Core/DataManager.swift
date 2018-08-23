@@ -463,11 +463,12 @@ public class DataManager: NSObject {
 		guard s.isCurrentPlatform() || s == .watch else {
 			return
 		}
-		#warning("Get choices from preferences and send them to counterpart (delete them if nil)")
+		
 		preferences.runningWorkout = w?.recordID
 		preferences.runningWorkoutSource = s
 		
 		if w == nil {
+			preferences.currentChoices = nil
 			delegate?.enableEdit()
 			wcInterface.persistPendingChanges()
 		} else {
@@ -896,7 +897,8 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 		
 		sess.transferUserInfo([currentWorkoutKey: [
 			dataManager.preferences.runningWorkout?.wcRepresentation ?? ["nil"],
-			dataManager.preferences.runningWorkoutSource?.rawValue ?? "nil"
+			dataManager.preferences.runningWorkoutSource?.rawValue ?? "nil",
+			dataManager.preferences.currentChoices ?? "nil"
 		]])
 		dataManager.preferences.runningWorkoutNeedsTransfer = false
 	}
@@ -923,11 +925,12 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 			_ = dataManager.clearDatabase()
 		}
 		
-		if let curWorkout = userInfo[currentWorkoutKey] as? [Any], curWorkout.count == 2 {
+		if let curWorkout = userInfo[currentWorkoutKey] as? [Any], curWorkout.count == 3 {
 			// Pass something that's not an ID to signal that workout has ended
 			let w = CDRecordID(wcRepresentation: curWorkout[0] as? [String] ?? [])
 			dataManager.preferences.runningWorkout = w
 			dataManager.preferences.runningWorkoutSource = RunningWorkoutSource(rawValue: curWorkout[1] as? String ?? "")
+			dataManager.preferences.currentChoices = curWorkout[2] as? [Int32]
 			
 			if w == nil {
 				dataManager.delegate?.enableEdit()

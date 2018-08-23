@@ -268,12 +268,14 @@ public class ExecuteWorkoutController: NSObject {
 		self.source = .watch
 		self.isMirroring = true
 		self.view = viewController
-		#warning("Load choices from proferences")
-		self.choices = []
+		self.choices = [] // This is useless while mirroring
 		self.workout = w
 		self.data = nil
 		
-		workoutIterator = WorkoutIterator(workout, choices: [], using: dataManager.preferences)!
+		guard let iter = WorkoutIterator(workout, choices: dataManager.preferences.currentChoices ?? [], using: dataManager.preferences) else {
+			return nil
+		}
+		workoutIterator = iter
 		currentStep = workoutIterator.next()
 		
 		view.setWorkoutTitle(workout.name)

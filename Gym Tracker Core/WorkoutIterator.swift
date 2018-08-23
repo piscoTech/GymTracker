@@ -315,7 +315,7 @@ public class WorkoutIterator: IteratorProtocol {
 			return nil
 		}
 		
-		#warning("Save choice list to preferences")
+		preferences.currentChoices = choices
 		exercizes = parts
 		let realEx = exercizes.joined().compactMap { ($0 as? GTExercize)?.recordID }
 		secondaryInfoChanges = Dictionary(uniqueKeysWithValues: zip(realEx, [Double](repeating: 0, count: realEx.count)))
@@ -359,7 +359,7 @@ public class WorkoutIterator: IteratorProtocol {
 		
 		preferences.currentExercize = e
 		preferences.currentPart = p
-		preferences.weightChangeCache = secondaryInfoChanges
+		preferences.secondaryInfoChangeCache = secondaryInfoChanges
 	}
 	
 	func loadPersistedState() {
@@ -380,14 +380,14 @@ public class WorkoutIterator: IteratorProtocol {
 			}
 		}
 		
-		let cache = preferences.weightChangeCache
+		let cache = preferences.secondaryInfoChangeCache
 		for (e, w) in secondaryInfoChanges {
 			secondaryInfoChanges[e] = cache[e]?.rounded(to: 0.5) ?? w
 		}
 	}
 	
 	func destroyPersistedState() {
-		preferences.weightChangeCache = [:]
+		preferences.secondaryInfoChangeCache = [:]
 	}
 	
 	public func next() -> WorkoutStep? {

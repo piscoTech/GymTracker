@@ -29,7 +29,8 @@ enum PreferenceKeys: String, KeyValueStoreKey {
 	case currentExercize = "currentExercize"
 	case currentPart = "currentPart"
 	case currentRestEnd = "currentRestEnd"
-	case weightChangeCache = "weightChangeCache"
+	case secondaryInfoChangeCache = "secondaryInfoChangeCache"
+	case currentChoices = "currentChoices"
 	
 	case authorized = "authorized"
 	case authVersion = "authVersion"
@@ -80,7 +81,6 @@ public class Preferences {
 			local = KeyValueStore(userDefaults: UserDefaults(suiteName: "GymTrackerTests")!)
 		}
 		#if os(iOS)
-		#warning("Check this is ok from inside a framework")
 		notificationData = KeyValueStore(userDefaults: UserDefaults.init(suiteName: "group.marcoboschi.gymtracker.notificationdata")!)
 		#endif
 		
@@ -321,10 +321,10 @@ public class Preferences {
 		}
 	}
 	
-	public var weightChangeCache: [CDRecordID : Double] {
+	public var secondaryInfoChangeCache: [CDRecordID : Double] {
 		get {
 			var cache: [CDRecordID : Double] = [:]
-			for wc in local.array(forKey: PreferenceKeys.weightChangeCache) as? [[Any]] ?? [] {
+			for wc in local.array(forKey: PreferenceKeys.secondaryInfoChangeCache) as? [[Any]] ?? [] {
 				guard wc.count == 3, let rawId = Array(wc[0...1]) as? [String], let id = CDRecordID(wcRepresentation: rawId), let w = wc[2] as? Double else {
 					continue
 				}
@@ -336,13 +336,28 @@ public class Preferences {
 		}
 		set {
 			if newValue.isEmpty {
-				local.removeObject(forKey: PreferenceKeys.weightChangeCache)
+				local.removeObject(forKey: PreferenceKeys.secondaryInfoChangeCache)
 			} else {
 				var cache = [[Any]]()
 				for (e, w) in newValue {
 					cache.append(e.wcRepresentation as [Any] + [w])
 				}
-				local.set(cache, forKey: PreferenceKeys.weightChangeCache)
+				local.set(cache, forKey: PreferenceKeys.secondaryInfoChangeCache)
+			}
+			local.synchronize()
+		}
+	}
+	
+	public var currentChoices: [Int32]? {
+		get {
+			return local.array(forKey: PreferenceKeys.currentChoices) as? [Int32]
+		}
+		set {
+			let key = PreferenceKeys.currentChoices
+			if let ch = newValue {
+				local.set(ch, forKey: key)
+			} else {
+				local.removeObject(forKey: key)
 			}
 			local.synchronize()
 		}

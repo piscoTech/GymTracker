@@ -80,14 +80,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		let center = UNUserNotificationCenter.current()
 		center.requestAuthorization(options: [.alert, .sound]) { _, _ in }
 		do {
-			let endRestNow = UNNotificationAction(identifier: GTNotification.Action.endRest.rawValue, title: NSLocalizedString("NOTIF_END_REST_NOW", comment: "End now"))
-			let endRest = UNNotificationAction(identifier: GTNotification.Action.endRest.rawValue, title: NSLocalizedString("NOTIF_END_REST", comment: "End"))
+			let endRestNow = UNNotificationAction(identifier: GTNotification.Action.endRest.rawValue, title: GTLocalizedString("NOTIF_END_REST_NOW", comment: "End now"))
+			let endRest = UNNotificationAction(identifier: GTNotification.Action.endRest.rawValue, title: GTLocalizedString("NOTIF_END_REST", comment: "End"))
 			
-			let endSet = UNNotificationAction(identifier: GTNotification.Action.endSet.rawValue, title: NSLocalizedString("NOTIF_END_SET", comment: "Done"))
-			let endWorkout = UNNotificationAction(identifier: GTNotification.Action.endSet.rawValue, title: NSLocalizedString("NOTIF_END_WORKOUT", comment: "Done Workout"), options: .foreground)
+			let endSet = UNNotificationAction(identifier: GTNotification.Action.endSet.rawValue, title: GTLocalizedString("NOTIF_END_SET", comment: "Done"))
+			let endWorkout = UNNotificationAction(identifier: GTNotification.Action.endSet.rawValue, title: GTLocalizedString("NOTIF_END_WORKOUT", comment: "Done Workout"), options: .foreground)
 			
-			let endSetWeight = UNNotificationAction(identifier: GTNotification.Action.endSetWeight.rawValue, title: NSLocalizedString("NOTIF_END_SET_WEIGHT", comment: "Done, weight"), options: GTNotification.Action.genericSetWeightUpdateOptions)
-			let endWorkoutWeight = UNNotificationAction(identifier: GTNotification.Action.endSetWeight.rawValue, title: NSLocalizedString("NOTIF_END_SET_WEIGHT", comment: "Done, weight"), options: .foreground)
+			let endSetWeight = UNNotificationAction(identifier: GTNotification.Action.endSetWeight.rawValue, title: GTLocalizedString("NOTIF_END_SET_WEIGHT", comment: "Done, weight"), options: GTNotification.Action.genericSetWeightUpdateOptions)
+			let endWorkoutWeight = UNNotificationAction(identifier: GTNotification.Action.endSetWeight.rawValue, title: GTLocalizedString("NOTIF_END_SET_WEIGHT", comment: "Done, weight"), options: .foreground)
 			
 			let restStartNowCategory = UNNotificationCategory(identifier: GTNotification.Category.restStart.rawValue, actions: [endRestNow], intentIdentifiers: [], options: [])
 			let endRestCategory = UNNotificationCategory(identifier: GTNotification.Category.restEnd.rawValue, actions: [endRest], intentIdentifiers: [], options: [])
@@ -173,7 +173,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 										proceed()
 									} else {
 										loading.dismiss(animated: true) {
-											let alert = UIAlertController(simpleAlert: NSLocalizedString("IMPORT_FAIL", comment: "Fail"), message: NSLocalizedString("WRKT_INVALID", comment: "Invalid file"))
+											let alert = UIAlertController(simpleAlert: GTLocalizedString("IMPORT_FAIL", comment: "Fail"), message: GTLocalizedString("WRKT_INVALID", comment: "Invalid file"))
 											self.tabController.present(alert, animated: true)
 										}
 									}
@@ -183,24 +183,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 									if let wrkt = wrkt {
 										success = true
 										appDelegate.workoutList.refreshData()
-										msg = "\(wrkt.count) " + NSLocalizedString("WORKOUT\(wrkt.count > 1 ? "S" : "")", comment: "How many").lowercased()
+										msg = "\(wrkt.count) " + GTLocalizedString("WORKOUT\(wrkt.count > 1 ? "S" : "")", comment: "How many").lowercased()
 									} else {
 										success = false
 										msg = nil
 									}
 									
 									loading.dismiss(animated: true) {
-										self.tabController.present(UIAlertController(simpleAlert: NSLocalizedString(success ? "IMPORT_SUCCESS" : "IMPORT_FAIL", comment: "err/ok"), message: msg), animated: true)
+										self.tabController.present(UIAlertController(simpleAlert: GTLocalizedString(success ? "IMPORT_SUCCESS" : "IMPORT_FAIL", comment: "err/ok"), message: msg), animated: true)
 									}
 								}
 							}
 						}
 					} else {
-						let alert = UIAlertController(simpleAlert: NSLocalizedString("IMPORT_FAIL", comment: "Fail"), message: NSLocalizedString("IMPORT_STOP_WRKT", comment: "stop & retry"))
+						let alert = UIAlertController(simpleAlert: GTLocalizedString("IMPORT_FAIL", comment: "Fail"), message: GTLocalizedString("IMPORT_STOP_WRKT", comment: "stop & retry"))
 						self.tabController.present(alert, animated: true)
 					}
 				} else {
-					let alert = UIAlertController(simpleAlert: NSLocalizedString("IMPORT_FAIL", comment: "Fail"), message: NSLocalizedString("WRKT_INVALID", comment: "Invalid file"))
+					let alert = UIAlertController(simpleAlert: GTLocalizedString("IMPORT_FAIL", comment: "Fail"), message: GTLocalizedString("WRKT_INVALID", comment: "Invalid file"))
 					self.tabController.present(alert, animated: true)
 				}
 			}
@@ -274,8 +274,8 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 			healthStore.startWatchApp(with: HKWorkoutConfiguration()) { success, _ in
 				let displayError = {
 					DispatchQueue.main.async {
-						let alert = UIAlertController(simpleAlert: NSLocalizedString("WORKOUT_START_ERR", comment: "Err"),
-													  message: NSLocalizedString("WORKOUT_START_ERR_WATCH", comment: "Err watch")) {
+						let alert = UIAlertController(simpleAlert: GTLocalizedString("WORKOUT_START_ERR", comment: "Err"),
+													  message: GTLocalizedString("WORKOUT_START_ERR_WATCH", comment: "Err watch")) {
 														self.startLocalWorkout(workout)
 						}
 						self.currentWorkout.present(alert, animated: true)
@@ -450,8 +450,8 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 				let endTime = end.timeIntervalSinceNow
 				if endTime > GTNotification.immediateNotificationDelay {
 					let restDurationContent = UNMutableNotificationContent()
-					restDurationContent.title = NSLocalizedString("REST_TIME_TITLE", comment: "Rest time")
-					restDurationContent.body = NSLocalizedString("REST_TIME_BODY", comment: "Rest for") + duration.getDuration(hideHours: true)
+					restDurationContent.title = GTLocalizedString("REST_TIME_TITLE", comment: "Rest time")
+					restDurationContent.body = GTLocalizedString("REST_TIME_BODY", comment: "Rest for") + duration.getDuration(hideHours: true)
 					restDurationContent.sound = nil
 					restDurationContent.categoryIdentifier = GTNotification.Category.restStart.rawValue
 					
@@ -460,8 +460,8 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 				
 				let restEndTrigger = UNTimeIntervalNotificationTrigger(timeInterval: max(endTime, GTNotification.immediateNotificationDelay), repeats: false)
 				let restEndContent = UNMutableNotificationContent()
-				restEndContent.title = NSLocalizedString("REST_OVER_TITLE", comment: "Rest over")
-				restEndContent.body = NSLocalizedString("REST_\((workoutController?.currentIsRestPeriod ?? true) ? "EXERCIZE" : "SET")_OVER_BODY", comment: "Next Exercize")
+				restEndContent.title = GTLocalizedString("REST_OVER_TITLE", comment: "Rest over")
+				restEndContent.body = GTLocalizedString("REST_\((workoutController?.currentIsRestPeriod ?? true) ? "EXERCIZE" : "SET")_OVER_BODY", comment: "Next Exercize")
 				restEndContent.sound = UNNotificationSound(named: UNNotificationSoundName(rawValue: "rest_end_notification.caf"))
 				restEndContent.categoryIdentifier = GTNotification.Category.restEnd.rawValue
 				
@@ -471,7 +471,7 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 			if let (ex, set, other) = workoutController?.currentSetInfo, let (weight, change) = workoutController?.currentSetRawInfo {
 				let nextSetContent = UNMutableNotificationContent()
 				nextSetContent.title = ex
-				nextSetContent.body = set + NSLocalizedString("CUR_REPS_INFO", comment: "reps") + (other != nil ? "\n\(other!)" : "")
+				nextSetContent.body = set + (other != nil ? "\n\(other!)" : "")
 				nextSetContent.sound = nil
 				nextSetContent.userInfo = [
 					GTNotification.UserInfo.setWeight.rawValue: 	  weight,
@@ -555,7 +555,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 			currentWorkout.skipAskUpdate = true
 			workoutController?.endSet()
 		case GTNotification.Action.endSetWeightInApp.rawValue, GTNotification.Action.endSetWeight.rawValue:
-			let isUpdate = dataManager.preferences.weightUpdatedInNotification
+			let isUpdate = dataManager.preferences.secondaryInfoUpdatedInNotification
 			let endTime = dataManager.preferences.setEndedInNotificationTime
 			let weightChange = isUpdate ? dataManager.preferences.secondaryInfoChangeFromNotification : nil
 			

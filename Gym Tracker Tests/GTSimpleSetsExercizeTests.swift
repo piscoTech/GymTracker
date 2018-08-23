@@ -304,7 +304,7 @@ class GTSimpleSetsExercizeTests: XCTestCase {
 		do {
 			_ = try GTSimpleSetsExercize.import(fromXML: XMLNode(name: ""), withDataManager: dataManager)
 			XCTFail()
-		} catch GTDataImportError.importFailure(let o) {
+		} catch GTError.importFailure(let o) {
 			XCTAssertEqual(o, [])
 		} catch _ {
 			XCTFail()
@@ -322,7 +322,7 @@ class GTSimpleSetsExercizeTests: XCTestCase {
 			
 			_ = try GTSimpleSetsExercize.import(fromXML: xml, withDataManager: dataManager)
 			XCTFail()
-		} catch GTDataImportError.importFailure(let o) {
+		} catch GTError.importFailure(let o) {
 			XCTAssertFalse(o.isEmpty)
 			XCTAssertNil(o.first { !($0 is GTSimpleSetsExercize) && !($0 is GTRepsSet) })
 		} catch _ {

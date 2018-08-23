@@ -78,7 +78,7 @@ class BackupListTableViewController: UITableViewController {
 				if success {
 					self.updateList(lazy: true)
 				} else {
-					self.present(UIAlertController(simpleAlert: NSLocalizedString("BACKUP_FAIL", comment: "Error"), message: nil), animated: true)
+					self.present(UIAlertController(simpleAlert: GTLocalizedString("BACKUP_FAIL", comment: "Error"), message: nil), animated: true)
 				}
 			}
 		}
@@ -95,7 +95,7 @@ class BackupListTableViewController: UITableViewController {
 	override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
 		var act = [UITableViewRowAction]()
 		
-		let export = UITableViewRowAction(style: .normal, title: NSLocalizedString("EXPORT_BACKUP", comment: "export")) { _, row in
+		let export = UITableViewRowAction(style: .normal, title: GTLocalizedString("EXPORT_BACKUP", comment: "export")) { _, row in
 			self.tableView.setEditing(false, animated: true)
 			
 			DispatchQueue.main.async {
@@ -112,7 +112,7 @@ class BackupListTableViewController: UITableViewController {
 		act.append(export)
 		
 		if appDelegate.canEdit {
-			let restore = UITableViewRowAction(style: .default, title: NSLocalizedString("RESTORE_BACKUP", comment: "Restore")) { _, row in
+			let restore = UITableViewRowAction(style: .default, title: GTLocalizedString("RESTORE_BACKUP", comment: "Restore")) { _, row in
 				self.tableView.setEditing(false, animated: true)
 				guard appDelegate.canEdit else {
 					return
@@ -126,15 +126,15 @@ class BackupListTableViewController: UITableViewController {
 								let confirm = {
 									let alert: UIAlertController
 									if let count = count, let proceed = proceed {
-										alert = UIAlertController(title: NSLocalizedString("RESTORE_CONFIRM", comment: "err"), message: "\(count)" + NSLocalizedString("RESTORE_CONFIRM_TXT\(count > 1 ? "_MANY" : "")", comment: "How many"), preferredStyle: .alert)
-										alert.addAction(UIAlertAction(title: NSLocalizedString("CANCEL", comment: "Cancel"), style: .cancel, handler: nil))
-										alert.addAction(UIAlertAction(title: NSLocalizedString("RESTORE_CONFIRM_BTN", comment: "Restore"), style: .default) { _ in
+										alert = UIAlertController(title: GTLocalizedString("RESTORE_CONFIRM", comment: "err"), message: "\(count)" + GTLocalizedString("RESTORE_CONFIRM_TXT\(count > 1 ? "_MANY" : "")", comment: "How many"), preferredStyle: .alert)
+										alert.addAction(UIAlertAction(title: GTLocalizedString("CANCEL", comment: "Cancel"), style: .cancel, handler: nil))
+										alert.addAction(UIAlertAction(title: GTLocalizedString("RESTORE_CONFIRM_BTN", comment: "Restore"), style: .default) { _ in
 											self.loading = UIAlertController.getModalLoading()
 											self.present(self.loading!, animated: true)
 											proceed()
 										})
 									} else {
-										alert = UIAlertController(simpleAlert: NSLocalizedString("RESTORE_FAIL", comment: "err"), message: NSLocalizedString("WRKT_INVALID", comment: "err"))
+										alert = UIAlertController(simpleAlert: GTLocalizedString("RESTORE_FAIL", comment: "err"), message: GTLocalizedString("WRKT_INVALID", comment: "err"))
 									}
 									
 									self.present(alert, animated: true)
@@ -151,13 +151,13 @@ class BackupListTableViewController: UITableViewController {
 								if let wrkt = wrkt {
 									success = true
 									appDelegate.workoutList.refreshData()
-									msg = "\(wrkt.count) " + NSLocalizedString("WORKOUT\(wrkt.count > 1 ? "S" : "")", comment: "How many").lowercased()
+									msg = "\(wrkt.count) " + GTLocalizedString("WORKOUT\(wrkt.count > 1 ? "S" : "")", comment: "How many").lowercased()
 								} else {
 									success = false
 									msg = nil
 								}
 								let error = {
-									self.present(UIAlertController(simpleAlert: NSLocalizedString(success ? "RESTORE_SUCCESS" : "RESTORE_FAIL", comment: "err/ok"), message: msg), animated: true)
+									self.present(UIAlertController(simpleAlert: GTLocalizedString(success ? "RESTORE_SUCCESS" : "RESTORE_FAIL", comment: "err/ok"), message: msg), animated: true)
 								}
 								
 								if let load = self.loading {
@@ -175,25 +175,25 @@ class BackupListTableViewController: UITableViewController {
 			act.append(restore)
 		}
 		
-		let del = UITableViewRowAction(style: .destructive, title: NSLocalizedString("DELETE_BACKUP", comment: "Del")) { _, row in
+		let del = UITableViewRowAction(style: .destructive, title: GTLocalizedString("DELETE_BACKUP", comment: "Del")) { _, row in
 			self.tableView.setEditing(false, animated: true)
 			
 			let b = self.backups[row.row]
-			let confirm = UIAlertController(title: NSLocalizedString("DELETE_BACKUP_TITLE", comment: "Del"), message: NSLocalizedString("DELETE_BACKUP_CONFIRM", comment: "Del confirm") + b.date.getFormattedDateTime() + "?", preferredStyle: .actionSheet)
-			confirm.addAction(UIAlertAction(title: NSLocalizedString("DELETE_BACKUP", comment: "Del"), style: .destructive) { _ in
+			let confirm = UIAlertController(title: GTLocalizedString("DELETE_BACKUP_TITLE", comment: "Del"), message: GTLocalizedString("DELETE_BACKUP_CONFIRM", comment: "Del confirm") + b.date.getFormattedDateTime() + "?", preferredStyle: .actionSheet)
+			confirm.addAction(UIAlertAction(title: GTLocalizedString("DELETE_BACKUP", comment: "Del"), style: .destructive) { _ in
 				appDelegate.dataManager.deleteICloudDocument(b.path) { success in
 					DispatchQueue.main.async {
 						if success {
 							self.backups.remove(at: row.row)
 							self.tableView.reloadSections([0], with: .automatic)
 						} else {
-							let alert = UIAlertController(simpleAlert: NSLocalizedString("DELETE_BACKUP_FAIL", comment: "Err"), message: nil)
+							let alert = UIAlertController(simpleAlert: GTLocalizedString("DELETE_BACKUP_FAIL", comment: "Err"), message: nil)
 							self.present(alert, animated: true)
 						}
 					}
 				}
 			})
-			confirm.addAction(UIAlertAction(title: NSLocalizedString("CANCEL", comment: "Cancel"), style: .cancel))
+			confirm.addAction(UIAlertAction(title: GTLocalizedString("CANCEL", comment: "Cancel"), style: .cancel))
 			
 			self.present(confirm, animated: true)
 		}

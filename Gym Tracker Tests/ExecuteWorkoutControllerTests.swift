@@ -186,7 +186,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		assertCall { $0 == .workoutHasStarted }
 		XCTAssertEqual(dataManager.preferences.runningWorkout, w.recordID)
 		XCTAssertEqual(dataManager.preferences.runningWorkoutSource, source)
-		#warning("Also check persisted choices")
+		XCTAssertEqual(dataManager.preferences.currentChoices, [])
 	}
 	
 	func testChoiceStart() {
@@ -292,7 +292,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		assertCall { $0 == .workoutHasStarted }
 		XCTAssertEqual(dataManager.preferences.runningWorkout, w.recordID)
 		XCTAssertEqual(dataManager.preferences.runningWorkoutSource, source)
-		#warning("Also check persisted choices")
+		XCTAssertEqual(dataManager.preferences.currentChoices, [1,0])
 	}
 	
 	func testStartSurplusChoices() {
@@ -317,7 +317,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		assertCall { c in
 			if case DelegateCalls.askForChoices(let ch) = c {
 				XCTAssertEqual(ch.count, 2)
-				ctrl.reportChoices([ch[0]: 0, ch[1]: 0])
+				ctrl.reportChoices([ch[0]: 0, ch[1]: 1])
 				
 				return true
 			}
@@ -333,7 +333,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		
 		XCTAssertEqual(dataManager.preferences.runningWorkout, w.recordID)
 		XCTAssertEqual(dataManager.preferences.runningWorkoutSource, source)
-		#warning("Also check persisted choices are empty")
+		XCTAssertEqual(dataManager.preferences.currentChoices, [0,1])
 	}
 	
 	func testCancelStart() {
@@ -375,7 +375,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		
 		XCTAssertNil(dataManager.preferences.runningWorkout)
 		XCTAssertEqual(dataManager.preferences.runningWorkoutSource, source)
-		#warning("Also check persisted choices are nil")
+		XCTAssertNil(dataManager.preferences.currentChoices)
 	}
 	
 	func testExecution() {
@@ -887,7 +887,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 			XCTAssertTrue(calls.isEmpty)
 			XCTAssertNil(dataManager.preferences.runningWorkout)
 			XCTAssertEqual(dataManager.preferences.runningWorkoutSource, source)
-			#warning("Also check persisted choices are nil")
+			XCTAssertNil(dataManager.preferences.currentChoices)
 			
 			XCTAssertEqual((w[0] as! GTChoice).lastChosen, 1)
 			XCTAssertEqual((w[2] as! GTChoice).lastChosen, 0)
@@ -1153,7 +1153,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		
 		XCTAssertEqual(dataManager.preferences.runningWorkout, w.recordID)
 		XCTAssertEqual(dataManager.preferences.runningWorkoutSource, source)
-		#warning("Also check persisted choices are empty")
+		XCTAssertEqual(dataManager.preferences.currentChoices, [1,1])
 		
 		ctrl.cancelStartup()
 		XCTAssertTrue(calls.isEmpty)
@@ -1209,7 +1209,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		
 		XCTAssertNil(dataManager.preferences.runningWorkout)
 		XCTAssertEqual(dataManager.preferences.runningWorkoutSource, source)
-		#warning("Also check persisted choices are nil")
+		XCTAssertNil(dataManager.preferences.currentChoices)
 		XCTAssertLessThan((w[0] as! GTChoice).lastChosen, 0)
 		XCTAssertLessThan((w[2] as! GTChoice).lastChosen, 0)
 	}
@@ -1222,7 +1222,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		
 		XCTAssertEqual(dataManager.preferences.runningWorkout, w.recordID)
 		XCTAssertEqual(dataManager.preferences.runningWorkoutSource, source)
-		#warning("Also check persisted choices are empty")
+		XCTAssertEqual(dataManager.preferences.currentChoices, [])
 		
 		ctrl.endWorkout()
 		
@@ -1291,7 +1291,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		XCTAssertTrue(calls.isEmpty)
 		XCTAssertNil(dataManager.preferences.runningWorkout)
 		XCTAssertEqual(dataManager.preferences.runningWorkoutSource, source)
-		#warning("Also check persisted choices are nil")
+		XCTAssertNil(dataManager.preferences.currentChoices)
 	}
 	
 	func testEarlyEndChoice() {
@@ -1303,7 +1303,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		
 		XCTAssertEqual(dataManager.preferences.runningWorkout, w.recordID)
 		XCTAssertEqual(dataManager.preferences.runningWorkoutSource, source)
-		#warning("Also check persisted choices are empty")
+		XCTAssertEqual(dataManager.preferences.currentChoices, [0,1])
 		
 		ctrl.endWorkout()
 		
@@ -1372,7 +1372,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		XCTAssertTrue(calls.isEmpty)
 		XCTAssertNil(dataManager.preferences.runningWorkout)
 		XCTAssertEqual(dataManager.preferences.runningWorkoutSource, source)
-		#warning("Also check persisted choices are nil")
+		XCTAssertNil(dataManager.preferences.currentChoices)
 		
 		XCTAssertEqual((w[0] as! GTChoice).lastChosen, 0)
 		XCTAssertEqual((w[2] as! GTChoice).lastChosen, 1)

@@ -95,7 +95,7 @@ class GTRestTests: XCTestCase {
 		do {
 			_ = try GTRest.import(fromXML: XMLNode(name: ""), withDataManager: dataManager)
 			XCTFail()
-		} catch GTDataImportError.importFailure(let o) {
+		} catch GTError.importFailure(let o) {
 			XCTAssertEqual(o, [])
 		} catch _ {
 			XCTFail()
