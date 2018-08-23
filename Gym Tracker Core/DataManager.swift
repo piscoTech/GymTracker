@@ -360,7 +360,7 @@ public class DataManager: NSObject {
 			newObj = T(entity: e, insertInto: context)
 		}
 		
-		newObj.id = newObj.objectID.uriRepresentation().path
+		newObj.id = obj.objectType + "-" + UUID().uuidString
 		newObj.created = nil
 		newObj.modified = nil
 		
@@ -715,36 +715,40 @@ private class CoreDataStack {
 	
 	// MARK: - Core Data objects
 	
-	lazy var managedObjectModel: NSManagedObjectModel = {
-		// The managed object model for the application. This property is not optional. It is a fatal error for the application not to be able to find and load its model.
-		let modelURL = Bundle(for: type(of: self)).url(forResource: self.storeName, withExtension: "momd")!
-        return NSManagedObjectModel(contentsOf: modelURL)!
+	lazy private var managedObjectModels: [NSManagedObjectModel] = {
+		let mainModel = Bundle(for: type(of: self)).url(forResource: self.storeName, withExtension: "momd")!
+		let models = [nil, "Circuit", "Structured Exercizes"].lazy
+			.map { self.storeName + ($0.map { " \($0)" } ?? "") }
+			.map { mainModel.appendingPathComponent("\($0).mom") }
+			.map { NSManagedObjectModel(contentsOf: $0)! }
+		
+		return Array(models)
 	}()
 	
-	lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
-		// The persistent store coordinator for the application. This implementation creates and returns a coordinator, having added the store for the application to it. This property is optional since there are legitimate error conditions that could cause the creation of the store to fail.
-		// Create the coordinator and store
-		let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
-		
-		let failureReason = "There was an error creating or loading the application's saved data."
-		
-		let type = use == .application ? NSSQLiteStoreType : NSInMemoryStoreType
-		let url = use == .application ? applicationDocumentsDirectory.appendingPathComponent("\(self.storeName).sqlite") : nil
-		let options = use == .application ? [
-			NSMigratePersistentStoresAutomaticallyOption: true,
-			NSInferMappingModelAutomaticallyOption: true
-		] : nil
-		
+	lazy private var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
 		do {
-			try coordinator.addPersistentStore(ofType: type, configurationName: nil, at: url, options: options)
+			if use == .application {
+				let url = applicationDocumentsDirectory.appendingPathComponent("\(self.storeName).sqlite")
+				let cdManager = CoreDataManager(store: url, withModelHistory: managedObjectModels)
+				
+				defer {
+					WorkoutToGTWorkout.clearParentInfo()
+					ExercizeToGTPart.clearParentInfo()
+				}
+				
+				return try cdManager.getStoreCoordinator()
+			} else {
+				let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModels.last!)
+				try coordinator.addPersistentStore(ofType: NSInMemoryStoreType, configurationName: nil, at: nil)
+				
+				return coordinator
+			}
 		} catch {
 			// Replace this with code to handle the error appropriately.
 			// abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
 			NSLog("Unresolved error: Failed to initialize the application's saved data")
 			abort()
 		}
-		
-		return coordinator
 	}()
 	
 	lazy var managedObjectContext: NSManagedObjectContext = {

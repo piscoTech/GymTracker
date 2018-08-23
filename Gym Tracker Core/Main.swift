@@ -31,4 +31,5 @@ public func GTLocalizedString(_ key: String, comment: String) -> String {
 public enum GTError: Error {
 	case importFailure(Set<GTDataObject>)
 	case generic
+	case migration
 }

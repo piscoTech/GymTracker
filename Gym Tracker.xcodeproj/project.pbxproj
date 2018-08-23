@@ -67,6 +67,14 @@
 		7A568B2121241FE900116EB5 /* GymTrackerCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7AB69FB6212335620053E259 /* GymTrackerCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7A568B242124212D00116EB5 /* GymTrackerCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A568AE621241AB200116EB5 /* GymTrackerCore.framework */; };
 		7A568B252124212D00116EB5 /* GymTrackerCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7A568AE621241AB200116EB5 /* GymTrackerCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		7A5804EA212F13EA00ABF454 /* WorkoutToGTWorkout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A5804E9212F13EA00ABF454 /* WorkoutToGTWorkout.swift */; };
+		7A5804EB212F13EA00ABF454 /* WorkoutToGTWorkout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A5804E9212F13EA00ABF454 /* WorkoutToGTWorkout.swift */; };
+		7A5804ED212F147100ABF454 /* ExercizeToGTPart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A5804EC212F147100ABF454 /* ExercizeToGTPart.swift */; };
+		7A5804EE212F147100ABF454 /* ExercizeToGTPart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A5804EC212F147100ABF454 /* ExercizeToGTPart.swift */; };
+		7A5804F0212F3C6800ABF454 /* CircuitToStructuredExercizes.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 7A5804EF212F3C6800ABF454 /* CircuitToStructuredExercizes.xcmappingmodel */; };
+		7A5804F1212F3C6800ABF454 /* CircuitToStructuredExercizes.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 7A5804EF212F3C6800ABF454 /* CircuitToStructuredExercizes.xcmappingmodel */; };
+		7A5804F3212F42D600ABF454 /* RepsSetToGTRepsSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A5804F2212F42D600ABF454 /* RepsSetToGTRepsSet.swift */; };
+		7A5804F4212F42D600ABF454 /* RepsSetToGTRepsSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A5804F2212F42D600ABF454 /* RepsSetToGTRepsSet.swift */; };
 		7A581B2F2126114800FD0CCE /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A581B2E2126114800FD0CCE /* HealthKit.framework */; };
 		7A5D2B711E8422DB008EED4C /* WorkoutDetailIC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A5D2B701E8422DB008EED4C /* WorkoutDetailIC.swift */; };
 		7A65864F2127FA6700DC9C03 /* GTCircuitExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A65864E2127FA6700DC9C03 /* GTCircuitExport.swift */; };
@@ -144,7 +152,6 @@
 		7ADC07D31E98CE450047E0C2 /* ExecuteWorkoutIC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADC07D21E98CE450047E0C2 /* ExecuteWorkoutIC.swift */; };
 		7ADC07D51E98CE860047E0C2 /* UpdateSecondaryInfoIC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADC07D41E98CE860047E0C2 /* UpdateSecondaryInfoIC.swift */; };
 		7ADCF6911E81135700ECF011 /* Table View Cells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADCF6901E81135700ECF011 /* Table View Cells.swift */; };
-		7ADD77BF2110562C008CDC00 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADD77BE2110562C008CDC00 /* DataManager.swift */; };
 		7AEE4D661E812A9200D843EB /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7AEE4D641E812A9200D843EB /* Interface.storyboard */; };
 		7AF561271E93A845009BF658 /* Appearance Classes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AF561261E93A845009BF658 /* Appearance Classes.swift */; };
 /* End PBXBuildFile section */
@@ -358,6 +365,10 @@
 		7A568AE621241AB200116EB5 /* GymTrackerCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GymTrackerCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A568AEE21241B7100116EB5 /* Info watchOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info watchOS.plist"; sourceTree = "<group>"; };
 		7A568AEF21241B7100116EB5 /* Gym_Tracker_Core_watchOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Gym_Tracker_Core_watchOS.h; sourceTree = "<group>"; };
+		7A5804E9212F13EA00ABF454 /* WorkoutToGTWorkout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutToGTWorkout.swift; sourceTree = "<group>"; };
+		7A5804EC212F147100ABF454 /* ExercizeToGTPart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExercizeToGTPart.swift; sourceTree = "<group>"; };
+		7A5804EF212F3C6800ABF454 /* CircuitToStructuredExercizes.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = CircuitToStructuredExercizes.xcmappingmodel; sourceTree = "<group>"; };
+		7A5804F2212F42D600ABF454 /* RepsSetToGTRepsSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepsSetToGTRepsSet.swift; sourceTree = "<group>"; };
 		7A581B2E2126114800FD0CCE /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS5.0.sdk/System/Library/Frameworks/HealthKit.framework; sourceTree = DEVELOPER_DIR; };
 		7A5A47F01E78A3CF00ABCF46 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		7A5D2B701E8422DB008EED4C /* WorkoutDetailIC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkoutDetailIC.swift; sourceTree = "<group>"; };
@@ -430,7 +441,6 @@
 		7ADC07D41E98CE860047E0C2 /* UpdateSecondaryInfoIC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateSecondaryInfoIC.swift; sourceTree = "<group>"; };
 		7ADC07D61E98CEB20047E0C2 /* ExecuteWorkoutController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExecuteWorkoutController.swift; sourceTree = "<group>"; };
 		7ADCF6901E81135700ECF011 /* Table View Cells.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Table View Cells.swift"; sourceTree = "<group>"; };
-		7ADD77BE2110562C008CDC00 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		7ADD77C021105938008CDC00 /* Gym Tracker Notifications.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Gym Tracker Notifications.entitlements"; sourceTree = "<group>"; };
 		7AE10A421E7D6F1000A64CF7 /* Preferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		7AEE4D651E812A9200D843EB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
@@ -613,6 +623,26 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		7A5804E4212F129400ABF454 /* CoreData Models */ = {
+			isa = PBXGroup;
+			children = (
+				7ADC03BB1E78A187005BDC25 /* GymTracker.xcdatamodeld */,
+				7A5804E8212F13B900ABF454 /* Circuit To Structired Exercizes */,
+			);
+			name = "CoreData Models";
+			sourceTree = "<group>";
+		};
+		7A5804E8212F13B900ABF454 /* Circuit To Structired Exercizes */ = {
+			isa = PBXGroup;
+			children = (
+				7A5804EF212F3C6800ABF454 /* CircuitToStructuredExercizes.xcmappingmodel */,
+				7A5804E9212F13EA00ABF454 /* WorkoutToGTWorkout.swift */,
+				7A5804EC212F147100ABF454 /* ExercizeToGTPart.swift */,
+				7A5804F2212F42D600ABF454 /* RepsSetToGTRepsSet.swift */,
+			);
+			name = "Circuit To Structired Exercizes";
+			sourceTree = "<group>";
+		};
 		7A5A47F51E78A3EA00ABCF46 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -769,7 +799,6 @@
 			children = (
 				7AC705F1210F3A1D003E4DF4 /* Info.plist */,
 				7ADD77C021105938008CDC00 /* Gym Tracker Notifications.entitlements */,
-				7ADD77BE2110562C008CDC00 /* DataManager.swift */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -860,7 +889,7 @@
 				7ADC03B91E78A187005BDC25 /* DataManager.swift */,
 				7AFF5387210F67EF003AE6DC /* Notification.swift */,
 				7AE10A421E7D6F1000A64CF7 /* Preferences.swift */,
-				7ADC03BB1E78A187005BDC25 /* GymTracker.xcdatamodeld */,
+				7A5804E4212F129400ABF454 /* CoreData Models */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -1337,6 +1366,8 @@
 				7A568AFE21241C5C00116EB5 /* GTRest.swift in Sources */,
 				7A568B0A21241C5C00116EB5 /* DataManager.swift in Sources */,
 				7A568B0121241C5C00116EB5 /* GTSetsExercize.swift in Sources */,
+				7A5804EE212F147100ABF454 /* ExercizeToGTPart.swift in Sources */,
+				7A5804F4212F42D600ABF454 /* RepsSetToGTRepsSet.swift in Sources */,
 				7A568B0321241C5C00116EB5 /* GTSimpleSetsExercize.swift in Sources */,
 				7A568AF721241C5C00116EB5 /* Double.swift in Sources */,
 				7A568AFA21241C5C00116EB5 /* WorkoutIterator.swift in Sources */,
@@ -1346,12 +1377,14 @@
 				7A568B0421241C5C00116EB5 /* GTSet.swift in Sources */,
 				7A568AFD21241C5C00116EB5 /* GTPart.swift in Sources */,
 				7A568B0221241C5C00116EB5 /* GTChoice.swift in Sources */,
+				7A5804EB212F13EA00ABF454 /* WorkoutToGTWorkout.swift in Sources */,
 				7A568AF621241C5C00116EB5 /* Date.swift in Sources */,
 				7A568B0F21241C5C00116EB5 /* Main iOS & watchOS.swift in Sources */,
 				7A568B0B21241C5C00116EB5 /* Notification.swift in Sources */,
 				7A568B1021241C5C00116EB5 /* Main.swift in Sources */,
 				7A568B0C21241C5C00116EB5 /* Preferences.swift in Sources */,
 				7A568AFF21241C5C00116EB5 /* GTExercize.swift in Sources */,
+				7A5804F1212F3C6800ABF454 /* CircuitToStructuredExercizes.xcmappingmodel in Sources */,
 				7A568AFB21241C5C00116EB5 /* WorkoutLevel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1360,11 +1393,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A5804F3212F42D600ABF454 /* RepsSetToGTRepsSet.swift in Sources */,
 				7A9C03592126F4A500CC1536 /* GTRestExport.swift in Sources */,
 				7AB69FF721233A010053E259 /* GTRest.swift in Sources */,
 				7AB69FE1212337020053E259 /* GymTracker.xcdatamodeld in Sources */,
 				7AB69FFE21233A010053E259 /* GTRepsSet.swift in Sources */,
 				7AB69FF921233A010053E259 /* GTCircuit.swift in Sources */,
+				7A5804ED212F147100ABF454 /* ExercizeToGTPart.swift in Sources */,
 				7AB69FDF212336E50053E259 /* Main iOS & watchOS.swift in Sources */,
 				7AB69FF521233A010053E259 /* GTWorkout.swift in Sources */,
 				7A4E4DCC21275CDB0052E6A3 /* GTChoiceExport.swift in Sources */,
@@ -1373,6 +1408,7 @@
 				7AB69FD7212336E50053E259 /* DataManager.swift in Sources */,
 				7AB69FD9212336E50053E259 /* Notification.swift in Sources */,
 				7ABA40C12123644D00BDA133 /* GTDataObjectExport.swift in Sources */,
+				7A5804F0212F3C6800ABF454 /* CircuitToStructuredExercizes.xcmappingmodel in Sources */,
 				7AB69FFA21233A010053E259 /* GTSetsExercize.swift in Sources */,
 				7AB6A00421233D5A0053E259 /* ImportExportBackupManager.swift in Sources */,
 				7AB69FF821233A010053E259 /* GTExercize.swift in Sources */,
@@ -1385,6 +1421,7 @@
 				7ABA40BE2123644D00BDA133 /* GTWorkoutExport.swift in Sources */,
 				7AB69FDC212336E50053E259 /* ExecuteWorkoutController.swift in Sources */,
 				7ABA40BF2123644D00BDA133 /* GTRepsSetExport.swift in Sources */,
+				7A5804EA212F13EA00ABF454 /* WorkoutToGTWorkout.swift in Sources */,
 				7AB69FDA212336E50053E259 /* Preferences.swift in Sources */,
 				7AB69FD3212336E50053E259 /* Date.swift in Sources */,
 				7AB69FFB21233A010053E259 /* GTChoice.swift in Sources */,
@@ -1397,7 +1434,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				7AC705ED210F3A1D003E4DF4 /* NotificationViewController.swift in Sources */,
-				7ADD77BF2110562C008CDC00 /* DataManager.swift in Sources */,
 				7A568B1621241D5C00116EB5 /* Notification.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
