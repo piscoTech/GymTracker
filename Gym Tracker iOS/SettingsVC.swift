@@ -32,7 +32,6 @@ class SettingsViewController: UITableViewController {
 		errNoBackup = GTLocalizedString("ERR_BACKUP_UNAVAILABLE", comment: "Cannot use becuase...")
 		backupUsageManual = GTLocalizedString("BACKUP_USAGE_MANUAL", comment: "How-to")
 		backupUsageAuto = GTLocalizedString("BACKUP_USAGE_AUTO", comment: "How-to")
-		#warning("Test localized string for available workouts")
 		
 		appDelegate.dataManager.reportICloudStatus { res in
 			self.iCloudEnabled = res

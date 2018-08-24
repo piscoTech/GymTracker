@@ -75,7 +75,6 @@ public class Preferences {
 		self.use = use
 		
 		if use == .application {
-			#warning("Check this is ok from inside a framework and old data from previous versions is loaded")
 			local = KeyValueStore(userDefaults: UserDefaults.standard)
 		} else {
 			local = KeyValueStore(userDefaults: UserDefaults(suiteName: "GymTrackerTests")!)

@@ -10,7 +10,7 @@ import UIKit
 import GymTrackerCore
 
 class BackupListTableViewController: UITableViewController {
-	#warning("Fix localized string loading and test")
+	
 	private var backups: ImportExportBackupManager.BackupList = []
 	
 	override func viewDidLoad() {

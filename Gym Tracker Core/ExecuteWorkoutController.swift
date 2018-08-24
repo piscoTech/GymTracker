@@ -147,16 +147,14 @@ public class ExecuteWorkoutController: NSObject {
 		view.setWorkoutDoneViewHidden(true)
 		view.setNextUpTextHidden(true)
 		
-		if data.resume {
-			#warning("Load choices from preferences, ignore passed")
-			self.choices = workout.choices.map { ($0, -1) }
-		} else {
-			let chList = workout.choices
-			let ch = data.choices.prefix(chList.count)
-			
-			self.choices = zip(chList, ch + [Int32](repeating: -1, count: max(0, chList.count - ch.count))).map { $0 }
-		}
-		
+		let chList = workout.choices
+		let ch = (data.resume
+			? dataManager.preferences.currentChoices ?? []
+			: data.choices
+			).prefix(chList.count)
+		self.choices = zip(chList, ch + [Int32](repeating: -1, count: max(0, chList.count - ch.count)))
+			.map { $0 }	
+	
 		super.init()
 		
 		self.loadIterator()

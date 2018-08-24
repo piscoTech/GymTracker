@@ -61,6 +61,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 				self.startLocalWorkout()
 			}
 		} else {
+			// This also request a review
 			self.exitWorkoutTracking()
 		}
 		
@@ -129,10 +130,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		dataManager.importExportManager.doBackup()
 		importFile()
-		
-		DispatchQueue.main.async {
-			self.requestReview()
-		}
 		
 		return true
 	}

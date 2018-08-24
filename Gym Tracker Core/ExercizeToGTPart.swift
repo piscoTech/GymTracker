@@ -60,7 +60,7 @@ class ExercizeToGTPart: NSEntityMigrationPolicy {
 		}
 		
 		for k in dstKeys {
-			if let srcV = srcValues[k] {
+			if let srcV = srcValues[k], !(srcV is NSNull) {
 				dst.setValue(srcV, forKey: k)
 			}
 		}

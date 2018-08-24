@@ -33,7 +33,7 @@ class WorkoutToGTWorkout: NSEntityMigrationPolicy {
 		let dstKeys = Array(dst.entity.attributesByName.keys)
 		
 		for k in dstKeys {
-			if let srcV = srcValues[k] {
+			if let srcV = srcValues[k], !(srcV is NSNull) {
 				dst.setValue(srcV, forKey: k)
 			}
 		}
