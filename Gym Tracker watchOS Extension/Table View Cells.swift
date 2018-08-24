@@ -38,17 +38,20 @@ class ExercizeCell: AccessoryCell {
 	static private let font = UIFont.systemFont(ofSize: 16)
 	static private let italicFont = UIFont.italicSystemFont(ofSize: 16)
 	
+	private var isChoice = false
+	
 	func set(title: String) {
 		titleLabel.setAttributedText(NSAttributedString(string: title, attributes: [.font: ExercizeCell.font]))
 	}
 	
 	func setCircuit(number: Int, total: Int) {
-		collectionImage.setImageNamed("IsCircuit")
+		collectionImage.setImageNamed(isChoice ? "IsChoiceCircuit" : "IsCircuit")
 		collectionLabel.setText("\(number)/\(total)")
 		showAccessory(true)
 	}
 	
 	func setChoice(title: String, total: Int) {
+		isChoice = true
 		titleLabel.setAttributedText(NSAttributedString(string: title, attributes: [.font: ExercizeCell.italicFont]))
 		collectionImage.setImageNamed("IsChoice")
 		collectionLabel.setText(total.description)
