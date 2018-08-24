@@ -37,6 +37,12 @@
 "REORDER_EXERCIZE" = "Reorder";
 "DONE_REORDER_EXERCIZE" = "Done Reorder";
 
+"MOVE_EX_MOVE" = "Move";
+"MOVE_EX_CHOOSE" = "Choose exercizes";
+"MOVE_EX_NOT_SUPPORTED" = "Invalid type";
+"MOVE_EX_ALREADY_PART" = "Already part";
+"MOVE_EX_SELF" = "Current exercize";
+
 "ADD_CHOOSE" = "What type of exercize do you want to add?";
 
 "IS_CIRCUIT" = "Circuit info";

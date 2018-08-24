@@ -61,6 +61,14 @@ final public class GTRest: GTPart {
 		return []
 	}
 	
+	public override var shouldBePurged: Bool {
+		return false
+	}
+	
+	public override func removePurgeable() -> [GTDataObject] {
+		return []
+	}
+	
 	// MARK: - iOS/watchOS interface
 	
 	override var wcObject: WCObject? {

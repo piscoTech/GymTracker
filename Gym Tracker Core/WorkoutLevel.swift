@@ -29,7 +29,11 @@ extension WorkoutLevel {
 	
 }
 
-public protocol CompositeWorkoutLevel: WorkoutLevel {}
+public protocol CompositeWorkoutLevel: WorkoutLevel {
+	
+	var childrenList: [GTPart] { get }
+	
+}
 
 public protocol ExercizeCollection: CompositeWorkoutLevel {
 	
@@ -46,6 +50,10 @@ public protocol ExercizeCollection: CompositeWorkoutLevel {
 }
 
 extension ExercizeCollection {
+	
+	public var childrenList: [GTPart] {
+		return exercizeList
+	}
 	
 	public subscript (n: Int32) -> Exercize? {
 		return exercizes.first { $0.order == n }

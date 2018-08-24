@@ -74,7 +74,7 @@ final public class GTWorkout: GTDataObject, NamedExercizeCollection {
 	
 	public override func purge(onlySettings: Bool) -> [GTDataObject] {
 		var res = [GTDataObject]()
-		
+	
 		if !onlySettings {
 			var steps = self.exercizeList
 			
@@ -113,6 +113,25 @@ final public class GTWorkout: GTDataObject, NamedExercizeCollection {
 	
 	var choices: [GTChoice] {
 		return exercizeList.flatMap { ($0 as? GTCircuit)?.exercizeList.compactMap { $0 as? GTChoice } ?? [$0 as? GTChoice].compactMap { $0 } }
+	}
+
+	public override var shouldBePurged: Bool {
+		return false
+	}
+	
+	public override func removePurgeable() -> [GTDataObject] {
+		var res = [GTDataObject]()
+		for p in parts {
+			if p.shouldBePurged {
+				res.append(p)
+				self.remove(part: p)
+			} else {
+				res.append(contentsOf: p.removePurgeable())
+			}
+		}
+		
+		recalculatePartsOrder()
+		return res
 	}
 	
 	// MARK: - Parts handling

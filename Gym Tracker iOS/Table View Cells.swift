@@ -159,6 +159,53 @@ class RestCell: UITableViewCell {
 	
 }
 
+class MoveExercizeCell: UITableViewCell {
+	
+	@IBOutlet weak var name: UILabel!
+	@IBOutlet weak var exercizeInfo: UILabel!
+	@IBOutlet private weak var left: NSLayoutConstraint!
+	@IBOutlet private weak var invalidLbl: UILabel!
+	
+	private static var normalFont, italicFont, thinFont: UIFont!
+	private static var invalidColor = #colorLiteral(red: 0.4250687957, green: 0.4250687957, blue: 0.4250687957, alpha: 1)
+	
+	static private func createAspect(from label: UILabel) {
+		guard normalFont == nil else {
+			return
+		}
+		
+		normalFont = label.font
+		if let descr = normalFont.fontDescriptor.withSymbolicTraits(.traitItalic) {
+			italicFont = UIFont(descriptor: descr, size: 0)
+		}
+		thinFont = UIFont.systemFont(ofSize: label.font.pointSize, weight: .ultraLight)
+	}
+	
+	func setLevel(_ l: Int) {
+		left.constant = max(CGFloat(l), 0) * 16
+		self.setNeedsLayout()
+	}
+	
+	func setInvalid(_ v: MovePartInvalidExercize?, isCollection: Bool) {
+		MoveExercizeCell.createAspect(from: name)
+		
+		if let r = v {
+			name.font = MoveExercizeCell.thinFont
+			name.textColor = MoveExercizeCell.invalidColor
+			exercizeInfo.textColor = MoveExercizeCell.invalidColor
+			self.invalidLbl.isHidden = false
+			self.invalidLbl.text = r.description
+			self.accessoryType = .none
+		} else {
+			name.textColor = GymTrackerCore.textColor
+			exercizeInfo.textColor = GymTrackerCore.textColor
+			name.font = isCollection ? MoveExercizeCell.italicFont : MoveExercizeCell.normalFont
+			self.invalidLbl.isHidden = true
+		}
+	}
+	
+}
+
 class AddExercizeCell: UITableViewCell {
 	
 	@IBOutlet weak var addExercize: UIButton!

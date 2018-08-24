@@ -69,11 +69,13 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
         // Dispose of any resources that can be recreated.
     }
 	
-	func updateView() {
+	func updateView(global: Bool = false) {
 		tableView.reloadData()
 	}
 	
 	func exercizeUpdated(_ e: GTPart) {}
+	
+	func dismissPresentedController() {}
 	
 	// MARK: - Table view data source
 	

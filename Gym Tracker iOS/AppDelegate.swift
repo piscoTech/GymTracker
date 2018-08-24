@@ -112,7 +112,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			cell.selectionStyle = .gray
 			cell.tintColor = customTint
 			
-			let textColor = #colorLiteral(red: 0.9198423028, green: 0.9198423028, blue: 0.9198423028, alpha: 1)
 			UILabel.appearance().textColor = textColor
 			UILabel.appearance(whenContainedInInstancesOf: [UITableViewHeaderFooterView.self]).textColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
 			HeartLabel.appearance().textColor = redTint

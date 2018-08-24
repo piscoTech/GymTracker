@@ -79,6 +79,21 @@ final public class GTChoice: GTSetsExercize, ExercizeCollection {
 	public override func purge(onlySettings: Bool) -> [GTDataObject] {
 		return exercizes.reduce(super.purge(onlySettings: onlySettings)) { $0 + $1.purge(onlySettings: onlySettings) }
 	}
+
+	public override func removePurgeable() -> [GTDataObject] {
+		var res = [GTDataObject]()
+		for e in exercizes {
+			if e.shouldBePurged {
+				res.append(e)
+				self.remove(part: e)
+			} else {
+				res.append(contentsOf: e.removePurgeable())
+			}
+		}
+		
+		recalculatePartsOrder()
+		return res
+	}
 	
 	/// Whether or not the exercizes of this choice are valid inside the parent circuit or `nil` if none.
 	///

@@ -132,12 +132,16 @@ public class GTDataObject: NSManagedObject {
 		fatalError("Abstarct property not implemented")
 	}
 	
-	/// Remove and returns all more specific components of the workout linked by the receiver that are invalid and all invalid settings.
+	/// Removes and returns all more specific components of the workout linked by the receiver that are invalid and all invalid settings. Invalid collections such as `GTCircuit` and `GTChoice` are **not** removed.
+	///
+	/// To also remove _some_ of the invalid collections use `removePurgeable()`.
 	public final func purge() -> [GTDataObject] {
 		return purge(onlySettings: false)
 	}
 	
-	/// Remove and returns all more specific components of the workout linked by the receiver that are invalid and all invalid settings.
+	/// Removes and returns all more specific components of the workout linked by the receiver that are invalid and all invalid settings. Invalid collections such as `GTCircuit` and `GTChoice` are **not** removed.
+	///
+	/// To also remove _some_ of the invalid collections use `removePurgeable()`.
 	public func purge(onlySettings: Bool) -> [GTDataObject] {
 		fatalError("Abstarct method not implemented")
 	}
@@ -147,6 +151,13 @@ public class GTDataObject: NSManagedObject {
 	/// Before accessing this property `purge()` should be called.
 	public var shouldBePurged: Bool {
 		fatalError("Abstarct property not implemented")
+	}
+	
+	/// Removes and returns all more specific component linked by the receiver that have `shouldBePurged` set to `true`.
+	///
+	/// Although this can remove some of the components removed by `purge()`, the two methods perform different task.
+	public func removePurgeable() -> [GTDataObject] {
+		fatalError("Abstarct method not implemented")
 	}
 	
 	var wcObject: WCObject? {
@@ -528,15 +539,7 @@ public class DataManager: NSObject {
 		delegate?.cancelAndDisableEdit()
 		let context = localData.managedObjectContext
 		
-		// Delete objects
-		for d in deletion {
-			// If the object is missing it's been already deleted so no problem
-			if let obj = d.getObject(fromDataManager: self) {
-				context.delete(obj)
-			}
-		}
-		
-		// Save changes
+		// Save changes first
 		var res = true
 		let order: [GTDataObject.Type] = [GTWorkout.self, GTCircuit.self, GTChoice.self, GTSimpleSetsExercize.self, GTRepsSet.self, GTRest.self]
 		var pendingSave = changes
@@ -565,6 +568,14 @@ public class DataManager: NSObject {
 					break
 				}
 				pendingSave.removeElement(obj)
+			}
+		}
+		
+		// Then delete objects to avoid problems due to cascade deletion
+		for d in deletion {
+			// If the object is missing it's been already deleted so no problem
+			if let obj = d.getObject(fromDataManager: self) {
+				context.delete(obj)
 			}
 		}
 		

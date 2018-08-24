@@ -13,7 +13,8 @@ import GymTrackerCore
 	
 	func addDeletedEntities(_ del: [GTDataObject])
 	func exercizeUpdated(_ e: GTPart)
-	func updateView()
+	func updateView(global: Bool)
+	func dismissPresentedController()
 	
 	var partCollection: GTDataObject { get }
 	var tableView: UITableView! { get }
@@ -104,6 +105,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	weak var delegate: WorkoutListTableViewController!
 	weak var parentCollection: PartCollectionController?
 	
+	private weak var mover: UIViewController?
 	private(set) weak var subCollection: PartCollectionController?
 	private(set) weak var exercizeController: ExercizeTableViewController?
 	
@@ -228,10 +230,20 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		}
 	}
 	
-	func updateView() {
+	func updateView(global: Bool = false) {
+		if global {
+			if let p = parentCollection {
+				p.updateView(global: global)
+				return
+			} else {
+				addDeletedEntities(collection.removePurgeable())
+			}
+		}
+		
+		updateValidityAndButtons(doUpdateTable: false)
 		tableView.reloadData()
 		
-		subCollection?.updateView()
+		subCollection?.updateView(global: false)
 		exercizeController?.updateView()
 	}
 
@@ -327,7 +339,6 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 			}
 		case 2:
 			let cell = tableView.dequeueReusableCell(withIdentifier: addExercizeId.identifier, for: indexPath) as! AddExercizeCell
-			#warning("Link add actions")
 			cell.addExercize.addTarget(self, action: #selector(newExercize), for: .primaryActionTriggered)
 			
 			if handleableTypes().count == 1 {
@@ -336,6 +347,8 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 				cell.addOther.isHidden = false
 				cell.addOther.addTarget(self, action: #selector(newChoose), for: .primaryActionTriggered)
 			}
+			
+			cell.addExistent.addTarget(self, action: #selector(moveExercizes), for: .primaryActionTriggered)
 			
 			return cell
 		default:
@@ -704,11 +717,18 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	func cancel(animated: Bool, animationCompletion: (() -> Void)?) {
 		appDelegate.dataManager.discardAllChanges()
 		
+		dismissPresentedController()
 		if isNew {
 			self.dismiss(animated: animated, completion: animationCompletion)
 		} else {
 			exitEdit()
 		}
+	}
+	
+	func dismissPresentedController() {
+		self.mover?.dismiss(animated: false)
+		self.subCollection?.dismissPresentedController()
+		self.exercizeController?.dismissPresentedController()
 	}
 	
 	func openExercize(_ p: T.Exercize) {
@@ -744,8 +764,16 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 			
 			navigationController?.pushViewController(dest, animated: true)
 		} else {
-			fatalError("Implement me")
+			fatalError("Unknown part type")
 		}
+	}
+	
+	@objc private func moveExercizes() {
+		let mover = MovePartTableViewController.initialize(currentPart: collection) {
+			self.updateView(global: true)
+		}
+		self.mover = mover
+		self.present(mover, animated: true)
 	}
 
 }

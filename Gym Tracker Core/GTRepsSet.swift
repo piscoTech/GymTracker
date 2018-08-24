@@ -50,6 +50,14 @@ final public class GTRepsSet: GTSet {
 		return []
 	}
 	
+	public override var shouldBePurged: Bool {
+		return !isValid
+	}
+	
+	public override func removePurgeable() -> [GTDataObject] {
+		return []
+	}
+	
 	override public func set(mainInfo n: Int) {
 		reps = max(Int32(n), 0)
 	}

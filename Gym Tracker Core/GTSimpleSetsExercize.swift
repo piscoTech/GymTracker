@@ -119,6 +119,21 @@ public class GTSimpleSetsExercize: GTSetsExercize {
 		return !isValid
 	}
 	
+	public override func removePurgeable() -> [GTDataObject] {
+		var res = [GTDataObject]()
+		for s in sets {
+			if s.shouldBePurged {
+				res.append(s)
+				sets.remove(s)
+			} else {
+				res.append(contentsOf: s.removePurgeable())
+			}
+		}
+		
+		recalculateSetOrder(filterInvalid: false)
+		return res
+	}
+	
 	// MARK: - Choice Support
 	
 	/// Whether the exercize is at some point part of a choice.

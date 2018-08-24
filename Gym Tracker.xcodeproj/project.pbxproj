@@ -28,6 +28,8 @@
 		7A342F02212B5F3B0049103A /* TitleCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7A342F01212B5F3B0049103A /* TitleCell.xib */; };
 		7A342F05212B5F580049103A /* WorkoutActionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7A342F03212B5F570049103A /* WorkoutActionCell.xib */; };
 		7A342F06212B5F580049103A /* EditTitleCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7A342F04212B5F580049103A /* EditTitleCell.xib */; };
+		7A3ECFF0213034C300898DA1 /* MovePartTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A3ECFEF213034C300898DA1 /* MovePartTVC.swift */; };
+		7A3ECFF421303E3200898DA1 /* MoveExercize.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7A3ECFF321303E3200898DA1 /* MoveExercize.xib */; };
 		7A3F61171E92958F000F7514 /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A3F61161E92958F000F7514 /* SettingsVC.swift */; };
 		7A45113A1FDDCCFA0065282A /* oldVersion_1.1.1.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7A4511371FDDCCF90065282A /* oldVersion_1.1.1.xml */; };
 		7A45113C1FDDD4510065282A /* invalidRest.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7A45113B1FDDD4500065282A /* invalidRest.xml */; };
@@ -352,6 +354,8 @@
 		7A342F01212B5F3B0049103A /* TitleCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TitleCell.xib; sourceTree = "<group>"; };
 		7A342F03212B5F570049103A /* WorkoutActionCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WorkoutActionCell.xib; sourceTree = "<group>"; };
 		7A342F04212B5F580049103A /* EditTitleCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditTitleCell.xib; sourceTree = "<group>"; };
+		7A3ECFEF213034C300898DA1 /* MovePartTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovePartTVC.swift; sourceTree = "<group>"; };
+		7A3ECFF321303E3200898DA1 /* MoveExercize.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MoveExercize.xib; sourceTree = "<group>"; };
 		7A3F61161E92958F000F7514 /* SettingsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
 		7A4511371FDDCCF90065282A /* oldVersion_1.1.1.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = oldVersion_1.1.1.xml; sourceTree = "<group>"; };
 		7A45113B1FDDD4500065282A /* invalidRest.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = invalidRest.xml; sourceTree = "<group>"; };
@@ -553,6 +557,7 @@
 			children = (
 				7ADC03D21E78A328005BDC25 /* Table View Cells.swift */,
 				7A342EF7212B59720049103A /* CollectionData.xib */,
+				7A3ECFF321303E3200898DA1 /* MoveExercize.xib */,
 				7A342EFB212B5D590049103A /* NoExercizes.xib */,
 				7A342EF9212B5CC30049103A /* ExercizeTableViewCell.xib */,
 				7A342EFD212B5E2A0049103A /* RestCell.xib */,
@@ -659,6 +664,7 @@
 				7A342EEC212ACB610049103A /* PartCollectionTVC.swift */,
 				7A342EF2212B30380049103A /* NamedPartCollectionTVC.swift */,
 				7ADC03D41E78A328005BDC25 /* WorkoutTVC.swift */,
+				7A3ECFEF213034C300898DA1 /* MovePartTVC.swift */,
 				7ADC03CF1E78A328005BDC25 /* ExercizeTVC.swift */,
 			);
 			name = WorkoutCreation;
@@ -1267,6 +1273,7 @@
 				7A342F05212B5F580049103A /* WorkoutActionCell.xib in Resources */,
 				7A342EFC212B5D590049103A /* NoExercizes.xib in Resources */,
 				7A342EFE212B5E2A0049103A /* RestCell.xib in Resources */,
+				7A3ECFF421303E3200898DA1 /* MoveExercize.xib in Resources */,
 				7A342EFA212B5CC30049103A /* ExercizeTableViewCell.xib in Resources */,
 				7ABC3F2C1EA6A8DF008A3FCF /* rest_end_notification.caf in Resources */,
 			);
@@ -1338,6 +1345,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7A342EF3212B30380049103A /* NamedPartCollectionTVC.swift in Sources */,
+				7A3ECFF0213034C300898DA1 /* MovePartTVC.swift in Sources */,
 				7A95D0BC1E94228D00998D70 /* TabBarController.swift in Sources */,
 				7A3F61171E92958F000F7514 /* SettingsVC.swift in Sources */,
 				7A27276F1EA3536400E67F70 /* UpdateSecondaryInfoVC.swift in Sources */,
