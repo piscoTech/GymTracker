@@ -14,6 +14,7 @@
 		7A1DE2FB212E91BB00949818 /* AskChoiceIC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A1DE2FA212E91BB00949818 /* AskChoiceIC.swift */; };
 		7A2262851FE5853A00E16871 /* WorkoutIteratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A2262841FE5853A00E16871 /* WorkoutIteratorTests.swift */; };
 		7A27276F1EA3536400E67F70 /* UpdateSecondaryInfoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A27276E1EA3536400E67F70 /* UpdateSecondaryInfoVC.swift */; };
+		7A278AF5213182AE00EFA791 /* Old Model Version Stores in Resources */ = {isa = PBXBuildFile; fileRef = 7A278AF2213182AE00EFA791 /* Old Model Version Stores */; };
 		7A2D956B21257F8E008DECEC /* GTRepsSetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A2D956A21257F8E008DECEC /* GTRepsSetTests.swift */; };
 		7A2D956F21258269008DECEC /* GTSimpleSetsExercizeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A2D956E21258269008DECEC /* GTSimpleSetsExercizeTests.swift */; };
 		7A2D95712125A4F1008DECEC /* GTChoiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A2D95702125A4F1008DECEC /* GTChoiceTests.swift */; };
@@ -334,6 +335,7 @@
 		7A2262841FE5853A00E16871 /* WorkoutIteratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutIteratorTests.swift; sourceTree = "<group>"; };
 		7A24C65C1FE6FF320015C3CD /* Double.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Double.swift; sourceTree = "<group>"; };
 		7A27276E1EA3536400E67F70 /* UpdateSecondaryInfoVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateSecondaryInfoVC.swift; sourceTree = "<group>"; };
+		7A278AF2213182AE00EFA791 /* Old Model Version Stores */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Old Model Version Stores"; sourceTree = "<group>"; };
 		7A2D956A21257F8E008DECEC /* GTRepsSetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTRepsSetTests.swift; sourceTree = "<group>"; };
 		7A2D956E21258269008DECEC /* GTSimpleSetsExercizeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTSimpleSetsExercizeTests.swift; sourceTree = "<group>"; };
 		7A2D95702125A4F1008DECEC /* GTChoiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTChoiceTests.swift; sourceTree = "<group>"; };
@@ -533,6 +535,7 @@
 		7A2E10231FBDCC6F004767D7 /* Gym Tracker Tests */ = {
 			isa = PBXGroup;
 			children = (
+				7A278AF2213182AE00EFA791 /* Old Model Version Stores */,
 				7A4DC79C1FDDC99100BC60FE /* Tricky Circuit Import */,
 				7ABBBB1A212709A900AAC1DA /* Model */,
 				7A1CF9361FDD4CD6009C572C /* ImportExportTest.swift */,
@@ -1247,6 +1250,7 @@
 			files = (
 				7A65865521281EE100DC9C03 /* invalidChoice.xml in Resources */,
 				7A45113C1FDDD4510065282A /* invalidRest.xml in Resources */,
+				7A278AF5213182AE00EFA791 /* Old Model Version Stores in Resources */,
 				7A65865721281F0E00DC9C03 /* invalidCircuit.xml in Resources */,
 				7A65865921281F5800DC9C03 /* xsdInvalidWorkout.xml in Resources */,
 				7A8D992D2126DB9700A06A9C /* oldVersion_2.0.xml in Resources */,
