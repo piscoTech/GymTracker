@@ -91,12 +91,6 @@ public class GTDataObject: NSManagedObject {
 		super.init(entity: entity, insertInto: context)
 	}
 	
-	final fileprivate var isNew: Bool {
-		precondition(modified != nil && created != nil, "\(objectType) not saved")
-		
-		return created! == modified!
-	}
-	
 	final var recordID: CDRecordID {
 		return CDRecordID(obj: self)
 	}
@@ -239,14 +233,6 @@ final public class WCObject: Equatable {
 	
 	var created: Date? {
 		return data[GTDataObject.createdKey] as? Date
-	}
-	
-	fileprivate var isNew: Bool? {
-		guard let created = self.created, let modified = data[GTDataObject.modifiedKey] as? Date else {
-			return nil
-		}
-		
-		return created == modified
 	}
 	
 	fileprivate var isInitialData: Bool {
@@ -552,15 +538,13 @@ public class DataManager: NSObject {
 				let cdObj: GTDataObject
 				if let tmp = obj.id.getObject(fromDataManager: self) {
 					cdObj = tmp
-				} else if obj.isNew ?? false || obj.isInitialData {
+				} else {
 					if let tmp = newObject(for: obj) {
 						cdObj = tmp
 					} else {
 						res = false
 						break
 					}
-				} else {
-					continue
 				}
 				
 				if !cdObj.mergeUpdatesFrom(obj, inDataManager: self) {

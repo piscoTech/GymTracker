@@ -42,6 +42,7 @@
 "MOVE_EX_NOT_SUPPORTED" = "Invalid type";
 "MOVE_EX_ALREADY_PART" = "Already part";
 "MOVE_EX_SELF" = "Current exercize";
+"MOVE_EX_PARENT" = "Will move with parent";
 
 "ADD_CHOOSE" = "What type of exercize do you want to add?";
 

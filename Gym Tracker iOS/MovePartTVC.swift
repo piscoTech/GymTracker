@@ -10,7 +10,7 @@ import UIKit
 import GymTrackerCore
 
 enum MovePartInvalidExercize: CustomStringConvertible {
-	case notSupported, alreadyPart, isSelf
+	case notSupported, alreadyPart, isSelf, withParent
 	
 	var description: String {
 		let msg: String
@@ -21,6 +21,8 @@ enum MovePartInvalidExercize: CustomStringConvertible {
 			msg = "MOVE_EX_ALREADY_PART"
 		case .isSelf:
 			msg = "MOVE_EX_SELF"
+		case .withParent:
+			msg = "MOVE_EX_PARENT"
 		}
 		
 		return GTLocalizedString(msg, comment: "Invalid")
@@ -127,7 +129,7 @@ class MovePartTableViewController<T: GTDataObject>: UITableViewController where 
         let cell = tableView.dequeueReusableCell(withIdentifier: rowId, for: indexPath) as! MoveExercizeCell
 
 		let e = tree[indexPath.row]
-        cell.name.text = e.part.title
+		cell.name.text = e.part.title
 		cell.exercizeInfo.text = e.part.summary
 		cell.setLevel(e.level)
 		cell.setInvalid(e.invalid, isCollection: e.part is CompositeWorkoutLevel)
@@ -145,9 +147,18 @@ class MovePartTableViewController<T: GTDataObject>: UITableViewController where 
 			return
 		}
 		
-		tree[indexPath.row].checked = !e.checked
-		tableView.cellForRow(at: indexPath)?.accessoryType = e.checked ? .none : .checkmark
+		let newVal = !e.checked
+		tree[indexPath.row].checked = newVal
+		var reaload = Set([indexPath.row])
+		let subTree = e.part.subtreeNodes
+		for i in 0 ..< tree.count {
+			if tree[i].part != e.part, subTree.contains(tree[i].part), tree[i].invalid == nil || tree[i].invalid == .withParent {
+				tree[i].invalid = newVal ? .withParent : nil
+				reaload.insert(i)
+			}
+		}
 		
+		tableView.reloadRows(at: reaload.map { IndexPath(row: $0, section: 0 )}, with: .fade)
 		updateButton()
 	}
 
