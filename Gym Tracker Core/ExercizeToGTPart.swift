@@ -14,7 +14,6 @@ class ExercizeToGTPart: NSEntityMigrationPolicy {
 	static let idKey = "id"
 	static let orderKey = "order"
 	static let isCircuitKey = "isCircuit"
-	static let createdKey = "created"
 	static let modifiedKey = "modified"
 	let isRestKey = "isRest"
 	let restKey = "rest"

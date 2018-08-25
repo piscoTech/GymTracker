@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14308.2" systemVersion="17G65" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14315.12.1" systemVersion="17G65" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="GTChoice" representedClassName="GTChoice" parentEntity="GTSetsExercize" syncable="YES">
         <attribute name="lastChosen" attributeType="Integer 32" defaultValueString="-1" usesScalarValueType="YES" syncable="YES"/>
         <relationship name="exercizes" toMany="YES" minCount="2" deletionRule="Cascade" destinationEntity="GTSimpleSetsExercize" inverseName="choice" inverseEntity="GTSimpleSetsExercize" syncable="YES"/>
@@ -9,7 +9,6 @@
     </entity>
     <entity name="GTExercize" representedClassName="GTExercize" isAbstract="YES" parentEntity="GTPart" syncable="YES"/>
     <entity name="GTPart" representedClassName="GTPart" isAbstract="YES" syncable="YES">
-        <attribute name="created" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="id" attributeType="String" minValueString="1" syncable="YES"/>
         <attribute name="modified" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="order" attributeType="Integer 32" minValueString="0" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
@@ -23,7 +22,6 @@
         <attribute name="rest" attributeType="Double" minValueString="30" defaultValueString="30" usesScalarValueType="YES" syncable="YES"/>
     </entity>
     <entity name="GTSet" representedClassName="GTSet" isAbstract="YES" syncable="YES">
-        <attribute name="created" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="id" attributeType="String" minValueString="1" syncable="YES"/>
         <attribute name="modified" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="order" attributeType="Integer 32" minValueString="0" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
@@ -41,7 +39,6 @@
     </entity>
     <entity name="GTWorkout" representedClassName="GTWorkout" syncable="YES">
         <attribute name="archived" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="created" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="id" attributeType="String" minValueString="1" syncable="YES"/>
         <attribute name="modified" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="name" attributeType="String" syncable="YES"/>
@@ -51,12 +48,12 @@
         <element name="GTChoice" positionX="-240.51953125" positionY="220.9296875" width="128" height="75"/>
         <element name="GTCircuit" positionX="-409.265625" positionY="101.30859375" width="128" height="60"/>
         <element name="GTExercize" positionX="-282.9765625" positionY="-31.765625" width="128" height="45"/>
-        <element name="GTPart" positionX="-144.4296875" positionY="-193.09765625" width="128" height="120"/>
+        <element name="GTPart" positionX="-144.4296875" positionY="-193.09765625" width="128" height="105"/>
         <element name="GTRepsSet" positionX="195.08203125" positionY="441.88671875" width="128" height="75"/>
-        <element name="GTRest" positionX="-30.6640625" positionY="-34.6796875" width="128" height="60"/>
-        <element name="GTSet" positionX="193.8671875" positionY="256.21484375" width="128" height="135"/>
+        <element name="GTRest" positionX="-20.3125" positionY="-34.6796875" width="128" height="60"/>
+        <element name="GTSet" positionX="193.8671875" positionY="256.21484375" width="128" height="120"/>
         <element name="GTSetsExercize" positionX="-143.7890625" positionY="91.9375" width="128" height="75"/>
         <element name="GTSimpleSetsExercize" positionX="-24.125" positionY="213.46484375" width="128" height="90"/>
-        <element name="GTWorkout" positionX="-332.77734375" positionY="-348.546875" width="128" height="135"/>
+        <element name="GTWorkout" positionX="-332.77734375" positionY="-348.546875" width="128" height="120"/>
     </elements>
 </model>

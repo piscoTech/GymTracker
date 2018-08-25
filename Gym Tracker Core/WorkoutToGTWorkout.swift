@@ -59,7 +59,6 @@ class WorkoutToGTWorkout: NSEntityMigrationPolicy {
 			if isCircuit || prevCircuit {
 				let circ = circuit ?? { () -> NSManagedObject in
 					let c = NSEntityDescription.insertNewObject(forEntityName: ExercizeToGTPart.circuitType, into: manager.destinationContext)
-					c.setValue(now, forKey: ExercizeToGTPart.createdKey)
 					c.setValue(now, forKey: ExercizeToGTPart.modifiedKey)
 					c.setValue(wrktId + "-circuit-\(order)", forKey: ExercizeToGTPart.idKey)
 					c.setValue(order, forKey: ExercizeToGTPart.orderKey)

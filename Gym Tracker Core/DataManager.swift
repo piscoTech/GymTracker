@@ -81,10 +81,8 @@ public class GTDataObject: NSManagedObject {
 	}
 	
 	@NSManaged final fileprivate var id: String
-	@NSManaged final fileprivate var created: Date?
 	@NSManaged final fileprivate var modified: Date?
 	
-	fileprivate static let createdKey = "created"
 	fileprivate static let modifiedKey = "modified"
 	
 	override required init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
@@ -157,11 +155,10 @@ public class GTDataObject: NSManagedObject {
 	var wcObject: WCObject? {
 		let obj = WCObject(id: self.recordID)
 		
-		guard let c = created, let m = modified else {
+		guard let m = modified else {
 			return nil
 		}
 		
-		obj[GTDataObject.createdKey] = c
 		obj[GTDataObject.modifiedKey] = m
 		
 		return obj
@@ -229,10 +226,6 @@ final public class WCObject: Equatable {
 	
 	fileprivate func setAsInitialData(_ val: Bool = true) {
 		data[initialDataKey] = val
-	}
-	
-	var created: Date? {
-		return data[GTDataObject.createdKey] as? Date
 	}
 	
 	fileprivate var isInitialData: Bool {
@@ -358,20 +351,18 @@ public class DataManager: NSObject {
 		}
 		
 		newObj.id = obj.objectType + "-" + UUID().uuidString
-		newObj.created = nil
 		newObj.modified = nil
 		
 		return newObj
 	}
 	
 	private func newObject(for src: WCObject) -> GTDataObject? {
-		guard let created = src.created, let type = src.id.getType() else {
+		guard let type = src.id.getType() else {
 			return nil
 		}
 		
 		let obj = newObject(for: type)
 		obj.id = src.id.id
-		obj.created = created
 		
 		return obj
 	}
@@ -428,9 +419,6 @@ public class DataManager: NSObject {
 		
 		let now = Date()
 		for obj in data {
-			if obj.created == nil {
-				obj.created = now
-			}
 			obj.modified = now
 		}
 		

@@ -112,7 +112,7 @@ class MovePartTableViewController<T: GTDataObject>: UITableViewController where 
 	}
 	
 	private func updateButton() {
-		doneBtn.isEnabled = tree.firstIndex { $0.checked } != nil
+		doneBtn.isEnabled = tree.contains { $0.checked && $0.invalid == nil }
 	}
 
     // MARK: - Table view data source

@@ -73,8 +73,6 @@
 		7A5804EB212F13EA00ABF454 /* WorkoutToGTWorkout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A5804E9212F13EA00ABF454 /* WorkoutToGTWorkout.swift */; };
 		7A5804ED212F147100ABF454 /* ExercizeToGTPart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A5804EC212F147100ABF454 /* ExercizeToGTPart.swift */; };
 		7A5804EE212F147100ABF454 /* ExercizeToGTPart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A5804EC212F147100ABF454 /* ExercizeToGTPart.swift */; };
-		7A5804F0212F3C6800ABF454 /* CircuitToStructuredExercizes.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 7A5804EF212F3C6800ABF454 /* CircuitToStructuredExercizes.xcmappingmodel */; };
-		7A5804F1212F3C6800ABF454 /* CircuitToStructuredExercizes.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 7A5804EF212F3C6800ABF454 /* CircuitToStructuredExercizes.xcmappingmodel */; };
 		7A5804F3212F42D600ABF454 /* RepsSetToGTRepsSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A5804F2212F42D600ABF454 /* RepsSetToGTRepsSet.swift */; };
 		7A5804F4212F42D600ABF454 /* RepsSetToGTRepsSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A5804F2212F42D600ABF454 /* RepsSetToGTRepsSet.swift */; };
 		7A581B2F2126114800FD0CCE /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A581B2E2126114800FD0CCE /* HealthKit.framework */; };
@@ -86,6 +84,8 @@
 		7A65865921281F5800DC9C03 /* xsdInvalidWorkout.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7A65865821281F5800DC9C03 /* xsdInvalidWorkout.xml */; };
 		7A65865B2128206500DC9C03 /* invalidWorkout.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7A65865A2128206400DC9C03 /* invalidWorkout.xml */; };
 		7A6E083D1E98E94C003BB048 /* CurrentWorkoutVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A6E083C1E98E94C003BB048 /* CurrentWorkoutVC.swift */; };
+		7A72CDEA2131463F003F617B /* CircuitToStructuredExercizes.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 7A72CDE92131463F003F617B /* CircuitToStructuredExercizes.xcmappingmodel */; };
+		7A72CDEB21314829003F617B /* CircuitToStructuredExercizes.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 7A72CDE92131463F003F617B /* CircuitToStructuredExercizes.xcmappingmodel */; };
 		7A8D992D2126DB9700A06A9C /* oldVersion_2.0.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7A8D992C2126DB9700A06A9C /* oldVersion_2.0.xml */; };
 		7A8E60A92125B53B00935344 /* GTRestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A8E60A82125B53B00935344 /* GTRestTests.swift */; };
 		7A95D0BC1E94228D00998D70 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A95D0BB1E94228D00998D70 /* TabBarController.swift */; };
@@ -371,7 +371,6 @@
 		7A568AEF21241B7100116EB5 /* Gym_Tracker_Core_watchOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Gym_Tracker_Core_watchOS.h; sourceTree = "<group>"; };
 		7A5804E9212F13EA00ABF454 /* WorkoutToGTWorkout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutToGTWorkout.swift; sourceTree = "<group>"; };
 		7A5804EC212F147100ABF454 /* ExercizeToGTPart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExercizeToGTPart.swift; sourceTree = "<group>"; };
-		7A5804EF212F3C6800ABF454 /* CircuitToStructuredExercizes.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = CircuitToStructuredExercizes.xcmappingmodel; sourceTree = "<group>"; };
 		7A5804F2212F42D600ABF454 /* RepsSetToGTRepsSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepsSetToGTRepsSet.swift; sourceTree = "<group>"; };
 		7A581B2E2126114800FD0CCE /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS5.0.sdk/System/Library/Frameworks/HealthKit.framework; sourceTree = DEVELOPER_DIR; };
 		7A5A47F01E78A3CF00ABCF46 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
@@ -383,6 +382,7 @@
 		7A65865821281F5800DC9C03 /* xsdInvalidWorkout.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = xsdInvalidWorkout.xml; sourceTree = "<group>"; };
 		7A65865A2128206400DC9C03 /* invalidWorkout.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = invalidWorkout.xml; sourceTree = "<group>"; };
 		7A6E083C1E98E94C003BB048 /* CurrentWorkoutVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentWorkoutVC.swift; sourceTree = "<group>"; };
+		7A72CDE92131463F003F617B /* CircuitToStructuredExercizes.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = CircuitToStructuredExercizes.xcmappingmodel; sourceTree = "<group>"; };
 		7A8D992C2126DB9700A06A9C /* oldVersion_2.0.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = oldVersion_2.0.xml; sourceTree = "<group>"; };
 		7A8E60A82125B53B00935344 /* GTRestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTRestTests.swift; sourceTree = "<group>"; };
 		7A95D0BB1E94228D00998D70 /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
@@ -640,7 +640,7 @@
 		7A5804E8212F13B900ABF454 /* Circuit To Structired Exercizes */ = {
 			isa = PBXGroup;
 			children = (
-				7A5804EF212F3C6800ABF454 /* CircuitToStructuredExercizes.xcmappingmodel */,
+				7A72CDE92131463F003F617B /* CircuitToStructuredExercizes.xcmappingmodel */,
 				7A5804E9212F13EA00ABF454 /* WorkoutToGTWorkout.swift */,
 				7A5804EC212F147100ABF454 /* ExercizeToGTPart.swift */,
 				7A5804F2212F42D600ABF454 /* RepsSetToGTRepsSet.swift */,
@@ -1377,6 +1377,7 @@
 				7A5804EE212F147100ABF454 /* ExercizeToGTPart.swift in Sources */,
 				7A5804F4212F42D600ABF454 /* RepsSetToGTRepsSet.swift in Sources */,
 				7A568B0321241C5C00116EB5 /* GTSimpleSetsExercize.swift in Sources */,
+				7A72CDEB21314829003F617B /* CircuitToStructuredExercizes.xcmappingmodel in Sources */,
 				7A568AF721241C5C00116EB5 /* Double.swift in Sources */,
 				7A568AFA21241C5C00116EB5 /* WorkoutIterator.swift in Sources */,
 				7A568AFC21241C5C00116EB5 /* GTWorkout.swift in Sources */,
@@ -1392,7 +1393,6 @@
 				7A568B1021241C5C00116EB5 /* Main.swift in Sources */,
 				7A568B0C21241C5C00116EB5 /* Preferences.swift in Sources */,
 				7A568AFF21241C5C00116EB5 /* GTExercize.swift in Sources */,
-				7A5804F1212F3C6800ABF454 /* CircuitToStructuredExercizes.xcmappingmodel in Sources */,
 				7A568AFB21241C5C00116EB5 /* WorkoutLevel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1411,12 +1411,12 @@
 				7AB69FDF212336E50053E259 /* Main iOS & watchOS.swift in Sources */,
 				7AB69FF521233A010053E259 /* GTWorkout.swift in Sources */,
 				7A4E4DCC21275CDB0052E6A3 /* GTChoiceExport.swift in Sources */,
+				7A72CDEA2131463F003F617B /* CircuitToStructuredExercizes.xcmappingmodel in Sources */,
 				7AB69FD6212336E50053E259 /* WorkoutLevel.swift in Sources */,
 				7ABA40C02123644D00BDA133 /* GTSimpleSetsExercizeExport.swift in Sources */,
 				7AB69FD7212336E50053E259 /* DataManager.swift in Sources */,
 				7AB69FD9212336E50053E259 /* Notification.swift in Sources */,
 				7ABA40C12123644D00BDA133 /* GTDataObjectExport.swift in Sources */,
-				7A5804F0212F3C6800ABF454 /* CircuitToStructuredExercizes.xcmappingmodel in Sources */,
 				7AB69FFA21233A010053E259 /* GTSetsExercize.swift in Sources */,
 				7AB6A00421233D5A0053E259 /* ImportExportBackupManager.swift in Sources */,
 				7AB69FF821233A010053E259 /* GTExercize.swift in Sources */,
