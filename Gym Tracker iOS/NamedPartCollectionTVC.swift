@@ -25,6 +25,10 @@ class NamedPartCollectionTableViewController<T: GTDataObject>: PartCollectionTab
 	
 	// MARK: - Table view data source
 	
+	override var mainSectionIndex: Int {
+		return 1
+	}
+	
 	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		if indexPath.section == 0 && indexPath.row == 0 && !editMode {
 			return UITableView.automaticDimension

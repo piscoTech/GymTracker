@@ -252,13 +252,17 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	private enum ExercizeCellType {
 		case exercize, rest, picker
 	}
+	
+	var mainSectionIndex: Int {
+		return numberOfRowInHeaderSection() > 0 ? 1 : 0
+	}
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-		return editMode ? 3 : 2
+		return mainSectionIndex + (editMode ? 2 : 1)
     }
 	
 	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-		if section == 1 {
+		if section == mainSectionIndex {
 			return GTLocalizedString("EXERCIZES", comment: "Exercizes")
 		}
 		
@@ -266,7 +270,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	}
 	
 	override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-		if editMode && section == 1 {
+		if editMode && section == mainSectionIndex {
 			var tip = GTLocalizedString("EXERCIZE_MANAGEMENT_TIP", comment: "Remove exercize")
 			if let addTip = additionalTip {
 				tip += "\n\(addTip)"
@@ -279,7 +283,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	}
 	
 	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		if indexPath.section == 1 && collection.exercizes.count > 0 && exercizeCellType(for: indexPath) == .picker {
+		if indexPath.section == mainSectionIndex && collection.exercizes.count > 0 && exercizeCellType(for: indexPath) == .picker {
 			return 150
 		}
 		
@@ -288,12 +292,12 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		switch section {
+		case mainSectionIndex:
+			return max(collection.exercizes.count, 1) + (editRest != nil ? 1 : 0)
+		case mainSectionIndex + 1:
+			return 1
 		case 0:
 			return numberOfRowInHeaderSection()
-		case 1:
-			return max(collection.exercizes.count, 1) + (editRest != nil ? 1 : 0)
-		case 2:
-			return 1
 		default:
 			return 0
 		}
@@ -301,9 +305,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		switch indexPath.section {
-		case 0:
-			return headerCell(forRowAt: indexPath)
-		case 1:
+		case mainSectionIndex:
 			if collection.exercizes.isEmpty {
 				return tableView.dequeueReusableCell(withIdentifier: noExercizesId.identifier, for: indexPath)
 			}
@@ -337,7 +339,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 				
 				return cell
 			}
-		case 2:
+		case mainSectionIndex + 1:
 			let cell = tableView.dequeueReusableCell(withIdentifier: addExercizeId.identifier, for: indexPath) as! AddExercizeCell
 			cell.addExercize.addTarget(self, action: #selector(newExercize), for: .primaryActionTriggered)
 			
@@ -351,6 +353,8 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 			cell.addExistent.addTarget(self, action: #selector(moveExercizes), for: .primaryActionTriggered)
 			
 			return cell
+		case 0:
+			return headerCell(forRowAt: indexPath)
 		default:
 			fatalError("Unknown section")
 		}
@@ -359,7 +363,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		tableView.deselectRow(at: indexPath, animated: true)
 		
-		guard !collection.exercizes.isEmpty, !self.isEditing, indexPath.section == 1 else {
+		guard !collection.exercizes.isEmpty, !self.isEditing, indexPath.section == mainSectionIndex else {
 			return
 		}
 		
@@ -445,7 +449,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 			return true
 		} else {
 			self.present(UIAlertController(simpleAlert: GTLocalizedString("WORKOUT_SAVE_ERR", comment: "Cannot save"), message: nil), animated: true)
-			tableView.reloadSections([1], with: .automatic)
+			tableView.reloadSections([mainSectionIndex], with: .automatic)
 			return false
 		}
 	}
@@ -489,7 +493,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		
 		tableView.beginUpdates()
 		if collection.exercizes.isEmpty {
-			tableView.deleteRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
+			tableView.deleteRows(at: [IndexPath(row: 0, section: mainSectionIndex)], with: .automatic)
 		}
 		
 		let p = appDelegate.dataManager.newPart(type) as! T.Exercize
@@ -500,7 +504,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 			r.set(rest: 4 * 60)
 		}
 		
-		tableView.insertRows(at: [IndexPath(row: Int(p.order), section: 1)], with: .automatic)
+		tableView.insertRows(at: [IndexPath(row: Int(p.order), section: mainSectionIndex)], with: .automatic)
 		tableView.endUpdates()
 		openExercize(p)
 		updateValidityAndButtons(doUpdateTable: false)
@@ -530,12 +534,12 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		tableView.deleteRows(at: [index], with: .automatic)
 		
 		if collection.exercizes.isEmpty {
-			tableView.insertRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
+			tableView.insertRows(at: [IndexPath(row: 0, section: mainSectionIndex)], with: .automatic)
 		}
 		
 		if let rest = editRest, rest == Int(e.order) {
 			editRest = nil
-			tableView.deleteRows(at: [IndexPath(row: index.row + 1, section: 1)], with: .fade)
+			tableView.deleteRows(at: [IndexPath(row: index.row + 1, section: mainSectionIndex)], with: .fade)
 		}
 		
 		tableView.endUpdates()
@@ -554,7 +558,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		
 		se.enableCircuitRest(s.isOn)
 		s.isOn = se.hasCircuitRest
-		tableView.reloadSections([1], with: .automatic)
+		tableView.reloadSections([mainSectionIndex], with: .automatic)
 	}
 	
 	// MARK: - Edit rest
@@ -590,7 +594,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	}
 	
 	private func exercizeCellIndexPath(for e: T.Exercize) -> IndexPath {
-		var i = IndexPath(row: Int(e.order), section: 1)
+		var i = IndexPath(row: Int(e.order), section: mainSectionIndex)
 		
 		if let r = editRest, r < i.row {
 			i.row += 1
@@ -602,7 +606,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	func endEditRest() {
 		if let rest = editRest {
 			//Simulate tap on rest row to hide picker
-			self.tableView(tableView, didSelectRowAt: IndexPath(row: rest, section: 1))
+			self.tableView(tableView, didSelectRowAt: IndexPath(row: rest, section: mainSectionIndex))
 		}
 	}
 	
@@ -614,13 +618,13 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		var onlyClose = false
 		if let r = editRest {
 			onlyClose = r == exNum
-			tableView.deleteRows(at: [IndexPath(row: r + 1, section: 1)], with: .fade)
+			tableView.deleteRows(at: [IndexPath(row: r + 1, section: mainSectionIndex)], with: .fade)
 		}
 		
 		if onlyClose {
 			editRest = nil
 		} else {
-			tableView.insertRows(at: [IndexPath(row: exNum + 1, section: 1)], with: .automatic)
+			tableView.insertRows(at: [IndexPath(row: exNum + 1, section: mainSectionIndex)], with: .automatic)
 			editRest = exNum
 		}
 		
@@ -648,13 +652,13 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		}
 		
 		rest.set(rest: TimeInterval(row + 1) * GTRest.restStep)
-		tableView.reloadRows(at: [IndexPath(row: exN, section: 1)], with: .none)
+		tableView.reloadRows(at: [IndexPath(row: exN, section: mainSectionIndex)], with: .none)
 	}
 	
 	// MARK: - Delete exercizes
 	
 	override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-		return editMode && indexPath.section == 1 && !collection.exercizes.isEmpty && exercizeCellType(for: indexPath) != .picker
+		return editMode && indexPath.section == mainSectionIndex && !collection.exercizes.isEmpty && exercizeCellType(for: indexPath) != .picker
 	}
 
 	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
@@ -684,21 +688,21 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	}
 
 	override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-		return editMode && indexPath.section == 1 && !collection.exercizes.isEmpty && exercizeCellType(for: indexPath) != .picker
+		return editMode && indexPath.section == mainSectionIndex && !collection.exercizes.isEmpty && exercizeCellType(for: indexPath) != .picker
 	}
 
 	override func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
-		if proposedDestinationIndexPath.section < 1 {
-			return IndexPath(row: 0, section: 1)
-		} else if proposedDestinationIndexPath.section > 1 {
-			return IndexPath(row: collection.exercizes.count - 1, section: 1)
+		if proposedDestinationIndexPath.section < mainSectionIndex {
+			return IndexPath(row: 0, section: mainSectionIndex)
+		} else if proposedDestinationIndexPath.section > mainSectionIndex {
+			return IndexPath(row: collection.exercizes.count - 1, section: mainSectionIndex)
 		}
 
 		return proposedDestinationIndexPath
 	}
 
 	override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-		guard editMode && fromIndexPath.section == 1 && to.section == 1 && !collection.exercizes.isEmpty else {
+		guard editMode && fromIndexPath.section == mainSectionIndex && to.section == mainSectionIndex && !collection.exercizes.isEmpty else {
 			return
 		}
 
