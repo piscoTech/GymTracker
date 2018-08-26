@@ -71,8 +71,38 @@ class ImportExportTest: XCTestCase {
 	}
 	
 	func testImportVersion_3_0() {
-		#warning("With a choice")
-		XCTFail("Add me")
+		let f = Bundle(for: type(of: self)).url(forResource: "oldVersion_3.0", withExtension: "xml")!
+		dataManager.importExportManager.import(f, isRestoring: false, performCallback: { (valid, count, doPerform) in
+			XCTAssertTrue(valid)
+			XCTAssertEqual(count, 12)
+			XCTAssertNotNil(doPerform)
+			doPerform?()
+		}) { wrkt in
+			XCTAssertEqual(wrkt?.count, 12)
+			
+			let w = wrkt![10]
+			XCTAssertEqual(w.parts.count, 11)
+			XCTAssertEqual(w.parts.filter { $0 is GTCircuit }.count, 2)
+			XCTAssertEqual(w.parts.filter { $0 is GTChoice }.count, 1)
+			
+			for p in [w[7], w[10]] {
+				if let c = p as? GTCircuit {
+					XCTAssertEqual(c.exercizes.count, 2)
+				} else {
+					XCTFail("Circuit expected")
+				}
+			}
+			
+			if let ch = w[0] as? GTChoice {
+				XCTAssertEqual(ch.exercizes.count, 2)
+			} else {
+				XCTFail("Choice expected")
+			}
+			
+			self.importExpectation.fulfill()
+		}
+		
+		wait(for: [importExpectation], timeout: 5)
 	}
 	
 	func testXsdInvalidSet() {

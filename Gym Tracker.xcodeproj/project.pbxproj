@@ -18,6 +18,7 @@
 		7A2D956B21257F8E008DECEC /* GTRepsSetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A2D956A21257F8E008DECEC /* GTRepsSetTests.swift */; };
 		7A2D956F21258269008DECEC /* GTSimpleSetsExercizeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A2D956E21258269008DECEC /* GTSimpleSetsExercizeTests.swift */; };
 		7A2D95712125A4F1008DECEC /* GTChoiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A2D95702125A4F1008DECEC /* GTChoiceTests.swift */; };
+		7A2E0B7E213307210096BEF7 /* oldVersion_3.0.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7A2E0B7B213307210096BEF7 /* oldVersion_3.0.xml */; };
 		7A342EED212ACB610049103A /* PartCollectionTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A342EEC212ACB610049103A /* PartCollectionTVC.swift */; };
 		7A342EEF212AFC750049103A /* AddExercizeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7A342EEE212AFC750049103A /* AddExercizeCell.xib */; };
 		7A342EF3212B30380049103A /* NamedPartCollectionTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A342EF2212B30380049103A /* NamedPartCollectionTVC.swift */; };
@@ -339,6 +340,7 @@
 		7A2D956A21257F8E008DECEC /* GTRepsSetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTRepsSetTests.swift; sourceTree = "<group>"; };
 		7A2D956E21258269008DECEC /* GTSimpleSetsExercizeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTSimpleSetsExercizeTests.swift; sourceTree = "<group>"; };
 		7A2D95702125A4F1008DECEC /* GTChoiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTChoiceTests.swift; sourceTree = "<group>"; };
+		7A2E0B7B213307210096BEF7 /* oldVersion_3.0.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = oldVersion_3.0.xml; sourceTree = "<group>"; };
 		7A2E10221FBDCC6F004767D7 /* Gym Tracker Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Gym Tracker Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A2E10261FBDCC6F004767D7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7A2E102F1FBDCCC3004767D7 /* GTWorkoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTWorkoutTests.swift; sourceTree = "<group>"; };
@@ -609,6 +611,7 @@
 			children = (
 				7A4511371FDDCCF90065282A /* oldVersion_1.1.1.xml */,
 				7A8D992C2126DB9700A06A9C /* oldVersion_2.0.xml */,
+				7A2E0B7B213307210096BEF7 /* oldVersion_3.0.xml */,
 				7A4DC79F1FDDC9AB00BC60FE /* invalidSet.xml */,
 				7A45113B1FDDD4500065282A /* invalidRest.xml */,
 				7A65865221281EA400DC9C03 /* invalidExercize.xml */,
@@ -1249,6 +1252,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7A65865521281EE100DC9C03 /* invalidChoice.xml in Resources */,
+				7A2E0B7E213307210096BEF7 /* oldVersion_3.0.xml in Resources */,
 				7A45113C1FDDD4510065282A /* invalidRest.xml in Resources */,
 				7A278AF5213182AE00EFA791 /* Old Model Version Stores in Resources */,
 				7A65865721281F0E00DC9C03 /* invalidCircuit.xml in Resources */,
