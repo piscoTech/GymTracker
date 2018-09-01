@@ -760,29 +760,8 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="authorize" id="inV-Ge-P6w">
-                                <rect key="frame" x="0.0" y="55.5" width="375" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="inV-Ge-P6w" id="luH-pe-Wsq">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="h0h-jk-BOg">
-                                            <rect key="frame" x="16" y="0.0" width="212" height="43.5"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                            <state key="normal" title="Authorize Health data access"/>
-                                        </button>
-                                    </subviews>
-                                    <constraints>
-                                        <constraint firstItem="h0h-jk-BOg" firstAttribute="leading" secondItem="luH-pe-Wsq" secondAttribute="leadingMargin" id="3pY-v1-mDk"/>
-                                        <constraint firstItem="h0h-jk-BOg" firstAttribute="top" secondItem="luH-pe-Wsq" secondAttribute="top" id="5Pb-mu-FEo"/>
-                                        <constraint firstAttribute="bottom" secondItem="h0h-jk-BOg" secondAttribute="bottom" id="EaW-fC-AAd"/>
-                                        <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="h0h-jk-BOg" secondAttribute="trailingMargin" id="qW9-y7-gJN"/>
-                                    </constraints>
-                                </tableViewCellContentView>
-                            </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="enableBackup" id="qGz-bD-kFg">
-                                <rect key="frame" x="0.0" y="99.5" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="55.5" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="qGz-bD-kFg" id="BcT-hM-Yby">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
@@ -812,7 +791,7 @@
                                 </tableViewCellContentView>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="backupList" textLabel="C0f-wB-YJQ" style="IBUITableViewCellStyleDefault" id="haK-UN-tQ1">
-                                <rect key="frame" x="0.0" y="143.5" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="99.5" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="haK-UN-tQ1" id="qIb-8A-EWC">
                                     <rect key="frame" x="0.0" y="0.0" width="341" height="43.5"/>
@@ -832,7 +811,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="sourceCode" textLabel="FTV-hG-Hel" style="IBUITableViewCellStyleDefault" id="iMw-n3-ZfA">
-                                <rect key="frame" x="0.0" y="187.5" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="143.5" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="iMw-n3-ZfA" id="vYu-8g-3ul">
                                     <rect key="frame" x="0.0" y="0.0" width="341" height="43.5"/>
@@ -849,7 +828,7 @@
                                 </tableViewCellContentView>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="contact" textLabel="7Cg-0X-hva" style="IBUITableViewCellStyleDefault" id="240-4O-oPZ">
-                                <rect key="frame" x="0.0" y="231.5" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="187.5" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="240-4O-oPZ" id="TOa-c4-7TT">
                                     <rect key="frame" x="0.0" y="0.0" width="341" height="43.5"/>

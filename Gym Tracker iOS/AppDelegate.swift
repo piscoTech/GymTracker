@@ -66,10 +66,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 		
 		dataManager.delegate = self
-		
-		if !dataManager.preferences.authorized || dataManager.preferences.authVersion < authRequired {
-			authorizeHealthAccess()
-		}
+		authorizeHealthAccess()
 		
 		if !dataManager.preferences.firstLaunchDone {
 			dataManager.preferences.firstLaunchDone = true
@@ -206,21 +203,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	}
 	
 	func authorizeHealthAccess() {
-		healthStore.requestAuthorization(toShare: healthWriteData, read: healthReadData) { success, _ in
-			if success {
-				self.dataManager.preferences.authorized = true
-				self.dataManager.preferences.authVersion = authRequired
+		let req = {
+			healthStore.requestAuthorization(toShare: healthWriteData, read: healthReadData) { _, _ in }
+		}
+		
+		if #available(iOS 12.0, *) {
+			healthStore.getRequestStatusForAuthorization(toShare: healthWriteData, read: healthReadData) { status, _ in
+				if status != .unnecessary {
+					req()
+				}
 			}
+		} else {
+			req()
 		}
 	}
 	
 	func applicationShouldRequestHealthAuthorization(_ application: UIApplication) {
-		healthStore.handleAuthorizationForExtension { success, _ in
-			if success {
-				self.dataManager.preferences.authorized = true
-				self.dataManager.preferences.authVersion = authRequired
-			}
-		}
+		healthStore.handleAuthorizationForExtension { _, _ in }
 	}
 
 	func applicationWillResignActive(_ application: UIApplication) {

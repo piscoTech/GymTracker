@@ -35,10 +35,7 @@ class WorkoutListInterfaceController: WKInterfaceController {
         // This method is called when watch view controller is about to be visible to user
         super.willActivate()
 		
-		if !appDelegate.dataManager.preferences.authorized || appDelegate.dataManager.preferences.authVersion < authRequired {
-			authorize()
-		}
-		
+		authorize()
 		activated = true
     }
     
@@ -88,11 +85,18 @@ class WorkoutListInterfaceController: WKInterfaceController {
 	}
 	
 	func authorize() {
-		healthStore.requestAuthorization(toShare: healthWriteData, read: healthReadData) { (success, _) in
-			if success {
-				appDelegate.dataManager.preferences.authorized = true
-				appDelegate.dataManager.preferences.authVersion = authRequired
+		let req = {
+			healthStore.requestAuthorization(toShare: healthWriteData, read: healthReadData) { _, _ in }
+		}
+		
+		if #available(watchOS 5.0, *) {
+			healthStore.getRequestStatusForAuthorization(toShare: healthWriteData, read: healthReadData) { status, _ in
+				if status != .unnecessary {
+					req()
+				}
 			}
+		} else {
+			req()
 		}
 	}
 	

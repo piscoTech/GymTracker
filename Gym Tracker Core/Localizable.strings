@@ -71,7 +71,6 @@
 "WORKOUT_SAVED" = "Workout saved";
 "WORKOUT_SAVE_ERROR" = "Error saving workout";
 
-"HEALTH_ACCESS_MANAGE" = "You can also manage Health access inside the Health app, Sources tab.";
 "REPORT_TEXT" = "Report any problem also on Twitter @piscoTech or at GitHub tapping Source Code.";
 "ERR_BACKUP_UNAVAILABLE" = "Login with your iCloud account and enable iCloud Drive for Gym Tracker to use backups.";
 "BACKUP_USAGE_MANUAL" = "Manually backup your workouts to your iCloud Drive. You can restore a backup any time, share with your friends or edit directly to customize workouts and exercizes before importing them again.";

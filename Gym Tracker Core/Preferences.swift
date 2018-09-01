@@ -32,9 +32,6 @@ enum PreferenceKeys: String, KeyValueStoreKey {
 	case secondaryInfoChangeCache = "secondaryInfoChangeCache"
 	case currentChoices = "currentChoices"
 	
-	case authorized = "authorized"
-	case authVersion = "authVersion"
-	
 	case useBackups = "useBackups"
 	case lastBackup = "lastBackup"
 	
@@ -358,28 +355,6 @@ public class Preferences {
 			} else {
 				local.removeObject(forKey: key)
 			}
-			local.synchronize()
-		}
-	}
-	
-	// MARK: - Health Access
-	
-	public var authorized: Bool {
-		get {
-			return local.bool(forKey: PreferenceKeys.authorized)
-		}
-		set {
-			local.set(newValue, forKey: PreferenceKeys.authorized)
-			local.synchronize()
-		}
-	}
-	
-	public var authVersion: Int {
-		get {
-			return local.integer(forKey: PreferenceKeys.authVersion)
-		}
-		set {
-			local.set(newValue, forKey: PreferenceKeys.authVersion)
 			local.synchronize()
 		}
 	}
