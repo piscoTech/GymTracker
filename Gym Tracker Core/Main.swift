@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import HealthKit
 
 public let customTint = #colorLiteral(red: 0.7568627451, green: 0.9215686275, blue: 0.2, alpha: 1)
 public let redTint = #colorLiteral(red: 1, green: 0.1882352941, blue: 0, alpha: 1)
@@ -34,3 +35,16 @@ public enum GTError: Error {
 	case generic
 	case migration
 }
+
+/// List of health data to require access to.
+public let healthReadData = Set([
+	HKObjectType.workoutType(),
+	HKObjectType.quantityType(forIdentifier: .heartRate)!,
+	HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!
+	])
+/// List of health data to require write access to.
+public let healthWriteData = Set([
+	HKObjectType.workoutType(),
+	HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!
+	])
+public let healthStore = HKHealthStore()
