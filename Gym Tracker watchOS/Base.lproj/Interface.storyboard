@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="14313.13.2" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="f3a-Tn-603">
-    <device id="watch42" orientation="portrait">
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="14313.18" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="f3a-Tn-603">
+    <device id="watch40" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="watchOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.9"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="14238.4.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="14238.10"/>
     </dependencies>
     <scenes>
         <!--Workouts-->
@@ -178,12 +178,12 @@
         <!--updateSecondaryInfo-->
         <scene sceneID="u0t-wj-7YZ">
             <objects>
-                <controller identifier="updateSecondaryInfo" id="gZe-MZ-R7h" customClass="UpdateSecondaryInfoInterfaceController" customModule="Gym_Tracker_watchOS_Extension">
+                <controller identifier="updateSecondaryInfo" fullBounds="YES" id="gZe-MZ-R7h" customClass="UpdateSecondaryInfoInterfaceController" customModule="Gym_Tracker_watchOS_Extension">
                     <items>
                         <label alignment="left" text="Update Weight" id="hYo-pw-K45">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <group width="1" height="0.40000000000000002" alignment="left" layout="vertical" id="t46-yV-JjH">
+                        <group width="1" height="0.34999999999999998" alignment="left" layout="vertical" id="t46-yV-JjH">
                             <items>
                                 <group width="1" alignment="center" verticalAlignment="bottom" id="eD1-vK-cZY">
                                     <items>
@@ -202,49 +202,55 @@
                                 </button>
                             </items>
                         </group>
-                        <group width="1" alignment="left" verticalAlignment="bottom" id="jfz-bX-bex">
+                        <group width="0.90000000000000002" height="0.5" alignment="center" verticalAlignment="center" layout="vertical" id="MVy-Wx-Ds0">
                             <items>
-                                <button width="0.32000000000000001" height="25" alignment="left" verticalAlignment="bottom" title="+½" id="r1t-fI-ZOF">
-                                    <color key="backgroundColor" red="0.0" green="0.75294117647058822" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    <connections>
-                                        <action selector="addHalf" destination="gZe-MZ-R7h" id="Dae-Bn-Lp1"/>
-                                    </connections>
-                                </button>
-                                <button width="0.32000000000000001" height="25" alignment="center" verticalAlignment="bottom" title="+1" id="q4i-Xa-0Pc">
-                                    <color key="backgroundColor" red="0.0" green="0.75294117647058822" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    <connections>
-                                        <action selector="addOne" destination="gZe-MZ-R7h" id="YpK-bD-eyo"/>
-                                    </connections>
-                                </button>
-                                <button width="0.32000000000000001" height="25" alignment="right" verticalAlignment="bottom" title="+5" id="6dG-dj-X0a">
-                                    <color key="backgroundColor" red="0.0" green="0.75294117647058822" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    <connections>
-                                        <action selector="addFive" destination="gZe-MZ-R7h" id="qMs-or-3aM"/>
-                                    </connections>
-                                </button>
+                                <group width="1" height="25" alignment="left" verticalAlignment="bottom" id="jfz-bX-bex">
+                                    <items>
+                                        <button width="0.32000000000000001" height="1" alignment="left" verticalAlignment="bottom" title="+½" id="r1t-fI-ZOF">
+                                            <color key="backgroundColor" red="0.0" green="0.75294117647058822" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <connections>
+                                                <action selector="addHalf" destination="gZe-MZ-R7h" id="Dae-Bn-Lp1"/>
+                                            </connections>
+                                        </button>
+                                        <button width="0.32000000000000001" height="1" alignment="center" verticalAlignment="bottom" title="+1" id="q4i-Xa-0Pc">
+                                            <color key="backgroundColor" red="0.0" green="0.75294117647058822" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <connections>
+                                                <action selector="addOne" destination="gZe-MZ-R7h" id="YpK-bD-eyo"/>
+                                            </connections>
+                                        </button>
+                                        <button width="0.32000000000000001" height="1" alignment="right" verticalAlignment="bottom" title="+5" id="6dG-dj-X0a">
+                                            <color key="backgroundColor" red="0.0" green="0.75294117647058822" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <connections>
+                                                <action selector="addFive" destination="gZe-MZ-R7h" id="qMs-or-3aM"/>
+                                            </connections>
+                                        </button>
+                                    </items>
+                                </group>
+                                <group width="1" height="25" alignment="left" verticalAlignment="bottom" id="Y3f-g6-21x">
+                                    <items>
+                                        <button width="0.32000000000000001" height="1" alignment="left" title="−½" id="WgL-E2-hyn">
+                                            <color key="backgroundColor" red="0.75294117647058822" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <connections>
+                                                <action selector="minusHalf" destination="gZe-MZ-R7h" id="ajT-nQ-F9Q"/>
+                                            </connections>
+                                        </button>
+                                        <button width="0.32000000000000001" height="1" alignment="center" title="−1" id="nWn-JI-wwF">
+                                            <color key="backgroundColor" red="0.75294117647058822" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <connections>
+                                                <action selector="minusOne" destination="gZe-MZ-R7h" id="ob0-Lg-qNt"/>
+                                            </connections>
+                                        </button>
+                                        <button width="0.32000000000000001" height="1" alignment="right" title="−5" id="VRO-zf-2gN">
+                                            <color key="backgroundColor" red="0.75294117647058822" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <connections>
+                                                <action selector="minusFive" destination="gZe-MZ-R7h" id="7Ac-VO-gQK"/>
+                                            </connections>
+                                        </button>
+                                    </items>
+                                </group>
                             </items>
-                        </group>
-                        <group width="1" alignment="left" verticalAlignment="bottom" id="Y3f-g6-21x">
-                            <items>
-                                <button width="0.32000000000000001" height="25" alignment="left" title="−½" id="WgL-E2-hyn">
-                                    <color key="backgroundColor" red="0.75294117647058822" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    <connections>
-                                        <action selector="minusHalf" destination="gZe-MZ-R7h" id="ajT-nQ-F9Q"/>
-                                    </connections>
-                                </button>
-                                <button width="0.32000000000000001" height="25" alignment="center" title="−1" id="nWn-JI-wwF">
-                                    <color key="backgroundColor" red="0.75294117647058822" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    <connections>
-                                        <action selector="minusOne" destination="gZe-MZ-R7h" id="ob0-Lg-qNt"/>
-                                    </connections>
-                                </button>
-                                <button width="0.32000000000000001" height="25" alignment="right" title="−5" id="VRO-zf-2gN">
-                                    <color key="backgroundColor" red="0.75294117647058822" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    <connections>
-                                        <action selector="minusFive" destination="gZe-MZ-R7h" id="7Ac-VO-gQK"/>
-                                    </connections>
-                                </button>
-                            </items>
+                            <variation key="device=watch38mm" width="1"/>
+                            <variation key="device=watch42mm" width="1"/>
                         </group>
                     </items>
                     <connections>
