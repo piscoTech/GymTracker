@@ -47,7 +47,9 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		tableView.estimatedRowHeight = 44
 		
 		if exercize.sets.isEmpty && editMode {
-			newSet(self)
+			DispatchQueue.main.async {
+				self.newSet(self)
+			}
 		}
 		oldName = exercize.name
     }
@@ -174,10 +176,6 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		s.set(mainInfo: 0)
 		s.set(secondaryInfo: 0)
 		s.set(rest: 60)
-	
-		if let tmp = sender as? ExercizeTableViewController, tmp == self {
-			return
-		}
 		
 		insertSet(s)
 	}

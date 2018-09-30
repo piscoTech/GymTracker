@@ -1088,7 +1088,7 @@ class WorkoutIteratorTests: XCTestCase {
 		}
 	}
 	
-	func testWeightChange() {
+	func testSecondaryInfoChange() {
 		let e = workout[1] as! GTSimpleSetsExercize
 		let w = 35.3
 		guard let iter = WorkoutIterator(workout, choices: [], using: dataManager.preferences) else {
@@ -1106,6 +1106,237 @@ class WorkoutIteratorTests: XCTestCase {
 		XCTAssertEqual(loaded.secondaryInfoChange(for: e), 0)
 		loaded.loadPersistedState()
 		XCTAssertEqual(iter.secondaryInfoChange(for: e), w.rounded(to: 0.5))
+	}
+	
+	func testSecondaryInfoChangeException() {
+		let ch = choicify()
+		guard let iter = WorkoutIterator(workout, choices: [0], using: dataManager.preferences) else {
+			XCTFail("Invalid workout")
+			return
+		}
+		
+		iter.setSecondaryInfoChange(5, for: ch[0]!)
+		iter.setSecondaryInfoChange(6, for: workout[2] as! GTSimpleSetsExercize)
+		
+		XCTAssertEqual(iter.secondaryInfoChange(for: ch[0]!), 5)
+		XCTAssertEqual(iter.secondaryInfoChange(for: ch[1]!), 0)
+		XCTAssertEqual(iter.secondaryInfoChange(for: workout[2] as! GTSimpleSetsExercize), 6)
+	}
+	
+	func testSecondaryInfoProgressiveChange() {
+		guard let iter = WorkoutIterator(workout, choices: [], using: dataManager.preferences) else {
+			XCTFail("Invalid workout")
+			return
+		}
+		
+		let e = workout[0] as! GTSimpleSetsExercize
+		_ = iter.next()
+		var (sc, ic) = iter.secondaryInfoChange(for: e[0]!)
+		XCTAssertEqual(sc, 0)
+		XCTAssertTrue(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e[1]!)
+		XCTAssertEqual(sc, 0)
+		XCTAssertFalse(ic)
+		
+		iter.setSecondaryInfoChange(5, for: e)
+		(sc, ic) = iter.secondaryInfoChange(for: e[0]!)
+		XCTAssertEqual(sc, 5)
+		XCTAssertTrue(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e[1]!)
+		XCTAssertEqual(sc, 5)
+		XCTAssertFalse(ic)
+		
+		_ = iter.next()
+		(sc, ic) = iter.secondaryInfoChange(for: e[0]!)
+		XCTAssertEqual(sc, 0)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e[1]!)
+		XCTAssertEqual(sc, 5)
+		XCTAssertTrue(ic)
+		
+		let e2 = workout[1] as! GTSimpleSetsExercize
+		iter.setSecondaryInfoChange(10, for: e2)
+		(sc, ic) = iter.secondaryInfoChange(for: e2[0]!)
+		XCTAssertEqual(sc, 10)
+		XCTAssertFalse(ic)
+		
+		_ = iter.next()
+		(sc, ic) = iter.secondaryInfoChange(for: e[0]!)
+		XCTAssertEqual(sc, 0)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e[1]!)
+		XCTAssertEqual(sc, 0)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e2[0]!)
+		XCTAssertEqual(sc, 10)
+		XCTAssertTrue(ic)
+	}
+	
+	func testSecondaryInfoCircuitProgressiveChange() {
+		let c = dataManager.newCircuit()
+		c.add(parts: workout[0] as! GTSimpleSetsExercize, workout[1] as! GTSimpleSetsExercize)
+		workout.add(parts: c)
+		workout.movePart(at: c.order, to: 0)
+		
+		guard let iter = WorkoutIterator(workout, choices: [], using: dataManager.preferences) else {
+			XCTFail("Invalid workout")
+			return
+		}
+		
+		let e1 = c[0] as! GTSimpleSetsExercize
+		var s = dataManager.newSet(for: e1)
+		s.set(mainInfo: 10)
+		s.set(secondaryInfo: 6)
+		s.set(rest: 60)
+		let e2 = c[1] as! GTSimpleSetsExercize
+		s = dataManager.newSet(for: e2)
+		s.set(mainInfo: 10)
+		s.set(secondaryInfo: 6)
+		s.set(rest: 60)
+		let ch1 = 4.5
+		let ch2 = 7.0
+		iter.setSecondaryInfoChange(ch1, for: e1)
+		iter.setSecondaryInfoChange(ch2, for: e2)
+		_ = iter.next()
+		
+		var (sc, ic) = iter.secondaryInfoChange(for: e1[0]!)
+		XCTAssertEqual(sc, ch1)
+		XCTAssertTrue(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e2[0]!)
+		XCTAssertEqual(sc, ch2)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e1[1]!)
+		XCTAssertEqual(sc, ch1)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e2[1]!)
+		XCTAssertEqual(sc, ch2)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e1[2]!)
+		XCTAssertEqual(sc, ch1)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e2[2]!)
+		XCTAssertEqual(sc, ch2)
+		XCTAssertFalse(ic)
+
+		_ = iter.next()
+		(sc, ic) = iter.secondaryInfoChange(for: e1[0]!)
+		XCTAssertEqual(sc, 0)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e2[0]!)
+		XCTAssertEqual(sc, ch2)
+		XCTAssertTrue(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e1[1]!)
+		XCTAssertEqual(sc, ch1)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e2[1]!)
+		XCTAssertEqual(sc, ch2)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e1[2]!)
+		XCTAssertEqual(sc, ch1)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e2[2]!)
+		XCTAssertEqual(sc, ch2)
+		XCTAssertFalse(ic)
+		
+		_ = iter.next()
+		(sc, ic) = iter.secondaryInfoChange(for: e1[0]!)
+		XCTAssertEqual(sc, 0)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e2[0]!)
+		XCTAssertEqual(sc, 0)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e1[1]!)
+		XCTAssertEqual(sc, ch1)
+		XCTAssertTrue(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e2[1]!)
+		XCTAssertEqual(sc, ch2)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e1[2]!)
+		XCTAssertEqual(sc, ch1)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e2[2]!)
+		XCTAssertEqual(sc, ch2)
+		XCTAssertFalse(ic)
+		
+		_ = iter.next()
+		(sc, ic) = iter.secondaryInfoChange(for: e1[0]!)
+		XCTAssertEqual(sc, 0)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e2[0]!)
+		XCTAssertEqual(sc, 0)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e1[1]!)
+		XCTAssertEqual(sc, 0)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e2[1]!)
+		XCTAssertEqual(sc, ch2)
+		XCTAssertTrue(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e1[2]!)
+		XCTAssertEqual(sc, ch1)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e2[2]!)
+		XCTAssertEqual(sc, ch2)
+		XCTAssertFalse(ic)
+		
+		_ = iter.next()
+		(sc, ic) = iter.secondaryInfoChange(for: e1[0]!)
+		XCTAssertEqual(sc, 0)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e2[0]!)
+		XCTAssertEqual(sc, 0)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e1[1]!)
+		XCTAssertEqual(sc, 0)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e2[1]!)
+		XCTAssertEqual(sc, 0)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e1[2]!)
+		XCTAssertEqual(sc, ch1)
+		XCTAssertTrue(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e2[2]!)
+		XCTAssertEqual(sc, ch2)
+		XCTAssertFalse(ic)
+		
+		_ = iter.next()
+		(sc, ic) = iter.secondaryInfoChange(for: e1[0]!)
+		XCTAssertEqual(sc, 0)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e2[0]!)
+		XCTAssertEqual(sc, 0)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e1[1]!)
+		XCTAssertEqual(sc, 0)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e2[1]!)
+		XCTAssertEqual(sc, 0)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e1[2]!)
+		XCTAssertEqual(sc, 0)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e2[2]!)
+		XCTAssertEqual(sc, ch2)
+		XCTAssertTrue(ic)
+		
+		_ = iter.next()
+		(sc, ic) = iter.secondaryInfoChange(for: e1[0]!)
+		XCTAssertEqual(sc, 0)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e2[0]!)
+		XCTAssertEqual(sc, 0)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e1[1]!)
+		XCTAssertEqual(sc, 0)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e2[1]!)
+		XCTAssertEqual(sc, 0)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e1[2]!)
+		XCTAssertEqual(sc, 0)
+		XCTAssertFalse(ic)
+		(sc, ic) = iter.secondaryInfoChange(for: e2[2]!)
+		XCTAssertEqual(sc, 0)
+		XCTAssertFalse(ic)
 	}
 	
 	func testDestroyPersistedState() {

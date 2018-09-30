@@ -221,5 +221,9 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutCo
 	@IBAction func exitWorkoutTracking() {
 		appDelegate.restoreDefaultState()
 	}
+	
+	func globallyUpdateSecondaryInfoChange() {
+		#warning("Implement me")
+	}
 
 }

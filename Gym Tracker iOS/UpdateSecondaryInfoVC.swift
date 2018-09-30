@@ -46,7 +46,7 @@ class UpdateSecondaryInfoViewController: UIViewController {
 		
 		self.delegate = data.workoutController
 		self.set = data.set
-		self.sum = delegate.secondaryInfoChange(for: set)
+		self.sum = delegate.secondaryInfoChange(for: set, forProposingChange: true)
 		
 		base.text = set.secondaryInfo.toString()
 		unit.text = set.secondaryInfoLabel.string

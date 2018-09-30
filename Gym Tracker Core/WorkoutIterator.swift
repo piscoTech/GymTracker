@@ -323,11 +323,47 @@ public class WorkoutIterator: IteratorProtocol {
 	
 	// MARK: - Manage cache of secondary info changes
 	
+	/// Fetch the secondary info change for the given exercize.
+	/// - returns: The secondary info change for the given exercize ignoring the workout progress.
 	func secondaryInfoChange(for e: GTSimpleSetsExercize) -> Double {
 		let id = e.recordID
-		precondition(secondaryInfoChanges.keys.contains(id), "Exercize does not belong to the workout")
+		let masterW = exercizes[0][0].parentHierarchy.compactMap { $0 as? GTWorkout }.first
+		let curW = e.parentHierarchy.compactMap { $0 as? GTWorkout }.first
+		precondition(masterW == curW, "Exercize does not belong to the workout")
 		
-		return secondaryInfoChanges[id]!
+		return secondaryInfoChanges[id] ?? 0
+	}
+	
+	/// Fetch the secondary info change for the given set.
+	/// - returns: The secondary info change for the given set if not yet completed, `0` otherwise, and whether the set is the current one.
+	func secondaryInfoChange(for s: GTSet) -> (change: Double, current: Bool) {
+		let change = secondaryInfoChange(for: s.exercize)
+		
+		guard let (n, group) = exercizes.enumerated().first(where: { $1.contains(s.exercize) }) else {
+			preconditionFailure("Set does not belong to the workout")
+		}
+		
+		let sOrder = Int(s.order)
+		let (curE, curP) = currentState()
+		if n < curE {
+			return (0, false)
+		} else if n > curE {
+			return (change, false)
+		} else if group.count == 1 { // Set belongs to the current exercize (single)
+			if sOrder < curP {
+				return (0, false)
+			} else {
+				return (change, sOrder == curP)
+			}
+		} else { // Set belongs to the current circuit
+			let sPart = sOrder * group.count + Int(s.exercize.order)
+			
+			if sPart < curP {
+				return (0, false)
+			} else {
+				return (change, sPart == curP)
+			}
+		}
 	}
 	
 	func setSecondaryInfoChange(_ c: Double, for e: GTSimpleSetsExercize) {
@@ -339,8 +375,7 @@ public class WorkoutIterator: IteratorProtocol {
 	
 	// MARK: - Manage steps
 	
-	/// Save the state of the iterator so that after reloading it the first call to `next()` will give the same result as the last one before saving.
-	func persistState() {
+	private func currentState() -> (exercize: Int, part: Int) {
 		var e = curExercize
 		var p = curPart - 1
 		if p < 0 {
@@ -356,6 +391,13 @@ public class WorkoutIterator: IteratorProtocol {
 				p = 0
 			}
 		}
+		
+		return (e, p)
+	}
+	
+	/// Save the state of the iterator so that after reloading it the first call to `next()` will give the same result as the last one before saving.
+	func persistState() {
+		let (e, p) = currentState()
 		
 		preferences.currentExercize = e
 		preferences.currentPart = p

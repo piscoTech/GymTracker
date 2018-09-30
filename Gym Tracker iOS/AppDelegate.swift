@@ -141,10 +141,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		return false
 	}
 	
+	private var reviewRequested = false
+	
 	private func requestReview() {
+		guard !reviewRequested else {
+			return
+		}
+		
 		if #available(iOS 10.3, *) {
 			if dataManager.preferences.reviewRequestCounter >= dataManager.preferences.reviewRequestThreshold {
 				SKStoreReviewController.requestReview()
+				
+				reviewRequested = true
+				Timer.scheduledTimer(withTimeInterval: 60, repeats: false) { _ in
+					self.reviewRequested = false
+				}
 			}
 		}
 	}
@@ -437,7 +448,7 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 		guard !(workoutController?.isMirroring ?? true) else {
 			return
 		}
-		
+		#warning("Check that the right value for weight change is selected")
 		var notifications = [UNNotificationRequest]()
 		let presentNow = UNTimeIntervalNotificationTrigger(timeInterval: GTNotification.immediateNotificationDelay, repeats: false)
 		if isRest {
@@ -514,6 +525,10 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 		// Review
 		dataManager.preferences.reviewRequestCounter += 1
 		requestReview()
+	}
+	
+	func globallyUpdateSecondaryInfoChange() {
+		#warning("Implement me")
 	}
 	
 }

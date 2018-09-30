@@ -40,6 +40,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		case setWorkoutDoneText(String)
 		case setWorkoutDoneButtonEnabled(Bool)
 		case stopTimer
+		case globallyUpdateSecondaryInfoChange
 	}
 	
 	private let source = RunningWorkoutSource.phone
@@ -593,9 +594,12 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		do { // First set update
 			ctrl.setSecondaryInfoChange(e2Change, for: e2[0]!)
 			
-			XCTAssertEqual(ctrl.secondaryInfoChange(for: e2[0]!), e2Change)
+			XCTAssertEqual(ctrl.secondaryInfoChange(for: e2[0]!), 0)
+			XCTAssertEqual(ctrl.secondaryInfoChange(for: e2[0]!, forProposingChange: true), e2Change)
+			XCTAssertEqual(ctrl.secondaryInfoChange(for: e2[1]!), e2Change)
 			XCTAssertEqual(e2[0]!.secondaryInfo, 5)
 			checkE2Rest()
+			assertCall { $0 == .globallyUpdateSecondaryInfoChange }
 			XCTAssertTrue(calls.isEmpty)
 		}
 		
@@ -684,7 +688,8 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 			let restStart = Date().addingTimeInterval(-45)
 			ctrl.endSet(endTime: restStart, secondaryInfoChange: e2Change * 2)
 			
-			XCTAssertEqual(ctrl.secondaryInfoChange(for: e2[1]!), e2Change * 2)
+			XCTAssertEqual(ctrl.secondaryInfoChange(for: e2[1]!), 0)
+			XCTAssertEqual(ctrl.secondaryInfoChange(for: e2[1]!, forProposingChange: true), e2Change * 2)
 			XCTAssertEqual(e2[1]!.secondaryInfo, 8)
 			
 			assertCall { c in
@@ -729,6 +734,8 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 				}
 				return false
 			}
+			assertCall { $0 == .globallyUpdateSecondaryInfoChange }
+			XCTAssertTrue(calls.isEmpty)
 		}
 		
 		do { // Rest period end
@@ -982,10 +989,12 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		
 		ctrl.setSecondaryInfoChange(0, for: e1[0]!)
 		testSet2Update()
+		assertCall { $0 == .globallyUpdateSecondaryInfoChange }
 		XCTAssertTrue(calls.isEmpty)
 		
 		XCTAssertEqual(e1[0]?.secondaryInfo, 0)
 		XCTAssertEqual(ctrl.secondaryInfoChange(for: e1[0]!), 0)
+		XCTAssertEqual(ctrl.secondaryInfoChange(for: e1[1]!), 0)
 		
 		ctrl.endSet() // End E1 S2
 		ctrl.endSet() // End E2 S1
@@ -993,7 +1002,9 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		calls = []
 		ctrl.setSecondaryInfoChange(2, for: e2[0]!)
 		XCTAssertEqual(e2[0]?.secondaryInfo, 6)
-		XCTAssertEqual(ctrl.secondaryInfoChange(for: e2[0]!), 2)
+		XCTAssertEqual(ctrl.secondaryInfoChange(for: e2[0]!), 0)
+		XCTAssertEqual(ctrl.secondaryInfoChange(for: e2[0]!, forProposingChange: true), 2)
+		XCTAssertEqual(ctrl.secondaryInfoChange(for: e2[1]!), 2)
 		
 		assertCall { c in
 			if case DelegateCalls.setCurrentExercizeViewHidden(let h) = c {
@@ -1067,6 +1078,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 			}
 			return false
 		}
+		assertCall { $0 == .globallyUpdateSecondaryInfoChange }
 		
 		XCTAssertTrue(calls.isEmpty)
 		ctrl.endRest()
@@ -1534,6 +1546,11 @@ extension ExecuteWorkoutControllerTests: ExecuteWorkoutControllerDelegate {
 	
 	func exitWorkoutTracking() {
 		self.calls.append(.exitWorkoutTracking)
+		expectations.popLast()?.fulfill()
+	}
+	
+	func globallyUpdateSecondaryInfoChange() {
+		self.calls.append(.globallyUpdateSecondaryInfoChange)
 		expectations.popLast()?.fulfill()
 	}
 	

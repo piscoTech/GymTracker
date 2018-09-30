@@ -35,7 +35,7 @@ class UpdateSecondaryInfoInterfaceController: WKInterfaceController {
 		
 		self.delegate = data.workoutController
 		self.set = data.set
-		self.sum = delegate.secondaryInfoChange(for: set)
+		self.sum = delegate.secondaryInfoChange(for: set, forProposingChange: true)
 		
 		base.setText(set.secondaryInfo.toString())
 		unit.setText(set.secondaryInfoLabel.string)

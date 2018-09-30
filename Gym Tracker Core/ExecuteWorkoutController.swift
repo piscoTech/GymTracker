@@ -67,6 +67,7 @@ public protocol ExecuteWorkoutControllerDelegate: AnyObject {
 	
 	func workoutHasStarted()
 	func exitWorkoutTracking()
+	func globallyUpdateSecondaryInfoChange()
 	
 }
 
@@ -99,7 +100,7 @@ public class ExecuteWorkoutController: NSObject {
 	public var isRestMode: Bool {
 		return restStart != nil
 	}
-	/// The start time of teh current rest.
+	/// The start time of the current rest.
 	private var restStart: Date?
 	private var restTimer: Timer? = nil {
 		didSet {
@@ -643,8 +644,18 @@ public class ExecuteWorkoutController: NSObject {
 		displayStep()
 	}
 	
-	public func secondaryInfoChange(for s: GTSet) -> Double {
-		return workoutIterator.secondaryInfoChange(for: s.exercize)
+	public func secondaryInfoChange(for s: GTSet, forProposingChange: Bool = false) -> Double {
+		guard !forProposingChange else {
+			return workoutIterator.secondaryInfoChange(for: s.exercize)
+		}
+		
+		let (ch, cur) = workoutIterator.secondaryInfoChange(for: s)
+		
+		if cur {
+			return isRestMode ? 0 : ch
+		} else {
+			return ch
+		}
 	}
 	
 	public func setSecondaryInfoChange(_ change: Double, for set: GTSet) {
@@ -659,6 +670,7 @@ public class ExecuteWorkoutController: NSObject {
 		let success = {
 			self.workoutIterator.setSecondaryInfoChange(change, for: set.exercize)
 			self.currentStep?.updateSecondaryInfoChange()
+			self.view.globallyUpdateSecondaryInfoChange()
 			if refreshView {
 				self.displayStep(isRefresh: true)
 			}
