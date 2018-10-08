@@ -51,13 +51,13 @@ class CurrentWorkoutViewController: UIViewController {
 		
 		appDelegate.currentWorkout = self
 
-		for b in [setDoneBtn!, restDoneBtn!] {
-			b.clipsToBounds = true
-			b.layer.cornerRadius = 5
+		for b in [setDoneBtn, restDoneBtn] {
+			b?.clipsToBounds = true
+			b?.layer.cornerRadius = 5
 		}
 		
-		for l in [bpmLbl!, timerLbl!, restTimerLbl!] {
-			l.font = l.font?.makeMonospacedDigit()
+		for l in [bpmLbl, timerLbl, restTimerLbl] {
+			l?.font = l?.font?.makeMonospacedDigit()
 		}
 
 		// This method is always called during app launch by the app delegate and as soon as the view is loaded it also updates it as appropriate
@@ -136,6 +136,7 @@ class CurrentWorkoutViewController: UIViewController {
 	}
 	
 	func setCurrentSetText(_ text: NSAttributedString) {
+		currentSetInfoLbl.textColor = UILabel.appearance().textColor
 		currentSetInfoLbl.attributedText = text
 	}
 	
@@ -144,6 +145,7 @@ class CurrentWorkoutViewController: UIViewController {
 	}
 	
 	func setOtherSetsText(_ text: NSAttributedString) {
+		otherSetsLbl.textColor = UILabel.appearance().textColor
 		otherSetsLbl.attributedText = text
 	}
 	
@@ -241,6 +243,7 @@ class CurrentWorkoutViewController: UIViewController {
 	}
 	
 	func setNextUpText(_ text: NSAttributedString) {
+		nextUpLbl.textColor = UILabel.appearance().textColor
 		nextUpLbl.attributedText = text
 	}
 	

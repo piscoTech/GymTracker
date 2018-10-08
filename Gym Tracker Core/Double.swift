@@ -10,7 +10,7 @@ import Foundation
 
 extension Double {
 	
-	func secondaryInfoDescription(withChange change: Double) -> NSAttributedString? {
+	public func secondaryInfoDescription(withChange change: Double) -> NSAttributedString? {
 		guard self > 0 || change > 0 else {
 			return nil
 		}
@@ -18,7 +18,7 @@ extension Double {
 		return self.secondaryInfoDescriptionEvenForZero(withChange: change)
 	}
 	
-	func secondaryInfoDescriptionEvenForZero(withChange change: Double) -> NSAttributedString {
+	public func secondaryInfoDescriptionEvenForZero(withChange change: Double) -> NSAttributedString {
 		let w = max(0, self)
 		let res = NSMutableAttributedString(string: w.toString())
 		let actCh = change > 0 ? change : max(change, -w)

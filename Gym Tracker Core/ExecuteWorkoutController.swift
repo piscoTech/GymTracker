@@ -644,6 +644,14 @@ public class ExecuteWorkoutController: NSObject {
 		displayStep()
 	}
 	
+	public func isManaging(_ p: GTPart) -> Bool {
+		return p.parentHierarchy.contains { ($0 as? GTWorkout) == workout }
+	}
+	
+	public func isManaging(_ s: GTSet) -> Bool {
+		return isManaging(s.exercize)
+	}
+	
 	public func secondaryInfoChange(for s: GTSet, forProposingChange: Bool = false) -> Double {
 		guard !forProposingChange else {
 			return workoutIterator.secondaryInfoChange(for: s.exercize)

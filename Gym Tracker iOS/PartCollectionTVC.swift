@@ -14,6 +14,7 @@ import GymTrackerCore
 	func addDeletedEntities(_ del: [GTDataObject])
 	func exercizeUpdated(_ e: GTPart)
 	func updateView(global: Bool)
+	func updateSecondaryInfoChange()
 	func dismissPresentedController()
 	
 	var partCollection: GTDataObject { get }
@@ -245,6 +246,13 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		
 		subCollection?.updateView(global: false)
 		exercizeController?.updateView()
+	}
+	
+	func updateSecondaryInfoChange() {
+		subCollection?.updateSecondaryInfoChange()
+		exercizeController?.updateSecondaryInfoChange()
+		
+		tableView.reloadSections([mainSectionIndex], with: .automatic)
 	}
 
     // MARK: - Table view data source

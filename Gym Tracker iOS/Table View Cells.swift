@@ -65,7 +65,12 @@ class ExercizeTableViewCell: UITableViewCell {
 		
 		name.text = exercize.title
 		name.font = exercize is GTSimpleSetsExercize ? ExercizeTableViewCell.normalFont : ExercizeTableViewCell.italicFont
-		exercizeInfo.text = exercize.summary
+		if let curWrkt = appDelegate.workoutController, curWrkt.isManaging(exercize) {
+			exercizeInfo.textColor = UILabel.appearance().textColor
+			exercizeInfo.attributedText = exercize.summaryWithSecondaryInfoChange(from: curWrkt)
+		} else {
+			exercizeInfo.text = exercize.summary
+		}
 		
 		isCircuit.isHidden = true
 		isChoice.isHidden = true
@@ -110,8 +115,19 @@ class SetCell: UITableViewCell, UITextFieldDelegate {
 	}
 	
 	private func updateView() {
-		self.repsCount.text = set.mainInfo > 0 ? "\(set.mainInfo)" : ""
-		self.weight.text = set.secondaryInfo > 0 ? set.secondaryInfo.toString() : ""
+		self.repsCount.text = set.mainInfo > 0 || !isEnabled ? "\(set.mainInfo)" : ""
+		if !isEnabled {
+			if let curWrkt = appDelegate.workoutController, curWrkt.isManaging(set) {
+				let ch = curWrkt.secondaryInfoChange(for: set)
+				// Avoid the appearance color overriding the color of the attributed string
+				self.weight.textColor = UITextField.appearance().textColor
+				self.weight.attributedText =  set.secondaryInfo.secondaryInfoDescriptionEvenForZero(withChange: ch)
+			} else {
+				self.weight.text = set.secondaryInfo.toString()
+			}
+		} else {
+			self.weight.text = set.secondaryInfo > 0 ? set.secondaryInfo.toString() : ""
+		}
 	}
 	
 	func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {

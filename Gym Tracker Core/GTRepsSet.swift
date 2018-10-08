@@ -23,7 +23,16 @@ final public class GTRepsSet: GTSet {
 	@NSManaged private var weight: Double
 	
 	override public var description: String {
-		return "\(reps)\(timesSign)\(weight.toString())kg"
+		return "\(reps)\(timesSign)\(weight.toString())\(GTRepsSet.kgLabel.string)"
+	}
+	
+	public override func descriptionWithSecondaryInfoChange(from ctrl: ExecuteWorkoutController) -> NSAttributedString {
+		let ch = ctrl.secondaryInfoChange(for: self)
+		let res = NSMutableAttributedString(string: "\(reps)\(timesSign)")
+		res.append(weight.secondaryInfoDescriptionEvenForZero(withChange: ch))
+		res.append(GTRepsSet.kgLabel)
+		
+		return res
 	}
 	
 	override class func loadWithID(_ id: String, fromDataManager dataManager: DataManager) -> GTRepsSet? {

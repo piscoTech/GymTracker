@@ -23,6 +23,14 @@ public class GTSet: GTDataObject {
 	@NSManaged final public var order: Int32
 	
 	@NSManaged final public private(set) var rest: TimeInterval
+	
+	override public var description: String {
+		fatalError("Abstract property not implemented")
+	}
+	
+	public func descriptionWithSecondaryInfoChange(from ctrl: ExecuteWorkoutController) -> NSAttributedString {
+		return NSAttributedString(string: description)
+	}
 
 	override public var isValid: Bool {
 		// A low-level CoreData access is needed to check validity

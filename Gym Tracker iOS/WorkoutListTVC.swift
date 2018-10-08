@@ -285,6 +285,10 @@ class WorkoutListTableViewController: UITableViewController {
 			tableView.endUpdates()
 		}
 	}
+	
+	func globallyUpdateSecondaryInfoChange() {
+		workoutController?.updateSecondaryInfoChange()
+	}
 
     // MARK: - Navigation
 	

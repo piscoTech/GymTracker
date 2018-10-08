@@ -448,7 +448,7 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 		guard !(workoutController?.isMirroring ?? true) else {
 			return
 		}
-		#warning("Check that the right value for weight change is selected")
+		
 		var notifications = [UNNotificationRequest]()
 		let presentNow = UNTimeIntervalNotificationTrigger(timeInterval: GTNotification.immediateNotificationDelay, repeats: false)
 		if isRest {
@@ -528,7 +528,7 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 	}
 	
 	func globallyUpdateSecondaryInfoChange() {
-		#warning("Implement me")
+		workoutList?.globallyUpdateSecondaryInfoChange()
 	}
 	
 }

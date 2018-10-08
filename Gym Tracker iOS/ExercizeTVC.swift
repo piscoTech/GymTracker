@@ -75,6 +75,10 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		tableView.reloadData()
 	}
 	
+	func updateSecondaryInfoChange() {
+		tableView.reloadSections([1], with: .automatic)
+	}
+	
 	func exercizeUpdated(_ e: GTPart) {}
 	
 	func dismissPresentedController() {}
@@ -82,7 +86,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	// MARK: - Table view data source
 	
 	private enum SetCellType {
-		case reps, rest, picker
+		case set, rest, picker
 	}
 	
 	override func numberOfSections(in tableView: UITableView) -> Int {
@@ -146,10 +150,10 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 				cell.set(rest: s.rest)
 				
 				return cell
-			case .reps:
+			case .set:
 				let cell = tableView.dequeueReusableCell(withIdentifier: "set", for: indexPath) as! SetCell
-				cell.set = s
 				cell.isEnabled = editMode
+				cell.set = s
 				
 				return cell
 			case .picker:
@@ -212,7 +216,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	// MARK: - Delete set
 	
 	override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-		return editMode && indexPath.section == 1 && setCellType(for: indexPath) == .reps
+		return editMode && indexPath.section == 1 && setCellType(for: indexPath) == .set
 	}
 	
 	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
@@ -320,9 +324,9 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 				}
 			}
 			
-			return row % 2 == 0 ? .reps : .rest
+			return row % 2 == 0 ? .set : .rest
 		} else { // No rests
-			return .reps
+			return .set
 		}
 	}
 	

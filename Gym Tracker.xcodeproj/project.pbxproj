@@ -434,7 +434,7 @@
 		7ADC03BC1E78A187005BDC25 /* GymTracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = GymTracker.xcdatamodel; sourceTree = "<group>"; };
 		7ADC03BE1E78A187005BDC25 /* GTRepsSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GTRepsSet.swift; sourceTree = "<group>"; };
 		7ADC03BF1E78A187005BDC25 /* GTWorkout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GTWorkout.swift; sourceTree = "<group>"; };
-		7ADC03C91E78A328005BDC25 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		7ADC03C91E78A328005BDC25 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7ADC03CC1E78A328005BDC25 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7ADC03CE1E78A328005BDC25 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		7ADC03CF1E78A328005BDC25 /* ExercizeTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExercizeTVC.swift; sourceTree = "<group>"; };

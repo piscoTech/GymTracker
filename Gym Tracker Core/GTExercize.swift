@@ -21,4 +21,8 @@ public class GTExercize: GTPart {
 		fatalError("Abstract property not implemented")
 	}
 	
+	public func summaryWithSecondaryInfoChange(from ctrl: ExecuteWorkoutController) -> NSAttributedString {
+		return NSAttributedString(string: summary)
+	}
+	
 }

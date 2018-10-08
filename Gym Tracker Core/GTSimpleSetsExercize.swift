@@ -98,6 +98,10 @@ public class GTSimpleSetsExercize: GTSetsExercize {
 		return setList.map { $0.description }.joined(separator: ", ")
 	}
 	
+	public override func summaryWithSecondaryInfoChange(from ctrl: ExecuteWorkoutController) -> NSAttributedString {
+		return setList.map { $0.descriptionWithSecondaryInfoChange(from: ctrl) }.joined(separator: ", ")
+	}
+	
 	///Set the name of the exercize.
 	public func set(name n: String) {
 		self.name = n.trimmingCharacters(in: .whitespacesAndNewlines)
