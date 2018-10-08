@@ -323,6 +323,10 @@ public class WorkoutIterator: IteratorProtocol {
 	
 	// MARK: - Manage cache of secondary info changes
 	
+	public func isManaging(_ p: GTPart) -> Bool {
+		return exercizes.contains { $0.contains(p) }
+	}
+	
 	/// Fetch the secondary info change for the given exercize.
 	/// - returns: The secondary info change for the given exercize ignoring the workout progress.
 	func secondaryInfoChange(for e: GTSimpleSetsExercize) -> Double {

@@ -223,7 +223,7 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutCo
 	}
 	
 	func globallyUpdateSecondaryInfoChange() {
-		#warning("Implement me")
+		appDelegate.executeWorkoutDetail?.reloadDetails(from: workoutController)
 	}
 
 }

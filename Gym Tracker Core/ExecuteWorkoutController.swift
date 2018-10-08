@@ -645,11 +645,11 @@ public class ExecuteWorkoutController: NSObject {
 	}
 	
 	public func isManaging(_ p: GTPart) -> Bool {
-		return p.parentHierarchy.contains { ($0 as? GTWorkout) == workout }
+		return workoutIterator.isManaging(p)
 	}
 	
 	public func isManaging(_ s: GTSet) -> Bool {
-		return isManaging(s.exercize)
+		return workoutIterator.isManaging(s.exercize)
 	}
 	
 	public func secondaryInfoChange(for s: GTSet, forProposingChange: Bool = false) -> Double {

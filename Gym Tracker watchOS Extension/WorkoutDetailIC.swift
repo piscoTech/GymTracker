@@ -26,6 +26,8 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 	
 	private var workout: GTWorkout!
 	private var delegate: WorkoutListInterfaceController?
+	
+	private var choices: [GTChoice: Int32]?
 
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
@@ -48,7 +50,7 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 		updateButton()
 	}
 	
-	func reloadData(checkExistence: Bool = true, choices: [GTChoice: Int32]? = nil) {
+	func reloadData(checkExistence: Bool = true, choices: [GTChoice: Int32]? = nil, withController ctrl: ExecuteWorkoutController? = nil) {
 		if checkExistence {
 			guard workout.stillExists(inDataManager: appDelegate.dataManager), !workout.archived else {
 				if delegate != nil {
@@ -60,6 +62,7 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 			}
 		}
 		
+		self.choices = choices
 		workoutName.setText(workout.name)
 		let exercizes = workout.exercizeList
 		let exCell = "exercize"
@@ -90,7 +93,11 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 				row.setRest(r.rest)
 			} else if let se = p as? GTSetsExercize {
 				let row = table.rowController(at: i) as! ExercizeCell
-				row.detailLabel.setText(se.summary)
+				if let curWrkt = ctrl {
+					row.detailLabel.setAttributedText(se.summaryWithSecondaryInfoChange(from: curWrkt))
+				} else {
+					row.detailLabel.setText(se.summary)
+				}
 				row.accessoryWidth = 21
 				row.showAccessory(false)
 				
@@ -110,6 +117,10 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 			}
 		}
     }
+	
+	func reloadDetails(from ctrl: ExecuteWorkoutController) {
+		reloadData(checkExistence: false, choices: self.choices, withController: ctrl)
+	}
 
     override func willActivate() {
         // This method is called when watch view controller is about to be visible to user
