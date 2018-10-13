@@ -48,6 +48,28 @@ class GTWorkoutTests: XCTestCase {
 		super.tearDown()
     }
 	
+	func testDescription() {
+		let workout = dataManager.newWorkout()
+		
+		let e1 = newValidExercize()
+		workout.add(parts: e1)
+		XCTAssertTrue(workout.description.hasPrefix("1"), "Unexpected description '\(workout.description)'")
+		let e2 = newValidExercize()
+		workout.add(parts: e2)
+		XCTAssertTrue(workout.description.hasPrefix("2"), "Unexpected description '\(workout.description)'")
+		
+		let ch = dataManager.newChoice()
+		workout.add(parts: ch)
+		ch.add(parts: e1, e2)
+		XCTAssertTrue(workout.description.hasPrefix("1"), "Unexpected description '\(workout.description)'")
+		
+		let e3 = newValidExercize()
+		let c = dataManager.newCircuit()
+		workout.add(parts: c)
+		c.add(parts: ch, e3)
+		XCTAssertTrue(workout.description.hasPrefix("2"), "Unexpected description '\(workout.description)'")
+	}
+	
 	func testIsValid() {
 		XCTAssertFalse(workout.isSubtreeValid)
 		XCTAssertFalse(workout.isValid)

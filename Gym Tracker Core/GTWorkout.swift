@@ -38,7 +38,7 @@ final public class GTWorkout: GTDataObject, NamedExercizeCollection {
 	@NSManaged public var archived: Bool
 	
 	public override var description: String {
-		let n = parts.filter { $0 is GTExercize }.count
+		let n = parts.reduce(0) { $0 + (($1 as? GTCircuit)?.exercizes.count ?? ($1 is GTSetsExercize ? 1 : 0)) }
 		return "\(n) " + GTLocalizedString("EXERCIZE" + (n > 1 ? "S" : ""), comment: "exercize(s)").lowercased()
 	}
 	
