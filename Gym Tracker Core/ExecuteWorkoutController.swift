@@ -639,6 +639,7 @@ public class ExecuteWorkoutController: NSObject {
 				self.setSecondaryInfoChange(ch, for: set, refreshView: false)
 			} else {
 				view.askUpdateSecondaryInfo(with: UpdateSecondaryInfoData(workoutController: self, set: set))
+				view.globallyUpdateSecondaryInfoChange()
 			}
 		}
 		displayStep()
