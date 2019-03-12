@@ -12,7 +12,7 @@ At the end your workout is automatically saved inside the Health app, if you're 
 Backup and restore your workouts using iCloud Drive or export and share them with your friends. Backups and exported workout are in XML format and easily accessible from inside the iCloud Drive folder and app, you can manually edit them and import them again, before import data is validated against this [XSD grammar](https://github.com/piscoTech/GymTracker/blob/master/Gym%20Tracker%20iOS/workout.xsd).
 
 Support me by buying the app on the AppStore<br>
-[![Download on the AppStore](http://www.marcoboschi.altervista.org/img/app_store_en.svg)](https://itunes.apple.com/us/app/gym-tracker-gym-workout-tracker/id1224155362?ls=1&mt=8)
+[![Download on the AppStore](https://marcoboschi.altervista.org/img/app_store_en.svg)](https://itunes.apple.com/us/app/gym-tracker-gym-workout-tracker/id1224155362?ls=1&mt=8)
 
 ## Project Setup
 The framework `MBLibrary` referenced by this project is available [here](https://github.com/piscoTech/MBLibrary), version currently in use is [1.4.2](https://github.com/piscoTech/MBLibrary/releases/tag/v1.4.2(14)).
