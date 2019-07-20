@@ -58,7 +58,7 @@ class AskChoiceInterfaceController: WKInterfaceController {
 			nextBtn.setHidden(false)
 		}
 		
-		choiceNum.setText(String(format: GTLocalizedString("ASK_CHOICE\(data.choices.count > 1 ? "S" : "")", comment: "x/y"), data.n + 1, data.choices.count))
+		choiceNum.setText(String(format: GTLocalizedString("ASK_CHOICES", comment: "x/y"), data.n + 1, data.choices.count))
 		
 		let ch = data.choices[data.n]
 		let count = Int32(ch.exercizes.count)

@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14306.4" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14835.7" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14278.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14790.5"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -15,26 +14,26 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ABT-Ix-uon" id="Znh-Xc-mie">
-                <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="v3F-88-eKO">
-                        <rect key="frame" x="16" y="0.0" width="343" height="43.5"/>
+                        <rect key="frame" x="15" y="0.0" width="345" height="44"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fmm-np-lV7">
-                                <rect key="frame" x="0.0" y="0.0" width="114.5" height="43.5"/>
+                                <rect key="frame" x="0.0" y="0.0" width="115" height="44"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="Export"/>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="G2X-dM-tUv">
-                                <rect key="frame" x="114.5" y="0.0" width="114" height="43.5"/>
+                                <rect key="frame" x="115" y="0.0" width="115" height="44"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="[Archive]"/>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cyT-dk-hsj" customClass="DestructiveButton" customModule="Gym_Tracker" customModuleProvider="target">
-                                <rect key="frame" x="228.5" y="0.0" width="114.5" height="43.5"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cyT-dk-hsj">
+                                <rect key="frame" x="230" y="0.0" width="115" height="44"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="tintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="tintColor" name="Red Tint"/>
                                 <state key="normal" title="Delete"/>
                             </button>
                         </subviews>
@@ -47,6 +46,7 @@
                     <constraint firstItem="v3F-88-eKO" firstAttribute="leading" secondItem="Znh-Xc-mie" secondAttribute="leadingMargin" id="tS2-gU-V7m"/>
                 </constraints>
             </tableViewCellContentView>
+            <color key="tintColor" name="GT Tint"/>
             <connections>
                 <outlet property="archiveBtn" destination="G2X-dM-tUv" id="Oob-wU-ifP"/>
                 <outlet property="deleteBtn" destination="cyT-dk-hsj" id="k63-wx-daJ"/>
@@ -55,4 +55,12 @@
             <point key="canvasLocation" x="221" y="-211"/>
         </tableViewCell>
     </objects>
+    <resources>
+        <namedColor name="GT Tint">
+            <color red="0.75686274509803919" green="0.92156862745098034" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Red Tint">
+            <color red="1" green="0.18823529411764706" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
 </document>

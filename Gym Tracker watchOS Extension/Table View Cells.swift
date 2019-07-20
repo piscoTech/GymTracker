@@ -64,8 +64,8 @@ class RestCell: NSObject {
 	
 	@IBOutlet weak var restLabel: WKInterfaceLabel!
 	
-	func setRest(_ r: TimeInterval) {
-		restLabel.setText("\(r.getDuration(hideHours: true)) \(GTLocalizedString("REST", comment: "rest").lowercased())")
+	func set(rest r: TimeInterval) {
+		restLabel.setText(String(format: GTLocalizedString("%@_REST", comment: "rest"), r.getFormattedDuration()))
 	}
 	
 }

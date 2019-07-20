@@ -28,6 +28,11 @@ class WorkoutListTableViewController: UITableViewController {
 		appDelegate.workoutList = self
 		updateView()
 		enableEdit(canEdit)
+		
+		if #available(iOS 13, *) {} else {
+			self.navigationController?.navigationBar.barStyle = .black
+			tableView.backgroundColor = .black
+		}
     }
 
     override func didReceiveMemoryWarning() {
@@ -217,23 +222,23 @@ class WorkoutListTableViewController: UITableViewController {
 				tableView.deleteRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
 			}
 			updateView(autoReload: false)
-			tableView.insertRows(at: [IndexPath(row: workouts.index(of: w)!, section: 0)], with: .automatic)
+			tableView.insertRows(at: [IndexPath(row: workouts.firstIndex(of: w)!, section: 0)], with: .automatic)
 			
 			tableView.endUpdates()
 		case .edit:
 			tableView.beginUpdates()
 			
-			var index = IndexPath(row: (wasArchived ? archivedWorkouts : workouts).index(of: w)!, section: wasArchived ? 1 : 0)
+			var index = IndexPath(row: (wasArchived ? archivedWorkouts : workouts).firstIndex(of: w)!, section: wasArchived ? 1 : 0)
 			tableView.deleteRows(at: [index], with: .automatic)
 			updateView(autoReload: false)
-			index.row = (wasArchived ? archivedWorkouts : workouts).index(of: w)!
+			index.row = (wasArchived ? archivedWorkouts : workouts).firstIndex(of: w)!
 			tableView.insertRows(at: [index], with: .automatic)
 			
 			tableView.endUpdates()
 		case .delete:
 			tableView.beginUpdates()
 			
-			let index = IndexPath(row: (wasArchived ? archivedWorkouts : workouts).index(of: w)!, section: wasArchived ? 1 : 0)
+			let index = IndexPath(row: (wasArchived ? archivedWorkouts : workouts).firstIndex(of: w)!, section: wasArchived ? 1 : 0)
 			tableView.deleteRows(at: [index], with: .automatic)
 			updateView(autoReload: false)
 			if index.section == 1 && archivedWorkouts.count == 0 {
@@ -247,9 +252,9 @@ class WorkoutListTableViewController: UITableViewController {
 		case .archiveChange:
 			let countOld = workouts.count
 			let countArchOld = archivedWorkouts.count
-			let index = IndexPath(row: (wasArchived ? archivedWorkouts : workouts).index(of: w)!, section: wasArchived ? 1 : 0)
+			let index = IndexPath(row: (wasArchived ? archivedWorkouts : workouts).firstIndex(of: w)!, section: wasArchived ? 1 : 0)
 			updateView(autoReload: false)
-			let newIndex = IndexPath(row: (!wasArchived ? archivedWorkouts : workouts).index(of: w)!, section: !wasArchived ? 1 : 0)
+			let newIndex = IndexPath(row: (!wasArchived ? archivedWorkouts : workouts).firstIndex(of: w)!, section: !wasArchived ? 1 : 0)
 			
 			tableView.beginUpdates()
 			var doInsert = true

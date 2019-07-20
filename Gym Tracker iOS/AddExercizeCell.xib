@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14306.4" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14835.7" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14278.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14790.5"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -15,24 +14,24 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gNh-sB-8ay" id="sWB-zN-Jxj">
-                <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="fFg-jF-SQ8">
-                        <rect key="frame" x="16" y="0.0" width="343" height="43.5"/>
+                        <rect key="frame" x="15" y="0.0" width="345" height="44"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pu4-3X-Bmn">
-                                <rect key="frame" x="0.0" y="0.0" width="141.5" height="43.5"/>
+                                <rect key="frame" x="0.0" y="0.0" width="142.5" height="44"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="Add Exercize"/>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="v6N-dX-xFl">
-                                <rect key="frame" x="141.5" y="0.0" width="64.5" height="43.5"/>
+                                <rect key="frame" x="142.5" y="0.0" width="64.5" height="44"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="Add..."/>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eMe-YU-tJp">
-                                <rect key="frame" x="206" y="0.0" width="137" height="43.5"/>
+                                <rect key="frame" x="207" y="0.0" width="138" height="44"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="Add Existent"/>
                             </button>
@@ -46,6 +45,7 @@
                     <constraint firstItem="fFg-jF-SQ8" firstAttribute="top" secondItem="sWB-zN-Jxj" secondAttribute="top" id="obo-UC-bR9"/>
                 </constraints>
             </tableViewCellContentView>
+            <color key="tintColor" name="GT Tint"/>
             <connections>
                 <outlet property="addExercize" destination="pu4-3X-Bmn" id="F3d-WF-FOP"/>
                 <outlet property="addExistent" destination="eMe-YU-tJp" id="Tv7-cS-q3M"/>
@@ -54,4 +54,9 @@
             <point key="canvasLocation" x="352" y="342"/>
         </tableViewCell>
     </objects>
+    <resources>
+        <namedColor name="GT Tint">
+            <color red="0.75686274509803919" green="0.92156862745098034" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
 </document>

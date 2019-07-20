@@ -52,6 +52,10 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 			}
 		}
 		oldName = exercize.name
+		
+		if #available(iOS 13, *) {} else {
+			tableView.backgroundColor = .black
+		}
     }
 	
 	override func viewWillDisappear(_ animated: Bool) {
@@ -365,10 +369,20 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	}
 	
 	func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
-		let color = UILabel.appearance().textColor ?? .black
-		let txt = (TimeInterval(row) * GTRest.restStep).getDuration(hideHours: true)
-		
-		return NSAttributedString(string: txt, attributes: [.foregroundColor : color])
+		if #available(iOS 13, *) {
+			// Fallback to un-styled picker
+			return nil
+		} else {
+			guard let title = self.pickerView(pickerView, titleForRow: row, forComponent: component) else {
+				return nil
+			}
+			
+			return NSAttributedString(string: title, attributes: [.foregroundColor : UIColor(named: "Text Color")!])
+		}
+	}
+	
+	func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+		return (TimeInterval(row) * GTRest.restStep).getFormattedDuration()
 	}
 	
 	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {

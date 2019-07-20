@@ -6,7 +6,7 @@
 //  Copyright © 2017 Marco Boschi. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 extension Double {
 	

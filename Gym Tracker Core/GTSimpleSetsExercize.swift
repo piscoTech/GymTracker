@@ -148,7 +148,7 @@ public class GTSimpleSetsExercize: GTSetsExercize {
 	/// The position of the exercize in the choice, `nil` outside of choices.
 	public var choiceStatus: (number: Int, total: Int)? {
 		let hierarchy = self.parentHierarchy
-		guard let cIndex = hierarchy.index(where: { $0 is GTChoice }),
+		guard let cIndex = hierarchy.firstIndex(where: { $0 is GTChoice }),
 			let c = hierarchy[cIndex] as? GTChoice,
 			let exInChoice = cIndex > hierarchy.startIndex
 				? hierarchy[hierarchy.index(before: cIndex)] as? GTPart

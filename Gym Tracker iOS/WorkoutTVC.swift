@@ -38,6 +38,12 @@ class WorkoutTableViewController: NamedPartCollectionTableViewController<GTWorko
 		for (n, i) in [workoutActionId] {
 			tableView.register(UINib(nibName: n, bundle: Bundle.main), forCellReuseIdentifier: i)
 		}
+		
+		if #available(iOS 13, *) {} else {
+			if self.presentationController != nil {
+				self.navigationController?.navigationBar.barStyle = .black
+			}
+		}
     }
 
     override func didReceiveMemoryWarning() {

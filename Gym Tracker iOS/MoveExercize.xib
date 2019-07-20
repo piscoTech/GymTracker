@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14313.13.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14835.7" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.9"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14790.5"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -15,40 +14,31 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Dfv-NC-28X" id="sQg-eV-HSj">
-                <rect key="frame" x="0.0" y="0.0" width="335" height="43.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="336" height="44"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="2QU-b6-HPi">
-                        <rect key="frame" x="16" y="0.0" width="311" height="43.5"/>
+                        <rect key="frame" x="15" y="0.0" width="313" height="44"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lp4-Xb-ZEi" userLabel="Text">
-                                <rect key="frame" x="0.0" y="0.0" width="280.5" height="43.5"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="88L-v0-P33">
+                                <rect key="frame" x="0.0" y="4.5" width="282.5" height="35"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KQr-AF-foq">
-                                        <rect key="frame" x="0.0" y="5" width="33.5" height="20.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="282.5" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I1p-EU-CEi">
-                                        <rect key="frame" x="0.0" y="25.5" width="44" height="15"/>
+                                        <rect key="frame" x="0.0" y="20.5" width="282.5" height="14.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <constraints>
-                                    <constraint firstItem="KQr-AF-foq" firstAttribute="leading" secondItem="Lp4-Xb-ZEi" secondAttribute="leading" id="AL3-Am-A5j"/>
-                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="I1p-EU-CEi" secondAttribute="trailing" id="Cre-qU-YtM"/>
-                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="KQr-AF-foq" secondAttribute="trailing" id="M74-8r-ilc"/>
-                                    <constraint firstItem="I1p-EU-CEi" firstAttribute="leading" secondItem="Lp4-Xb-ZEi" secondAttribute="leading" id="Vzs-pt-apL"/>
-                                    <constraint firstItem="I1p-EU-CEi" firstAttribute="top" secondItem="KQr-AF-foq" secondAttribute="bottom" id="dnL-do-0sr"/>
-                                    <constraint firstItem="KQr-AF-foq" firstAttribute="top" secondItem="Lp4-Xb-ZEi" secondAttribute="top" constant="5" id="fC9-yc-u7S"/>
-                                    <constraint firstAttribute="bottom" secondItem="I1p-EU-CEi" secondAttribute="bottom" constant="3" id="mbb-2T-Ncx"/>
-                                </constraints>
-                            </view>
+                            </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="TEXT" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0mZ-0E-TkE">
-                                <rect key="frame" x="280.5" y="15" width="30.5" height="13.5"/>
+                                <rect key="frame" x="282.5" y="15.5" width="30.5" height="13.5"/>
                                 <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="11"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -63,6 +53,7 @@
                     <constraint firstAttribute="bottom" secondItem="2QU-b6-HPi" secondAttribute="bottom" id="xGg-ft-gjV"/>
                 </constraints>
             </tableViewCellContentView>
+            <color key="tintColor" name="GT Tint"/>
             <connections>
                 <outlet property="exercizeInfo" destination="I1p-EU-CEi" id="cXf-PJ-Zta"/>
                 <outlet property="invalidLbl" destination="0mZ-0E-TkE" id="3K7-r9-acZ"/>
@@ -72,4 +63,9 @@
             <point key="canvasLocation" x="425" y="-81"/>
         </tableViewCell>
     </objects>
+    <resources>
+        <namedColor name="GT Tint">
+            <color red="0.75686274509803919" green="0.92156862745098034" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
 </document>

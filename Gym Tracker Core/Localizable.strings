@@ -16,7 +16,6 @@
 "ARCH_WORKOUTS" = "Archived Workouts";
 "EXERCIZES" = "Exercizes";
 "EXERCIZE" = "Exercize";
-"ROUND" = "Round"; // Round of a circuit
 "REST" = "Rest";
 
 "DELETE_WORKOUT" = "Delete Workout";
@@ -49,15 +48,15 @@
 "IS_CIRCUIT" = "Circuit info";
 "CIRCUITE_USE_REST" = "Use rest periods";
 "IS_CHOICE" = "Choice info";
+"COMPOSITE_INFO_%lld_OF_%lld" = "Exercize %lld/%lld";
+"%@_REST" = "%@ rest";
 
 "WORKOUT_SAVE_ERR" = "Cannot save workout";
-"ASK_CHOICE" = "%d/%d choice";
-"ASK_CHOICES" = "%d/%d choices";
+"ASK_CHOICES" = "%lld/%lld choices";
+"CIRCUIT_PROGRESS" = "Exercize %lld/%lld, Round %lld/%lld";
 "NEXT_EXERCIZE_FLAG" = "NEXT: ";
 "NEXT_EXERCIZE_END" = "Workout End";
-"NEXT_EXERCIZE_REST" = " rest";
-"OTHER_N_SET" = " other set";
-"OTHER_N_SETS" = " other sets";
+"NEXT_EXERCIZE_REST" = "%@ rest";
 "WORKOUT_CANCEL" = "Cancel Workout";
 "WORKOUT_CANCEL_TXT" = "Are you sure you want to cancel the current workout?";
 "WORKOUT_END_BUTTON" = "End Now";
@@ -73,15 +72,15 @@
 
 "REPORT_TEXT" = "Report any problem also on Twitter @piscoTech or at GitHub tapping Source Code.";
 "ERR_BACKUP_UNAVAILABLE" = "Login with your iCloud account and enable iCloud Drive for Gym Tracker to use backups.";
-"BACKUP_USAGE_MANUAL" = "Manually backup your workouts to your iCloud Drive. You can restore a backup any time, share with your friends or edit directly to customize workouts and exercizes before importing them again.";
-"BACKUP_USAGE_AUTO" = "Your workouts will be saved weekly to your iCloud Drive. You can restore a backup any time, share with your friends or edit directly to customize workouts and exercizes before importing them again.";
+"BACKUP_USAGE_MANUAL" = "Manually backup your workouts to your iCloud Drive. You can restore a backup any time, share it with your friends or edit it directly to customize workouts and exercizes before importing them again.";
+"BACKUP_USAGE_AUTO" = "Your workouts will be saved weekly to your iCloud Drive. You can restore a backup any time, share it with your friends or edit it directly to customize workouts and exercizes before importing them again.";
 
 "RESTORE_BACKUP" = "Restore";
 "EXPORT_BACKUP" = "Export";
 "DELETE_BACKUP" = "Delete";
 
 "DELETE_BACKUP_TITLE" = "Delete Backup";
-"DELETE_BACKUP_CONFIRM" = "Are you sure you want to delete the backup from ";
+"DELETE_BACKUP_CONFIRM" = "Are you sure you want to delete the backup from %@?";
 "DELETE_BACKUP_FAIL" = "Unable to delete backup";
 "BACKUP_FAIL" = "Unable to complete backup";
 "EXPORT_FAIL" = "Unable to export workout";
@@ -89,8 +88,6 @@
 "RESTORE_SUCCESS" = "Restore completed";
 "WRKT_INVALID" = "Data is corrupted";
 "RESTORE_CONFIRM" = "Confirm restore";
-"RESTORE_CONFIRM_TXT_MANY" = " workouts found";
-"RESTORE_CONFIRM_TXT" = " workout found";
 "RESTORE_CONFIRM_BTN" = "Restore";
 "IMPORT_FAIL" = "Unable to import workouts";
 "IMPORT_SUCCESS" = "Import completed";
@@ -99,11 +96,10 @@
 // Notifications
 
 "REST_TIME_TITLE" = "It's time to rest";
-"REST_TIME_BODY" = "Rest for ";
+"REST_TIME_BODY" = "Rest for %@";
 "REST_OVER_TITLE" = "Rest time is over";
 "REST_SET_OVER_BODY" = "Get ready for the next set";
 "REST_EXERCIZE_OVER_BODY" = "Get ready for the next exercize";
-"CUR_REPS_INFO" = " reps";
 
 "NOTIF_END_REST_NOW" = "I'm ready now!";
 "NOTIF_END_REST" = "I'm ready";

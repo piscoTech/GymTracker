@@ -67,7 +67,7 @@ class WorkoutStepNextRest: WorkoutStepNext {
 	
 	fileprivate init(rest: TimeInterval) {
 		self.rest = rest
-		description = NSAttributedString(string: rest.getDuration(hideHours: true) + WorkoutStepNextRest.nextRestTxt)
+		description = NSAttributedString(string: String(format: Self.nextRestTxt, rest.getFormattedDuration()))
 	}
 	
 	func updateSecondaryInfoChange() {}
@@ -168,8 +168,7 @@ class WorkoutExercizeStep: WorkoutSetStep {
 	
 	private var otherSets: NSAttributedString?
 	
-	static private let otherSetTxt = GTLocalizedString("OTHER_N_SET", comment: "other set")
-	static private let otherSetsTxt = GTLocalizedString("OTHER_N_SETS", comment: "other sets")
+	static private let otherSetsTxt = GTLocalizedString("OTHER_%lld_SETS", comment: "other set(s)")
 	
 	fileprivate init(exercizeName: String, set: GTSet, change: @escaping @autoclosure () -> Double, rest: TimeInterval?, others: [Other], nextUp: WorkoutStepNext?, isLast: Bool) {
 		self.otherSets = NSAttributedString()
@@ -182,7 +181,7 @@ class WorkoutExercizeStep: WorkoutSetStep {
 	
 	func generateString() {
 		if others.count > 0 {
-			let otherSets = NSMutableAttributedString(string: "\(others.count)\(others.count > 1 ? WorkoutExercizeStep.otherSetsTxt : WorkoutExercizeStep.otherSetTxt): ")
+			let otherSets = NSMutableAttributedString(string: String(format: Self.otherSetsTxt, others.count))
 			otherSets.append(others.map { i, l -> NSAttributedString in
 				let iDesc = i.secondaryInfoDescriptionEvenForZero(withChange: change)
 				let res = NSMutableAttributedString(attributedString: iDesc)
@@ -217,11 +216,14 @@ class WorkoutCircuitStep: WorkoutSetStep {
 	
 	private let otherParts: NSAttributedString
 	
-	static private let exercize = GTLocalizedString("EXERCIZE", comment: "exercize")
-	static private let round = GTLocalizedString("ROUND", comment: "round")
+	static private let progress = GTLocalizedString("CIRCUIT_PROGRESS", comment: "Ex x/y, Round z/w")
 
 	fileprivate init(exercizeName: String, set: GTSet, change: @escaping @autoclosure () -> Double, rest: TimeInterval?, circuitCompletion: WorkoutCircuitStepData, nextUp: WorkoutStepNext?, isLast: Bool) {
-		self.otherParts = NSAttributedString(string: "\(WorkoutCircuitStep.exercize) \(circuitCompletion.exercize)/\(circuitCompletion.totalExercizes), \(WorkoutCircuitStep.round) \(circuitCompletion.round)/\(circuitCompletion.totalRounds)")
+		self.otherParts = NSAttributedString(
+			string: String(format: Self.progress,
+						   circuitCompletion.exercize, circuitCompletion.totalExercizes,
+						   circuitCompletion.round, circuitCompletion.totalRounds)
+		)
 		self.circuitCompletion = circuitCompletion
 		
 		super.init(exercizeName: exercizeName, set: set, change: change, rest: rest, nextUp: nextUp, isLast: isLast)

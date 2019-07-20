@@ -26,7 +26,7 @@ class SettingsViewController: UITableViewController {
 
 		appDelegate.settings = self
 		
-		appInfo = GTLocalizedString("REPORT_TEXT", comment: "Report problem") + "\n\nGym Tracker \(Bundle.main.versionDescription)\n© 2017-2018 Marco Boschi"
+		appInfo = GTLocalizedString("REPORT_TEXT", comment: "Report problem") + "\n\nGym Tracker \(Bundle.main.versionDescription)\n© 2017-2019 Marco Boschi"
 		errNoBackup = GTLocalizedString("ERR_BACKUP_UNAVAILABLE", comment: "Cannot use becuase...")
 		backupUsageManual = GTLocalizedString("BACKUP_USAGE_MANUAL", comment: "How-to")
 		backupUsageAuto = GTLocalizedString("BACKUP_USAGE_AUTO", comment: "How-to")
@@ -38,6 +38,11 @@ class SettingsViewController: UITableViewController {
 			DispatchQueue.main.async {
 				self.tableView.reloadSections([0], with: .automatic)
 			}
+		}
+		
+		if #available(iOS 13, *) {} else {
+			self.navigationController?.navigationBar.barStyle = .black
+			tableView.backgroundColor = .black
 		}
 	}
 	

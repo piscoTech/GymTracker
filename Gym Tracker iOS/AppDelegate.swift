@@ -14,6 +14,20 @@ import MBLibrary
 import StoreKit
 import GymTrackerCore
 
+@available(iOS 13.0, *)
+class TraitOverriderWindow: UIWindow {
+	
+	var colorScheme: UIUserInterfaceStyle?
+	
+	override var traitCollection: UITraitCollection {
+		if let scheme = colorScheme {
+			let override = UITraitCollection(userInterfaceStyle: scheme)
+			return UITraitCollection(traitsFrom: [super.traitCollection, override])
+		}
+		return super.traitCollection
+	}
+}
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -46,7 +60,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 		dataManager = DataManager(for: .application)
 		
-		tabController = self.window!.rootViewController as? TabBarController
+		if #available(iOS 13.0, *) {
+			let window = TraitOverriderWindow(frame: UIScreen.main.bounds)
+			window.colorScheme = .dark
+			tabController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? TabBarController
+			window.rootViewController = tabController
+			
+			self.window = window
+			window.makeKeyAndVisible()
+		} else {
+			tabController = self.window!.rootViewController as? TabBarController
+			tabController.tabBar.barStyle = .black
+		}
 		tabController.delegate = tabController
 		tabController.loadNeededControllers()
 		
@@ -96,10 +121,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 		center.delegate = self
 		
-		do {			
-			UITabBar.appearance().tintColor = customTint
-			DestructiveButton.appearance().tintColor = redTint
-
+		UITabBar.appearance().tintColor = customTint
+		if #available(iOS 13, *) {} else {
+			tabController.tabBar.items![0].image = #imageLiteral(resourceName: "Workout List")
+			tabController.tabBar.items![3].image = #imageLiteral(resourceName: "Settings")
+			tabController.tabBar.items![3].selectedImage = #imageLiteral(resourceName: "Settings Active")
+			
 			let table = UITableView.appearance()
 			table.backgroundColor = .black
 			table.separatorColor = #colorLiteral(red: 0.2243117094, green: 0.2243117094, blue: 0.2243117094, alpha: 1)
@@ -109,18 +136,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			cell.selectionStyle = .gray
 			cell.tintColor = customTint
 			
-			UILabel.appearance().textColor = textColor
+			UILabel.appearance().textColor = UIColor(named: "Text Color")
 			UILabel.appearance(whenContainedInInstancesOf: [UITableViewHeaderFooterView.self]).textColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
-			HeartLabel.appearance().textColor = redTint
 			
 			let textField = UITextField.appearance()
-			textField.textColor = textColor
+			textField.textColor = UIColor(named: "Text Color")
 			textField.keyboardAppearance = .dark
 		}
-		
-		tabController.tabBar.items![1].selectedImage = #imageLiteral(resourceName: "Workout Active")
-		tabController.tabBar.items![2].selectedImage = #imageLiteral(resourceName: "Completed List Active")
-		tabController.tabBar.items![3].selectedImage = #imageLiteral(resourceName: "Settings Active")
 		
 		launched = true
 		
@@ -150,7 +172,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		if #available(iOS 10.3, *) {
 			if dataManager.preferences.reviewRequestCounter >= dataManager.preferences.reviewRequestThreshold {
+				#if !DEBUG
 				SKStoreReviewController.requestReview()
+				#endif
 				
 				reviewRequested = true
 				Timer.scheduledTimer(withTimeInterval: 60, repeats: false) { _ in
@@ -187,7 +211,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 									if let wrkt = wrkt {
 										success = true
 										appDelegate.workoutList.refreshData()
-										msg = "\(wrkt.count) " + GTLocalizedString("WORKOUT\(wrkt.count > 1 ? "S" : "")", comment: "How many").lowercased()
+										msg = String(format: GTLocalizedString("%lld_WORKOUTS", comment: "n workouts"),
+													 wrkt.count)
 									} else {
 										success = false
 										msg = nil
@@ -457,7 +482,7 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 				if endTime > GTNotification.immediateNotificationDelay {
 					let restDurationContent = UNMutableNotificationContent()
 					restDurationContent.title = GTLocalizedString("REST_TIME_TITLE", comment: "Rest time")
-					restDurationContent.body = GTLocalizedString("REST_TIME_BODY", comment: "Rest for") + duration.getDuration(hideHours: true)
+					restDurationContent.body = String(format: GTLocalizedString("REST_TIME_BODY", comment: "Rest for"), duration.getFormattedDuration())
 					restDurationContent.sound = nil
 					restDurationContent.categoryIdentifier = GTNotification.Category.restStart.rawValue
 					

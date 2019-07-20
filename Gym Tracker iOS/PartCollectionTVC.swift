@@ -48,7 +48,7 @@ extension PartCollectionController {
 		let real = realIndex ?? indexPath
 		
 		switch indexPath.row {
-		case 0: // Circuti information
+		case 0: // Circuit information
 			guard let se = partCollection as? GTSetsExercize, let (n, t) = se.circuitStatus else {
 				fallthrough
 			}
@@ -56,7 +56,9 @@ extension PartCollectionController {
 			let cell = tableView.dequeueReusableCell(withIdentifier: collectionDataId.identifier, for: real)
 			cell.accessoryView = nil
 			cell.textLabel?.text = GTLocalizedString("IS_CIRCUIT", comment: "Circuit info")
-			cell.detailTextLabel?.text = GTLocalizedString("EXERCIZE", comment: "exercize") + " \(n)/\(t)"
+			cell.detailTextLabel?.text = String(
+				format: GTLocalizedString("COMPOSITE_INFO_%lld_OF_%lld", comment: "Exercize n/m"),
+				n, t)
 			
 			return cell
 		case 1:
@@ -83,7 +85,9 @@ extension PartCollectionController {
 			let cell = tableView.dequeueReusableCell(withIdentifier: collectionDataId.identifier, for: real)
 			cell.accessoryView = nil
 			cell.textLabel?.text = GTLocalizedString("IS_CHOICE", comment: "Choice info")
-			cell.detailTextLabel?.text = GTLocalizedString("EXERCIZE", comment: "exercize") + " \(n)/\(t)"
+			cell.detailTextLabel?.text = String(
+				format: GTLocalizedString("COMPOSITE_INFO_%lld_OF_%lld", comment: "Exercize n/m"),
+				n, t)
 			
 			return cell
 		default:
@@ -648,10 +652,20 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	}
 	
 	func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
-		let color = UILabel.appearance().textColor ?? .black
-		let txt = (TimeInterval(row + 1) * GTRest.restStep).getDuration(hideHours: true)
-		
-		return NSAttributedString(string: txt, attributes: [.foregroundColor : color])
+		if #available(iOS 13, *) {
+			// Fallback to un-styled picker
+			return nil
+		} else {
+			guard let title = self.pickerView(pickerView, titleForRow: row, forComponent: component) else {
+				return nil
+			}
+			
+			return NSAttributedString(string: title, attributes: [.foregroundColor : UIColor(named: "Text Color")!])
+		}
+	}
+	
+	func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+		return (TimeInterval(row + 1) * GTRest.restStep).getFormattedDuration()
 	}
 	
 	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {

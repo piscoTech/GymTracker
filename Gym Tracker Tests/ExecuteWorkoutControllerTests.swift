@@ -483,7 +483,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 			}
 			assertCall { c in
 				if case DelegateCalls.setNextUpText(let str) = c {
-					assert(string: str, containsInOrder: [r.rest.getDuration(hideHours: true)])
+					assert(string: str, containsInOrder: [r.rest.getFormattedDuration()])
 					return true
 				}
 				return false
@@ -561,7 +561,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 			}
 			assertCall { c in
 				if case DelegateCalls.setNextUpText(let str) = c {
-					assert(string: str, containsInOrder: [r.rest.getDuration(hideHours: true)])
+					assert(string: str, containsInOrder: [r.rest.getFormattedDuration()])
 					return true
 				}
 				return false
@@ -675,7 +675,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 			}
 			assertCall { c in
 				if case DelegateCalls.setNextUpText(let str) = c {
-					assert(string: str, containsInOrder: [r.rest.getDuration(hideHours: true)])
+					assert(string: str, containsInOrder: [r.rest.getFormattedDuration()])
 					return true
 				}
 				return false
@@ -1075,7 +1075,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		}
 		assertCall { c in
 			if case DelegateCalls.setNextUpText(let str) = c {
-				assert(string: str, containsInOrder: [r.rest.getDuration(hideHours: true)])
+				assert(string: str, containsInOrder: [r.rest.getFormattedDuration()])
 				return true
 			}
 			return false

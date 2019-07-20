@@ -28,6 +28,11 @@ class CompletedWorkoutsTableViewController: UITableViewController {
 		appDelegate.completedWorkouts = self
 
         refresh(self)
+		
+		if #available(iOS 13, *) {} else {
+			self.navigationController?.navigationBar.barStyle = .black
+			tableView.backgroundColor = .black
+		}
     }
 
     override func didReceiveMemoryWarning() {
@@ -157,7 +162,7 @@ class CompletedWorkoutsTableViewController: UITableViewController {
 			cell.textLabel?.font = italicFont
 		}
 		
-		cell.detailTextLabel?.text = [w.start.getFormattedDateTime(), w.duration.getDuration()].joined(separator: " – ")
+		cell.detailTextLabel?.text = [w.start.getFormattedDateTime(), w.duration.getFormattedDuration()].joined(separator: " – ")
 
         return cell
     }

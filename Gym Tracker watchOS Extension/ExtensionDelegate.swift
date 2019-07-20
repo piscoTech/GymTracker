@@ -64,31 +64,33 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate, DataManagerDelegate {
             switch task {
             case let backgroundTask as WKApplicationRefreshBackgroundTask:
                 // Be sure to complete the background task once you’re done.
-                backgroundTask.setTaskCompleted()
+				backgroundTask.setTaskCompletedWithSnapshot(false)
             case let snapshotTask as WKSnapshotRefreshBackgroundTask:
                 // Snapshot tasks have a unique completion call, make sure to set your expiration date
                 snapshotTask.setTaskCompleted(restoredDefaultState: true, estimatedSnapshotExpiration: Date.distantFuture, userInfo: nil)
             case let connectivityTask as WKWatchConnectivityRefreshBackgroundTask:
                 // Be sure to complete the connectivity task once you’re done.
-                connectivityTask.setTaskCompleted()
+                connectivityTask.setTaskCompletedWithSnapshot(false)
             case let urlSessionTask as WKURLSessionRefreshBackgroundTask:
                 // Be sure to complete the URL session task once you’re done.
-                urlSessionTask.setTaskCompleted()
+                urlSessionTask.setTaskCompletedWithSnapshot(false)
             default:
                 // Make sure to complete unhandled task types
-                task.setTaskCompleted()
+                task.setTaskCompletedWithSnapshot(false)
             }
         }
     }
 	
 	func restoreDefaultState() {
 		DispatchQueue.main.async {
-			WKInterfaceController.reloadRootControllers(withNames: ["workoutList"], contexts: nil)
+			WKInterfaceController.reloadRootPageControllers(withNames: ["workoutList"], contexts: nil, orientation: .horizontal, pageIndex: 0)
 		}
 	}
 	
 	func startWorkout(with data: ExecuteWorkoutData, reloadNow: Bool = false) {
-		let r = { WKInterfaceController.reloadRootControllers(withNames: ["executeWorkout", "workoutDetail"], contexts: [data, WorkoutDetailData(listController: nil, workout: data.workout)]) }
+		let r = {
+			WKInterfaceController.reloadRootPageControllers(withNames: ["executeWorkout", "workoutDetail"], contexts: [data, WorkoutDetailData(listController: nil, workout: data.workout)], orientation: .horizontal, pageIndex: 0)
+		}
 		
 		if reloadNow {
 			r()

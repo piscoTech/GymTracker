@@ -85,18 +85,16 @@ final public class GTRepsSet: GTSet {
 		return Int(reps)
 	}
 	
-	private static let repsLabel = NSAttributedString(string: GTLocalizedString("CUR_REPS_INFO", comment: "reps"))
+	private static let repsLabel = GTLocalizedString("CUR_SET_%lld_REPS", comment: "reps")
 	private static let timesSignLabel = NSAttributedString(string: timesSign)
 	private static let kgLabel = NSAttributedString(string: "kg")
 	
 	override func mainInfoDescription(with change: Double) -> NSAttributedString {
-		let repsDescription = NSMutableAttributedString(string: "\(reps)")
+		let repsDescription = NSMutableAttributedString(string: String(format: Self.repsLabel, reps))
 		if let w = weight.secondaryInfoDescription(withChange: change) {
-			repsDescription.append(GTRepsSet.timesSignLabel)
-			repsDescription.append(w)
-			repsDescription.append(secondaryInfoLabel)
+			let weight = [GTRepsSet.timesSignLabel, w, secondaryInfoLabel]
+			repsDescription.replace("|", with: weight.joined())
 		}
-		repsDescription.append(GTRepsSet.repsLabel)
 		
 		return repsDescription
 	}

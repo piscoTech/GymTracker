@@ -90,7 +90,7 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 		for (i, (p, _)) in zip(0 ..< rows.count, rows) {
 			if let r = p as? GTRest {
 				let row = table.rowController(at: i) as! RestCell
-				row.setRest(r.rest)
+				row.set(rest: r.rest)
 			} else if let se = p as? GTSetsExercize {
 				let row = table.rowController(at: i) as! ExercizeCell
 				if let curWrkt = ctrl {

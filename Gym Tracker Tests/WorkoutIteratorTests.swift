@@ -285,7 +285,7 @@ class WorkoutIteratorTests: XCTestCase {
 				XCTAssertEqual(s1.rest, step3.rest)
 				
 				if let next = step3.nextUpInfo?.string {
-					assert(string: next, containsInOrder: [n.rest.getDuration(hideHours: true)])
+					assert(string: next, containsInOrder: [n.rest.getFormattedDuration()])
 				} else {
 					XCTFail("Unexpected nil")
 				}
@@ -325,7 +325,7 @@ class WorkoutIteratorTests: XCTestCase {
 				XCTAssertNil(step4.rest)
 				
 				if let next = step4.nextUpInfo?.string {
-					assert(string: next, containsInOrder: [n.rest.getDuration(hideHours: true)])
+					assert(string: next, containsInOrder: [n.rest.getFormattedDuration()])
 				} else {
 					XCTFail("Unexpected nil")
 				}
@@ -717,7 +717,7 @@ class WorkoutIteratorTests: XCTestCase {
 				XCTAssertNil(step6.rest)
 				
 				if let next = step6.nextUpInfo?.string {
-					assert(string: next, containsInOrder: [n.rest.getDuration(hideHours: true)])
+					assert(string: next, containsInOrder: [n.rest.getFormattedDuration()])
 				} else {
 					XCTFail("Unexpected nil")
 				}
@@ -1806,7 +1806,7 @@ class WorkoutIteratorTests: XCTestCase {
 				XCTAssertNil(step1.rest)
 				
 				if let next = step1.nextUpInfo?.string {
-					assert(string: next, containsInOrder: [n.rest.getDuration(hideHours: true)])
+					assert(string: next, containsInOrder: [n.rest.getFormattedDuration()])
 				} else {
 					XCTFail("Unexpected nil")
 				}
@@ -1846,7 +1846,7 @@ class WorkoutIteratorTests: XCTestCase {
 				XCTAssertNil(step2.rest)
 				
 				if let next = step2.nextUpInfo?.string {
-					assert(string: next, containsInOrder: [n.rest.getDuration(hideHours: true)])
+					assert(string: next, containsInOrder: [n.rest.getFormattedDuration()])
 				} else {
 					XCTFail("Unexpected nil")
 				}

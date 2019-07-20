@@ -61,6 +61,11 @@ class CurrentWorkoutViewController: UIViewController {
 		}
 
 		// This method is always called during app launch by the app delegate and as soon as the view is loaded it also updates it as appropriate
+		
+		if #available(iOS 13, *) {} else {
+			self.navigationController?.navigationBar.barStyle = .black
+			self.view.backgroundColor = .black
+		}
     }
 	
 	override func didReceiveMemoryWarning() {
@@ -95,7 +100,7 @@ class CurrentWorkoutViewController: UIViewController {
 		timerDate = date
 		
 		let update = {
-			self.timerLbl.text = Date().timeIntervalSince(self.timerDate).getDuration()
+			self.timerLbl.text = Date().timeIntervalSince(self.timerDate).getRawDuration()
 		}
 		DispatchQueue.main.async {
 			self.timerUpdater = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
@@ -136,7 +141,11 @@ class CurrentWorkoutViewController: UIViewController {
 	}
 	
 	func setCurrentSetText(_ text: NSAttributedString) {
-		currentSetInfoLbl.textColor = UILabel.appearance().textColor
+		if #available(iOS 13, *) {
+			// In iOS 12 and before there's a bug where the appearance color overrides the color of the attributed string
+		} else {
+			currentSetInfoLbl.textColor = UIColor(named: "Text Color")
+		}
 		currentSetInfoLbl.attributedText = text
 	}
 	
@@ -145,7 +154,11 @@ class CurrentWorkoutViewController: UIViewController {
 	}
 	
 	func setOtherSetsText(_ text: NSAttributedString) {
-		otherSetsLbl.textColor = UILabel.appearance().textColor
+		if #available(iOS 13, *) {
+			// In iOS 12 and before there's a bug where the appearance color overrides the color of the attributed string
+		} else {
+			otherSetsLbl.textColor = UIColor(named: "Text Color")
+		}
 		otherSetsLbl.attributedText = text
 	}
 	
@@ -167,7 +180,7 @@ class CurrentWorkoutViewController: UIViewController {
 		
 		let update = {
 			let time = max(self.restTimerDate.timeIntervalSince(Date()), 0)
-			self.restTimerLbl.text = time.getDuration(hideHours: true)
+			self.restTimerLbl.text = time.getRawDuration(hideHours: true)
 			
 			if time == 0 {
 				self.stopRestTimer()
@@ -243,7 +256,11 @@ class CurrentWorkoutViewController: UIViewController {
 	}
 	
 	func setNextUpText(_ text: NSAttributedString) {
-		nextUpLbl.textColor = UILabel.appearance().textColor
+		if #available(iOS 13, *) {
+			// In iOS 12 and before there's a bug where the appearance color overrides the color of the attributed string
+		} else {
+			nextUpLbl.textColor = UIColor(named: "Text Color")
+		}
 		nextUpLbl.attributedText = text
 	}
 	

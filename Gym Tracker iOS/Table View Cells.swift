@@ -66,7 +66,11 @@ class ExercizeTableViewCell: UITableViewCell {
 		name.text = exercize.title
 		name.font = exercize is GTSimpleSetsExercize ? ExercizeTableViewCell.normalFont : ExercizeTableViewCell.italicFont
 		if let curWrkt = appDelegate.workoutController, curWrkt.isManaging(exercize) {
-			exercizeInfo.textColor = UILabel.appearance().textColor
+			if #available(iOS 13, *) {
+				// In iOS 12 and before there's a bug where the appearance color overrides the color of the attributed string
+			} else {
+				exercizeInfo.textColor = UIColor(named: "Text Color")
+			}
 			exercizeInfo.attributedText = exercize.summaryWithSecondaryInfoChange(from: curWrkt)
 		} else {
 			exercizeInfo.text = exercize.summary
@@ -119,8 +123,11 @@ class SetCell: UITableViewCell, UITextFieldDelegate {
 		if !isEnabled {
 			if let curWrkt = appDelegate.workoutController, curWrkt.isManaging(set) {
 				let ch = curWrkt.secondaryInfoChange(for: set)
-				// Avoid the appearance color overriding the color of the attributed string
-				self.weight.textColor = UITextField.appearance().textColor
+				if #available(iOS 13, *) {
+					// In iOS 12 and before there's a bug where the appearance color overrides the color of the attributed string
+				} else {
+					self.weight.textColor = UIColor(named: "Text Color")
+				}
 				self.weight.attributedText =  set.secondaryInfo.secondaryInfoDescriptionEvenForZero(withChange: ch)
 			} else {
 				self.weight.text = set.secondaryInfo.toString()
@@ -167,10 +174,8 @@ class RestPickerCell: UITableViewCell {
 
 class RestCell: UITableViewCell {
 	
-	@IBOutlet weak var rest: UILabel!
-	
-	func set(rest: TimeInterval) {
-		self.rest.text = rest.getDuration(hideHours: true)
+	func set(rest r: TimeInterval) {
+		self.textLabel?.text = String(format: GTLocalizedString("%@_REST", comment: "rest"), r.getFormattedDuration())
 	}
 	
 }
@@ -183,7 +188,7 @@ class MoveExercizeCell: UITableViewCell {
 	@IBOutlet private weak var invalidLbl: UILabel!
 	
 	private static var normalFont, italicFont, thinFont: UIFont!
-	private static var invalidColor = #colorLiteral(red: 0.4250687957, green: 0.4250687957, blue: 0.4250687957, alpha: 1)
+	private static var invalidColor: UIColor = #colorLiteral(red: 0.4250687957, green: 0.4250687957, blue: 0.4250687957, alpha: 1)
 	
 	static private func createAspect(from label: UILabel) {
 		guard normalFont == nil else {
@@ -213,9 +218,15 @@ class MoveExercizeCell: UITableViewCell {
 			self.invalidLbl.text = r.description
 			self.accessoryType = .none
 		} else {
-			name.textColor = GymTrackerCore.textColor
-			exercizeInfo.textColor = GymTrackerCore.textColor
 			name.font = isCollection ? MoveExercizeCell.italicFont : MoveExercizeCell.normalFont
+			let color: UIColor
+			if #available(iOS 13.0, *) {
+				color = .label
+			} else {
+				color = UIColor(named: "Text Color")!
+			}
+			name.textColor = color
+			exercizeInfo.textColor = color
 			self.invalidLbl.isHidden = true
 		}
 	}

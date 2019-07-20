@@ -39,7 +39,7 @@ final public class GTWorkout: GTDataObject, NamedExercizeCollection {
 	
 	public override var description: String {
 		let n = parts.reduce(0) { $0 + (($1 as? GTCircuit)?.exercizes.count ?? ($1 is GTSetsExercize ? 1 : 0)) }
-		return "\(n) " + GTLocalizedString("EXERCIZE" + (n > 1 ? "S" : ""), comment: "exercize(s)").lowercased()
+		return String(format: GTLocalizedString("%lld_EXERCIZES", comment: "exercize(s)"), n)
 	}
 	
 	override class func loadWithID(_ id: String, fromDataManager dataManager: DataManager) -> GTWorkout? {

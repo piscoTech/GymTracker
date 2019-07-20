@@ -89,7 +89,7 @@ public class GTSetsExercize: GTExercize {
 	/// The position of the exercize in the circuit, `nil` outside of circuits.
 	public var circuitStatus: (number: Int, total: Int)? {
 		let hierarchy = self.parentHierarchy
-		guard let cIndex = hierarchy.index(where: { $0 is GTCircuit }),
+		guard let cIndex = hierarchy.firstIndex(where: { $0 is GTCircuit }),
 			let c = hierarchy[cIndex] as? GTCircuit,
 			let exInCircuit = cIndex > hierarchy.startIndex
 				? hierarchy[hierarchy.index(before: cIndex)] as? GTPart

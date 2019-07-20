@@ -51,6 +51,11 @@ class UpdateSecondaryInfoViewController: UIViewController {
 		base.text = set.secondaryInfo.toString()
 		unit.text = set.secondaryInfoLabel.string
 		updateView()
+		
+		if #available(iOS 13, *) {} else {
+			self.navigationController?.navigationBar.barStyle = .black
+			self.view.backgroundColor = .black
+		}
     }
 
     override func didReceiveMemoryWarning() {

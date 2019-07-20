@@ -17,6 +17,10 @@ class BackupListTableViewController: UITableViewController {
         super.viewDidLoad()
 		
 		updateList()
+		
+		if #available(iOS 13, *) {} else {
+			tableView.backgroundColor = .black
+		}
     }
 
     override func didReceiveMemoryWarning() {
@@ -126,7 +130,12 @@ class BackupListTableViewController: UITableViewController {
 								let confirm = {
 									let alert: UIAlertController
 									if let count = count, let proceed = proceed {
-										alert = UIAlertController(title: GTLocalizedString("RESTORE_CONFIRM", comment: "err"), message: "\(count)" + GTLocalizedString("RESTORE_CONFIRM_TXT\(count > 1 ? "_MANY" : "")", comment: "How many"), preferredStyle: .alert)
+										alert = UIAlertController(
+											title: GTLocalizedString("RESTORE_CONFIRM", comment: "err"),
+											message: String(
+												format: GTLocalizedString("RESTORE_CONFIRM_%lld", comment: "How many"),
+												count),
+											preferredStyle: .alert)
 										alert.addAction(UIAlertAction(title: GTLocalizedString("CANCEL", comment: "Cancel"), style: .cancel, handler: nil))
 										alert.addAction(UIAlertAction(title: GTLocalizedString("RESTORE_CONFIRM_BTN", comment: "Restore"), style: .default) { _ in
 											self.loading = UIAlertController.getModalLoading()
@@ -151,7 +160,9 @@ class BackupListTableViewController: UITableViewController {
 								if let wrkt = wrkt {
 									success = true
 									appDelegate.workoutList.refreshData()
-									msg = "\(wrkt.count) " + GTLocalizedString("WORKOUT\(wrkt.count > 1 ? "S" : "")", comment: "How many").lowercased()
+									msg = String(
+										format: GTLocalizedString("%lld_WORKOUTS", comment: "n workouts"),
+										wrkt.count)
 								} else {
 									success = false
 									msg = nil
@@ -179,7 +190,13 @@ class BackupListTableViewController: UITableViewController {
 			self.tableView.setEditing(false, animated: true)
 			
 			let b = self.backups[row.row]
-			let confirm = UIAlertController(title: GTLocalizedString("DELETE_BACKUP_TITLE", comment: "Del"), message: GTLocalizedString("DELETE_BACKUP_CONFIRM", comment: "Del confirm") + b.date.getFormattedDateTime() + "?", preferredStyle: .actionSheet)
+			let confirm = UIAlertController(
+				title: GTLocalizedString("DELETE_BACKUP_TITLE", comment: "Del"),
+				message: String(
+					format: GTLocalizedString("DELETE_BACKUP_CONFIRM", comment: "Del confirm"),
+					b.date.getFormattedDateTime()
+				),
+				preferredStyle: .actionSheet)
 			confirm.addAction(UIAlertAction(title: GTLocalizedString("DELETE_BACKUP", comment: "Del"), style: .destructive) { _ in
 				appDelegate.dataManager.deleteICloudDocument(b.path) { success in
 					DispatchQueue.main.async {

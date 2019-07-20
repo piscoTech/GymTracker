@@ -39,7 +39,7 @@ class AskChoiceTableViewController: UITableViewController {
 			doneBtn = nil
 		}
 		
-		choiceLbl.text = String(format: GTLocalizedString("ASK_CHOICE\(choices.count > 1 ? "S" : "")", comment: "x/y"), n + 1, choices.count)
+		choiceLbl.text = String(format: GTLocalizedString("ASK_CHOICES", comment: "x/y"), n + 1, choices.count)
 		if n > 0 {
 			navigationItem.leftBarButtonItem = nil
 		}
@@ -50,6 +50,11 @@ class AskChoiceTableViewController: UITableViewController {
 		choice = choice >= 0 ? (choice + 1) % count : nil
 		
 		updateButtons()
+		
+		if #available(iOS 13, *) {} else {
+			self.navigationController?.navigationBar.barStyle = .black
+			tableView.backgroundColor = .black
+		}
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
