@@ -16,7 +16,7 @@ final public class GTWorkout: GTDataObject, NamedExercizeCollection {
 		return "GTWorkout"
 	}
 	
-	public let collectionType = GTLocalizedString("WORKOUT", comment: "Workout")
+	public static let collectionType = GTLocalizedString("WORKOUT", comment: "Workout")
 	
 	public class func getList(fromDataManager dataManager: DataManager) -> [GTWorkout] {
 		let workoutQuery = NSFetchRequest<GTWorkout>(entityName: self.objectType)

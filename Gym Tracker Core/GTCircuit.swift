@@ -17,7 +17,7 @@ final public class GTCircuit: GTExercize, ExercizeCollection {
 		return "GTCircuit"
 	}
 	
-	public let collectionType = GTLocalizedString("CIRCUIT", comment: "Circuit")
+	public static let collectionType = GTLocalizedString("CIRCUIT", comment: "Circuit")
 	
 	@NSManaged public private(set) var exercizes: Set<GTSetsExercize>
 	
@@ -30,7 +30,7 @@ final public class GTCircuit: GTExercize, ExercizeCollection {
 	}
 	
 	public override var title: String {
-		return collectionType
+		return Self.collectionType
 	}
 	
 	public override var summary: String {

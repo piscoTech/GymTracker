@@ -180,7 +180,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		tableView.rowHeight = UITableView.automaticDimension
 		tableView.estimatedRowHeight = 44
 		
-		title = collection.collectionType
+		title = T.collectionType
 		if #available(iOS 11.0, *) {
 			navigationItem.largeTitleDisplayMode = .never
 		}
@@ -203,6 +203,29 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		
 		if self.isMovingFromParent {
 			parentCollection?.exercizeUpdated(collection as! GTPart)
+		}
+	}
+	
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+		
+		if editMode && canControlEdit {
+			navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+		}
+	}
+	
+	override func viewDidDisappear(_ animated: Bool) {
+		super.viewDidDisappear(animated)
+		
+		if editMode && canControlEdit {
+			navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+			
+			if navigationController?.isBeingDismissed ?? false {
+				// Make sure the actual cancel action is triggered when swiping down to dismiss
+				if self.presentationController != nil {
+					self.cancel(animated: false, animationCompletion: nil)
+				}
+			}
 		}
 	}
 	

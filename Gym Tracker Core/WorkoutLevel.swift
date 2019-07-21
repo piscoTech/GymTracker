@@ -39,7 +39,7 @@ public protocol ExercizeCollection: CompositeWorkoutLevel {
 	
 	associatedtype Exercize: GTPart
 	
-	var collectionType: String { get }
+	static var collectionType: String { get }
 	
 	var exercizes: Set<Exercize> { get }
 	var exercizeList: [Exercize] { get }

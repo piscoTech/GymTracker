@@ -17,7 +17,7 @@ final public class GTChoice: GTSetsExercize, ExercizeCollection {
 		return "GTChoice"
 	}
 	
-	public let collectionType = GTLocalizedString("CHOICE", comment: "Choice")
+	public static let collectionType = GTLocalizedString("CHOICE", comment: "Choice")
 	
 	private let lastChosenKey = "lastChosen"
 	
@@ -36,7 +36,7 @@ final public class GTChoice: GTSetsExercize, ExercizeCollection {
 	}
 	
 	public override var title: String {
-		return collectionType
+		return Self.collectionType
 	}
 	
 	public override var summary: String {
