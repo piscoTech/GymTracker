@@ -19,7 +19,7 @@ final public class GTChoice: GTSetsExercise, ExerciseCollection {
 	
 	public static let collectionType = GTLocalizedString("CHOICE", comment: "Choice")
 	
-	private let lastChosenKey = "lastChosen"
+	static private let lastChosenKey = "lastChosen"
 	
 	/// The index of the last chosen exercise.
 	///
@@ -131,7 +131,7 @@ final public class GTChoice: GTSetsExercise, ExerciseCollection {
 			return nil
 		}
 		
-		obj[lastChosenKey] = lastChosen
+		obj[Self.lastChosenKey] = lastChosen
 		
 		// Exercises themselves contain a reference to the choice
 		
@@ -143,7 +143,7 @@ final public class GTChoice: GTSetsExercise, ExerciseCollection {
 			return false
 		}
 		
-		guard let lastChosen = src[lastChosenKey] as? Int32 else {
+		guard let lastChosen = src[Self.lastChosenKey] as? Int32 else {
 			return false
 		}
 		

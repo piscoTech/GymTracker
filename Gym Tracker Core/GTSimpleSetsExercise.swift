@@ -16,8 +16,8 @@ public class GTSimpleSetsExercise: GTSetsExercise {
 		return "GTSimpleSetsExercise"
 	}
 	
-	private let nameKey = "name"
-	private let choiceKey = "choice"
+	static private let nameKey = "name"
+	static private let choiceKey = "choice"
 	
 	@NSManaged public private(set) var name: String
 	@NSManaged private(set) var choice: GTChoice?
@@ -196,9 +196,9 @@ public class GTSimpleSetsExercise: GTSetsExercise {
 			return nil
 		}
 		
-		obj[nameKey] = name
+		obj[Self.nameKey] = name
 		if let ch = choice?.recordID.wcRepresentation {
-			obj[choiceKey] = ch
+			obj[Self.choiceKey] = ch
 		}
 		
 		// Sets themselves contain a reference to the exercise
@@ -211,12 +211,12 @@ public class GTSimpleSetsExercise: GTSetsExercise {
 			return false
 		}
 		
-		guard let name = src[nameKey] as? String, name.count > 0 else {
+		guard let name = src[Self.nameKey] as? String, name.count > 0 else {
 			return false
 		}
 		
 		self.name = name
-		self.choice = CDRecordID(wcRepresentation: src[choiceKey] as? [String])?.getObject(fromDataManager: dataManager) as? GTChoice
+		self.choice = CDRecordID(wcRepresentation: src[Self.choiceKey] as? [String])?.getObject(fromDataManager: dataManager) as? GTChoice
 		
 		return true
 	}

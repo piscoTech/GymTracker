@@ -21,7 +21,7 @@ final public class GTRest: GTPart {
 		return "GTRest"
 	}
 	
-	private let restKey = "rest"
+	static private let restKey = "rest"
 		
 	@NSManaged public private(set) var rest: TimeInterval
 	
@@ -76,7 +76,7 @@ final public class GTRest: GTPart {
 			return nil
 		}
 		
-		obj[restKey] = rest
+		obj[Self.restKey] = rest
 		
 		return obj
 	}
@@ -86,7 +86,7 @@ final public class GTRest: GTPart {
 			return false
 		}
 		
-		guard let rest = src[restKey] as? TimeInterval else {
+		guard let rest = src[Self.restKey] as? TimeInterval else {
 				return false
 		}
 		

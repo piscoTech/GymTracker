@@ -11,11 +11,11 @@
 			<key>NSStringFormatSpecTypeKey</key>
 			<string>NSStringPluralRuleType</string>
 			<key>NSStringFormatValueTypeKey</key>
-			<string>lld</string>
+			<string>ld</string>
 			<key>one</key>
-			<string>%lld workout</string>
+			<string>%ld workout</string>
 			<key>other</key>
-			<string>%lld workouts</string>
+			<string>%ld workouts</string>
 		</dict>
 	</dict>
 	<key>RESTORE_CONFIRM_%lld</key>
@@ -27,11 +27,11 @@
 			<key>NSStringFormatSpecTypeKey</key>
 			<string>NSStringPluralRuleType</string>
 			<key>NSStringFormatValueTypeKey</key>
-			<string>lld</string>
+			<string>ld</string>
 			<key>one</key>
-			<string>%lld workout found</string>
+			<string>%ld workout found</string>
 			<key>other</key>
-			<string>%lld workouts found</string>
+			<string>%ld workouts found</string>
 		</dict>
 	</dict>
 	<key>CUR_SET_%lld_REPS</key>
@@ -43,11 +43,11 @@
 			<key>NSStringFormatSpecTypeKey</key>
 			<string>NSStringPluralRuleType</string>
 			<key>NSStringFormatValueTypeKey</key>
-			<string>lld</string>
+			<string>ld</string>
 			<key>one</key>
-			<string>%lld| rep</string>
+			<string>%ld| rep</string>
 			<key>other</key>
-			<string>%lld| reps</string>
+			<string>%ld| reps</string>
 		</dict>
 	</dict>
 	<key>%lld_EXERCISES</key>
@@ -59,11 +59,11 @@
 			<key>NSStringFormatSpecTypeKey</key>
 			<string>NSStringPluralRuleType</string>
 			<key>NSStringFormatValueTypeKey</key>
-			<string>lld</string>
+			<string>ld</string>
 			<key>one</key>
-			<string>%lld exercise</string>
+			<string>%ld exercise</string>
 			<key>other</key>
-			<string>%lld exercises</string>
+			<string>%ld exercises</string>
 		</dict>
 	</dict>
 	<key>OTHER_%lld_SETS</key>
@@ -75,11 +75,11 @@
 			<key>NSStringFormatSpecTypeKey</key>
 			<string>NSStringPluralRuleType</string>
 			<key>NSStringFormatValueTypeKey</key>
-			<string>lld</string>
+			<string>ld</string>
 			<key>one</key>
-			<string>%lld other set</string>
+			<string>%ld other set</string>
 			<key>other</key>
-			<string>%lld other sets</string>
+			<string>%ld other sets</string>
 		</dict>
 	</dict>
 </dict>

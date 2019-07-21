@@ -14,9 +14,9 @@ public class GTSet: GTDataObject {
 	
 	private let minRest: TimeInterval = 0
 	
-	final private let exerciseKey = "exercize"
-	final private let orderKey = "order"
-	final private let restKey = "rest"
+	static private let exerciseKey = "exercize"
+	static private let orderKey = "order"
+	static private let restKey = "rest"
 	
     @NSManaged final var exercise: GTSimpleSetsExercise
 	@NSManaged final public var order: Int32
@@ -75,9 +75,9 @@ public class GTSet: GTDataObject {
 			return nil
 		}
 		
-		obj[exerciseKey] = exercise.recordID.wcRepresentation
-		obj[orderKey] = order
-		obj[restKey] = rest
+		obj[Self.exerciseKey] = exercise.recordID.wcRepresentation
+		obj[Self.orderKey] = order
+		obj[Self.restKey] = rest
 		
 		return obj
 	}
@@ -87,9 +87,9 @@ public class GTSet: GTDataObject {
 			return false
 		}
 		
-		guard let exercise = CDRecordID(wcRepresentation: src[exerciseKey] as? [String])?.getObject(fromDataManager: dataManager) as? GTSimpleSetsExercise,
-			let order = src[orderKey] as? Int32,
-			let rest = src[restKey] as? TimeInterval else {
+		guard let exercise = CDRecordID(wcRepresentation: src[Self.exerciseKey] as? [String])?.getObject(fromDataManager: dataManager) as? GTSimpleSetsExercise,
+			let order = src[Self.orderKey] as? Int32,
+			let rest = src[Self.restKey] as? TimeInterval else {
 				return false
 		}
 		

@@ -5,6 +5,7 @@
         <deployment identifier="watchOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14790.5"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="14631.1"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
     </dependencies>
     <scenes>
         <!--Workouts-->
@@ -109,7 +110,7 @@
                                     </items>
                                 </group>
                                 <button width="0.80000000000000004" height="27" alignment="center" title="Done" id="UF6-FT-XB6">
-                                    <color key="backgroundColor" red="0.0" green="0.75294117650000003" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="backgroundColor" name="Green Tint"/>
                                     <fontDescription key="font" type="system" pointSize="13"/>
                                     <connections>
                                         <action selector="endSet" destination="Ye5-rJ-hLV" id="94V-5j-fmM"/>
@@ -131,7 +132,7 @@
                                     </items>
                                 </group>
                                 <button width="0.80000000000000004" height="27" alignment="center" title="End" id="9Br-5f-NyE">
-                                    <color key="backgroundColor" red="0.75294117647058822" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="backgroundColor" name="Red Tint"/>
                                     <fontDescription key="font" type="system" pointSize="13"/>
                                     <connections>
                                         <action selector="endRest" destination="Ye5-rJ-hLV" id="4dq-2w-lqO"/>
@@ -205,19 +206,19 @@
                                 <group width="1" height="27" alignment="left" verticalAlignment="bottom" id="jfz-bX-bex">
                                     <items>
                                         <button width="0.32000000000000001" height="1" alignment="left" verticalAlignment="bottom" title="+½" id="r1t-fI-ZOF">
-                                            <color key="backgroundColor" red="0.0" green="0.75294117647058822" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="backgroundColor" name="Green Tint"/>
                                             <connections>
                                                 <action selector="addHalf" destination="gZe-MZ-R7h" id="Dae-Bn-Lp1"/>
                                             </connections>
                                         </button>
                                         <button width="0.32000000000000001" height="1" alignment="center" verticalAlignment="bottom" title="+1" id="q4i-Xa-0Pc">
-                                            <color key="backgroundColor" red="0.0" green="0.75294117647058822" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="backgroundColor" name="Green Tint"/>
                                             <connections>
                                                 <action selector="addOne" destination="gZe-MZ-R7h" id="YpK-bD-eyo"/>
                                             </connections>
                                         </button>
                                         <button width="0.32000000000000001" height="1" alignment="right" verticalAlignment="bottom" title="+5" id="6dG-dj-X0a">
-                                            <color key="backgroundColor" red="0.0" green="0.75294117647058822" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="backgroundColor" name="Green Tint"/>
                                             <connections>
                                                 <action selector="addFive" destination="gZe-MZ-R7h" id="qMs-or-3aM"/>
                                             </connections>
@@ -227,19 +228,19 @@
                                 <group width="1" height="27" alignment="left" verticalAlignment="bottom" id="Y3f-g6-21x">
                                     <items>
                                         <button width="0.32000000000000001" height="1" alignment="left" title="−½" id="WgL-E2-hyn">
-                                            <color key="backgroundColor" red="0.75294117647058822" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="backgroundColor" name="Red Tint"/>
                                             <connections>
                                                 <action selector="minusHalf" destination="gZe-MZ-R7h" id="ajT-nQ-F9Q"/>
                                             </connections>
                                         </button>
                                         <button width="0.32000000000000001" height="1" alignment="center" title="−1" id="nWn-JI-wwF">
-                                            <color key="backgroundColor" red="0.75294117647058822" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="backgroundColor" name="Red Tint"/>
                                             <connections>
                                                 <action selector="minusOne" destination="gZe-MZ-R7h" id="ob0-Lg-qNt"/>
                                             </connections>
                                         </button>
                                         <button width="0.32000000000000001" height="1" alignment="right" title="−5" id="VRO-zf-2gN">
-                                            <color key="backgroundColor" red="0.75294117647058822" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="backgroundColor" name="Red Tint"/>
                                             <connections>
                                                 <action selector="minusFive" destination="gZe-MZ-R7h" id="7Ac-VO-gQK"/>
                                             </connections>
@@ -337,8 +338,8 @@
                         <label alignment="left" text="Label" numberOfLines="0" id="tMk-Q8-GRJ">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <button width="1" alignment="left" title="Start workout" id="ALI-91-Wte">
-                            <color key="backgroundColor" red="0.0" green="0.75294117647058822" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <button width="1" alignment="center" title="Start workout" id="ALI-91-Wte">
+                            <color key="backgroundColor" name="Green Tint"/>
                             <connections>
                                 <action selector="startWorkout" destination="Vf8-6c-cLe" id="iHJ-aK-ngo"/>
                             </connections>
@@ -405,6 +406,12 @@
     <resources>
         <image name="Checkmark" width="20" height="20"/>
         <image name="IsCircuit" width="21" height="21"/>
+        <namedColor name="Green Tint">
+            <color red="0.0" green="0.75294117647058822" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Red Tint">
+            <color red="1" green="0.11764705882352941" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
     </resources>
-    <color key="tintColor" name="GT Tint"/>
+    <color key="tintColor" red="0.75686274509803919" green="0.92156862745098034" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

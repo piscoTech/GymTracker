@@ -16,8 +16,8 @@ final public class GTRepsSet: GTSet {
 		return "GTRepsSet"
 	}
 	
-	private let repsKey = "reps"
-	private let weightKey = "weight"
+	static private let repsKey = "reps"
+	static private let weightKey = "weight"
 	
 	@NSManaged private var reps: Int32
 	@NSManaged private var weight: Double
@@ -114,8 +114,8 @@ final public class GTRepsSet: GTSet {
 			return nil
 		}
 		
-		obj[repsKey] = reps
-		obj[weightKey] = weight
+		obj[Self.repsKey] = reps
+		obj[Self.weightKey] = weight
 		
 		return obj
 	}
@@ -125,8 +125,8 @@ final public class GTRepsSet: GTSet {
 			return false
 		}
 		
-		guard let reps = src[repsKey] as? Int32,
-			let weight = src[weightKey] as? Double else {
+		guard let reps = src[Self.repsKey] as? Int32,
+			let weight = src[Self.weightKey] as? Double else {
 				return false
 		}
 		

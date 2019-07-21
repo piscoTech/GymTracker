@@ -48,12 +48,12 @@
 "IS_CIRCUIT" = "Circuit info";
 "CIRCUITE_USE_REST" = "Use rest periods";
 "IS_CHOICE" = "Choice info";
-"COMPOSITE_INFO_%lld_OF_%lld" = "Exercise %lld/%lld";
+"COMPOSITE_INFO_%lld_OF_%lld" = "Exercise %ld/%ld";
 "%@_REST" = "%@ rest";
 
 "WORKOUT_SAVE_ERR" = "Cannot save workout";
-"ASK_CHOICES" = "%lld/%lld choices";
-"CIRCUIT_PROGRESS" = "Exercise %lld/%lld, Round %lld/%lld";
+"ASK_CHOICES" = "%ld/%ld choices";
+"CIRCUIT_PROGRESS" = "Exercise %ld/%ld, Round %ld/%ld";
 "NEXT_EXERCISE_FLAG" = "NEXT: ";
 "NEXT_EXERCISE_END" = "Workout End";
 "NEXT_EXERCISE_REST" = "%@ rest";

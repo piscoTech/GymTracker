@@ -13,8 +13,8 @@ import CoreData
 @objc(GTSetsExercise)
 public class GTSetsExercise: GTExercise {
 	
-	final private let circuitKey = "circuit"
-	final private let hasCircuitRestKey = "hasCircuitRest"
+	static private let circuitKey = "circuit"
+	static private let hasCircuitRestKey = "hasCircuitRest"
 
     @NSManaged public private(set) var hasCircuitRest: Bool
 	@NSManaged private(set) var circuit: GTCircuit?
@@ -124,9 +124,9 @@ public class GTSetsExercise: GTExercise {
 		}
 		
 		if let c = circuit?.recordID.wcRepresentation {
-			obj[circuitKey] = c
+			obj[Self.circuitKey] = c
 		}
-		obj[hasCircuitRestKey] = hasCircuitRest
+		obj[Self.hasCircuitRestKey] = hasCircuitRest
 		
 		return obj
 	}
@@ -136,11 +136,11 @@ public class GTSetsExercise: GTExercise {
 			return false
 		}
 		
-		guard let hasCircuitRest = src[hasCircuitRestKey] as? Bool else {
+		guard let hasCircuitRest = src[Self.hasCircuitRestKey] as? Bool else {
 				return false
 		}
 		
-		self.circuit = CDRecordID(wcRepresentation: src[circuitKey] as? [String])?.getObject(fromDataManager: dataManager) as? GTCircuit
+		self.circuit = CDRecordID(wcRepresentation: src[Self.circuitKey] as? [String])?.getObject(fromDataManager: dataManager) as? GTCircuit
 		self.hasCircuitRest = hasCircuitRest
 		
 		return true

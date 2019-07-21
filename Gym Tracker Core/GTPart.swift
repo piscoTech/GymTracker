@@ -13,8 +13,8 @@ import CoreData
 @objc(GTPart)
 public class GTPart: GTDataObject, WorkoutLevel {
 	
-	final private let workoutKey = "workout"
-	final private let orderKey = "order"
+	static private let workoutKey = "workout"
+	static private let orderKey = "order"
 
 	@NSManaged final private(set) var workout: GTWorkout?
     @NSManaged final public var order: Int32
@@ -41,9 +41,9 @@ public class GTPart: GTDataObject, WorkoutLevel {
 		}
 		
 		if let w = workout?.recordID.wcRepresentation {
-			obj[workoutKey] = w
+			obj[Self.workoutKey] = w
 		}
-		obj[orderKey] = order
+		obj[Self.orderKey] = order
 		
 		return obj
 	}
@@ -53,11 +53,11 @@ public class GTPart: GTDataObject, WorkoutLevel {
 			return false
 		}
 		
-		guard let order = src[orderKey] as? Int32 else {
+		guard let order = src[Self.orderKey] as? Int32 else {
 				return false
 		}
 		
-		self.workout = CDRecordID(wcRepresentation: src[workoutKey] as? [String])?.getObject(fromDataManager: dataManager) as? GTWorkout
+		self.workout = CDRecordID(wcRepresentation: src[Self.workoutKey] as? [String])?.getObject(fromDataManager: dataManager) as? GTWorkout
 		self.order = order
 		
 		return true

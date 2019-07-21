@@ -26,8 +26,8 @@ final public class GTWorkout: GTDataObject, NamedExerciseCollection {
 		return list
 	}
 	
-	private let nameKey = "name"
-	private let archivedKey = "archived"
+	static private let nameKey = "name"
+	static private let archivedKey = "archived"
 	
 	@NSManaged public private(set) var name: String
 	@NSManaged private(set) var parts: Set<GTPart>
@@ -37,9 +37,23 @@ final public class GTWorkout: GTDataObject, NamedExerciseCollection {
 	
 	@NSManaged public var archived: Bool
 	
+	static private let descriptionTemplate = GTLocalizedString("%lld_EXERCISES", comment: "exercise(s)")
 	public override var description: String {
-		let n = parts.reduce(0) { $0 + (($1 as? GTCircuit)?.exercises.count ?? ($1 is GTSetsExercise ? 1 : 0)) }
-		return String(format: GTLocalizedString("%lld_EXERCISES", comment: "exercise(s)"), n)
+		let n = parts.reduce(0) { partial, current in
+			let count: Int
+			if let c = current as? GTCircuit {
+				
+				count = c.exercises.count
+			} else if current is GTSetsExercise {
+				count = 1
+			} else {
+				count = 0
+			}
+			
+			return partial + count
+		}
+		
+		return String(format: Self.descriptionTemplate, n)
 	}
 	
 	override class func loadWithID(_ id: String, fromDataManager dataManager: DataManager) -> GTWorkout? {
@@ -163,8 +177,8 @@ final public class GTWorkout: GTDataObject, NamedExerciseCollection {
 			return nil
 		}
 	
-		obj[nameKey] = name
-		obj[archivedKey] = archived
+		obj[Self.nameKey] = name
+		obj[Self.archivedKey] = archived
 		
 		// Steps themselves contain a reference to the workout
 		
@@ -176,7 +190,7 @@ final public class GTWorkout: GTDataObject, NamedExerciseCollection {
 			return false
 		}
 		
-		guard let name = src[nameKey] as? String, name.count > 0, let archived = src[archivedKey] as? Bool else {
+		guard let name = src[Self.nameKey] as? String, name.count > 0, let archived = src[Self.archivedKey] as? Bool else {
 			return false
 		}
 		
