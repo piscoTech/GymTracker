@@ -1,5 +1,5 @@
 //
-//  GTSetsExercize.swift
+//  GTSetsExercise.swift
 //  Gym Tracker iOS
 //
 //  Created by Marco Boschi on 13/08/2018.
@@ -10,8 +10,8 @@
 import Foundation
 import CoreData
 
-@objc(GTSetsExercize)
-public class GTSetsExercize: GTExercize {
+@objc(GTSetsExercise)
+public class GTSetsExercise: GTExercise {
 	
 	final private let circuitKey = "circuit"
 	final private let hasCircuitRestKey = "hasCircuitRest"
@@ -29,7 +29,7 @@ public class GTSetsExercize: GTExercize {
 		}
 	}
 	
-	/// Make the exercize a part of the given circuit.
+	/// Make the exercise a part of the given circuit.
 	///
 	/// Unless when passing `nil`, don't call this method directly but rather call `add(parts:_)` on the circuit.
 	func set(circuit c: GTCircuit?) {
@@ -51,12 +51,12 @@ public class GTSetsExercize: GTExercize {
 		return true
 	}
 	
-	/// Enables rest periods in circuits for this exercize only if part of a circuit.
+	/// Enables rest periods in circuits for this exercise only if part of a circuit.
 	public func enableCircuitRest(_ r: Bool) {
 		self.hasCircuitRest = allowCircuitRest && isInCircuit && r
 	}
 	
-	/// Enables rest periods in circuits for this exercize regardless of membership of a circuit or not.
+	/// Enables rest periods in circuits for this exercise regardless of membership of a circuit or not.
 	internal func forceEnableCircuitRest(_ r: Bool) {
 		guard allowCircuitRest else {
 			self.hasCircuitRest = false
@@ -67,7 +67,7 @@ public class GTSetsExercize: GTExercize {
 		self.hasCircuitRest = r
 	}
 	
-	/// The number of sets part of this exercize, or `nil` if it cannot be determined.
+	/// The number of sets part of this exercise, or `nil` if it cannot be determined.
 	var setsCount: Int? {
 		fatalError("Abstract property not implemented")
 	}
@@ -81,12 +81,12 @@ public class GTSetsExercize: GTExercize {
 	
 	// MARK: - Circuit Support
 	
-	/// Whether the exercize is at some point part of a circuit.
+	/// Whether the exercise is at some point part of a circuit.
 	public var isInCircuit: Bool {
 		return self.parentHierarchy.first { $0 is GTCircuit } != nil
 	}
 	
-	/// The position of the exercize in the circuit, `nil` outside of circuits.
+	/// The position of the exercise in the circuit, `nil` outside of circuits.
 	public var circuitStatus: (number: Int, total: Int)? {
 		let hierarchy = self.parentHierarchy
 		guard let cIndex = hierarchy.firstIndex(where: { $0 is GTCircuit }),
@@ -98,10 +98,10 @@ public class GTSetsExercize: GTExercize {
 			return nil
 		}
 		
-		return (Int(exInCircuit.order) + 1, c.exercizes.count)
+		return (Int(exInCircuit.order) + 1, c.exercises.count)
 	}
 	
-	/// Whether or not the exercize has mid-sets rests, always `true` outside circuits, and wheter the last set has an explit rest, can be `true` only inside a circuit.
+	/// Whether or not the exercise has mid-sets rests, always `true` outside circuits, and wheter the last set has an explit rest, can be `true` only inside a circuit.
 	///
 	/// `last` is always `false` if `global` is `false`.
 	public var restStatus: (global: Bool, last: Bool) {

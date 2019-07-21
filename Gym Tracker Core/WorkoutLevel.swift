@@ -35,38 +35,38 @@ public protocol CompositeWorkoutLevel: WorkoutLevel {
 	
 }
 
-public protocol ExercizeCollection: CompositeWorkoutLevel {
+public protocol ExerciseCollection: CompositeWorkoutLevel {
 	
-	associatedtype Exercize: GTPart
+	associatedtype Exercise: GTPart
 	
 	static var collectionType: String { get }
 	
-	var exercizes: Set<Exercize> { get }
-	var exercizeList: [Exercize] { get }
+	var exercises: Set<Exercise> { get }
+	var exerciseList: [Exercise] { get }
 	
-	func add(parts: Exercize...)
-	func remove(part: Exercize)
+	func add(parts: Exercise...)
+	func remove(part: Exercise)
 	
 }
 
-extension ExercizeCollection {
+extension ExerciseCollection {
 	
 	public var childrenList: [GTPart] {
-		return exercizeList
+		return exerciseList
 	}
 	
-	public subscript (n: Int32) -> Exercize? {
-		return exercizes.first { $0.order == n }
+	public subscript (n: Int32) -> Exercise? {
+		return exercises.first { $0.order == n }
 	}
 	
-	/// Move the part at the specified index to `to` index, the old exercize at `to` index will have index `dest+1` if the part is being moved towards the start of the collection, `dest-1` otherwise.
+	/// Move the part at the specified index to `to` index, the old exercise at `to` index will have index `dest+1` if the part is being moved towards the start of the collection, `dest-1` otherwise.
 	public func movePart(at from: Int32, to dest: Int32) {
-		guard let e = self[from], dest < exercizes.count else {
+		guard let e = self[from], dest < exercises.count else {
 			return
 		}
 		
 		let newIndex = dest > from ? dest + 1 : dest
-		_ = exercizes.map {
+		_ = exercises.map {
 			if Int($0.order) >= newIndex {
 				$0.order += 1
 			}
@@ -78,7 +78,7 @@ extension ExercizeCollection {
 	
 	func recalculatePartsOrder() {
 		var i: Int32 = 0
-		for s in exercizeList {
+		for s in exerciseList {
 			s.order = i
 			i += 1
 		}
@@ -86,7 +86,7 @@ extension ExercizeCollection {
 	
 }
 
-public protocol NamedExercizeCollection: ExercizeCollection {
+public protocol NamedExerciseCollection: ExerciseCollection {
 	
 	var name: String { get }
 	func set(name: String)

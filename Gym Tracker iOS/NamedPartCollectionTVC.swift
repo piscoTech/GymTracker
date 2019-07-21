@@ -10,7 +10,7 @@ import Foundation
 import GymTrackerCore
 import UIKit
 
-class NamedPartCollectionTableViewController<T: GTDataObject>: PartCollectionTableViewController<T>, UITextFieldDelegate where T: NamedExercizeCollection {
+class NamedPartCollectionTableViewController<T: GTDataObject>: PartCollectionTableViewController<T>, UITextFieldDelegate where T: NamedExerciseCollection {
 	
 	private let titleId: CellInfo = ("TitleCell", "title")
 	private let editTitleId: CellInfo = ("EditTitleCell", "editTitle")

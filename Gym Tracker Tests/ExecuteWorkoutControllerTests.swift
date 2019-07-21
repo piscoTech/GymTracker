@@ -14,7 +14,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 	private enum DelegateCalls: Equatable {
 		case setWorkoutTitle(String)
 		case setBPM(String)
-		case setCurrentExercizeViewHidden(Bool)
+		case setCurrentExerciseViewHidden(Bool)
 		case setRestViewHidden(Bool)
 		case setWorkoutDoneViewHidden(Bool)
 		case setNextUpTextHidden(Bool)
@@ -24,14 +24,14 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		case exitWorkoutTracking
 		case endNotifyEndRest
 		case startTimer(Date)
-		case setExercizeName(String)
+		case setExerciseName(String)
 		case setCurrentSetViewHidden(Bool)
 		case setCurrentSetText(String)
 		case setSetDoneButtonHidden(Bool)
 		case setOtherSetsViewHidden(Bool)
 		case setOtherSetsText(String)
 		case stopRestTimer
-		case notifyExercizeChange(Bool)
+		case notifyExerciseChange(Bool)
 		case setNextUpText(String)
 		case askUpdateSecondaryInfo(UpdateSecondaryInfoData)
 		case startRestTimer(Date)
@@ -47,7 +47,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 	private var calls: [DelegateCalls]!
 	private var expectations = [XCTestExpectation]()
 	private var w: GTWorkout!
-	private var e1, e2, e3, e4: GTSimpleSetsExercize!
+	private var e1, e2, e3, e4: GTSimpleSetsExercise!
 	private var r: GTRest!
 	
 	override func setUp() {
@@ -58,9 +58,9 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		w = dataManager.newWorkout()
 		w.set(name: "Wrkt Tests")
 		
-		var e = dataManager.newExercize()
+		var e = dataManager.newExercise()
 		w.add(parts: e)
-		e.set(name: "Exercize 1")
+		e.set(name: "Exercise 1")
 		var s = dataManager.newSet(for: e)
 		s.set(mainInfo: 10)
 		s.set(secondaryInfo: 0)
@@ -71,9 +71,9 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		s.set(rest: 90)
 		e1 = e
 		
-		e = dataManager.newExercize()
+		e = dataManager.newExercise()
 		w.add(parts: e)
-		e.set(name: "Exercize 2")
+		e.set(name: "Exercise 2")
 		s = dataManager.newSet(for: e)
 		s.set(mainInfo: 12)
 		s.set(secondaryInfo: 4)
@@ -88,18 +88,18 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		w.add(parts: r)
 		r.set(rest: 60)
 		
-		e = dataManager.newExercize()
+		e = dataManager.newExercise()
 		w.add(parts: e)
-		e.set(name: "Exercize 3")
+		e.set(name: "Exercise 3")
 		s = dataManager.newSet(for: e)
 		s.set(mainInfo: 15)
 		s.set(secondaryInfo: 0)
 		s.set(rest: 60)
 		e3 = e
 		
-		e = dataManager.newExercize()
+		e = dataManager.newExercise()
 		w.add(parts: e)
-		e.set(name: "Exercize 4")
+		e.set(name: "Exercise 4")
 		s = dataManager.newSet(for: e)
 		s.set(mainInfo: 10)
 		s.set(secondaryInfo: 5)
@@ -110,11 +110,11 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 	private func choicify() {
 		let ch2 = dataManager.newChoice()
 		w.add(parts: ch2)
-		ch2.add(parts: w[3] as! GTSimpleSetsExercize, w[4] as! GTSimpleSetsExercize)
+		ch2.add(parts: w[3] as! GTSimpleSetsExercise, w[4] as! GTSimpleSetsExercise)
 		
 		let ch1 = dataManager.newChoice()
 		w.add(parts: ch1)
-		ch1.add(parts: w[0] as! GTSimpleSetsExercize, w[1] as! GTSimpleSetsExercize)
+		ch1.add(parts: w[0] as! GTSimpleSetsExercise, w[1] as! GTSimpleSetsExercise)
 		
 		w.movePart(at: ch1.order, to: 0)
 	}
@@ -149,7 +149,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 			return false
 		}
 		assertCall { c in
-			if case DelegateCalls.setCurrentExercizeViewHidden(let h) = c {
+			if case DelegateCalls.setCurrentExerciseViewHidden(let h) = c {
 				XCTAssertTrue(h)
 				return true
 			}
@@ -213,7 +213,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 			return false
 		}
 		assertCall { c in
-			if case DelegateCalls.setCurrentExercizeViewHidden(let h) = c {
+			if case DelegateCalls.setCurrentExerciseViewHidden(let h) = c {
 				XCTAssertTrue(h)
 				return true
 			}
@@ -416,14 +416,14 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 				return false
 			}
 			assertCall { c in
-				if case DelegateCalls.setCurrentExercizeViewHidden(let h) = c {
+				if case DelegateCalls.setCurrentExerciseViewHidden(let h) = c {
 					XCTAssertFalse(h)
 					return true
 				}
 				return false
 			}
 			assertCall { c in
-				if case DelegateCalls.setExercizeName(let n) = c {
+				if case DelegateCalls.setExerciseName(let n) = c {
 					XCTAssertEqual(n, e2.name)
 					return true
 				}
@@ -475,7 +475,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 				return false
 			}
 			assertCall { c in
-				if case DelegateCalls.notifyExercizeChange(let r) = c {
+				if case DelegateCalls.notifyExerciseChange(let r) = c {
 					XCTAssertFalse(r)
 					return true
 				}
@@ -495,14 +495,14 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		let e2Change = 1.0
 		func checkE2Rest() {
 			assertCall { c in
-				if case DelegateCalls.setCurrentExercizeViewHidden(let h) = c {
+				if case DelegateCalls.setCurrentExerciseViewHidden(let h) = c {
 					XCTAssertFalse(h)
 					return true
 				}
 				return false
 			}
 			assertCall { c in
-				if case DelegateCalls.setExercizeName(let n) = c {
+				if case DelegateCalls.setExerciseName(let n) = c {
 					XCTAssertEqual(n, e2.name)
 					return true
 				}
@@ -582,7 +582,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 			assertCall { $0 == .globallyUpdateSecondaryInfoChange }
 			checkE2Rest()
 			assertCall { c in
-				if case DelegateCalls.notifyExercizeChange(let r) = c {
+				if case DelegateCalls.notifyExerciseChange(let r) = c {
 					XCTAssertTrue(r)
 					return true
 				}
@@ -616,14 +616,14 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 			ctrl.endRest()
 			
 			assertCall { c in
-				if case DelegateCalls.setCurrentExercizeViewHidden(let h) = c {
+				if case DelegateCalls.setCurrentExerciseViewHidden(let h) = c {
 					XCTAssertFalse(h)
 					return true
 				}
 				return false
 			}
 			assertCall { c in
-				if case DelegateCalls.setExercizeName(let n) = c {
+				if case DelegateCalls.setExerciseName(let n) = c {
 					XCTAssertEqual(n, e2.name)
 					return true
 				}
@@ -667,7 +667,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 				return false
 			}
 			assertCall { c in
-				if case DelegateCalls.notifyExercizeChange(let r) = c {
+				if case DelegateCalls.notifyExerciseChange(let r) = c {
 					XCTAssertFalse(r)
 					return true
 				}
@@ -694,7 +694,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 			XCTAssertEqual(e2[1]!.secondaryInfo, 8)
 			
 			assertCall { c in
-				if case DelegateCalls.setCurrentExercizeViewHidden(let h) = c {
+				if case DelegateCalls.setCurrentExerciseViewHidden(let h) = c {
 					XCTAssertTrue(h)
 					return true
 				}
@@ -722,7 +722,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 				return false
 			}
 			assertCall { c in
-				if case DelegateCalls.notifyExercizeChange(let r) = c {
+				if case DelegateCalls.notifyExerciseChange(let r) = c {
 					XCTAssertTrue(r)
 					return true
 				}
@@ -752,14 +752,14 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 			
 			assertCall { $0 == .endNotifyEndRest }
 			assertCall { c in
-				if case DelegateCalls.setCurrentExercizeViewHidden(let h) = c {
+				if case DelegateCalls.setCurrentExerciseViewHidden(let h) = c {
 					XCTAssertFalse(h)
 					return true
 				}
 				return false
 			}
 			assertCall { c in
-				if case DelegateCalls.setExercizeName(let n) = c {
+				if case DelegateCalls.setExerciseName(let n) = c {
 					XCTAssertEqual(n, e3.name)
 					return true
 				}
@@ -803,7 +803,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 				return false
 			}
 			assertCall { c in
-				if case DelegateCalls.notifyExercizeChange(let r) = c {
+				if case DelegateCalls.notifyExerciseChange(let r) = c {
 					XCTAssertFalse(r)
 					return true
 				}
@@ -832,7 +832,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 				return false
 			}
 			assertCall { c in
-				if case DelegateCalls.setCurrentExercizeViewHidden(let h) = c {
+				if case DelegateCalls.setCurrentExerciseViewHidden(let h) = c {
 					XCTAssertTrue(h)
 					return true
 				}
@@ -913,14 +913,14 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		func testSet2Update() {
 			assertCall { $0 == .globallyUpdateSecondaryInfoChange }
 			assertCall { c in
-				if case DelegateCalls.setCurrentExercizeViewHidden(let h) = c {
+				if case DelegateCalls.setCurrentExerciseViewHidden(let h) = c {
 					XCTAssertFalse(h)
 					return true
 				}
 				return false
 			}
 			assertCall { c in
-				if case DelegateCalls.setExercizeName(let n) = c {
+				if case DelegateCalls.setExerciseName(let n) = c {
 					XCTAssertEqual(n, e1.name)
 					return true
 				}
@@ -982,7 +982,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 			return false
 		}
 		assertCall { c in
-			if case DelegateCalls.notifyExercizeChange(let r) = c {
+			if case DelegateCalls.notifyExerciseChange(let r) = c {
 				XCTAssertFalse(r)
 				return true
 			}
@@ -1009,14 +1009,14 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		XCTAssertEqual(ctrl.secondaryInfoChange(for: e2[1]!), 2)
 		
 		assertCall { c in
-			if case DelegateCalls.setCurrentExercizeViewHidden(let h) = c {
+			if case DelegateCalls.setCurrentExerciseViewHidden(let h) = c {
 				XCTAssertFalse(h)
 				return true
 			}
 			return false
 		}
 		assertCall { c in
-			if case DelegateCalls.setExercizeName(let n) = c {
+			if case DelegateCalls.setExerciseName(let n) = c {
 				XCTAssertEqual(n, e2.name)
 				return true
 			}
@@ -1174,7 +1174,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		ctrl.cancelWorkout()
 		
 		assertCall { c in
-			if case DelegateCalls.setCurrentExercizeViewHidden(let h) = c {
+			if case DelegateCalls.setCurrentExerciseViewHidden(let h) = c {
 				XCTAssertTrue(h)
 				return true
 			}
@@ -1241,7 +1241,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		ctrl.endWorkout()
 		
 		assertCall { c in
-			if case DelegateCalls.setCurrentExercizeViewHidden(let h) = c {
+			if case DelegateCalls.setCurrentExerciseViewHidden(let h) = c {
 				XCTAssertTrue(h)
 				return true
 			}
@@ -1322,7 +1322,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		ctrl.endWorkout()
 		
 		assertCall { c in
-			if case DelegateCalls.setCurrentExercizeViewHidden(let h) = c {
+			if case DelegateCalls.setCurrentExerciseViewHidden(let h) = c {
 				XCTAssertTrue(h)
 				return true
 			}
@@ -1436,13 +1436,13 @@ extension ExecuteWorkoutControllerTests: ExecuteWorkoutControllerDelegate {
 		expectations.popLast()?.fulfill()
 	}
 	
-	func setCurrentExercizeViewHidden(_ hidden: Bool) {
-		self.calls.append(.setCurrentExercizeViewHidden(hidden))
+	func setCurrentExerciseViewHidden(_ hidden: Bool) {
+		self.calls.append(.setCurrentExerciseViewHidden(hidden))
 		expectations.popLast()?.fulfill()
 	}
 	
-	func setExercizeName(_ name: String) {
-		self.calls.append(.setExercizeName(name))
+	func setExerciseName(_ name: String) {
+		self.calls.append(.setExerciseName(name))
 		expectations.popLast()?.fulfill()
 	}
 	
@@ -1531,8 +1531,8 @@ extension ExecuteWorkoutControllerTests: ExecuteWorkoutControllerDelegate {
 		expectations.popLast()?.fulfill()
 	}
 	
-	func notifyExercizeChange(isRest: Bool) {
-		self.calls.append(.notifyExercizeChange(isRest))
+	func notifyExerciseChange(isRest: Bool) {
+		self.calls.append(.notifyExerciseChange(isRest))
 		expectations.popLast()?.fulfill()
 	}
 	

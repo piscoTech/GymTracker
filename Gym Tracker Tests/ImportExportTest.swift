@@ -58,7 +58,7 @@ class ImportExportTest: XCTestCase {
 			
 			for p in [w[8], w[11]] {
 				if let c = p as? GTCircuit {
-					XCTAssertEqual(c.exercizes.count, 2)
+					XCTAssertEqual(c.exercises.count, 2)
 				} else {
 					XCTFail("Circuit expected")
 				}
@@ -87,14 +87,14 @@ class ImportExportTest: XCTestCase {
 			
 			for p in [w[7], w[10]] {
 				if let c = p as? GTCircuit {
-					XCTAssertEqual(c.exercizes.count, 2)
+					XCTAssertEqual(c.exercises.count, 2)
 				} else {
 					XCTFail("Circuit expected")
 				}
 			}
 			
 			if let ch = w[0] as? GTChoice {
-				XCTAssertEqual(ch.exercizes.count, 2)
+				XCTAssertEqual(ch.exercises.count, 2)
 			} else {
 				XCTFail("Choice expected")
 			}
@@ -135,8 +135,8 @@ class ImportExportTest: XCTestCase {
 		wait(for: [importExpectation], timeout: 5)
 	}
 	
-	func testXsdInvalidExercize() {
-		let f = Bundle(for: type(of: self)).url(forResource: "invalidExercize", withExtension: "xml")!
+	func testXsdInvalidExercise() {
+		let f = Bundle(for: type(of: self)).url(forResource: "invalidExercise", withExtension: "xml")!
 		dataManager.importExportManager.import(f, isRestoring: false, performCallback: { (valid, count, doPerform) in
 			XCTAssertFalse(valid)
 			XCTAssertNil(count)

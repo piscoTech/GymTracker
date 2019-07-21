@@ -79,7 +79,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		if dataManager.preferences.runningWorkout != nil, let src = dataManager.preferences.runningWorkoutSource {
 			if src == .watch {
-				self.updateMirroredWorkout(withCurrentExercize: dataManager.preferences.currentExercize,
+				self.updateMirroredWorkout(withCurrentExercise: dataManager.preferences.currentExercise,
 										   part: dataManager.preferences.currentPart,
 										   andTime: dataManager.preferences.currentRestEnd != nil ? Date() : nil)
 			} else {
@@ -263,7 +263,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
 		
 		if let ctrl = self.workoutController {
-			self.notifyExercizeChange(isRest: ctrl.isRestMode)
+			self.notifyExerciseChange(isRest: ctrl.isRestMode)
 		}
 	}
 
@@ -284,7 +284,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 		
 		if let ctrl = self.workoutController {
-			self.notifyExercizeChange(isRest: ctrl.isRestMode)
+			self.notifyExerciseChange(isRest: ctrl.isRestMode)
 		}
 	}
 	
@@ -379,12 +379,12 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 		currentWorkout.stopTimer()
 	}
 	
-	func setCurrentExercizeViewHidden(_ hidden: Bool) {
-		currentWorkout.setCurrentExercizeViewHidden(hidden)
+	func setCurrentExerciseViewHidden(_ hidden: Bool) {
+		currentWorkout.setCurrentExerciseViewHidden(hidden)
 	}
 	
-	func setExercizeName(_ name: String) {
-		currentWorkout.setExercizeName(name)
+	func setExerciseName(_ name: String) {
+		currentWorkout.setExerciseName(name)
 	}
 	
 	func setCurrentSetViewHidden(_ hidden: Bool) {
@@ -469,7 +469,7 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 		}
 	}
 	
-	func notifyExercizeChange(isRest: Bool) {
+	func notifyExerciseChange(isRest: Bool) {
 		guard !(workoutController?.isMirroring ?? true) else {
 			return
 		}
@@ -492,7 +492,7 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 				let restEndTrigger = UNTimeIntervalNotificationTrigger(timeInterval: max(endTime, GTNotification.immediateNotificationDelay), repeats: false)
 				let restEndContent = UNMutableNotificationContent()
 				restEndContent.title = GTLocalizedString("REST_OVER_TITLE", comment: "Rest over")
-				restEndContent.body = GTLocalizedString("REST_\((workoutController?.currentIsRestPeriod ?? true) ? "EXERCIZE" : "SET")_OVER_BODY", comment: "Next Exercize")
+				restEndContent.body = GTLocalizedString("REST_\((workoutController?.currentIsRestPeriod ?? true) ? "EXERCISE" : "SET")_OVER_BODY", comment: "Next Exercise")
 				restEndContent.sound = UNNotificationSound(named: UNNotificationSoundName(rawValue: "rest_end_notification.caf"))
 				restEndContent.categoryIdentifier = GTNotification.Category.restEnd.rawValue
 				
@@ -626,7 +626,7 @@ extension AppDelegate: DataManagerDelegate {
 		}
 	}
 	
-	func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date?) {
+	func updateMirroredWorkout(withCurrentExercise exercise: Int, part: Int, andTime date: Date?) {
 		guard dataManager.preferences.runningWorkout != nil else {
 			return
 		}
@@ -641,7 +641,7 @@ extension AppDelegate: DataManagerDelegate {
 			}
 			
 			
-			controller.updateMirroredWorkout(withCurrentExercize: exercize, part: part, andTime: date)
+			controller.updateMirroredWorkout(withCurrentExercise: exercise, part: part, andTime: date)
 		}
 	}
 	

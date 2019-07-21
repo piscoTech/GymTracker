@@ -38,14 +38,14 @@ class GTRestTests: XCTestCase {
 	func testReorderParent() {
 		let r = dataManager.newRest()
 		let w = dataManager.newWorkout()
-		w.add(parts: r, dataManager.newExercize())
+		w.add(parts: r, dataManager.newExercise())
 		
 		let w2 = dataManager.newWorkout()
 		w2.add(parts: r)
 		
 		XCTAssertNotEqual(w[0], r)
 		XCTAssertEqual(w[0]?.order, 0)
-		XCTAssertEqual(w.exercizes.count, 1)
+		XCTAssertEqual(w.exercises.count, 1)
 	}
 
 	func testPurgeSetting() {

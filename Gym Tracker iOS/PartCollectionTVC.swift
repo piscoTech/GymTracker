@@ -12,7 +12,7 @@ import GymTrackerCore
 @objc protocol PartCollectionController: AnyObject {
 	
 	func addDeletedEntities(_ del: [GTDataObject])
-	func exercizeUpdated(_ e: GTPart)
+	func exerciseUpdated(_ e: GTPart)
 	func updateView(global: Bool)
 	func updateSecondaryInfoChange()
 	func dismissPresentedController()
@@ -37,11 +37,11 @@ extension PartCollectionController {
 	func numberOfRowInHeaderSection() -> Int {
 		var count = 0
 		
-		if let se = partCollection as? GTSetsExercize, se.isInCircuit {
+		if let se = partCollection as? GTSetsExercise, se.isInCircuit {
 			count += 1 + (se.allowCircuitRest ? 1 : 0)
 		}
 		
-		return count + ((partCollection as? GTSimpleSetsExercize)?.isInChoice ?? false ? 1 : 0)
+		return count + ((partCollection as? GTSimpleSetsExercise)?.isInChoice ?? false ? 1 : 0)
 	}
 	
 	func headerCell(forRowAt indexPath: IndexPath, reallyAt realIndex: IndexPath? = nil) -> UITableViewCell {
@@ -49,7 +49,7 @@ extension PartCollectionController {
 		
 		switch indexPath.row {
 		case 0: // Circuit information
-			guard let se = partCollection as? GTSetsExercize, let (n, t) = se.circuitStatus else {
+			guard let se = partCollection as? GTSetsExercise, let (n, t) = se.circuitStatus else {
 				fallthrough
 			}
 			
@@ -57,12 +57,12 @@ extension PartCollectionController {
 			cell.accessoryView = nil
 			cell.textLabel?.text = GTLocalizedString("IS_CIRCUIT", comment: "Circuit info")
 			cell.detailTextLabel?.text = String(
-				format: GTLocalizedString("COMPOSITE_INFO_%lld_OF_%lld", comment: "Exercize n/m"),
+				format: GTLocalizedString("COMPOSITE_INFO_%lld_OF_%lld", comment: "Exercise n/m"),
 				n, t)
 			
 			return cell
 		case 1:
-			guard let se = partCollection as? GTSetsExercize, se.isInCircuit, se.allowCircuitRest else {
+			guard let se = partCollection as? GTSetsExercise, se.isInCircuit, se.allowCircuitRest else {
 				fallthrough
 			}
 			
@@ -78,7 +78,7 @@ extension PartCollectionController {
 			
 			return cell
 		case 2:
-			guard let e = partCollection as? GTSimpleSetsExercize, let (n, t) = e.choiceStatus else {
+			guard let e = partCollection as? GTSimpleSetsExercise, let (n, t) = e.choiceStatus else {
 				fallthrough
 			}
 			
@@ -86,7 +86,7 @@ extension PartCollectionController {
 			cell.accessoryView = nil
 			cell.textLabel?.text = GTLocalizedString("IS_CHOICE", comment: "Choice info")
 			cell.detailTextLabel?.text = String(
-				format: GTLocalizedString("COMPOSITE_INFO_%lld_OF_%lld", comment: "Exercize n/m"),
+				format: GTLocalizedString("COMPOSITE_INFO_%lld_OF_%lld", comment: "Exercise n/m"),
 				n, t)
 			
 			return cell
@@ -105,14 +105,14 @@ extension PartCollectionController {
 	
 }
 
-class PartCollectionTableViewController<T: GTDataObject>: UITableViewController, UIPickerViewDelegate, UIPickerViewDataSource, PartCollectionController where T: ExercizeCollection {
+class PartCollectionTableViewController<T: GTDataObject>: UITableViewController, UIPickerViewDelegate, UIPickerViewDataSource, PartCollectionController where T: ExerciseCollection {
 	
 	weak var delegate: WorkoutListTableViewController!
 	weak var parentCollection: PartCollectionController?
 	
 	private weak var mover: UIViewController?
 	private(set) weak var subCollection: PartCollectionController?
-	private(set) weak var exercizeController: ExercizeTableViewController?
+	private(set) weak var exerciseController: ExerciseTableViewController?
 	
 	var editMode = false
 	var isNew: Bool {
@@ -132,8 +132,8 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		return nil
 	}
 
-	private let reorderLbl = GTLocalizedString("REORDER_EXERCIZE", comment: "Reorder")
-	private let doneReorderLbl = GTLocalizedString("DONE_REORDER_EXERCIZE", comment: "Done Reorder")
+	private let reorderLbl = GTLocalizedString("REORDER_EXERCISE", comment: "Reorder")
+	private let doneReorderLbl = GTLocalizedString("DONE_REORDER_EXERCISE", comment: "Done Reorder")
 	private let additionalTip: String?
 	
 	var collection: T!
@@ -152,11 +152,11 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	
 	typealias CellInfo = PartCollectionController.CellInfo
 	private let collectionDataId: CellInfo = ("CollectionData", "collectionData")
-	private let noExercizesId: CellInfo = ("NoExercizes", "noExercize")
-	private let exercizeId: CellInfo = ("ExercizeTableViewCell", "exercize")
+	private let noExercisesId: CellInfo = ("NoExercises", "noExercise")
+	private let exerciseId: CellInfo = ("ExerciseTableViewCell", "exercise")
 	private let restId: CellInfo = ("RestCell", "rest")
 	private let restPickerId: CellInfo = ("RestPickerCell", "restPicker")
-	private let addExercizeId: CellInfo = ("AddExercizeCell", "add")
+	private let addExerciseId: CellInfo = ("AddExerciseCell", "add")
 	
 	init(additionalTip: String? = nil) {
 		self.additionalTip = additionalTip
@@ -173,7 +173,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
     override func viewDidLoad() {
         super.viewDidLoad()
 		
-		for (n, i) in [collectionDataId, noExercizesId, exercizeId, restId, restPickerId, addExercizeId] {
+		for (n, i) in [collectionDataId, noExercisesId, exerciseId, restId, restPickerId, addExerciseId] {
 			tableView.register(UINib(nibName: n, bundle: Bundle.main), forCellReuseIdentifier: i)
 		}
 
@@ -202,7 +202,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		super.viewWillDisappear(animated)
 		
 		if self.isMovingFromParent {
-			parentCollection?.exercizeUpdated(collection as! GTPart)
+			parentCollection?.exerciseUpdated(collection as! GTPart)
 		}
 	}
 	
@@ -248,13 +248,13 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		}
 		
 		addDeletedEntities(collection.purge(onlySettings: true))
-		invalidityCache = Set(collection.exercizes.lazy.filter { !$0.isValid }.map { Int($0.order) })
-		invalidityCache.formUnion((collection as? GTCircuit)?.exercizesError ?? [])
-		invalidityCache.formUnion((collection as? GTChoice)?.inCircuitExercizesError ?? [])
+		invalidityCache = Set(collection.exercises.lazy.filter { !$0.isValid }.map { Int($0.order) })
+		invalidityCache.formUnion((collection as? GTCircuit)?.exercisesError ?? [])
+		invalidityCache.formUnion((collection as? GTChoice)?.inCircuitExercisesError ?? [])
 		doneBtn?.isEnabled = collection.isPurgeableToValid
 		
 		if doUpdateTable {
-			tableView.reloadRows(at: collection.exercizeList.lazy.filter { $0 is GTExercize }.map { self.exercizeCellIndexPath(for: $0) }, with: .automatic)
+			tableView.reloadRows(at: collection.exerciseList.lazy.filter { $0 is GTExercise }.map { self.exerciseCellIndexPath(for: $0) }, with: .automatic)
 		}
 	}
 	
@@ -272,20 +272,20 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		tableView.reloadData()
 		
 		subCollection?.updateView(global: false)
-		exercizeController?.updateView()
+		exerciseController?.updateView()
 	}
 	
 	func updateSecondaryInfoChange() {
 		subCollection?.updateSecondaryInfoChange()
-		exercizeController?.updateSecondaryInfoChange()
+		exerciseController?.updateSecondaryInfoChange()
 		
 		tableView.reloadSections([mainSectionIndex], with: .automatic)
 	}
 
     // MARK: - Table view data source
 	
-	private enum ExercizeCellType {
-		case exercize, rest, picker
+	private enum ExerciseCellType {
+		case exercise, rest, picker
 	}
 	
 	var mainSectionIndex: Int {
@@ -298,7 +298,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	
 	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 		if section == mainSectionIndex {
-			return GTLocalizedString("EXERCIZES", comment: "Exercizes")
+			return GTLocalizedString("EXERCISES", comment: "Exercises")
 		}
 		
 		return nil
@@ -306,7 +306,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	
 	override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
 		if editMode && section == mainSectionIndex {
-			var tip = GTLocalizedString("EXERCIZE_MANAGEMENT_TIP", comment: "Remove exercize")
+			var tip = GTLocalizedString("EXERCISE_MANAGEMENT_TIP", comment: "Remove exercise")
 			if let addTip = additionalTip {
 				tip += "\n\(addTip)"
 			}
@@ -318,7 +318,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	}
 	
 	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		if indexPath.section == mainSectionIndex && collection.exercizes.count > 0 && exercizeCellType(for: indexPath) == .picker {
+		if indexPath.section == mainSectionIndex && collection.exercises.count > 0 && exerciseCellType(for: indexPath) == .picker {
 			return 150
 		}
 		
@@ -328,7 +328,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		switch section {
 		case mainSectionIndex:
-			return max(collection.exercizes.count, 1) + (editRest != nil ? 1 : 0)
+			return max(collection.exercises.count, 1) + (editRest != nil ? 1 : 0)
 		case mainSectionIndex + 1:
 			return 1
 		case 0:
@@ -341,12 +341,12 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		switch indexPath.section {
 		case mainSectionIndex:
-			if collection.exercizes.isEmpty {
-				return tableView.dequeueReusableCell(withIdentifier: noExercizesId.identifier, for: indexPath)
+			if collection.exercises.isEmpty {
+				return tableView.dequeueReusableCell(withIdentifier: noExercisesId.identifier, for: indexPath)
 			}
 			
-			let p = collection[Int32(exercizeNumber(for: indexPath))]!
-			switch exercizeCellType(for: indexPath) {
+			let p = collection[Int32(exerciseNumber(for: indexPath))]!
+			switch exerciseCellType(for: indexPath) {
 			case .rest:
 				let cell = tableView.dequeueReusableCell(withIdentifier: restId.identifier, for: indexPath) as! RestCell
 				let r = p as! GTRest
@@ -354,13 +354,13 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 				cell.isUserInteractionEnabled = editMode
 				
 				return cell
-			case .exercize:
+			case .exercise:
 				if invalidityCache == nil {
 					updateValidityAndButtons(doUpdateTable: false)
 				}
 				
-				let cell = tableView.dequeueReusableCell(withIdentifier: exercizeId.identifier, for: indexPath) as! ExercizeTableViewCell
-				let e = p as! GTExercize
+				let cell = tableView.dequeueReusableCell(withIdentifier: exerciseId.identifier, for: indexPath) as! ExerciseTableViewCell
+				let e = p as! GTExercise
 				cell.setInfo(for: e)
 				cell.setValidity(!invalidityCache.contains(Int(e.order)))
 				
@@ -375,8 +375,8 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 				return cell
 			}
 		case mainSectionIndex + 1:
-			let cell = tableView.dequeueReusableCell(withIdentifier: addExercizeId.identifier, for: indexPath) as! AddExercizeCell
-			cell.addExercize.addTarget(self, action: #selector(newExercize), for: .primaryActionTriggered)
+			let cell = tableView.dequeueReusableCell(withIdentifier: addExerciseId.identifier, for: indexPath) as! AddExerciseCell
+			cell.addExercise.addTarget(self, action: #selector(newExercise), for: .primaryActionTriggered)
 			
 			if handleableTypes().count == 1 {
 				cell.addOther.isHidden = true
@@ -385,7 +385,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 				cell.addOther.addTarget(self, action: #selector(newChoose), for: .primaryActionTriggered)
 			}
 			
-			cell.addExistent.addTarget(self, action: #selector(moveExercizes), for: .primaryActionTriggered)
+			cell.addExistent.addTarget(self, action: #selector(moveExercises), for: .primaryActionTriggered)
 			
 			return cell
 		case 0:
@@ -398,19 +398,19 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		tableView.deselectRow(at: indexPath, animated: true)
 		
-		guard !collection.exercizes.isEmpty, !self.isEditing, indexPath.section == mainSectionIndex else {
+		guard !collection.exercises.isEmpty, !self.isEditing, indexPath.section == mainSectionIndex else {
 			return
 		}
 		
-		switch exercizeCellType(for: indexPath) {
+		switch exerciseCellType(for: indexPath) {
 		case .rest:
 			guard editMode else {
 				break
 			}
 			
 			self.editRest(at: indexPath)
-		case .exercize:
-			self.openExercize(collection[Int32(exercizeNumber(for: indexPath))]!)
+		case .exercise:
+			self.openExercise(collection[Int32(exerciseNumber(for: indexPath))]!)
 		default:
 			break
 		}
@@ -490,11 +490,11 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	}
 	
 	private func canHandle(_ p: GTPart.Type) -> Bool {
-		return p is T.Exercize.Type
+		return p is T.Exercise.Type
 	}
 	
 	private func handleableTypes() -> [(String, GTPart.Type)] {
-		return [("CIRCUIT", GTCircuit.self), ("CHOICE", GTChoice.self), ("EXERCIZE", GTSimpleSetsExercize.self), ("REST", GTRest.self)].filter { canHandle($0.1) }
+		return [("CIRCUIT", GTCircuit.self), ("CHOICE", GTChoice.self), ("EXERCISE", GTSimpleSetsExercise.self), ("REST", GTRest.self)].filter { canHandle($0.1) }
 	}
 	
 	@objc private func newChoose() {
@@ -515,8 +515,8 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		self.present(choose, animated: true)
 	}
 	
-	@objc private func newExercize() {
-		newPart(of: GTSimpleSetsExercize.self)
+	@objc private func newExercise() {
+		newPart(of: GTSimpleSetsExercise.self)
 	}
 	
 	private func newPart(of type: GTPart.Type) {
@@ -527,13 +527,13 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		endEditRest()
 		
 		tableView.beginUpdates()
-		if collection.exercizes.isEmpty {
+		if collection.exercises.isEmpty {
 			tableView.deleteRows(at: [IndexPath(row: 0, section: mainSectionIndex)], with: .automatic)
 		}
 		
-		let p = appDelegate.dataManager.newPart(type) as! T.Exercize
+		let p = appDelegate.dataManager.newPart(type) as! T.Exercise
 		collection.add(parts: p)
-		if let e = p as? GTSimpleSetsExercize {
+		if let e = p as? GTSimpleSetsExercise {
 			e.set(name: "")
 		} else if let r = p as? GTRest {
 			r.set(rest: 4 * 60)
@@ -541,18 +541,18 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		
 		tableView.insertRows(at: [IndexPath(row: Int(p.order), section: mainSectionIndex)], with: .automatic)
 		tableView.endUpdates()
-		openExercize(p)
+		openExercise(p)
 		updateValidityAndButtons(doUpdateTable: false)
 	}
 	
-	func exercizeUpdated(_ e: GTPart) {
-		guard let p = e as? T.Exercize, collection.exercizes.contains(p) else {
+	func exerciseUpdated(_ e: GTPart) {
+		guard let p = e as? T.Exercise, collection.exercises.contains(p) else {
 			return
 		}
 		
 		addDeletedEntities(p.purge())
 		if p.shouldBePurged {
-			removeExercize(p)
+			removeExercise(p)
 		}
 
 		DispatchQueue.main.async {
@@ -560,7 +560,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		}
 	}
 	
-	private func removeExercize(_ e: T.Exercize) {
+	private func removeExercise(_ e: T.Exercise) {
 		let index = IndexPath(row: Int(e.order), section: 1)
 		addDeletedEntities([e])
 		collection.remove(part: e)
@@ -568,7 +568,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		tableView.beginUpdates()
 		tableView.deleteRows(at: [index], with: .automatic)
 		
-		if collection.exercizes.isEmpty {
+		if collection.exercises.isEmpty {
 			tableView.insertRows(at: [IndexPath(row: 0, section: mainSectionIndex)], with: .automatic)
 		}
 		
@@ -587,7 +587,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	// MARK: - Edit circuit
 	
 	func enableCircuitRest(_ s: UISwitch) {
-		guard editMode, let se = partCollection as? GTSetsExercize, se.isInCircuit, se.allowCircuitRest else {
+		guard editMode, let se = partCollection as? GTSetsExercise, se.isInCircuit, se.allowCircuitRest else {
 			return
 		}
 		
@@ -600,7 +600,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	
 	private var editRest: Int?
 	
-	private func exercizeNumber(for i: IndexPath) -> Int {
+	private func exerciseNumber(for i: IndexPath) -> Int {
 		var row = i.row
 		
 		if let r = editRest {
@@ -614,7 +614,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		return row
 	}
 	
-	private func exercizeCellType(for i: IndexPath) -> ExercizeCellType {
+	private func exerciseCellType(for i: IndexPath) -> ExerciseCellType {
 		var row = i.row
 		
 		if let r = editRest {
@@ -625,10 +625,10 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 			}
 		}
 		
-		return collection.exercizeList[row] is GTRest ? .rest : .exercize
+		return collection.exerciseList[row] is GTRest ? .rest : .exercise
 	}
 	
-	private func exercizeCellIndexPath(for e: T.Exercize) -> IndexPath {
+	private func exerciseCellIndexPath(for e: T.Exercise) -> IndexPath {
 		var i = IndexPath(row: Int(e.order), section: mainSectionIndex)
 		
 		if let r = editRest, r < i.row {
@@ -646,7 +646,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	}
 	
 	private func editRest(at indexPath: IndexPath) {
-		let exNum = exercizeNumber(for: indexPath)
+		let exNum = exerciseNumber(for: indexPath)
 		
 		tableView.beginUpdates()
 		
@@ -692,7 +692,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	}
 	
 	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-		guard let exN = editRest, let rest = collection.exercizeList[exN] as? GTRest else {
+		guard let exN = editRest, let rest = collection.exerciseList[exN] as? GTRest else {
 			return
 		}
 		
@@ -700,10 +700,10 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		tableView.reloadRows(at: [IndexPath(row: exN, section: mainSectionIndex)], with: .none)
 	}
 	
-	// MARK: - Delete exercizes
+	// MARK: - Delete exercises
 	
 	override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-		return editMode && indexPath.section == mainSectionIndex && !collection.exercizes.isEmpty && exercizeCellType(for: indexPath) != .picker
+		return editMode && indexPath.section == mainSectionIndex && !collection.exercises.isEmpty && exerciseCellType(for: indexPath) != .picker
 	}
 
 	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
@@ -711,18 +711,18 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 			return
 		}
 
-		let exN = exercizeNumber(for: indexPath)
+		let exN = exerciseNumber(for: indexPath)
 		guard let p = collection[Int32(exN)] else {
 			return
 		}
 
-		removeExercize(p)
+		removeExercise(p)
 	}
 	
-	// MARK: - Reorder exercizes
+	// MARK: - Reorder exercises
 	
 	@objc private func updateReorderMode() {
-		guard editMode, !collection.exercizes.isEmpty || self.isEditing else {
+		guard editMode, !collection.exercises.isEmpty || self.isEditing else {
 			return
 		}
 
@@ -733,21 +733,21 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	}
 
 	override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-		return editMode && indexPath.section == mainSectionIndex && !collection.exercizes.isEmpty && exercizeCellType(for: indexPath) != .picker
+		return editMode && indexPath.section == mainSectionIndex && !collection.exercises.isEmpty && exerciseCellType(for: indexPath) != .picker
 	}
 
 	override func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
 		if proposedDestinationIndexPath.section < mainSectionIndex {
 			return IndexPath(row: 0, section: mainSectionIndex)
 		} else if proposedDestinationIndexPath.section > mainSectionIndex {
-			return IndexPath(row: collection.exercizes.count - 1, section: mainSectionIndex)
+			return IndexPath(row: collection.exercises.count - 1, section: mainSectionIndex)
 		}
 
 		return proposedDestinationIndexPath
 	}
 
 	override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-		guard editMode && fromIndexPath.section == mainSectionIndex && to.section == mainSectionIndex && !collection.exercizes.isEmpty else {
+		guard editMode && fromIndexPath.section == mainSectionIndex && to.section == mainSectionIndex && !collection.exercises.isEmpty else {
 			return
 		}
 
@@ -777,19 +777,19 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	func dismissPresentedController() {
 		self.mover?.dismiss(animated: false)
 		self.subCollection?.dismissPresentedController()
-		self.exercizeController?.dismissPresentedController()
+		self.exerciseController?.dismissPresentedController()
 	}
 	
-	func openExercize(_ p: T.Exercize) {
-		let circuitChoiceAdditionalTip = GTLocalizedString("EXERCIZE_MANAGEMENT_CIRC_CHOICE_TIP", comment: "2 exercizes")
+	func openExercise(_ p: T.Exercise) {
+		let circuitChoiceAdditionalTip = GTLocalizedString("EXERCISE_MANAGEMENT_CIRC_CHOICE_TIP", comment: "2 exercises")
 		
-		if let e = p as? GTSimpleSetsExercize {
-			let dest = ExercizeTableViewController.instanciate()
+		if let e = p as? GTSimpleSetsExercise {
+			let dest = ExerciseTableViewController.instanciate()
 			
-			dest.exercize = e
+			dest.exercise = e
 			dest.editMode = self.editMode
 			dest.delegate = self
-			self.exercizeController = dest
+			self.exerciseController = dest
 			
 			navigationController?.pushViewController(dest, animated: true)
 		} else if p is GTRest {
@@ -817,7 +817,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		}
 	}
 	
-	@objc private func moveExercizes() {
+	@objc private func moveExercises() {
 		let mover = MovePartTableViewController.initialize(currentPart: collection) {
 			self.updateView(global: true)
 		}

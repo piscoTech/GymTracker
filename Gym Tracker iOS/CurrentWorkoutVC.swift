@@ -23,8 +23,8 @@ class CurrentWorkoutViewController: UIViewController {
 	@IBOutlet private weak var bpmLbl: UILabel!
 	@IBOutlet private weak var timerLbl: UILabel!
 	
-	@IBOutlet private weak var currentExercizeInfo: UIStackView!
-	@IBOutlet private weak var exercizeNameLbl: UILabel!
+	@IBOutlet private weak var currentExerciseInfo: UIStackView!
+	@IBOutlet private weak var exerciseNameLbl: UILabel!
 	@IBOutlet private weak var currentSetInfoLbl: UILabel!
 	@IBOutlet private weak var otherSetsLbl: UILabel!
 	@IBOutlet private weak var setDoneBtn: UIButton!
@@ -116,24 +116,24 @@ class CurrentWorkoutViewController: UIViewController {
 		timerUpdater = nil
 	}
 	
-	private var currentExercizeInfoSpacing: CGFloat?
+	private var currentExerciseInfoSpacing: CGFloat?
 	
-	func setCurrentExercizeViewHidden(_ hidden: Bool) {
+	func setCurrentExerciseViewHidden(_ hidden: Bool) {
 		if hidden {
-			currentExercizeInfoSpacing = currentExercizeInfo.isHidden
-				? currentExercizeInfoSpacing
-				: currentExercizeInfo.spacing
+			currentExerciseInfoSpacing = currentExerciseInfo.isHidden
+				? currentExerciseInfoSpacing
+				: currentExerciseInfo.spacing
 			
-			currentExercizeInfo.spacing = 0
+			currentExerciseInfo.spacing = 0
 		} else {
-			currentExercizeInfo.spacing = currentExercizeInfoSpacing ?? 0
+			currentExerciseInfo.spacing = currentExerciseInfoSpacing ?? 0
 		}
 		
-		currentExercizeInfo.isHidden = hidden
+		currentExerciseInfo.isHidden = hidden
 	}
 	
-	func setExercizeName(_ name: String) {
-		exercizeNameLbl.text = name
+	func setExerciseName(_ name: String) {
+		exerciseNameLbl.text = name
 	}
 	
 	func setCurrentSetViewHidden(_ hidden: Bool) {

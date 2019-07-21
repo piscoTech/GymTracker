@@ -39,8 +39,8 @@ public protocol ExecuteWorkoutControllerDelegate: AnyObject {
 	func startTimer(at date: Date)
 	func stopTimer()
 	
-	func setCurrentExercizeViewHidden(_ hidden: Bool)
-	func setExercizeName(_ name: String)
+	func setCurrentExerciseViewHidden(_ hidden: Bool)
+	func setExerciseName(_ name: String)
 	func setCurrentSetViewHidden(_ hidden: Bool)
 	func setCurrentSetText(_ text: NSAttributedString)
 	func setOtherSetsViewHidden(_ hidden: Bool)
@@ -62,7 +62,7 @@ public protocol ExecuteWorkoutControllerDelegate: AnyObject {
 	
 	func notifyEndRest()
 	func endNotifyEndRest()
-	func notifyExercizeChange(isRest: Bool)
+	func notifyExerciseChange(isRest: Bool)
 	func askUpdateSecondaryInfo(with data: UpdateSecondaryInfoData)
 	
 	func workoutHasStarted()
@@ -80,8 +80,8 @@ public class ExecuteWorkoutController: NSObject {
 	
 	static public let workoutNameMetadataKey = "Workout"
 	private let noHeart = "– –"
-	private let nextTxt = GTLocalizedString("NEXT_EXERCIZE_FLAG", comment: "Next:")
-	private let nextEndTxt = GTLocalizedString("NEXT_EXERCIZE_END", comment: "End")
+	private let nextTxt = GTLocalizedString("NEXT_EXERCISE_FLAG", comment: "Next:")
+	private let nextEndTxt = GTLocalizedString("NEXT_EXERCISE_END", comment: "End")
 	
 	private let activityType = HKWorkoutActivityType.traditionalStrengthTraining
 	private let isIndoor = true
@@ -143,7 +143,7 @@ public class ExecuteWorkoutController: NSObject {
 		
 		view.setWorkoutTitle(workout.name)
 		view.setBPM(noHeart)
-		view.setCurrentExercizeViewHidden(true)
+		view.setCurrentExerciseViewHidden(true)
 		view.setRestViewHidden(true)
 		view.setWorkoutDoneViewHidden(true)
 		view.setNextUpTextHidden(true)
@@ -161,7 +161,7 @@ public class ExecuteWorkoutController: NSObject {
 		self.loadIterator()
 	}
 	
-	typealias Choice = (choice: GTChoice, exercize: Int32)
+	typealias Choice = (choice: GTChoice, exercise: Int32)
 	private var choices: [Choice]
 	
 	private func loadIterator() {
@@ -171,7 +171,7 @@ public class ExecuteWorkoutController: NSObject {
 		} else {
 			var ask = [GTChoice]()
 			for (c, i) in choices {
-				if i < 0 || i >= c.exercizes.count {
+				if i < 0 || i >= c.exercises.count {
 					ask.append(c)
 				}
 			}
@@ -185,14 +185,14 @@ public class ExecuteWorkoutController: NSObject {
 	public func reportChoices(_ choices: [GTChoice: Int32]) {
 		for (c, i) in choices {
 			if let index = self.choices.firstIndex(where: { $0.choice == c }) {
-				self.choices[index].exercize = i
+				self.choices[index].exercise = i
 			}
 		}
 		
 		self.loadIterator()
 	}
 	
-	/// Cancel the workout while choosing the exercizes as prompted by `askForChoices(_)` call to the view controller.
+	/// Cancel the workout while choosing the exercises as prompted by `askForChoices(_)` call to the view controller.
 	///
 	/// If the workout has already stared, i.e. choices (if any) have been reported with `reportChoices(_)`, use `cancelWorkout()` instead.
 	public func cancelStartup() {
@@ -279,7 +279,7 @@ public class ExecuteWorkoutController: NSObject {
 		
 		view.setWorkoutTitle(workout.name)
 		view.setBPM(noHeart)
-		view.setCurrentExercizeViewHidden(true)
+		view.setCurrentExerciseViewHidden(true)
 		view.setRestViewHidden(true)
 		view.setWorkoutDoneViewHidden(true)
 		view.setNextUpTextHidden(true)
@@ -334,7 +334,7 @@ public class ExecuteWorkoutController: NSObject {
 			return
 		}
 		
-		view.setCurrentExercizeViewHidden(true)
+		view.setCurrentExerciseViewHidden(true)
 		view.setRestViewHidden(true)
 		view.setNextUpTextHidden(true)
 		
@@ -439,10 +439,10 @@ public class ExecuteWorkoutController: NSObject {
 		
 		if curStep.isRest {
 			setRest = curStep.rest
-			view.setCurrentExercizeViewHidden(true)
+			view.setCurrentExerciseViewHidden(true)
 		} else {
-			view.setCurrentExercizeViewHidden(false)
-			view.setExercizeName(curStep.exercizeName ?? "")
+			view.setCurrentExerciseViewHidden(false)
+			view.setExerciseName(curStep.exerciseName ?? "")
 			
 			if isRestMode {
 				setRest = curStep.rest
@@ -494,7 +494,7 @@ public class ExecuteWorkoutController: NSObject {
 		}
 		
 		if doNotify {
-			view.notifyExercizeChange(isRest: setRest != nil)
+			view.notifyExerciseChange(isRest: setRest != nil)
 		}
 		
 		let nextUp = NSMutableAttributedString(string: nextTxt)
@@ -583,7 +583,7 @@ public class ExecuteWorkoutController: NSObject {
 	// MARK: - Workout Actions
 	
 	@available(watchOS, unavailable)
-	public func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date?) {
+	public func updateMirroredWorkout(withCurrentExercise exercise: Int, part: Int, andTime date: Date?) {
 		guard isMirroring else {
 			return
 		}
@@ -593,7 +593,7 @@ public class ExecuteWorkoutController: NSObject {
 			workoutSessionStarted()
 		}
 		
-		dataManager.preferences.currentExercize = exercize
+		dataManager.preferences.currentExercise = exercise
 		dataManager.preferences.currentPart = part
 		self.restStart = date
 		
@@ -650,12 +650,12 @@ public class ExecuteWorkoutController: NSObject {
 	}
 	
 	public func isManaging(_ s: GTSet) -> Bool {
-		return workoutIterator.isManaging(s.exercize)
+		return workoutIterator.isManaging(s.exercise)
 	}
 	
 	public func secondaryInfoChange(for s: GTSet, forProposingChange: Bool = false) -> Double {
 		guard !forProposingChange else {
-			return workoutIterator.secondaryInfoChange(for: s.exercize)
+			return workoutIterator.secondaryInfoChange(for: s.exercise)
 		}
 		
 		let (ch, cur) = workoutIterator.secondaryInfoChange(for: s)
@@ -677,7 +677,7 @@ public class ExecuteWorkoutController: NSObject {
 		}
 		
 		let success = {
-			self.workoutIterator.setSecondaryInfoChange(change, for: set.exercize)
+			self.workoutIterator.setSecondaryInfoChange(change, for: set.exercise)
 			self.currentStep?.updateSecondaryInfoChange()
 			self.view.globallyUpdateSecondaryInfoChange()
 			if refreshView {
@@ -729,8 +729,8 @@ public class ExecuteWorkoutController: NSObject {
 		return (rest, end)
 	}
 	
-	public var currentSetInfo: (exercize: String, setInfo: String, otherSetsInfo: String?)? {
-		guard !(currentStep?.isRest ?? true), let e = currentStep?.exercizeName, let s = currentStep?.currentInfo else {
+	public var currentSetInfo: (exercise: String, setInfo: String, otherSetsInfo: String?)? {
+		guard !(currentStep?.isRest ?? true), let e = currentStep?.exerciseName, let s = currentStep?.currentInfo else {
 			return nil
 		}
 		

@@ -17,8 +17,8 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutCo
 	@IBOutlet weak var timerLbl: WKInterfaceTimer!
 	@IBOutlet weak var bpmLbl: WKInterfaceLabel!
 	
-	@IBOutlet weak var currentExercizeGrp: WKInterfaceGroup!
-	@IBOutlet weak var exercizeNameLbl: WKInterfaceLabel!
+	@IBOutlet weak var currentExerciseGrp: WKInterfaceGroup!
+	@IBOutlet weak var exerciseNameLbl: WKInterfaceLabel!
 	@IBOutlet weak var setRepWeightLbl: WKInterfaceLabel!
 	@IBOutlet weak var otherSetsLbl: WKInterfaceLabel!
 	@IBOutlet weak var doneSetBtn: WKInterfaceButton!
@@ -99,12 +99,12 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutCo
 		timerLbl.stop()
 	}
 	
-	func setCurrentExercizeViewHidden(_ hidden: Bool) {
-		currentExercizeGrp.setHidden(hidden)
+	func setCurrentExerciseViewHidden(_ hidden: Bool) {
+		currentExerciseGrp.setHidden(hidden)
 	}
 	
-	func setExercizeName(_ name: String) {
-		exercizeNameLbl.setText(name)
+	func setExerciseName(_ name: String) {
+		exerciseNameLbl.setText(name)
 	}
 	
 	func setCurrentSetViewHidden(_ hidden: Bool) {
@@ -192,7 +192,7 @@ class ExecuteWorkoutInterfaceController: WKInterfaceController, ExecuteWorkoutCo
 		}
 	}
 	
-	func notifyExercizeChange(isRest: Bool) {
+	func notifyExerciseChange(isRest: Bool) {
 		WKInterfaceDevice.current().play(.click)
 	}
 	

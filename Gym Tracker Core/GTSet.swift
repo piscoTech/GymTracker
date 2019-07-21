@@ -5,7 +5,6 @@
 //  Created by Marco Boschi on 13/08/2018.
 //  Copyright © 2018 Marco Boschi. All rights reserved.
 //
-//
 
 import Foundation
 import CoreData
@@ -15,11 +14,11 @@ public class GTSet: GTDataObject {
 	
 	private let minRest: TimeInterval = 0
 	
-	final private let exercizeKey = "exercize"
+	final private let exerciseKey = "exercize"
 	final private let orderKey = "order"
 	final private let restKey = "rest"
 	
-    @NSManaged final var exercize: GTSimpleSetsExercize
+    @NSManaged final var exercise: GTSimpleSetsExercise
 	@NSManaged final public var order: Int32
 	
 	@NSManaged final public private(set) var rest: TimeInterval
@@ -34,7 +33,7 @@ public class GTSet: GTDataObject {
 
 	override public var isValid: Bool {
 		// A low-level CoreData access is needed to check validity
-		return isSubtreeValid && self.value(forKey: "exercize") is GTSimpleSetsExercize
+		return isSubtreeValid && self.value(forKey: "exercise") is GTSimpleSetsExercise
 	}
 	
 	override var isSubtreeValid: Bool {
@@ -76,7 +75,7 @@ public class GTSet: GTDataObject {
 			return nil
 		}
 		
-		obj[exercizeKey] = exercize.recordID.wcRepresentation
+		obj[exerciseKey] = exercise.recordID.wcRepresentation
 		obj[orderKey] = order
 		obj[restKey] = rest
 		
@@ -88,13 +87,13 @@ public class GTSet: GTDataObject {
 			return false
 		}
 		
-		guard let exercize = CDRecordID(wcRepresentation: src[exercizeKey] as? [String])?.getObject(fromDataManager: dataManager) as? GTSimpleSetsExercize,
+		guard let exercise = CDRecordID(wcRepresentation: src[exerciseKey] as? [String])?.getObject(fromDataManager: dataManager) as? GTSimpleSetsExercise,
 			let order = src[orderKey] as? Int32,
 			let rest = src[restKey] as? TimeInterval else {
 				return false
 		}
 		
-		self.exercize = exercize
+		self.exercise = exercise
 		self.order = order
 		self.rest = rest
 		

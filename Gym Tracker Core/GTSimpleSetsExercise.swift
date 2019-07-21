@@ -1,5 +1,5 @@
 //
-//  GTSimpleSetsExercize.swift
+//  GTSimpleSetsExercise.swift
 //  Gym Tracker
 //
 //  Created by Marco Boschi on 12/03/2017.
@@ -9,11 +9,11 @@
 import Foundation
 import CoreData
 
-@objc(GTSimpleSetsExercize)
-public class GTSimpleSetsExercize: GTSetsExercize {
+@objc(GTSimpleSetsExercise)
+public class GTSimpleSetsExercise: GTSetsExercise {
 	
 	override class var objectType: String {
-		return "GTSimpleSetsExercize"
+		return "GTSimpleSetsExercise"
 	}
 	
 	private let nameKey = "name"
@@ -27,8 +27,8 @@ public class GTSimpleSetsExercize: GTSetsExercize {
 		return "N \(order): \(name) - \(sets.count) set(s) - \(summary)"
 	}
 	
-	override class func loadWithID(_ id: String, fromDataManager dataManager: DataManager) -> GTSimpleSetsExercize? {
-		let req = NSFetchRequest<GTSimpleSetsExercize>(entityName: self.objectType)
+	override class func loadWithID(_ id: String, fromDataManager dataManager: DataManager) -> GTSimpleSetsExercise? {
+		let req = NSFetchRequest<GTSimpleSetsExercise>(entityName: self.objectType)
 		let pred = NSPredicate(format: "id == %@", id)
 		req.predicate = pred
 		
@@ -51,7 +51,7 @@ public class GTSimpleSetsExercize: GTSetsExercize {
 		}
 	}
 	
-	/// Make the exercize a part of the given choice.
+	/// Make the exercise a part of the given choice.
 	///
 	/// Unless when passing `nil`, don't call this method directly but rather call `add(parts:_)` on the choice.
 	func set(choice c: GTChoice?) {
@@ -102,7 +102,7 @@ public class GTSimpleSetsExercize: GTSetsExercize {
 		return setList.map { $0.descriptionWithSecondaryInfoChange(from: ctrl) }.joined(separator: ", ")
 	}
 	
-	///Set the name of the exercize.
+	///Set the name of the exercise.
 	public func set(name n: String) {
 		self.name = n.trimmingCharacters(in: .whitespacesAndNewlines)
 	}
@@ -140,12 +140,12 @@ public class GTSimpleSetsExercize: GTSetsExercize {
 	
 	// MARK: - Choice Support
 	
-	/// Whether the exercize is at some point part of a choice.
+	/// Whether the exercise is at some point part of a choice.
 	public var isInChoice: Bool {
 		return self.parentHierarchy.first { $0 is GTChoice } != nil
 	}
 	
-	/// The position of the exercize in the choice, `nil` outside of choices.
+	/// The position of the exercise in the choice, `nil` outside of choices.
 	public var choiceStatus: (number: Int, total: Int)? {
 		let hierarchy = self.parentHierarchy
 		guard let cIndex = hierarchy.firstIndex(where: { $0 is GTChoice }),
@@ -157,14 +157,14 @@ public class GTSimpleSetsExercize: GTSetsExercize {
 				return nil
 		}
 		
-		return (Int(exInChoice.order) + 1, c.exercizes.count)
+		return (Int(exInChoice.order) + 1, c.exercises.count)
 	}
 	
 	// MARK: - Sets handling
 	
 	internal func add(set: GTSet) {
 		set.order = Int32(sets.count)
-		set.exercize = self
+		set.exercise = self
 	}
 	
 	public func removeSet(_ s: GTSet) {
@@ -201,7 +201,7 @@ public class GTSimpleSetsExercize: GTSetsExercize {
 			obj[choiceKey] = ch
 		}
 		
-		// Sets themselves contain a reference to the exercize
+		// Sets themselves contain a reference to the exercise
 		
 		return obj
 	}

@@ -64,15 +64,15 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 		
 		self.choices = choices
 		workoutName.setText(workout.name)
-		let exercizes = workout.exercizeList
-		let exCell = "exercize"
-		let rows = exercizes.flatMap { p -> [(GTPart, String)] in
+		let exercises = workout.exerciseList
+		let exCell = "exercise"
+		let rows = exercises.flatMap { p -> [(GTPart, String)] in
 			if let r = p as? GTRest {
 				return [(r, "rest")]
-			} else if let e = p as? GTSimpleSetsExercize {
+			} else if let e = p as? GTSimpleSetsExercise {
 				return [(e, exCell)]
 			} else if let c = p as? GTCircuit {
-				return c.exercizeList.map { ($0, exCell) }
+				return c.exerciseList.map { ($0, exCell) }
 			} else if let ch = p as? GTChoice {
 				return [(ch, exCell)]
 			} else {
@@ -91,8 +91,8 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 			if let r = p as? GTRest {
 				let row = table.rowController(at: i) as! RestCell
 				row.set(rest: r.rest)
-			} else if let se = p as? GTSetsExercize {
-				let row = table.rowController(at: i) as! ExercizeCell
+			} else if let se = p as? GTSetsExercise {
+				let row = table.rowController(at: i) as! ExerciseCell
 				if let curWrkt = ctrl {
 					row.detailLabel.setAttributedText(se.summaryWithSecondaryInfoChange(from: curWrkt))
 				} else {
@@ -101,10 +101,10 @@ class WorkoutDetailInterfaceController: WKInterfaceController {
 				row.accessoryWidth = 21
 				row.showAccessory(false)
 				
-				if let e = se as? GTSimpleSetsExercize {
+				if let e = se as? GTSimpleSetsExercise {
 					row.set(title: e.title)
 				} else if let ch = se as? GTChoice {
-					row.setChoice(title: ch.title, total: ch.exercizes.count)
+					row.setChoice(title: ch.title, total: ch.exercises.count)
 				} else {
 					fatalError("Unknown part type")
 				}

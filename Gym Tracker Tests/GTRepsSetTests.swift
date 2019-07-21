@@ -12,13 +12,13 @@ import XCTest
 
 class GTRepsSetTests: XCTestCase {
 	
-	private var e: GTSimpleSetsExercize!
+	private var e: GTSimpleSetsExercise!
 	private var s: GTRepsSet!
 
     override func setUp() {
 		super.setUp()
 		
-        e = dataManager.newExercize()
+        e = dataManager.newExercise()
 		s = dataManager.newSet(for: e)
     }
 

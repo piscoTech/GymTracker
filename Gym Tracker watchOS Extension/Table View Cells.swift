@@ -30,7 +30,7 @@ class AccessoryCell: NSObject {
 	
 }
 
-class ExercizeCell: AccessoryCell {
+class ExerciseCell: AccessoryCell {
 
 	@IBOutlet private weak var collectionImage: WKInterfaceImage!
 	@IBOutlet private weak var collectionLabel: WKInterfaceLabel!
@@ -41,7 +41,7 @@ class ExercizeCell: AccessoryCell {
 	private var isChoice = false
 	
 	func set(title: String) {
-		titleLabel.setAttributedText(NSAttributedString(string: title, attributes: [.font: ExercizeCell.font]))
+		titleLabel.setAttributedText(NSAttributedString(string: title, attributes: [.font: Self.font]))
 	}
 	
 	func setCircuit(number: Int, total: Int) {
@@ -52,7 +52,7 @@ class ExercizeCell: AccessoryCell {
 	
 	func setChoice(title: String, total: Int) {
 		isChoice = true
-		titleLabel.setAttributedText(NSAttributedString(string: title, attributes: [.font: ExercizeCell.italicFont]))
+		titleLabel.setAttributedText(NSAttributedString(string: title, attributes: [.font: Self.italicFont]))
 		collectionImage.setImageNamed("IsChoice")
 		collectionLabel.setText(total.description)
 		showAccessory(true)

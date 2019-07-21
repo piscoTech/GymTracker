@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="14313.18" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="f3a-Tn-603">
-    <device id="watch44" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="14835.7" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="f3a-Tn-603">
+    <device id="watch44"/>
     <dependencies>
         <deployment identifier="watchOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="14238.10"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14790.5"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="14631.1"/>
     </dependencies>
     <scenes>
         <!--Workouts-->
@@ -95,7 +93,7 @@
                             <items>
                                 <group width="1" alignment="left" layout="vertical" id="mZ1-1e-nBL">
                                     <items>
-                                        <label alignment="left" text="[Exercize Name]" numberOfLines="0" id="es3-lO-YvL">
+                                        <label alignment="left" text="[Exercise Name]" numberOfLines="0" id="es3-lO-YvL">
                                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                                         </label>
                                         <group width="1" alignment="left" layout="vertical" spacing="0.0" id="wNH-rK-hqr">
@@ -151,15 +149,15 @@
                                 </button>
                             </items>
                         </group>
-                        <label width="1" alignment="center" verticalAlignment="bottom" text="NEXT: [Next Exercize]" textAlignment="center" numberOfLines="0" id="COt-rO-686">
+                        <label width="1" alignment="center" verticalAlignment="bottom" text="NEXT: [Next Exercise]" textAlignment="center" numberOfLines="0" id="COt-rO-686">
                             <fontDescription key="font" type="system" pointSize="8"/>
                         </label>
                     </items>
                     <connections>
                         <outlet property="bpmLbl" destination="8WJ-4H-ILz" id="x2P-Om-UxZ"/>
-                        <outlet property="currentExercizeGrp" destination="g8Q-Xz-KGs" id="hwK-Rz-ecP"/>
+                        <outlet property="currentExerciseGrp" destination="g8Q-Xz-KGs" id="hwK-Rz-ecP"/>
                         <outlet property="doneSetBtn" destination="UF6-FT-XB6" id="Q8d-2L-RLx"/>
-                        <outlet property="exercizeNameLbl" destination="es3-lO-YvL" id="ptR-dY-eLL"/>
+                        <outlet property="exerciseNameLbl" destination="es3-lO-YvL" id="ptR-dY-eLL"/>
                         <outlet property="nextUpLbl" destination="COt-rO-686" id="Ynb-fZ-H52"/>
                         <outlet property="otherSetsLbl" destination="V1b-Db-h3Z" id="JNd-RV-VBJ"/>
                         <outlet property="restEndBtn" destination="9Br-5f-NyE" id="eJK-V8-PA7"/>
@@ -271,7 +269,7 @@
                     <items>
                         <group width="1" alignment="left" layout="vertical" spacing="0.0" id="olc-5n-HRX">
                             <items>
-                                <label alignment="left" text="Choose Exercize" id="hmh-Pu-WVE">
+                                <label alignment="left" text="Choose Exercise" id="hmh-Pu-WVE">
                                     <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                                 </label>
                                 <label alignment="left" text="[x/y]" id="4XE-xS-u8M">
@@ -281,7 +279,7 @@
                         </group>
                         <table alignment="left" id="kP2-yh-oC5">
                             <items>
-                                <tableRow identifier="exercize" id="xNJ-ba-bnl" customClass="AccessoryCell" customModule="Gym_Tracker_watchOS_Extension">
+                                <tableRow identifier="exercise" id="xNJ-ba-bnl" customClass="AccessoryCell" customModule="Gym_Tracker_watchOS_Extension">
                                     <group key="rootItem" width="1" height="0.0" alignment="left" spacing="0.0" id="2wa-HK-QzA">
                                         <items>
                                             <group width="1" widthAdjustment="-24" alignment="left" verticalAlignment="center" layout="vertical" spacing="1" id="ubU-K8-7PU">
@@ -347,7 +345,7 @@
                         </button>
                         <table alignment="left" id="itK-2w-s1f">
                             <items>
-                                <tableRow identifier="exercize" selectable="NO" id="TqS-vF-PJI" customClass="ExercizeCell" customModule="Gym_Tracker_watchOS_Extension">
+                                <tableRow identifier="exercise" selectable="NO" id="TqS-vF-PJI" customClass="ExerciseCell" customModule="Gym_Tracker_watchOS_Extension">
                                     <group key="rootItem" width="1" height="0.0" alignment="left" spacing="0.0" id="P8d-ix-mag">
                                         <items>
                                             <group width="1" widthAdjustment="-22" alignment="left" verticalAlignment="center" layout="vertical" spacing="1" id="mcV-pv-jbx">
@@ -404,5 +402,9 @@
             <point key="canvasLocation" x="457" y="134"/>
         </scene>
     </scenes>
-    <color key="tintColor" red="0.75686274509803919" green="0.92156862745098034" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+    <resources>
+        <image name="Checkmark" width="20" height="20"/>
+        <image name="IsCircuit" width="21" height="21"/>
+    </resources>
+    <color key="tintColor" name="GT Tint"/>
 </document>

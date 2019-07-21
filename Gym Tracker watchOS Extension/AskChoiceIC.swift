@@ -61,11 +61,11 @@ class AskChoiceInterfaceController: WKInterfaceController {
 		choiceNum.setText(String(format: GTLocalizedString("ASK_CHOICES", comment: "x/y"), data.n + 1, data.choices.count))
 		
 		let ch = data.choices[data.n]
-		let count = Int32(ch.exercizes.count)
+		let count = Int32(ch.exercises.count)
 		choice = min(ch.lastChosen, count - 1)
 		choice = choice >= 0 ? (choice + 1) % count : nil
 
-		table.setNumberOfRows(Int(count), withRowType: "exercize")
+		table.setNumberOfRows(Int(count), withRowType: "exercise")
 		
 		for i in 0 ..< Int(count) {
 			guard let row = table.rowController(at: i) as? AccessoryCell else {

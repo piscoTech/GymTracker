@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 
 @objc(GTWorkout)
-final public class GTWorkout: GTDataObject, NamedExercizeCollection {
+final public class GTWorkout: GTDataObject, NamedExerciseCollection {
 	
 	override class var objectType: String {
 		return "GTWorkout"
@@ -31,15 +31,15 @@ final public class GTWorkout: GTDataObject, NamedExercizeCollection {
 	
 	@NSManaged public private(set) var name: String
 	@NSManaged private(set) var parts: Set<GTPart>
-	public var exercizes: Set<GTPart> {
+	public var exercises: Set<GTPart> {
 		return parts
 	}
 	
 	@NSManaged public var archived: Bool
 	
 	public override var description: String {
-		let n = parts.reduce(0) { $0 + (($1 as? GTCircuit)?.exercizes.count ?? ($1 is GTSetsExercize ? 1 : 0)) }
-		return String(format: GTLocalizedString("%lld_EXERCIZES", comment: "exercize(s)"), n)
+		let n = parts.reduce(0) { $0 + (($1 as? GTCircuit)?.exercises.count ?? ($1 is GTSetsExercise ? 1 : 0)) }
+		return String(format: GTLocalizedString("%lld_EXERCISES", comment: "exercise(s)"), n)
 	}
 	
 	override class func loadWithID(_ id: String, fromDataManager dataManager: DataManager) -> GTWorkout? {
@@ -59,11 +59,11 @@ final public class GTWorkout: GTDataObject, NamedExercizeCollection {
 			return false
 		}
 		
-		return exercizeList.split(omittingEmptySubsequences: false) { $0 is GTRest }.first { $0.isEmpty } == nil
+		return exerciseList.split(omittingEmptySubsequences: false) { $0 is GTRest }.first { $0.isEmpty } == nil
 	}
 	
 	public override var isPurgeableToValid: Bool {
-		return name.count > 0 && parts.first { $0 is GTExercize } != nil && parts.reduce(true, { $0 && $1.isValid })
+		return name.count > 0 && parts.first { $0 is GTExercise } != nil && parts.reduce(true, { $0 && $1.isValid })
 	}
 	
 	public let parentLevel: CompositeWorkoutLevel? = nil
@@ -76,7 +76,7 @@ final public class GTWorkout: GTDataObject, NamedExercizeCollection {
 		var res = [GTDataObject]()
 	
 		if !onlySettings {
-			var steps = self.exercizeList
+			var steps = self.exerciseList
 			
 			while let f = steps.first, f is GTRest {
 				self.remove(part: f)
@@ -112,7 +112,7 @@ final public class GTWorkout: GTDataObject, NamedExercizeCollection {
 	}
 	
 	var choices: [GTChoice] {
-		return exercizeList.flatMap { ($0 as? GTCircuit)?.exercizeList.compactMap { $0 as? GTChoice } ?? [$0 as? GTChoice].compactMap { $0 } }
+		return exerciseList.flatMap { ($0 as? GTCircuit)?.exerciseList.compactMap { $0 as? GTChoice } ?? [$0 as? GTChoice].compactMap { $0 } }
 	}
 
 	public override var shouldBePurged: Bool {
@@ -136,8 +136,8 @@ final public class GTWorkout: GTDataObject, NamedExercizeCollection {
 	
 	// MARK: - Parts handling
 	
-	public var exercizeList: [GTPart] {
-		return Array(exercizes).sorted { $0.order < $1.order }
+	public var exerciseList: [GTPart] {
+		return Array(exercises).sorted { $0.order < $1.order }
 	}
 	
 	public func add(parts: GTPart...) {

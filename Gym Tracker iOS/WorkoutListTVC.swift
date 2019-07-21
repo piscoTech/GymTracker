@@ -187,7 +187,10 @@ class WorkoutListTableViewController: UITableViewController {
 			}
 			
 			let workout = (row.section == 0 ? self.workouts : self.archivedWorkouts)[row.row]
-			let confirm = UIAlertController(title: GTLocalizedString("DELETE_WORKOUT", comment: "Del"), message: GTLocalizedString("DELETE_WORKOUT_CONFIRM", comment: "Del confirm") + workout.name + "?", preferredStyle: .alert)
+			let confirm = UIAlertController(
+				title: GTLocalizedString("DELETE_WORKOUT", comment: "Del"),
+				message: String(format: GTLocalizedString("DELETE_WORKOUT_CONFIRM", comment: "Del confirm"), workout.name),
+				preferredStyle: .alert)
 			confirm.addAction(UIAlertAction(title: GTLocalizedString("DELETE", comment: "Del"), style: .destructive) { _ in
 				let archived = workout.archived
 				if appDelegate.dataManager.persistChangesForObjects([], andDeleteObjects: [workout]) {

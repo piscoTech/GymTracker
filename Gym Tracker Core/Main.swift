@@ -10,9 +10,9 @@ import Foundation
 import UIKit
 import HealthKit
 
-public let customTint = UIColor(named: "GT Tint")!
-public let redTint = UIColor(named: "Red Tint")!
-public let greenTint = UIColor(named: "Green Tint")!
+public let customTint = UIColor(named: "GT Tint")
+public let redTint = UIColor(named: "Red Tint")
+public let greenTint = UIColor(named: "Green Tint")
 
 let applicationDocumentsDirectory: URL = {
 	return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last!

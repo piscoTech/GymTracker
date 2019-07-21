@@ -259,7 +259,7 @@ final public class WCObject: Equatable {
 	func enableEdit()
 	
 	@available(watchOS, unavailable)
-	func updateMirroredWorkout(withCurrentExercize exercize: Int, part: Int, andTime date: Date?)
+	func updateMirroredWorkout(withCurrentExercise exercise: Int, part: Int, andTime date: Date?)
 	@available(watchOS, unavailable)
 	func mirroredWorkoutHasEnded()
 	
@@ -387,18 +387,18 @@ public class DataManager: NSObject {
 		return newObject(for: GTChoice.self)
 	}
 	
-	public func newExercize() -> GTSimpleSetsExercize {
-		return newObject(for: GTSimpleSetsExercize.self)
+	public func newExercise() -> GTSimpleSetsExercise {
+		return newObject(for: GTSimpleSetsExercise.self)
 	}
 	
 	internal func newSet() -> GTRepsSet {
 		return newObject(for: GTRepsSet.self)
 	}
 	
-	public func newSet(for exercize: GTSimpleSetsExercize) -> GTRepsSet {
+	public func newSet(for exercise: GTSimpleSetsExercise) -> GTRepsSet {
 		let newS = newSet()
-		newS.order = Int32(exercize.sets.count)
-		newS.exercize = exercize
+		newS.order = Int32(exercise.sets.count)
+		newS.exercise = exercise
 		
 		return newS
 	}
@@ -515,7 +515,7 @@ public class DataManager: NSObject {
 		
 		// Save changes first
 		var res = true
-		let order: [GTDataObject.Type] = [GTWorkout.self, GTCircuit.self, GTChoice.self, GTSimpleSetsExercize.self, GTRepsSet.self, GTRest.self]
+		let order: [GTDataObject.Type] = [GTWorkout.self, GTCircuit.self, GTChoice.self, GTSimpleSetsExercise.self, GTRepsSet.self, GTRest.self]
 		var pendingSave = changes
 		for type in order {
 			for obj in pendingSave {
@@ -700,7 +700,7 @@ private class CoreDataStack {
 	
 	lazy private var managedObjectModels: [NSManagedObjectModel] = {
 		let mainModel = Bundle(for: type(of: self)).url(forResource: self.storeName, withExtension: "momd")!
-		let models = [nil, "Circuit", "Structured Exercizes"].lazy
+		let models = [nil, "Circuit", "Structured Exercizes", "Correct Grammar"].lazy
 			.map { self.storeName + ($0.map { " \($0)" } ?? "") }
 			.map { mainModel.appendingPathComponent("\($0).mom") }
 			.map { NSManagedObjectModel(contentsOf: $0)! }
@@ -935,10 +935,10 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 			}
 			
 			if let currentProgress = userInfo[currentWorkoutProgress] as? [Any], currentProgress.count == 2 || currentProgress.count == 3,
-				let curExercize = currentProgress[0] as? Int, let curPart = currentProgress[1] as? Int, dataManager.preferences.runningWorkout != nil {
+				let curExercise = currentProgress[0] as? Int, let curPart = currentProgress[1] as? Int, dataManager.preferences.runningWorkout != nil {
 				let date = currentProgress.count == 3 ? currentProgress[2] as? Date : nil
 				if currentProgress.count == 2 || date != nil {
-					dataManager.delegate?.updateMirroredWorkout(withCurrentExercize: curExercize, part: curPart, andTime: date)
+					dataManager.delegate?.updateMirroredWorkout(withCurrentExercise: curExercise, part: curPart, andTime: date)
 				}
 			}
 		#endif
@@ -1004,7 +1004,7 @@ private class WatchConnectivityInterface: NSObject, WCSessionDelegate {
 		}
 		
 		var info: [Any] = [
-			dataManager.preferences.currentExercize,
+			dataManager.preferences.currentExercise,
 			dataManager.preferences.currentPart
 		]
 		if let d = date {

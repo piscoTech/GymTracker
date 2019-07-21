@@ -41,10 +41,10 @@ class SingleFieldCell: UITableViewCell {
 
 }
 
-class ExercizeTableViewCell: UITableViewCell {
+class ExerciseTableViewCell: UITableViewCell {
 	
 	@IBOutlet private weak var name: UILabel!
-	@IBOutlet private weak var exercizeInfo: UILabel!
+	@IBOutlet private weak var exerciseInfo: UILabel!
 	
 	@IBOutlet private weak var isInvalid: UIView!
 	@IBOutlet private weak var collectionStatus: UIView!
@@ -55,36 +55,36 @@ class ExercizeTableViewCell: UITableViewCell {
 	private static var normalFont: UIFont!
 	private static var italicFont: UIFont!
 	
-	func setInfo(for exercize: GTExercize) {
-		if ExercizeTableViewCell.normalFont == nil {
-			ExercizeTableViewCell.normalFont = name?.font
-			if let font = ExercizeTableViewCell.normalFont?.fontDescriptor, let descr = font.withSymbolicTraits(.traitItalic) {
-				ExercizeTableViewCell.italicFont = UIFont(descriptor: descr, size: 0)
+	func setInfo(for exercise: GTExercise) {
+		if Self.normalFont == nil {
+			Self.normalFont = name?.font
+			if let font = Self.normalFont?.fontDescriptor, let descr = font.withSymbolicTraits(.traitItalic) {
+				Self.italicFont = UIFont(descriptor: descr, size: 0)
 			}
 		}
 		
-		name.text = exercize.title
-		name.font = exercize is GTSimpleSetsExercize ? ExercizeTableViewCell.normalFont : ExercizeTableViewCell.italicFont
-		if let curWrkt = appDelegate.workoutController, curWrkt.isManaging(exercize) {
+		name.text = exercise.title
+		name.font = exercise is GTSimpleSetsExercise ? Self.normalFont : Self.italicFont
+		if let curWrkt = appDelegate.workoutController, curWrkt.isManaging(exercise) {
 			if #available(iOS 13, *) {
 				// In iOS 12 and before there's a bug where the appearance color overrides the color of the attributed string
 			} else {
-				exercizeInfo.textColor = UIColor(named: "Text Color")
+				exerciseInfo.textColor = UIColor(named: "Text Color")
 			}
-			exercizeInfo.attributedText = exercize.summaryWithSecondaryInfoChange(from: curWrkt)
+			exerciseInfo.attributedText = exercise.summaryWithSecondaryInfoChange(from: curWrkt)
 		} else {
-			exercizeInfo.text = exercize.summary
+			exerciseInfo.text = exercise.summary
 		}
 		
 		isCircuit.isHidden = true
 		isChoice.isHidden = true
-		if let c = exercize as? GTCircuit {
+		if let c = exercise as? GTCircuit {
 			isCircuit.isHidden = false
-			collectionCount.text = c.exercizes.count.description
+			collectionCount.text = c.exercises.count.description
 		}
-		if let ch = exercize as? GTChoice {
+		if let ch = exercise as? GTChoice {
 			isChoice.isHidden = false
-			collectionCount.text = ch.exercizes.count.description
+			collectionCount.text = ch.exercises.count.description
 		}
 		collectionStatus.isHidden = isCircuit.isHidden && isChoice.isHidden
 	}
@@ -180,10 +180,10 @@ class RestCell: UITableViewCell {
 	
 }
 
-class MoveExercizeCell: UITableViewCell {
+class MoveExerciseCell: UITableViewCell {
 	
 	@IBOutlet weak var name: UILabel!
-	@IBOutlet weak var exercizeInfo: UILabel!
+	@IBOutlet weak var exerciseInfo: UILabel!
 	@IBOutlet private weak var left: NSLayoutConstraint!
 	@IBOutlet private weak var invalidLbl: UILabel!
 	
@@ -207,18 +207,18 @@ class MoveExercizeCell: UITableViewCell {
 		self.setNeedsLayout()
 	}
 	
-	func setInvalid(_ v: MovePartInvalidExercize?, isCollection: Bool) {
-		MoveExercizeCell.createAspect(from: name)
+	func setInvalid(_ v: MovePartInvalidExercise?, isCollection: Bool) {
+		Self.createAspect(from: name)
 		
 		if let r = v {
-			name.font = MoveExercizeCell.thinFont
-			name.textColor = MoveExercizeCell.invalidColor
-			exercizeInfo.textColor = MoveExercizeCell.invalidColor
+			name.font = Self.thinFont
+			name.textColor = Self.invalidColor
+			exerciseInfo.textColor = Self.invalidColor
 			self.invalidLbl.isHidden = false
 			self.invalidLbl.text = r.description
 			self.accessoryType = .none
 		} else {
-			name.font = isCollection ? MoveExercizeCell.italicFont : MoveExercizeCell.normalFont
+			name.font = isCollection ? Self.italicFont : Self.normalFont
 			let color: UIColor
 			if #available(iOS 13.0, *) {
 				color = .label
@@ -226,16 +226,16 @@ class MoveExercizeCell: UITableViewCell {
 				color = UIColor(named: "Text Color")!
 			}
 			name.textColor = color
-			exercizeInfo.textColor = color
+			exerciseInfo.textColor = color
 			self.invalidLbl.isHidden = true
 		}
 	}
 	
 }
 
-class AddExercizeCell: UITableViewCell {
+class AddExerciseCell: UITableViewCell {
 	
-	@IBOutlet weak var addExercize: UIButton!
+	@IBOutlet weak var addExercise: UIButton!
 	@IBOutlet weak var addOther: UIButton!
 	@IBOutlet weak var addExistent: UIButton!
 	

@@ -11,7 +11,7 @@ import Foundation
 import CoreData
 
 @objc(GTChoice)
-final public class GTChoice: GTSetsExercize, ExercizeCollection {
+final public class GTChoice: GTSetsExercise, ExerciseCollection {
 	
 	override class var objectType: String {
 		return "GTChoice"
@@ -21,11 +21,11 @@ final public class GTChoice: GTSetsExercize, ExercizeCollection {
 	
 	private let lastChosenKey = "lastChosen"
 	
-	/// The index of the last chosen exercize.
+	/// The index of the last chosen exercise.
 	///
 	/// A negative value represent no choice, a value grater than the last index is equivalent to `0`.
 	@NSManaged public var lastChosen: Int32
-	@NSManaged public private(set) var exercizes: Set<GTSimpleSetsExercize>
+	@NSManaged public private(set) var exercises: Set<GTSimpleSetsExercise>
 
 	override class func loadWithID(_ id: String, fromDataManager dataManager: DataManager) -> GTChoice? {
 		let req = NSFetchRequest<GTChoice>(entityName: self.objectType)
@@ -40,7 +40,7 @@ final public class GTChoice: GTSetsExercize, ExercizeCollection {
 	}
 	
 	public override var summary: String {
-		return exercizeList.lazy.map { $0.title }.joined(separator: ", ")
+		return exerciseList.lazy.map { $0.title }.joined(separator: ", ")
 	}
 	
 	override public var isValid: Bool {
@@ -48,7 +48,7 @@ final public class GTChoice: GTSetsExercize, ExercizeCollection {
 	}
 	
 	override var isSubtreeValid: Bool {
-		return exercizes.count > 1 && exercizes.reduce(true) { $0 && $1.isValid } && inCircuitExercizesError?.isEmpty ?? true
+		return exercises.count > 1 && exercises.reduce(true) { $0 && $1.isValid } && inCircuitExercisesError?.isEmpty ?? true
 	}
 	
 	public override var isPurgeableToValid: Bool {
@@ -56,7 +56,7 @@ final public class GTChoice: GTSetsExercize, ExercizeCollection {
 	}
 	
 	public override var shouldBePurged: Bool {
-		return exercizes.isEmpty
+		return exercises.isEmpty
 	}
 	
 	override public var parentLevel: CompositeWorkoutLevel? {
@@ -68,21 +68,21 @@ final public class GTChoice: GTSetsExercize, ExercizeCollection {
 	}
 	
 	override var setsCount: Int? {
-		let counts = exercizes.compactMap { $0.setsCount }.removingDuplicates()
+		let counts = exercises.compactMap { $0.setsCount }.removingDuplicates()
 		return counts.count > 1 ? nil : counts.first
 	}
 	
 	override public var subtreeNodes: Set<GTDataObject> {
-		return Set(exercizes.flatMap { $0.subtreeNodes } + [self])
+		return Set(exercises.flatMap { $0.subtreeNodes } + [self])
 	}
 	
 	public override func purge(onlySettings: Bool) -> [GTDataObject] {
-		return exercizes.reduce(super.purge(onlySettings: onlySettings)) { $0 + $1.purge(onlySettings: onlySettings) }
+		return exercises.reduce(super.purge(onlySettings: onlySettings)) { $0 + $1.purge(onlySettings: onlySettings) }
 	}
 
 	public override func removePurgeable() -> [GTDataObject] {
 		var res = [GTDataObject]()
-		for e in exercizes {
+		for e in exercises {
 			if e.shouldBePurged {
 				res.append(e)
 				self.remove(part: e)
@@ -95,32 +95,32 @@ final public class GTChoice: GTSetsExercize, ExercizeCollection {
 		return res
 	}
 	
-	/// Whether or not the exercizes of this choice are valid inside the parent circuit or `nil` if none.
+	/// Whether or not the exercises of this choice are valid inside the parent circuit or `nil` if none.
 	///
-	/// An exercize has its index in `exercizeList` included if it has not the same number of sets as the most frequent sets count in the circuit.
-	public var inCircuitExercizesError: [Int]? {
+	/// An exercise has its index in `exerciseList` included if it has not the same number of sets as the most frequent sets count in the circuit.
+	public var inCircuitExercisesError: [Int]? {
 		guard isInCircuit, let c = circuit else {
 			return nil
 		}
 		
-		return GTCircuit.invalidIndices(for: exercizeList.map { $0.setsCount }, mode: c.exercizes.count > 1 ? c.exercizes.lazy.map { $0.setsCount }.mode : nil)
+		return GTCircuit.invalidIndices(for: exerciseList.map { $0.setsCount }, mode: c.exercises.count > 1 ? c.exercises.lazy.map { $0.setsCount }.mode : nil)
 	}
 	
-	// MARK: - Exercizes handling
+	// MARK: - Exercises handling
 	
-	public var exercizeList: [GTSimpleSetsExercize] {
-		return Array(exercizes).sorted { $0.order < $1.order }
+	public var exerciseList: [GTSimpleSetsExercise] {
+		return Array(exercises).sorted { $0.order < $1.order }
 	}
 	
-	public func add(parts: GTSimpleSetsExercize...) {
+	public func add(parts: GTSimpleSetsExercise...) {
 		for e in parts {
-			e.order = Int32(self.exercizes.count)
+			e.order = Int32(self.exercises.count)
 			e.set(choice: self)
 		}
 	}
 	
-	public func remove(part e: GTSimpleSetsExercize) {
-		exercizes.remove(e)
+	public func remove(part e: GTSimpleSetsExercise) {
+		exercises.remove(e)
 		recalculatePartsOrder()
 	}
 	
@@ -133,7 +133,7 @@ final public class GTChoice: GTSetsExercize, ExercizeCollection {
 		
 		obj[lastChosenKey] = lastChosen
 		
-		// Exercizes themselves contain a reference to the choice
+		// Exercises themselves contain a reference to the choice
 		
 		return obj
 	}

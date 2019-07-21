@@ -19,7 +19,7 @@ public class GTPart: GTDataObject, WorkoutLevel {
 	@NSManaged final private(set) var workout: GTWorkout?
     @NSManaged final public var order: Int32
 	
-	/// Make the exercize a part of the given workout.
+	/// Make the exercise a part of the given workout.
 	///
 	/// Unless when passing `nil`, don't call this method directly but rather call `add(parts:_)` on the workout.
 	func set(workout w: GTWorkout?) {

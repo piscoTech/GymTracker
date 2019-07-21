@@ -20,7 +20,7 @@ extension GTWorkout {
 		var res = "<\(GTWorkout.workoutTag)>"
 		res += "<\(GTWorkout.nameTag)>\(self.name.toXML())</\(GTWorkout.nameTag)>"
 		res += "<\(GTWorkout.archivedTag)>\(self.archived)</\(GTWorkout.archivedTag)>"
-		res += "<\(GTWorkout.partsTag)>\(self.exercizeList.map { $0.export() }.reduce("") { $0 + $1 })</\(GTWorkout.partsTag)>"
+		res += "<\(GTWorkout.partsTag)>\(self.exerciseList.map { $0.export() }.reduce("") { $0 + $1 })</\(GTWorkout.partsTag)>"
 		res += "</\(GTWorkout.workoutTag)>"
 
 		return res
@@ -47,8 +47,8 @@ extension GTWorkout {
 					throw GTError.importFailure(w.subtreeNodes.union([o] + (dynamicCircuit?.subtreeNodes ?? [])))
 				}
 				
-				if let e = part as? GTSetsExercize {
-					let isCircuit = p.children.first(where: { $0.name == GTSimpleSetsExercize.isCircuitTag })?.content ?? "false"  == "true"
+				if let e = part as? GTSetsExercise {
+					let isCircuit = p.children.first(where: { $0.name == GTSimpleSetsExercise.isCircuitTag })?.content ?? "false"  == "true"
 					
 					if let c = dynamicCircuit {
 						c.add(parts: e)

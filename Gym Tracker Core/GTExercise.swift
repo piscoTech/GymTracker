@@ -1,5 +1,5 @@
 //
-//  GTExercize.swift
+//  GTExercise.swift
 //  Gym Tracker
 //
 //  Created by Marco Boschi on 13/08/2018.
@@ -10,8 +10,8 @@
 import Foundation
 import CoreData
 
-@objc(GTExercize)
-public class GTExercize: GTPart {
+@objc(GTExercise)
+public class GTExercise: GTPart {
 	
 	public var title: String {
 		fatalError("Abstract property not implemented")

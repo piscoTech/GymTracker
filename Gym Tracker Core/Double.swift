@@ -24,7 +24,7 @@ extension Double {
 		let actCh = change > 0 ? change : max(change, -w)
 		if actCh != 0 {
 			let ch = NSMutableAttributedString(string: "\(actCh > 0 ? plusSign : minusSign)\(abs(actCh).toString())")
-			ch.addAttribute(.foregroundColor, value: actCh > 0 ? greenTint : redTint, range: NSRange(location: 0, length: ch.length))
+			ch.addAttribute(.foregroundColor, value: (actCh > 0 ? greenTint : redTint) as Any, range: NSRange(location: 0, length: ch.length))
 			res.append(ch)
 		}
 		

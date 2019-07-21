@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14865.6" systemVersion="18F132" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="GTChoice" representedClassName="GTChoice" parentEntity="GTSetsExercize" syncable="YES">
+    <entity name="GTChoice" representedClassName="GTChoice" parentEntity="GTSetsExercise" syncable="YES">
         <attribute name="lastChosen" attributeType="Integer 32" defaultValueString="-1" usesScalarValueType="YES"/>
-        <relationship name="exercizes" toMany="YES" minCount="2" deletionRule="Cascade" destinationEntity="GTSimpleSetsExercize" inverseName="choice" inverseEntity="GTSimpleSetsExercize" elementID="exercises"/>
+        <relationship name="exercises" toMany="YES" minCount="2" deletionRule="Cascade" destinationEntity="GTSimpleSetsExercise" inverseName="choice" inverseEntity="GTSimpleSetsExercise" elementID="exercises"/>
     </entity>
-    <entity name="GTCircuit" representedClassName="GTCircuit" parentEntity="GTExercize" syncable="YES">
-        <relationship name="exercizes" toMany="YES" minCount="2" deletionRule="Cascade" destinationEntity="GTSetsExercize" inverseName="circuit" inverseEntity="GTSetsExercize" elementID="exercises"/>
+    <entity name="GTCircuit" representedClassName="GTCircuit" parentEntity="GTExercise" syncable="YES">
+        <relationship name="exercises" toMany="YES" minCount="2" deletionRule="Cascade" destinationEntity="GTSetsExercise" inverseName="circuit" inverseEntity="GTSetsExercise" elementID="exercises"/>
     </entity>
-    <entity name="GTExercize" representedClassName="GTExercize" isAbstract="YES" parentEntity="GTPart" elementID="GTExercise" syncable="YES"/>
+    <entity name="GTExercise" representedClassName="GTExercise" isAbstract="YES" parentEntity="GTPart" elementID="GTExercise" syncable="YES"/>
     <entity name="GTPart" representedClassName="GTPart" isAbstract="YES" syncable="YES">
         <attribute name="id" attributeType="String" minValueString="1"/>
         <attribute name="modified" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -26,16 +26,16 @@
         <attribute name="modified" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="order" attributeType="Integer 32" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="rest" attributeType="Double" minValueString="0" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <relationship name="exercize" maxCount="1" deletionRule="Nullify" destinationEntity="GTSimpleSetsExercize" inverseName="sets" inverseEntity="GTSimpleSetsExercize" elementID="exercise"/>
+        <relationship name="exercise" maxCount="1" deletionRule="Nullify" destinationEntity="GTSimpleSetsExercise" inverseName="sets" inverseEntity="GTSimpleSetsExercise" elementID="exercise"/>
     </entity>
-    <entity name="GTSetsExercize" representedClassName="GTSetsExercize" isAbstract="YES" parentEntity="GTExercize" elementID="GTSetsExercise" syncable="YES">
+    <entity name="GTSetsExercise" representedClassName="GTSetsExercise" isAbstract="YES" parentEntity="GTExercise" elementID="GTSetsExercise" syncable="YES">
         <attribute name="hasCircuitRest" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
-        <relationship name="circuit" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GTCircuit" inverseName="exercizes" inverseEntity="GTCircuit"/>
+        <relationship name="circuit" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GTCircuit" inverseName="exercises" inverseEntity="GTCircuit"/>
     </entity>
-    <entity name="GTSimpleSetsExercize" representedClassName="GTSimpleSetsExercize" parentEntity="GTSetsExercize" elementID="GTSimpleSetsExercise" syncable="YES">
+    <entity name="GTSimpleSetsExercise" representedClassName="GTSimpleSetsExercise" parentEntity="GTSetsExercise" elementID="GTSimpleSetsExercise" syncable="YES">
         <attribute name="name" attributeType="String" minValueString="1"/>
-        <relationship name="choice" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GTChoice" inverseName="exercizes" inverseEntity="GTChoice"/>
-        <relationship name="sets" toMany="YES" minCount="1" deletionRule="Cascade" destinationEntity="GTSet" inverseName="exercize" inverseEntity="GTSet"/>
+        <relationship name="choice" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GTChoice" inverseName="exercises" inverseEntity="GTChoice"/>
+        <relationship name="sets" toMany="YES" minCount="1" deletionRule="Cascade" destinationEntity="GTSet" inverseName="exercise" inverseEntity="GTSet"/>
     </entity>
     <entity name="GTWorkout" representedClassName="GTWorkout" syncable="YES">
         <attribute name="archived" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
@@ -45,15 +45,15 @@
         <relationship name="parts" toMany="YES" minCount="1" deletionRule="Cascade" destinationEntity="GTPart" inverseName="workout" inverseEntity="GTPart"/>
     </entity>
     <elements>
-        <element name="GTChoice" positionX="-240.51953125" positionY="220.9296875" width="128" height="73"/>
-        <element name="GTCircuit" positionX="-409.265625" positionY="101.30859375" width="128" height="58"/>
-        <element name="GTExercize" positionX="-282.9765625" positionY="-31.765625" width="128" height="43"/>
+        <element name="GTChoice" positionX="-240.51953125" positionY="220.9296875" width="128" height="28"/>
+        <element name="GTCircuit" positionX="-409.265625" positionY="101.30859375" width="128" height="28"/>
+        <element name="GTExercise" positionX="-282.9765625" positionY="-31.765625" width="128" height="43"/>
         <element name="GTPart" positionX="-144.4296875" positionY="-193.09765625" width="128" height="105"/>
         <element name="GTRepsSet" positionX="195.08203125" positionY="441.88671875" width="128" height="75"/>
         <element name="GTRest" positionX="-20.3125" positionY="-34.6796875" width="128" height="60"/>
-        <element name="GTSet" positionX="193.8671875" positionY="256.21484375" width="128" height="118"/>
-        <element name="GTSetsExercize" positionX="-143.7890625" positionY="91.9375" width="128" height="73"/>
-        <element name="GTSimpleSetsExercize" positionX="-24.125" positionY="213.46484375" width="128" height="88"/>
+        <element name="GTSet" positionX="193.8671875" positionY="256.21484375" width="128" height="28"/>
+        <element name="GTSetsExercise" positionX="-143.7890625" positionY="91.9375" width="128" height="28"/>
+        <element name="GTSimpleSetsExercise" positionX="-24.125" positionY="213.46484375" width="128" height="28"/>
         <element name="GTWorkout" positionX="-332.77734375" positionY="-348.546875" width="128" height="120"/>
     </elements>
 </model>

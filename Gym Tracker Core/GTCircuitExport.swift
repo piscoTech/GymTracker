@@ -12,11 +12,11 @@ import MBLibrary
 extension GTCircuit {
 	
 	static let circuitTag = "circuit"
-	static let exercizesTag = "exercizes"
+	static let exercisesTag = "exercizes"
 	
 	override func export() -> String {
 		var res = "<\(GTCircuit.circuitTag)>"
-		res += "<\(GTCircuit.exercizesTag)>\(self.exercizeList.map { $0.export() }.reduce("") { $0 + $1 })</\(GTCircuit.exercizesTag)>"
+		res += "<\(GTCircuit.exercisesTag)>\(self.exerciseList.map { $0.export() }.reduce("") { $0 + $1 })</\(GTCircuit.exercisesTag)>"
 		res += "</\(GTCircuit.circuitTag)>"
 		
 		return res
@@ -24,7 +24,7 @@ extension GTCircuit {
 	
 	override class func `import`(fromXML xml: XMLNode, withDataManager dataManager: DataManager) throws -> GTCircuit {
 		guard xml.name == GTCircuit.circuitTag,
-			let ex = xml.children.first(where: { $0.name == GTCircuit.exercizesTag })?.children else {
+			let ex = xml.children.first(where: { $0.name == GTCircuit.exercisesTag })?.children else {
 				throw GTError.importFailure([])
 		}
 
@@ -32,11 +32,11 @@ extension GTCircuit {
 		for e in ex {
 			do {
 				let o = try GTDataObject.import(fromXML: e, withDataManager: dataManager)
-				guard let exercize = o as? GTSetsExercize else {
+				guard let exercise = o as? GTSetsExercise else {
 					throw GTError.importFailure(c.subtreeNodes.union([o]))
 				}
 
-				c.add(parts: exercize)
+				c.add(parts: exercise)
 			} catch GTError.importFailure(let obj) {
 				throw GTError.importFailure(c.subtreeNodes.union(obj))
 			}

@@ -1,5 +1,5 @@
 //
-//  ExercizeTVC.swift
+//  ExerciseTVC.swift
 //  Gym Tracker
 //
 //  Created by Marco Boschi on 14/11/2016.
@@ -10,16 +10,16 @@ import UIKit
 import MBLibrary
 import GymTrackerCore
 
-class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource, PartCollectionController {
+class ExerciseTableViewController: UITableViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource, PartCollectionController {
 	
-	class func instanciate() -> ExercizeTableViewController {
-		return UIStoryboard(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "exercizeView") as! ExercizeTableViewController
+	class func instanciate() -> ExerciseTableViewController {
+		return UIStoryboard(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "exerciseView") as! ExerciseTableViewController
 	}
 	
 	var editMode = false
-	var exercize: GTSimpleSetsExercize!
+	var exercise: GTSimpleSetsExercise!
 	var partCollection: GTDataObject {
-		return exercize
+		return exercise
 	}
 	weak var delegate: PartCollectionController!
 	
@@ -34,7 +34,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 			}
 		}
 	}
-	private let defaultName = GTLocalizedString("EXERCIZE", comment: "Exercize")
+	private let defaultName = GTLocalizedString("EXERCISE", comment: "Exercise")
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,12 +46,12 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		tableView.rowHeight = UITableView.automaticDimension
 		tableView.estimatedRowHeight = 44
 		
-		if exercize.sets.isEmpty && editMode {
+		if exercise.sets.isEmpty && editMode {
 			DispatchQueue.main.async {
 				self.newSet(self)
 			}
 		}
-		oldName = exercize.name
+		oldName = exercise.name
 		
 		if #available(iOS 13, *) {} else {
 			tableView.backgroundColor = .black
@@ -62,11 +62,11 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		super.viewWillDisappear(animated)
 		
 		if self.isMovingFromParent {
-			if exercize.name.isEmpty {
-				exercize.set(name: oldName ?? defaultName)
+			if exercise.name.isEmpty {
+				exercise.set(name: oldName ?? defaultName)
 			}
 			
-			delegate.exercizeUpdated(exercize)
+			delegate.exerciseUpdated(exercise)
 		}
 	}
 
@@ -83,7 +83,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		tableView.reloadSections([1], with: .automatic)
 	}
 	
-	func exercizeUpdated(_ e: GTPart) {}
+	func exerciseUpdated(_ e: GTPart) {}
 	
 	func dismissPresentedController() {}
 	
@@ -120,8 +120,8 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 		case 0:
 			return 1 + numberOfRowInHeaderSection()
 		case 1:
-			let (g, l) = exercize.restStatus
-			return exercize.sets.count * (g ? 2 : 1) + (g && !l ? -1 : 0) + (editRest != nil ? 1 : 0)
+			let (g, l) = exercise.restStatus
+			return exercise.sets.count * (g ? 2 : 1) + (g && !l ? -1 : 0) + (editRest != nil ? 1 : 0)
 		case 2:
 			return 1
 		default:
@@ -135,19 +135,19 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 			if indexPath.row == 0 {
 				if editMode {
 					let cell = tableView.dequeueReusableCell(withIdentifier: "editTitle", for: indexPath) as! SingleFieldCell
-					cell.textField.text = exercize.name
+					cell.textField.text = exercise.name
 					return cell
 				} else {
 					let cell = tableView.dequeueReusableCell(withIdentifier: "title", for: indexPath) as! MultilineCell
 					cell.isUserInteractionEnabled = false
-					cell.label.text = exercize.name
+					cell.label.text = exercise.name
 					return cell
 				}
 			} else { // Parent collection rows
 				return headerCell(forRowAt: IndexPath(row: indexPath.row - 1, section: 0), reallyAt: indexPath)
 			}
 		case 1:
-			let s = exercize[Int32(setNumber(for: indexPath))]!
+			let s = exercise[Int32(setNumber(for: indexPath))]!
 			switch setCellType(for: indexPath) {
 			case .rest:
 				let cell = tableView.dequeueReusableCell(withIdentifier: "rest", for: indexPath) as! RestCell
@@ -180,7 +180,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 			return
 		}
 		
-		let s = appDelegate.dataManager.newSet(for: exercize)
+		let s = appDelegate.dataManager.newSet(for: exercise)
 		s.set(mainInfo: 0)
 		s.set(secondaryInfo: 0)
 		s.set(rest: 60)
@@ -193,12 +193,12 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 			return
 		}
 		
-		var setList = exercize.setList
+		var setList = exercise.setList
 		guard let last = setList.popLast() else {
 			return
 		}
 		
-		let s = appDelegate.dataManager.newSet(for: exercize)
+		let s = appDelegate.dataManager.newSet(for: exercise)
 		s.set(mainInfo: last.mainInfo)
 		s.set(secondaryInfo: last.secondaryInfo)
 		last.set(rest: setList.last?.rest ?? last.rest)
@@ -207,7 +207,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	}
 	
 	private func insertSet(_ s: GTSet) {
-		let (g, _) = exercize.restStatus
+		let (g, _) = exercise.restStatus
 		let count = tableView(tableView, numberOfRowsInSection: 1)
 		var rows = [IndexPath(row: count - 1, section: 1)] // Last set (if no last rest) or last rest
 		if count > 1 && g {
@@ -228,10 +228,10 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 			return
 		}
 		
-		let (g, l) = exercize.restStatus
+		let (g, l) = exercise.restStatus
 		let setN = Int(setNumber(for: indexPath))
-		let isLast = setN == exercize.sets.count - 1
-		guard let set = exercize[Int32(setN)] else {
+		let isLast = setN == exercise.sets.count - 1
+		guard let set = exercise[Int32(setN)] else {
 			return
 		}
 		
@@ -255,7 +255,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 			}
 		}
 		
-		exercize.removeSet(set)
+		exercise.removeSet(set)
 		addDeletedEntities([set])
 		
 		tableView.beginUpdates()
@@ -273,22 +273,22 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	}
 	
 	@IBAction func nameChanged(_ sender: UITextField) {
-		exercize.set(name: sender.text ?? "")
+		exercise.set(name: sender.text ?? "")
 	}
 	
 	func textFieldDidEndEditing(_ textField: UITextField) {
-		textField.text = exercize.name
+		textField.text = exercise.name
 	}
 	
 	// MARK: - Edit circuit
 	
 	func enableCircuitRest(_ s: UISwitch) {
-		guard editMode, exercize.isInCircuit, exercize.allowCircuitRest else {
+		guard editMode, exercise.isInCircuit, exercise.allowCircuitRest else {
 			return
 		}
 		
-		exercize.enableCircuitRest(s.isOn)
-		s.isOn = exercize.hasCircuitRest
+		exercise.enableCircuitRest(s.isOn)
+		s.isOn = exercise.hasCircuitRest
 		tableView.reloadSections([1], with: .automatic)
 	}
 	
@@ -297,7 +297,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	private var editRest: Int?
 	
 	private func setNumber(for i: IndexPath) -> Int32 {
-		let (g, _) = exercize.restStatus
+		let (g, _) = exercise.restStatus
 		var row = i.row
 		
 		if g { // If have rests, having or not the last one is indiffferent here
@@ -316,7 +316,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	}
 	
 	private func setCellType(for i: IndexPath) -> SetCellType {
-		let (g, _) = exercize.restStatus
+		let (g, _) = exercise.restStatus
 		var row = i.row
 		
 		if g { // If have rests, having or not the last one is indiffferent here
@@ -386,7 +386,7 @@ class ExercizeTableViewController: UITableViewController, UITextFieldDelegate, U
 	}
 	
 	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-		guard let setN = editRest, let set = exercize[Int32(setN)] else {
+		guard let setN = editRest, let set = exercise[Int32(setN)] else {
 			return
 		}
 		

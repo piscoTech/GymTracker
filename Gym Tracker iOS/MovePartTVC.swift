@@ -9,7 +9,7 @@
 import UIKit
 import GymTrackerCore
 
-enum MovePartInvalidExercize: CustomStringConvertible {
+enum MovePartInvalidExercise: CustomStringConvertible {
 	case notSupported, alreadyPart, isSelf, withParent
 	
 	var description: String {
@@ -29,7 +29,7 @@ enum MovePartInvalidExercize: CustomStringConvertible {
 	}
 }
 
-class MovePartTableViewController<T: GTDataObject>: UITableViewController where T: ExercizeCollection {
+class MovePartTableViewController<T: GTDataObject>: UITableViewController where T: ExerciseCollection {
 	
 	class func initialize(currentPart curr: T, completion: @escaping () -> Void) -> UIViewController {
 		let mover = MovePartTableViewController(currentPart: curr, completion: completion)
@@ -44,9 +44,9 @@ class MovePartTableViewController<T: GTDataObject>: UITableViewController where 
 	var current: T
 	var completion: () -> Void
 	
-	private typealias TreeComponent = (part: GTExercize, checked: Bool, level: Int, invalid: MovePartInvalidExercize?)
+	private typealias TreeComponent = (part: GTExercise, checked: Bool, level: Int, invalid: MovePartInvalidExercise?)
 	private var tree: [TreeComponent]!
-	private let rowId = "exercize"
+	private let rowId = "exercise"
 	
 	private weak var doneBtn: UIBarButtonItem!
 	
@@ -77,7 +77,7 @@ class MovePartTableViewController<T: GTDataObject>: UITableViewController where 
 		self.doneBtn = doneBtn
 		navigationItem.rightBarButtonItem = doneBtn
 		
-		tableView.register(UINib(nibName: "MoveExercize", bundle: Bundle.main), forCellReuseIdentifier: rowId)
+		tableView.register(UINib(nibName: "MoveExercise", bundle: Bundle.main), forCellReuseIdentifier: rowId)
 		tableView.rowHeight = 44
 		
 		updateButton()
@@ -85,14 +85,14 @@ class MovePartTableViewController<T: GTDataObject>: UITableViewController where 
 	
 	private func expandCollection(_ coll: CompositeWorkoutLevel, level: Int = 0) -> [TreeComponent] {
 		func add(_ p: GTPart) -> [TreeComponent] {
-			guard let e = p as? GTExercize else {
+			guard let e = p as? GTExercise else {
 				return []
 			}
-			let invalid: MovePartInvalidExercize?
+			let invalid: MovePartInvalidExercise?
 			
 			if e == current {
 				invalid = .isSelf
-			} else if !(e is T.Exercize) {
+			} else if !(e is T.Exercise) {
 				invalid = .notSupported
 			} else if current.childrenList.contains(e) {
 				invalid = .alreadyPart
@@ -126,11 +126,11 @@ class MovePartTableViewController<T: GTDataObject>: UITableViewController where 
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: rowId, for: indexPath) as! MoveExercizeCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: rowId, for: indexPath) as! MoveExerciseCell
 
 		let e = tree[indexPath.row]
 		cell.name.text = e.part.title
-		cell.exercizeInfo.text = e.part.summary
+		cell.exerciseInfo.text = e.part.summary
 		cell.setLevel(e.level)
 		cell.setInvalid(e.invalid, isCollection: e.part is CompositeWorkoutLevel)
 		
@@ -170,7 +170,7 @@ class MovePartTableViewController<T: GTDataObject>: UITableViewController where 
 	
 	@objc private func done() {
 		for e in tree {
-			if e.checked, e.invalid == nil, let e = e.part as? T.Exercize {
+			if e.checked, e.invalid == nil, let e = e.part as? T.Exercise {
 				current.add(parts: e)
 			}
 		}

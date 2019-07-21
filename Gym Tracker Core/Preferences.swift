@@ -26,7 +26,7 @@ enum PreferenceKeys: String, KeyValueStoreKey {
 	case runningWorkoutSource = "runningWorkoutSource"
 	case runningWorkoutNeedsTransfer = "runningWorkoutNeedsTransfer"
 	case currentStart = "currentStart"
-	case currentExercize = "currentExercize"
+	case currentExercise = "currentExercize"
 	case currentPart = "currentPart"
 	case currentRestEnd = "currentRestEnd"
 	case secondaryInfoChangeCache = "secondaryInfoChangeCache"
@@ -279,18 +279,18 @@ public class Preferences {
 		}
 	}
 	
-	/// The current exercize, rest or circuit in the running workout.
-	public var currentExercize: Int {
+	/// The current exercise, rest or circuit in the running workout.
+	public var currentExercise: Int {
 		get {
-			return local.integer(forKey: PreferenceKeys.currentExercize)
+			return local.integer(forKey: PreferenceKeys.currentExercise)
 		}
 		set {
-			local.set(newValue, forKey: PreferenceKeys.currentExercize)
+			local.set(newValue, forKey: PreferenceKeys.currentExercise)
 			local.synchronize()
 		}
 	}
 	
-	/// The current set inside the current exercize or circuit, if `currentRestEnd` is set the workout is currently in the rest after the set.
+	/// The current set inside the current exercise or circuit, if `currentRestEnd` is set the workout is currently in the rest after the set.
 	public var currentPart: Int {
 		get {
 			return local.integer(forKey: PreferenceKeys.currentPart)

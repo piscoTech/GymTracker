@@ -45,7 +45,7 @@ class AskChoiceTableViewController: UITableViewController {
 		}
 		
 		let ch = choices[n]
-		let count = Int32(ch.exercizes.count)
+		let count = Int32(ch.exercises.count)
 		choice = min(ch.lastChosen, count - 1)
 		choice = choice >= 0 ? (choice + 1) % count : nil
 		
@@ -76,11 +76,11 @@ class AskChoiceTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return choices[n].exercizes.count
+        return choices[n].exercises.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "exercize", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "exercise", for: indexPath)
 
 		let i = Int32(indexPath.row)
 		let ch = choices[n][i]!

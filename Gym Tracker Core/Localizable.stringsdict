@@ -50,20 +50,20 @@
 			<string>%lld| reps</string>
 		</dict>
 	</dict>
-	<key>%lld_EXERCIZES</key>
+	<key>%lld_EXERCISES</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
-		<string>%#@exercizes@</string>
-		<key>exercizes</key>
+		<string>%#@exercises@</string>
+		<key>exercises</key>
 		<dict>
 			<key>NSStringFormatSpecTypeKey</key>
 			<string>NSStringPluralRuleType</string>
 			<key>NSStringFormatValueTypeKey</key>
 			<string>lld</string>
 			<key>one</key>
-			<string>%lld exercize</string>
+			<string>%lld exercise</string>
 			<key>other</key>
-			<string>%lld exercizes</string>
+			<string>%lld exercises</string>
 		</dict>
 	</dict>
 	<key>OTHER_%lld_SETS</key>

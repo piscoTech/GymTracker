@@ -23,8 +23,8 @@ extension GTDataObject {
 		switch xml.name {
 		case GTRepsSet.setTag:
 			type = GTRepsSet.self
-		case GTSimpleSetsExercize.exercizeTag:
-			type = GTSimpleSetsExercize.self
+		case GTSimpleSetsExercise.exerciseTag:
+			type = GTSimpleSetsExercise.self
 		case GTChoice.choiceTag:
 			type = GTChoice.self
 		case GTCircuit.circuitTag:
