@@ -59,17 +59,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 		dataManager = DataManager(for: .application)
-		
+
+		tabController = self.window?.rootViewController as? TabBarController
 		if #available(iOS 13.0, *) {
 			let window = TraitOverriderWindow(frame: UIScreen.main.bounds)
 			window.colorScheme = .dark
-			tabController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? TabBarController
 			window.rootViewController = tabController
-			
+
 			self.window = window
 			window.makeKeyAndVisible()
 		} else {
-			tabController = self.window!.rootViewController as? TabBarController
 			tabController.tabBar.barStyle = .black
 		}
 		tabController.delegate = tabController
@@ -122,11 +121,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		center.delegate = self
 		
 		UITabBar.appearance().tintColor = customTint
-		if #available(iOS 13, *) {} else {
-			tabController.tabBar.items![0].image = #imageLiteral(resourceName: "Workout List")
-			tabController.tabBar.items![3].image = #imageLiteral(resourceName: "Settings")
-			tabController.tabBar.items![3].selectedImage = #imageLiteral(resourceName: "Settings Active")
-			
+		if #available(iOS 13, *) {
+			// These can be done in storyboard
+			tabController.tabBar.items![0].image = UIImage(systemName: "list.bullet")
+			tabController.tabBar.items![3].image = UIImage(systemName: "gear")
+			// Override also the selected images just to be sure
+			tabController.tabBar.items![0].selectedImage = UIImage(systemName: "list.bullet")
+			tabController.tabBar.items![3].selectedImage = UIImage(systemName: "gear")
+		} else {
 			let table = UITableView.appearance()
 			table.backgroundColor = .black
 			table.separatorColor = #colorLiteral(red: 0.2243117094, green: 0.2243117094, blue: 0.2243117094, alpha: 1)
