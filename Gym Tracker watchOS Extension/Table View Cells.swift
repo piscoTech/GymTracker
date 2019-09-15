@@ -13,10 +13,14 @@ class AccessoryCell: NSObject {
 	
 	@IBOutlet weak var titleLabel: WKInterfaceLabel!
 	@IBOutlet weak var detailLabel: WKInterfaceLabel!
-	@IBOutlet private weak var accessory: WKInterfaceObject!
+	@IBOutlet private weak var accessory: WKInterfaceImage!
 	@IBOutlet private weak var mainContent: WKInterfaceObject!
 	
 	var accessoryWidth: CGFloat = 0
+
+	func setAccessory(_ image: UIImage?) {
+		accessory.setImage(image)
+	}
 	
 	func showAccessory(_ visible: Bool) {
 		if visible {

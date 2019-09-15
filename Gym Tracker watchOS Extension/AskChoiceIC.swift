@@ -71,6 +71,11 @@ class AskChoiceInterfaceController: WKInterfaceController {
 			guard let row = table.rowController(at: i) as? AccessoryCell else {
 				continue
 			}
+
+			if #available(watchOS 6, *) {
+				// This can be done in stoyboard
+				row.setAccessory(UIImage(systemName: "checkmark"))
+			}
 			
 			row.accessoryWidth = 20
 			let e = ch[Int32(i)]!
