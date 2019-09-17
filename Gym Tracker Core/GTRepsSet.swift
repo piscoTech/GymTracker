@@ -94,6 +94,8 @@ final public class GTRepsSet: GTSet {
 		if let w = weight.secondaryInfoDescription(withChange: change) {
 			let weight = [GTRepsSet.timesSignLabel, w, secondaryInfoLabel]
 			repsDescription.replace("|", with: weight.joined())
+		} else {
+			repsDescription.replace("|", with: "")
 		}
 		
 		return repsDescription
