@@ -76,11 +76,11 @@
                                 <group alignment="left" id="x8p-Jy-vRC">
                                     <items>
                                         <label alignment="left" verticalAlignment="bottom" text="80" id="8WJ-4H-ILz">
-                                            <color key="textColor" red="1" green="0.18823529411764706" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="textColor" name="Red Tint"/>
                                             <fontDescription key="font" type="system" pointSize="19"/>
                                         </label>
                                         <label alignment="left" verticalAlignment="bottom" text="BPM" id="jp2-oR-PiF">
-                                            <color key="textColor" red="1" green="0.18840348639455781" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="textColor" name="Red Tint"/>
                                             <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
                                         </label>
                                     </items>
@@ -410,8 +410,8 @@
             <color red="0.0" green="0.75294117647058822" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="Red Tint">
-            <color red="1" green="0.11764705882352941" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.90196078431372551" green="0.078431372549019607" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
-    <color key="tintColor" red="0.75686274509803919" green="0.92156862745098034" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+    <color key="tintColor" red="0.75686274509999996" green="0.92156862750000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>
