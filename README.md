@@ -9,7 +9,7 @@ Do you go to the gym and are tired of manually keep track of exercizes, sets and
 
 At the end your workout is automatically saved inside the Health app, if you're using an Apple Watch with detailed heart rate and calories.
 
-Backup and restore your workouts using iCloud Drive or export and share them with your friends. Backups and exported workout are in XML format and easily accessible from inside the iCloud Drive folder and app, you can manually edit them and import them again, before import data is validated against this [XSD grammar](https://github.com/piscoTech/GymTracker/blob/master/Gym%20Tracker%20iOS/workout.xsd).
+Backup and restore your workouts using iCloud Drive or export and share them with your friends. Backups and exported workout are in XML format and easily accessible from inside the iCloud Drive folder and app, you can manually edit them and import them again, before import data is validated against this [XSD grammar](https://github.com/piscoTech/GymTracker/blob/master/Gym%20Tracker%20Core/workout.xsd).
 
 Support me by buying the app on the AppStore<br>
 [![Download on the AppStore](https://marcoboschi.altervista.org/img/app_store_en.svg)](https://itunes.apple.com/us/app/gym-tracker-gym-workout-tracker/id1224155362?ls=1&mt=8)
