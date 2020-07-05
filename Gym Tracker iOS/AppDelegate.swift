@@ -14,20 +14,6 @@ import MBLibrary
 import StoreKit
 import GymTrackerCore
 
-@available(iOS 13.0, *)
-class TraitOverriderWindow: UIWindow {
-	
-	var colorScheme: UIUserInterfaceStyle?
-	
-	override var traitCollection: UITraitCollection {
-		if let scheme = colorScheme {
-			let override = UITraitCollection(userInterfaceStyle: scheme)
-			return UITraitCollection(traitsFrom: [super.traitCollection, override])
-		}
-		return super.traitCollection
-	}
-}
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -62,12 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 		tabController = self.window?.rootViewController as? TabBarController
 		if #available(iOS 13.0, *) {
-			let window = TraitOverriderWindow(frame: UIScreen.main.bounds)
-			window.colorScheme = .dark
-			window.rootViewController = tabController
-
-			self.window = window
-			window.makeKeyAndVisible()
+			window?.overrideUserInterfaceStyle = .dark
 		} else {
 			tabController.tabBar.barStyle = .black
 		}
@@ -484,7 +465,7 @@ extension AppDelegate: ExecuteWorkoutControllerDelegate {
 				if endTime > GTNotification.immediateNotificationDelay {
 					let restDurationContent = UNMutableNotificationContent()
 					restDurationContent.title = GTLocalizedString("REST_TIME_TITLE", comment: "Rest time")
-					restDurationContent.body = String(format: GTLocalizedString("REST_TIME_BODY", comment: "Rest for"), duration.getFormattedDuration())
+					restDurationContent.body = String(format: GTLocalizedString("REST_TIME_BODY", comment: "Rest for"), duration.formattedDuration)
 					restDurationContent.sound = nil
 					restDurationContent.categoryIdentifier = GTNotification.Category.restStart.rawValue
 					

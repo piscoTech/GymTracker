@@ -162,7 +162,7 @@ class CompletedWorkoutsTableViewController: UITableViewController {
 			cell.textLabel?.font = italicFont
 		}
 		
-		cell.detailTextLabel?.text = [w.start.getFormattedDateTime(), w.duration.getFormattedDuration()].joined(separator: " – ")
+		cell.detailTextLabel?.text = [w.start.formattedDateTime, w.duration.formattedDuration].joined(separator: " – ")
 
         return cell
     }

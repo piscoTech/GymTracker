@@ -100,7 +100,7 @@ class CurrentWorkoutViewController: UIViewController {
 		timerDate = date
 		
 		let update = {
-			self.timerLbl.text = Date().timeIntervalSince(self.timerDate).getRawDuration()
+			self.timerLbl.text = Date().timeIntervalSince(self.timerDate).rawDuration()
 		}
 		DispatchQueue.main.async {
 			self.timerUpdater = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
@@ -180,7 +180,7 @@ class CurrentWorkoutViewController: UIViewController {
 		
 		let update = {
 			let time = max(self.restTimerDate.timeIntervalSince(Date()), 0)
-			self.restTimerLbl.text = time.getRawDuration(hideHours: true)
+			self.restTimerLbl.text = time.rawDuration(hidingHours: true)
 			
 			if time == 0 {
 				self.stopRestTimer()

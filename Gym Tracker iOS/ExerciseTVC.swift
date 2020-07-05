@@ -65,8 +65,10 @@ class ExerciseTableViewController: UITableViewController, UITextFieldDelegate, U
 			if exercise.name.isEmpty {
 				exercise.set(name: oldName ?? defaultName)
 			}
-			
-			delegate.exerciseUpdated(exercise)
+
+			DispatchQueue.main.async {
+				self.delegate.exerciseUpdated(self.exercise)
+			}
 		}
 	}
 
@@ -382,7 +384,7 @@ class ExerciseTableViewController: UITableViewController, UITextFieldDelegate, U
 	}
 	
 	func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-		return (TimeInterval(row) * GTRest.restStep).getFormattedDuration()
+		return (TimeInterval(row) * GTRest.restStep).formattedDuration
 	}
 	
 	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {

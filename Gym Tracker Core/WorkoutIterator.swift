@@ -67,7 +67,7 @@ class WorkoutStepNextRest: WorkoutStepNext {
 	
 	fileprivate init(rest: TimeInterval) {
 		self.rest = rest
-		description = NSAttributedString(string: String(format: Self.nextRestTxt, rest.getFormattedDuration()))
+		description = NSAttributedString(string: String(format: Self.nextRestTxt, rest.formattedDuration))
 	}
 	
 	func updateSecondaryInfoChange() {}

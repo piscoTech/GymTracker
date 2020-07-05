@@ -175,7 +175,7 @@ class RestPickerCell: UITableViewCell {
 class RestCell: UITableViewCell {
 	
 	func set(rest r: TimeInterval) {
-		self.textLabel?.text = String(format: GTLocalizedString("%@_REST", comment: "rest"), r.getFormattedDuration())
+		self.textLabel?.text = String(format: GTLocalizedString("%@_REST", comment: "rest"), r.formattedDuration)
 	}
 	
 }

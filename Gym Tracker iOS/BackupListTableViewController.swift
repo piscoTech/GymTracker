@@ -63,7 +63,7 @@ class BackupListTableViewController: UITableViewController {
 		let b = backups[indexPath.row]
 		let cell = tableView.dequeueReusableCell(withIdentifier: "backup", for: indexPath)
 			
-		cell.textLabel?.text = b.date.getFormattedDateTime()
+		cell.textLabel?.text = b.date.formattedDateTime
 		
 		return cell
     }
@@ -194,7 +194,7 @@ class BackupListTableViewController: UITableViewController {
 				title: GTLocalizedString("DELETE_BACKUP_TITLE", comment: "Del"),
 				message: String(
 					format: GTLocalizedString("DELETE_BACKUP_CONFIRM", comment: "Del confirm"),
-					b.date.getFormattedDateTime()
+					b.date.formattedDateTime
 				),
 				preferredStyle: .actionSheet)
 			confirm.addAction(UIAlertAction(title: GTLocalizedString("DELETE_BACKUP", comment: "Del"), style: .destructive) { _ in

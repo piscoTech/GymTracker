@@ -202,7 +202,9 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 		super.viewWillDisappear(animated)
 		
 		if self.isMovingFromParent {
-			parentCollection?.exerciseUpdated(collection as! GTPart)
+			DispatchQueue.main.async {
+				self.parentCollection?.exerciseUpdated(self.collection as! GTPart)
+			}
 		}
 	}
 	
@@ -561,7 +563,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	}
 	
 	private func removeExercise(_ e: T.Exercise) {
-		let index = IndexPath(row: Int(e.order), section: 1)
+		let index = IndexPath(row: Int(e.order), section: mainSectionIndex)
 		addDeletedEntities([e])
 		collection.remove(part: e)
 		
@@ -688,7 +690,7 @@ class PartCollectionTableViewController<T: GTDataObject>: UITableViewController,
 	}
 	
 	func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-		return (TimeInterval(row + 1) * GTRest.restStep).getFormattedDuration()
+		return (TimeInterval(row + 1) * GTRest.restStep).formattedDuration
 	}
 	
 	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
