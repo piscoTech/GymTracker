@@ -15,7 +15,7 @@ Support me by buying the app on the AppStore<br>
 [![Download on the AppStore](https://marcoboschi.altervista.org/img/app_store_en.svg)](https://itunes.apple.com/us/app/gym-tracker-gym-workout-tracker/id1224155362?ls=1&mt=8)
 
 ## Project Setup
-The framework `MBLibrary` referenced by this project is available [here](https://github.com/piscoTech/MBLibrary), version currently in use is [1.8](https://github.com/piscoTech/MBLibrary/releases/tag/v1.8(20)).
+The framework `MBLibrary` referenced by this project is available [here](https://github.com/piscoTech/MBLibrary), version currently in use is [1.9](https://github.com/piscoTech/MBLibrary/releases/tag/v1.9(21)).
 
 ## Customization
 General behaviour of the app can be configured via global and static variables:
