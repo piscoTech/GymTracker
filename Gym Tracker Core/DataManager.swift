@@ -252,7 +252,7 @@ final public class WCObject: Equatable {
 
 // MARK: - Delegate Protocol
 
-@objc public protocol DataManagerDelegate: class {
+@objc public protocol DataManagerDelegate: AnyObject {
 	
 	func refreshData()
 	func cancelAndDisableEdit()

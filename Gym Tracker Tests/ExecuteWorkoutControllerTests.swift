@@ -400,7 +400,6 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 			assertCall { $0 == .workoutHasStarted }
 			assertCall { c in
 				if case DelegateCalls.startTimer(let d) = c {
-					let now = Date()
 					XCTAssertEqual(d.timeIntervalSince1970, Date().timeIntervalSince1970, accuracy: 2)
 					
 					return true
@@ -483,7 +482,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 			}
 			assertCall { c in
 				if case DelegateCalls.setNextUpText(let str) = c {
-					assert(string: str, containsInOrder: [r.rest.getFormattedDuration()])
+					assert(string: str, containsInOrder: [r.rest.formattedDuration])
 					return true
 				}
 				return false
@@ -561,7 +560,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 			}
 			assertCall { c in
 				if case DelegateCalls.setNextUpText(let str) = c {
-					assert(string: str, containsInOrder: [r.rest.getFormattedDuration()])
+					assert(string: str, containsInOrder: [r.rest.formattedDuration])
 					return true
 				}
 				return false
@@ -675,7 +674,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 			}
 			assertCall { c in
 				if case DelegateCalls.setNextUpText(let str) = c {
-					assert(string: str, containsInOrder: [r.rest.getFormattedDuration()])
+					assert(string: str, containsInOrder: [r.rest.formattedDuration])
 					return true
 				}
 				return false
@@ -1075,7 +1074,7 @@ class ExecuteWorkoutControllerTests: XCTestCase {
 		}
 		assertCall { c in
 			if case DelegateCalls.setNextUpText(let str) = c {
-				assert(string: str, containsInOrder: [r.rest.getFormattedDuration()])
+				assert(string: str, containsInOrder: [r.rest.formattedDuration])
 				return true
 			}
 			return false

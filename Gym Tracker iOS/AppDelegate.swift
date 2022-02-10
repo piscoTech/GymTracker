@@ -223,7 +223,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	func authorizeHealthAccess() {
 		let req = {
-			healthStore.requestAuthorization(toShare: healthWriteData, read: healthReadData) { _, _ in }
+			DispatchQueue.main.async {
+				healthStore.requestAuthorization(toShare: healthWriteData, read: healthReadData) { _, _ in }
+			}
 		}
 		
 		if #available(iOS 12.0, *) {
